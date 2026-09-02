@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Человек: 7 миллионов лет от развилки до сегодня</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #d4a656; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Human deep dive · Гвендолин-ночные-лекции</div>
+    <h1>Человек: 7 миллионов лет от развилки до сегодня</h1>
+    <p class="lead">Полная хронология: от общего предка с шимпанзе до восьми миллиардов, летающих в космос. Что появлялось когда, какие двадцать событий реально всё изменили, кто был первым, кто вымер и почему остались только мы.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 1: ГЛУБОКОЕ ВРЕМЯ ============ -->
+<section class="slide chapter" id="s2">
+  <div class="bgimg"><img src="assets/ch_primates.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1</div>
+    <h1>Глубокое время: до человека</h1>
+    <p class="lead">Если 4 миллиарда лет жизни на Земле сжать в год, вся история человека — последние 15 часов 31 декабря. Письменность — последние 40 секунд. Но без первых 364 дней ничего бы не было.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">Глубокое время · шкала</div>
+    <h2>4 миллиарда лет за один слайд</h2>
+    <div class="dg" style="margin-bottom:18px">
+      <div class="row" style="align-items:stretch">
+        <div class="bx"><b>3.8 млрд</b><span>первая жизнь: бактерии в океане, РНК → ДНК</span></div>
+        <div class="bx"><b>2.4 млрд</b><span>кислородная катастрофа: цианобактерии отравили планету O₂</span></div>
+        <div class="bx"><b>1.8 млрд</b><span>эукариоты: клетка с ядром, митохондрии — съеденная бактерия</span></div>
+        <div class="bx cy"><b>540 млн</b><span>кембрийский взрыв: глаза, скелеты, хищники</span></div>
+        <div class="bx cy"><b>375 млн</b><span>рыбы выходят на сушу (тиктаалик)</span></div>
+        <div class="bx am"><b>225 млн</b><span>первые млекопитающие — размером с мышь, под ногами динозавров</span></div>
+        <div class="bx am"><b>66 млн</b><span>астероид: динозавры вымерли, млекопитающие заняли планету</span></div>
+        <div class="bx gr"><b>55 млн</b><span>первые приматы</span></div>
+        <div class="bx gr"><b>7 млн</b><span>развилка с шимпанзе</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Всё живое — одна семья.</b> У тебя и бактерии один и тот же генетический код, одни и те же 20 аминокислот, одна и та же АТФ. Это не совпадение — это наследство от одного предка (LUCA), жившего ~3.8 млрд лет назад. Родство доказано не костями, а молекулами.</li>
+          <li><b>Кислород был ядом.</b> Первые 1.5 млрд лет жизнь была анаэробной. Цианобактерии научились фотосинтезу и выбросили O₂ — для большинства это была катастрофа. Выжили те, кто научился его использовать: дыхание даёт в 18 раз больше энергии, чем брожение. Без этого — никаких сложных организмов.</li>
+          <li><b>Астероид — наш благодетель.</b> 66 млн лет назад камень в 10 км упал в Юкатан. Без него млекопитающие остались бы ночными зверьками под ногами рептилий. Приматы появились через 10 млн лет после катастрофы, заняв деревья, освободившиеся от хищников.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Что мы унаследовали и от кого</h3>
+        <table class="t">
+          <tr><th>Признак</th><th>Появился</th><th>У кого</th></tr>
+          <tr><td>Клетка, ДНК, обмен веществ</td><td class="d">3.8 млрд</td><td class="d">бактерии</td></tr>
+          <tr><td>Ядро, митохондрии, половое размножение</td><td class="d">1.8 млрд</td><td class="d">первые эукариоты</td></tr>
+          <tr><td>Многоклеточность, нервы, глаза</td><td class="d">600–540 млн</td><td class="d">кембрий</td></tr>
+          <tr><td>Позвоночник, челюсти, 4 конечности</td><td class="d">500–375 млн</td><td class="d">рыбы</td></tr>
+          <tr><td>Лёгкие, 5 пальцев, яйцо на суше</td><td class="d">370–310 млн</td><td class="d">амфибии, рептилии</td></tr>
+          <tr><td>Тёплокровность, шерсть, молоко, плацента</td><td class="d">225–160 млн</td><td class="d">млекопитающие</td></tr>
+          <tr><td>Хватательная кисть, ногти, стереозрение, большой мозг</td><td class="d">55 млн</td><td class="d">приматы</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Твоя рука — переделанный плавник, икота — рефлекс жаберного дыхания, мурашки — попытка распушить шерсть, которой нет.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s4">
+  <div class="content">
+    <div class="kicker">Глубокое время · приматы</div>
+    <h2>Приматы: 55 миллионов лет на деревьях</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>55 млн лет назад</b> — первые приматы: зверьки 100 г с хватательными лапами, ногтями вместо когтей и глазами, смотрящими вперёд. Всё это — адаптация к жизни на тонких ветках: оценить расстояние до ветки и схватить её. <b>Стереозрение и кисть</b> — вот что дала жизнь на деревьях.</li>
+          <li><b>35 млн</b> — обезьяны (с хвостом) отделились от полуобезьян. <b>25 млн</b> — человекообразные (без хвоста): гиббоны, потом орангутаны (16 млн), гориллы (9 млн), шимпанзе (7 млн). Каждая развилка — ветвь, а не лестница: гориллы не «предки» шимпанзе, шимпанзе не «предки» людей.</li>
+          <li><b>Миоцен, 20–10 млн</b> — золотой век человекообразных: 100+ видов по всей Африке и Евразии. Потом климат стал суше, леса сжались в саванну, и большинство вымерло. Остались те, кто приспособился к краю леса.</li>
+          <li><b>Мозг растёт дважды</b>: у приматов он в 2 раза больше, чем у других млекопитающих того же размера — социальная жизнь в группе требует следить за отношениями. У человека — ещё в 3 раза больше приматного стандарта. Почему — глава 3.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Кто нам кто (по ДНК)</h3>
+        <table class="t">
+          <tr><th>Вид</th><th>Общий предок</th><th>Совпадение ДНК</th></tr>
+          <tr><td>Шимпанзе, бонобо</td><td class="d">6–7 млн лет</td><td class="d">98.8%</td></tr>
+          <tr><td>Горилла</td><td class="d">9 млн</td><td class="d">98.4%</td></tr>
+          <tr><td>Орангутан</td><td class="d">16 млн</td><td class="d">97%</td></tr>
+          <tr><td>Гиббон</td><td class="d">20 млн</td><td class="d">96%</td></tr>
+          <tr><td>Макака</td><td class="d">25–30 млн</td><td class="d">93%</td></tr>
+          <tr><td>Мышь</td><td class="d">90 млн</td><td class="d">85% (по генам)</td></tr>
+          <tr><td>Курица</td><td class="d">310 млн</td><td class="d">60%</td></tr>
+          <tr><td>Банан</td><td class="d">1.5 млрд</td><td class="d">~40% генов имеют аналог</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Шимпанзе ближе к человеку, чем к горилле. Мы — третий вид шимпанзе с точки зрения генетики, просто с очень странной специализацией.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2: ПЕРВЫЕ ЛЮДИ ============ -->
+<section class="slide chapter" id="s5">
+  <div class="bgimg"><img src="assets/ch_australopithecus.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2</div>
+    <h1>7–2 млн лет: встать на ноги</h1>
+    <p class="lead">Первое, что сделало нас людьми, — не мозг и не орудия. Мы встали и пошли. Мозг был как у шимпанзе ещё четыре миллиона лет после этого.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="content">
+    <div class="kicker">Первые люди · прямохождение</div>
+    <h2>Событие № 1: бипедализм — 7–4 млн лет назад</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Сахелантроп</b> (7 млн, Чад), <b>оррорин</b> (6 млн), <b>ардипитек</b> (4.4 млн, «Арди»): ещё лазали по деревьям, но уже ходили на двух ногах. Признак — положение затылочного отверстия (череп сидит на позвоночнике сверху, не сзади), форма таза, угол бедра.</li>
+          <li><b>Зачем встали</b> — спор идёт 150 лет. Версии: видеть над травой; носить еду и детей; освободить руки; меньше нагреваться на солнце (стоя — на 60% меньше площади под полуденным солнцем); энергоэффективность — ходьба на двух ногах тратит на 75% меньше энергии, чем у шимпанзе на четырёх. Скорее всё вместе, в саванне, где лес кончился.</li>
+          <li><b>Цена</b>: боли в спине, грыжи, варикоз, плоскостопие, тяжёлые роды (таз сузился, а голова потом выросла). Мы — переделанная на ходу четвероногая конструкция, и это чувствуется.</li>
+          <li><b>3.66 млн лет, Лаэтоли</b>: следы трёх особей на вулканическом пепле — 27 метров. Шли не спеша, один — след в след за другим. Первое доказательство походки, а не костей.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Австралопитеки: 4–2 млн лет</h3>
+        <p><b>Люси</b> (<i>A. afarensis</i>, 3.2 млн, Эфиопия, 1974): 1.1 м, 29 кг, мозг 400 см³ — как у шимпанзе. Полностью прямоходящая, но с длинными руками и изогнутыми пальцами — ночевала на деревьях. Нашли 40% скелета, назвали в честь песни Beatles, игравшей в лагере.</p>
+        <p style="margin-top:8px">Десяток видов за 2 млн лет: грацильные (афарский, африканский) и массивные парантропы с огромными челюстями для корней и орехов. <b>Все, кроме одной ветви, вымерли.</b> Парантропы дожили до 1.2 млн — вместе с первыми Homo, но проиграли.</p>
+        <p style="margin-top:8px" class="dim">Орудия? Спорно. В Ломекви (Кения) найдены камни со сколами возрастом 3.3 млн лет — старше рода Homo. Возможно, австралопитеки уже били камень о камень.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s7">
+  <div class="bgimg"><img src="assets/ch_tools.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Первые люди · Homo</div>
+    <h2>Событие № 2: камень и мясо — 2.6 млн лет назад</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Homo habilis</b> («человек умелый», 2.4–1.4 млн): мозг 600–700 см³, на 50% больше австралопитека, зубы меньше, руки — уже как у нас. Рядом — <b>олдувайские орудия</b>: галька с несколькими сколами, острая кромка. Не топор — нож, чтобы разрезать шкуру и достать костный мозг из костей, которые не разгрызть.</li>
+          <li><b>Мясо — топливо для мозга.</b> Мозг жрёт 20% энергии в покое при 2% массы. Кормить его травой нельзя — нужны калории и жир. Падаль (сначала) и охота (потом) дали энергию; орудия дали доступ к тому, что зубами не взять. <b>Кишечник сжался</b> — энергию перекинули с пищеварения на мозг (гипотеза дорогих тканей).</li>
+          <li><b>1.9 млн — Homo erectus</b>: первый по-настоящему наш. Рост 1.7 м, пропорции современные, мозг 900–1100 см³, потеря шерсти и потовые железы (можно бежать в полдень, когда хищники спят). <b>Ашельские рубила</b> — симметричные, обработанные с двух сторон, требующие плана в голове. Не менялись <b>миллион лет</b>.</li>
+          <li><b>Первый выход из Африки</b>: эректусы дошли до Кавказа (Дманиси, 1.8 млн), Явы (1.6 млн), Китая. Жили дольше всех Homo — 1.8 млн лет. Мы существуем 300 тысяч.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Рост мозга: главный график</h3>
+          <table class="t">
+            <tr><th>Кто</th><th>Когда</th><th>Мозг, см³</th></tr>
+            <tr><td>Шимпанзе (сегодня)</td><td class="d">—</td><td class="d">380</td></tr>
+            <tr><td>Австралопитек</td><td class="d">3.5 млн</td><td class="d">400–500</td></tr>
+            <tr><td>Homo habilis</td><td class="d">2 млн</td><td class="d">600–700</td></tr>
+            <tr><td>Homo erectus ранний</td><td class="d">1.8 млн</td><td class="d">850</td></tr>
+            <tr><td>Homo erectus поздний</td><td class="d">500 тыс.</td><td class="d">1100</td></tr>
+            <tr><td>Гейдельбергский</td><td class="d">400 тыс.</td><td class="d">1250</td></tr>
+            <tr><td>Неандерталец</td><td class="d">100 тыс.</td><td class="d">1500 (больше нашего!)</td></tr>
+            <tr><td>Sapiens</td><td class="d">сегодня</td><td class="d">1350</td></tr>
+          </table>
+          <p style="margin-top:8px" class="dim">Утроение за 2 млн лет — беспрецедентно быстро для эволюции. Двигатель — обратная связь: орудия → мясо → мозг → лучше орудия. И социальность: чем больше группа, тем больше нужно мозга, чтобы помнить, кто кому что должен.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s8">
+  <div class="bgimg"><img src="assets/ch_fire.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Первые люди · огонь</div>
+    <h2>Событие № 3: огонь — 1.5 млн – 400 тыс. лет назад</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Когда</b> — спор. Следы кострищ в Вондерверке (ЮАР) — 1 млн лет; Гешер-Бнот-Яаков (Израиль) — 790 тыс.; бесспорные, регулярные очаги в Европе — 400 тыс. Скорее всего: пользовались случайным огнём (от молний) давно, научились добывать — поздно.</li>
+          <li><b>Что дал огонь</b>: (1) <b>варка</b> — приготовленная еда даёт на 30–50% больше усваиваемой энергии, убивает паразитов, размягчает — зубы и челюсти уменьшились, кишечник ещё сжался, мозг ещё вырос; (2) <b>тепло</b> — путь на север, в ледниковую Европу; (3) <b>защита</b> — хищники боятся; (4) <b>свет</b> — день удлинился на 4–5 часов. Это время не для работы — для разговоров.</li>
+          <li><b>Костёр как социальный институт</b>: вокруг огня формировались язык, рассказы, распределение еды. Антропологи (Ричард Рэнгем) считают варку главным событием, сделавшим нас людьми: <i>Homo erectus</i> — первый повар.</li>
+          <li><b>Побочный продукт</b>: мы единственный вид, который не может выжить на сырой пище в дикой природе. Сыроеды в городах живут на культурных сортах с высокой калорийностью, которых 10 000 лет назад не было.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Что ещё случилось 1–0.3 млн лет назад</h3>
+        <table class="t">
+          <tr><th>Когда</th><th>Что</th><th>Значение</th></tr>
+          <tr><td>1.8 млн</td><td class="d">выход эректусов из Африки</td><td class="d">люди — на трёх континентах</td></tr>
+          <tr><td>~1 млн</td><td class="d">потеря шерсти, тёмная кожа (защита от УФ)</td><td class="d">бег на длинные дистанции, охота загоном</td></tr>
+          <tr><td>800 тыс.</td><td class="d">Homo antecessor (Испания), следы каннибализма</td><td class="d">первые европейцы</td></tr>
+          <tr><td>700–300 тыс.</td><td class="d">Homo heidelbergensis — общий предок нас и неандертальцев</td><td class="d">деревянные копья (Шёнинген, 300 тыс.), охота на лошадей</td></tr>
+          <tr><td>500 тыс.</td><td class="d">первые жилища (Терра-Амата), первый «рисунок» — зигзаг на раковине (Ява, 500 тыс., эректус)</td><td class="d">символическое поведение раньше sapiens</td></tr>
+          <tr><td>400 тыс.</td><td class="d">регулярный огонь, составные орудия (камень + рукоять + смола)</td><td class="d">технология в 3 шага — планирование</td></tr>
+          <tr><td>300 тыс.</td><td class="d">Джебель-Ирхуд (Марокко) — самый ранний Homo sapiens; Homo naledi (ЮАР) — мозг 500 см³, хоронит мёртвых?</td><td class="d">мы появляемся; параллельно живут 5+ видов Homo</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 3: SAPIENS ============ -->
+<section class="slide chapter" id="s9">
+  <div class="bgimg"><img src="assets/ch_neanderthal.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3</div>
+    <h1>300–40 тыс. лет: мы и другие</h1>
+    <p class="lead">Ещё 50 тысяч лет назад на Земле жили минимум пять видов людей. К 40 тысячам остался один. Как — до сих пор спорят; что мы их не убили, а скорее растворили — знаем по ДНК.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s10">
+  <div class="content">
+    <div class="kicker">Sapiens и другие · соседи</div>
+    <h2>Пять видов людей одновременно</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="am">Неандертальцы (400–40 тыс., Европа и Западная Азия)</h3>
+          <p>Ниже нас, шире, сильнее, мозг больше (1500 см³). Приспособлены к холоду: широкий нос, короткие конечности, мощная грудь. <b>Не тупые</b>: составные орудия, смола-клей, охота на мамонтов копьями вблизи, уход за калеками (Шанидар: слепой однорукий дожил до 40), украшения из когтей орла, погребения, возможно — речь (подъязычная кость как наша, ген FOXP2 наш). Рисунки в пещерах Испании — 65 тыс. лет, до sapiens в Европе.</p>
+          <p style="margin-top:6px" class="dim">Численность — никогда не больше 10–70 тыс. на всю Европу. Малые группы, инбридинг, тяжёлая жизнь: у большинства скелетов — заросшие переломы.</p>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3>Денисовцы (300–30 тыс., Азия)</h3>
+          <p>Известны с 2010 года по <b>одной фаланге пальца</b> из Денисовой пещеры на Алтае — секвенировали ДНК, оказался новый вид. Потом — челюсть с Тибета (160 тыс.), зубы. Внешность неизвестна. Зато знаем: скрещивались с нами, и 3–5% ДНК папуасов и австралийских аборигенов — от них. Ген EPAS1 у тибетцев (жизнь на высоте) — денисовский подарок.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Ещё трое</h3>
+          <ul>
+            <li><b>Homo floresiensis</b> (100–50 тыс., о. Флорес): «хоббит» — 1.1 м, мозг 400 см³, делал орудия и охотился на карликовых стегодонов. Островная карликовость эректусов, доплывших на Флорес 1 млн лет назад.</li>
+            <li><b>Homo luzonensis</b> (67 тыс., Филиппины): открыт в 2019, тоже маленький, с примитивными пальцами ног — лазал.</li>
+            <li><b>Homo naledi</b> (335–236 тыс., ЮАР): мозг 500 см³ — как у австралопитека, но жил рядом с ранними sapiens. Спорные погребения и насечки на стенах пещеры (2023).</li>
+            <li><b>Поздние эректусы</b> на Яве — до 110 тыс. лет.</li>
+          </ul>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Почему остались мы?</b> Не потому что умнее — неандертальский мозг был больше. Версии: численность (нас было в 10 раз больше — статистика на нашей стороне); дальние социальные сети (обмен на 300 км — страховка от голода); метательное оружие (копьеметалка — охота с 30 м, не с 3); климатические качели 45–40 тыс. лет; болезни, принесённые из Африки. Скорее — всё вместе, медленно, за 5 тысяч лет. Прямых следов войны нет.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s11">
+  <div class="content">
+    <div class="kicker">Sapiens и другие · ДНК</div>
+    <h2>Они не исчезли — они в тебе</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>2010, Сванте Пэабо</b> прочитал геном неандертальца из костей возрастом 40 тыс. лет (Нобель 2022). Результат: у всех людей вне Африки — <b>1.5–2.5% неандертальской ДНК</b>. Скрещивание было 60–50 тыс. лет назад на Ближнем Востоке, сразу после выхода из Африки, и потом ещё несколько раз в Европе.</li>
+          <li><b>Что нам досталось</b>: варианты генов иммунитета (TLR — устойчивость к местным инфекциям), кератина (кожа и волосы для холода), метаболизма жиров, свёртывания крови. И минусы: склонность к депрессии, никотиновой зависимости, аллергиям, тяжёлому ковиду (гаплотип на 3-й хромосоме, 2020).</li>
+          <li><b>Чего нет</b>: неандертальской Y-хромосомы и митохондрий — значит, потомство от неандертальца-отца и sapiens-матери либо было бесплодным, либо не выживало. Гибриды — только от наших отцов. Плюс их ДНК вычищена из генов мозга и яичек — там она нам мешала.</li>
+          <li><b>В сумме</b> по человечеству сохранилось ~20–40% неандертальского генома — раскидано кусочками по разным людям. Как вид они исчезли, как гены — живут в 6 миллиардах.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Сколько кого в ком</h3>
+        <table class="t">
+          <tr><th>Популяция</th><th>Неандертальцы</th><th>Денисовцы</th></tr>
+          <tr><td>Африка южнее Сахары</td><td class="d">~0.3% (обратный поток из Евразии)</td><td class="d">0</td></tr>
+          <tr><td>Европа</td><td class="d">1.8–2.4%</td><td class="d">~0</td></tr>
+          <tr><td>Восточная Азия</td><td class="d">2.3–2.6% (больше европейцев!)</td><td class="d">0.2%</td></tr>
+          <tr><td>Папуа, Австралия</td><td class="d">2%</td><td class="d">3–5%</td></tr>
+          <tr><td>Тибет</td><td class="d">2%</td><td class="d">следы + EPAS1</td></tr>
+          <tr><td>Америка (коренные)</td><td class="d">2%</td><td class="d">0.1%</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Африканцы — единственные «чистые» sapiens, и одновременно генетически самые разнообразные: в двух деревнях Африки больше различий, чем между европейцем и китайцем. Все неафриканцы — потомки одной небольшой группы, вышедшей 60–70 тыс. лет назад.</p>
+        <p style="margin-top:8px" class="dim">Есть следы и четвёртого, неизвестного предка («призрачная популяция») в геномах Западной Африки и в самих денисовцах. Дерево на деле — сеть.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s12">
+  <div class="bgimg"><img src="assets/ch_sapiens.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Sapiens и другие · символы</div>
+    <h2>Событие № 4: язык и воображение — 100–50 тыс. лет назад</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Анатомически мы не менялись 300 тыс. лет. Но 100–50 тыс. лет назад <b>поведение</b> резко усложнилось: бусы из раковин (Марокко, 140 тыс.), охра для тела (Бломбос, ЮАР, 100 тыс.), гравировка, погребения с дарами, костяные иглы, рыболовные крючки, копьеметалки, первые лодки (до Австралии — 65 тыс., через 100 км открытого моря).</li>
+          <li><b>Что случилось</b>: скорее всего, <b>полноценный синтаксический язык</b> — способность говорить о том, чего нет: о завтра, о духах, о договоре. Юваль Харари: способность верить в вымысел (боги, племя, деньги) позволяет кооперироваться тысячам незнакомых людей. Шимпанзе кооперируются в группах до 50 — дальше не помнят, кто кому что должен.</li>
+          <li><b>Пещерное искусство</b>: Сулавеси (свинья, 51 тыс. — старейшее), Шове (37 тыс.), Ласко (17 тыс.), Альтамира. Не «наскальная мазня» — перспектива, движение, 400 животных в темноте пещеры при свете жирника. Статуэтки: Венера из Холе-Фельс (40 тыс.), человеколев (40 тыс.). Флейты из кости лебедя — 40 тыс. лет: музыка старше земледелия на 30 тысячелетий.</li>
+          <li><b>Одомашнивание собаки</b> — 30–15 тыс. лет: первый другой вид, ставший нашим. Волки, прибившиеся к стоянкам за костями, отобранные на дружелюбие. Собака понимает указательный жест — шимпанзе нет.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Бутылочное горлышко и разнообразие</h3>
+        <p>Все 8 млрд людей происходят от популяции в <b>~10 000 размножающихся особей</b> около 70 тыс. лет назад (по генетике). Совпадает с извержением Тоба (74 тыс., Суматра, крупнейшее за 2 млн лет) — но связь спорна. Факт: генетически все люди ближе друг к другу, чем две соседние группы шимпанзе.</p>
+        <p style="margin-top:8px"><b>Раса</b> как биологическая категория не работает: 85% всего генетического разнообразия — внутри любой популяции, и лишь 15% — между. Цвет кожи — один ген (SLC24A5) и меланин под конкретное солнце, менялся за 10 тыс. лет туда и обратно. Европейцы посветлели только ~8 тыс. лет назад; Чеддарский человек (Британия, 10 тыс.) был темнокожим с голубыми глазами.</p>
+        <p style="margin-top:8px" class="dim">Митохондриальная Ева (все митохондрии — от одной женщины ~150 тыс. лет назад) и Y-Адам (~200 тыс.) — не «первые люди», а просто те, чьи линии не оборвались. Они не были знакомы.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s13">
+  <div class="bgimg"><img src="assets/ch_migration.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Sapiens и другие · расселение</div>
+    <h2>Событие № 5: заселение планеты — 70–12 тыс. лет назад</h2>
+    <div class="cols">
+      <div>
+        <div class="dg">
+          <div class="row" style="align-items:stretch">
+            <div class="bx am"><b>300–200 тыс.</b><span>Африка: Марокко, Эфиопия, ЮАР — вся Африка, не одна колыбель</span></div>
+            <div class="bx am"><b>120–90 тыс.</b><span>первые выходы в Аравию и Левант (Схул, Кафзех) — не закрепились</span></div>
+            <div class="bx cy"><b>70–60 тыс.</b><span>главный выход через Баб-эль-Мандеб или Синай; встреча с неандертальцами</span></div>
+            <div class="bx cy"><b>65–50 тыс.</b><span>по южному берегу Азии → Австралия (на лодках!) — быстрее, чем в Европу</span></div>
+          </div>
+          <div class="row" style="align-items:stretch">
+            <div class="bx"><b>45 тыс.</b><span>Европа (Бачо-Киро, Болгария); Сибирь (Усть-Ишим)</span></div>
+            <div class="bx"><b>40 тыс.</b><span>Китай, Япония (по льду), неандертальцы исчезают</span></div>
+            <div class="bx gr"><b>23–15 тыс.</b><span>Берингия → Америка (стоянка Уайт-Сэндс, следы 23 тыс.); за 2 тыс. лет — до Огненной Земли</span></div>
+            <div class="bx gr"><b>3–1 тыс.</b><span>последнее: Мадагаскар, Полинезия (Гавайи 1000 г., Новая Зеландия 1250 г.)</span></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Скорость</b>: 1–2 км в год в среднем — не миграция, а медленное «расползание» охотничьих групп на новые угодья. Никто не «шёл в Америку»; каждое поколение отходило на день пути от родителей.</li>
+          <li><b>Ледник как дорога</b>: пик оледенения (26–19 тыс.) опустил океан на 120 м — Берингия, Сунда (Индонезия), Доггерленд (Британия–Европа) были сушей. Таяние 12–8 тыс. лет назад отрезало Америку, Британию, Японию, Тасманию. Тасманийцы прожили в изоляции 10 тыс. лет — до 1803 года.</li>
+          <li><b>Куда пришли люди — там вымирала мегафауна</b>: Австралия (дипротодон, сумчатый лев — 45 тыс.), Америка (мамонты, гигантские ленивцы, саблезубые — 13–11 тыс.), Мадагаскар (лемуры-гиганты — 1 тыс.), Новая Зеландия (моа — 600 лет). Совпадение по времени слишком точное; спор только о доле климата.</li>
+          <li><b>Адаптации на месте</b>: светлая кожа на севере (витамин D), устойчивость к лактозе (Европа, 7 тыс. лет — с коровами), EPAS1 у тибетцев, большая селезёнка у баджо (ныряльщики), переносимость алкоголя (у восточных азиатов — нет: ALDH2). Эволюция не остановилась — она просто медленнее культуры.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 4: НЕОЛИТ ============ -->
+<section class="slide chapter" id="s14">
+  <div class="bgimg"><img src="assets/ch_agriculture.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4</div>
+    <h1>12 тыс. лет: самая большая ошибка или лучшее решение</h1>
+    <p class="lead">Земледелие дало цивилизацию — и уменьшило рост, укоротило жизнь, принесло эпидемии и неравенство. Джаред Даймонд назвал это «худшей ошибкой в истории человечества». Но обратной дороги не было.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s15">
+  <div class="content">
+    <div class="kicker">Неолит · земледелие</div>
+    <h2>Событие № 6: неолитическая революция — 12–8 тыс. лет назад</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Почему именно тогда</b>: ледник кончился (11.7 тыс.), климат стал тёплым и стабильным. В Плодородном полумесяце (Левант, Анатолия, Загрос) росли дикие пшеница, ячмень, чечевица и бегали дикие овцы, козы, свиньи, коровы — редкое сочетание. Плюс — <b>плотность</b>: охотники уже сидели на месте у богатых угодий (натуфийцы, 14 тыс.) и собирали дикие злаки.</li>
+          <li><b>Не изобретение, а дрейф</b>: собирали дикую пшеницу → зёрна с неломким колосом чаще доносили до дома → случайно рассыпали → они прорастали у стоянки → через 1000 лет колос перестал осыпаться сам — пшеница стала зависеть от человека, а человек — от неё. Никто не решал «займёмся земледелием».</li>
+          <li><b>Независимо, минимум 7 раз</b>: Ближний Восток (пшеница, 11 тыс.), Китай (рис, просо, 9 тыс.), Новая Гвинея (таро, банан, 9 тыс.), Мезоамерика (кукуруза, 9 тыс.), Анды (картофель, киноа, 8 тыс.), Сахель (сорго, 5 тыс.), Восток США (подсолнух, 4 тыс.). Значит, это не гений, а закономерность.</li>
+          <li><b>Одомашнивание животных</b>: собака (15+ тыс.), овца и коза (10.5 тыс.), свинья и корова (10 тыс.), кошка (9.5 тыс. — сама пришла к амбарам), курица (8 тыс.), лошадь (5.5 тыс., Ботай/ямная культура), верблюд (3 тыс.). Из 148 крупных травоядных одомашнены 14 — остальные не поддаются (зебра, бизон, антилопа).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="rd">Цена: что стало хуже</h3>
+        <table class="t">
+          <tr><th>Показатель</th><th>Охотники</th><th>Первые земледельцы</th></tr>
+          <tr><td>Рост мужчин</td><td class="d">~178 см (палеолит Европы)</td><td class="d">~165 см (неолит); доходим до 178 только в XX веке</td></tr>
+          <tr><td>Рабочее время</td><td class="d">15–20 ч/нед (бушмены сегодня)</td><td class="d">40–60 ч/нед сезонно</td></tr>
+          <tr><td>Рацион</td><td class="d">100+ видов, много белка</td><td class="d">3–4 злака, 80% углеводы; кариес, анемия, рахит</td></tr>
+          <tr><td>Болезни</td><td class="d">травмы, паразиты</td><td class="d">эпидемии от скота: оспа, корь, туберкулёз, грипп — всё от животных</td></tr>
+          <tr><td>Неравенство</td><td class="d">почти нет — нечего копить</td><td class="d">зерно можно хранить и отнимать → вожди, рабы, налоги</td></tr>
+          <tr><td>Насилие</td><td class="d">межгрупповое, эпизодическое</td><td class="d">война за землю; Тальхайм (7 тыс.) — 34 убитых топорами</td></tr>
+        </table>
+        <p style="margin-top:8px"><b>Зачем же?</b> Земледелие кормит в 10–100 раз больше людей с гектара. Не лучше — <b>больше</b>. Земледельцы плодились, охотников вытесняли или поглощали. Отбор работал на уровне обществ, а не индивидов.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s16">
+  <div class="bgimg"><img src="assets/ch_cities.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Неолит · города</div>
+    <h2>Событие № 7: город, письмо, бронза, колесо — 6–5 тыс. лет назад</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Первые города</b>: Иерихон (9 тыс., стена), Чатал-Хююк (9–7 тыс., Анатолия, 8000 жителей, дома без улиц — вход через крышу), Урук (5.5 тыс., Шумер, 50 000 жителей — первый настоящий город с храмом, ремесленниками, бюрократией). Город возможен только когда один крестьянин кормит двоих не-крестьян: нужна ирригация и излишек.</li>
+          <li><b>Письменность</b> (3300 до н.э., Шумер) — родилась из <b>бухгалтерии</b>: глиняные жетоны для учёта зерна и овец → оттиски на глине → значки → клинопись. Первые тысячи табличек — накладные и долговые расписки. Литература (Гильгамеш) — на 1000 лет позже. Независимо: Египет (3200 до н.э.), Китай (1200 до н.э.), Мезоамерика (600 до н.э.). Алфавит — один раз, финикийцы, ~1050 до н.э.; все алфавиты мира от него.</li>
+          <li><b>Металл</b>: медь (7 тыс., самородная), бронза (медь + олово, 3300 до н.э.) — твёрже, льётся; олово редкое → торговля на тысячи км → первые «глобальные» цепочки. Железо (1200 до н.э., хетты) — дёшево и везде, оружие для всех → конец бронзовых аристократий.</li>
+          <li><b>Колесо</b> (3500 до н.э., Причерноморье/Месопотамия) + лошадь (3500) + телега → мобильность. Колесница (2000 до н.э.) — первое оружие, изменившее геополитику. Парус (5 тыс. лет, Египет).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Что даёт город</h3>
+        <ul>
+          <li><b>Специализация</b>: гончар, кузнец, писец, жрец, солдат — впервые люди, не производящие еду. Все технологии — от них.</li>
+          <li><b>Государство</b>: налог (зерно в храм), закон (Хаммурапи, 1750 до н.э., 282 статьи), армия, суд. И — рабство, кастовость, налоговый учёт каждого.</li>
+          <li><b>Религия организованная</b>: храм как центр экономики, жрецы как бюрократы, боги-покровители города. Гёбекли-Тепе (11.5 тыс., Турция) — храм <b>до</b> земледелия: возможно, собирались молиться, а потом уже стали сеять, чтобы кормить собравшихся.</li>
+          <li><b>Математика и астрономия</b>: из землемерия и календаря. Шумеры — 60-ричная система (наши минуты и градусы), вавилоняне — теорема Пифагора за 1000 лет до Пифагора.</li>
+          <li><b>Эпидемии</b>: плотность + скот + канализации нет. Город до XIX века не воспроизводил себя — смертность выше рождаемости, жил притоком из деревни.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 5: ЦИВИЛИЗАЦИИ ============ -->
+<section class="slide chapter" id="s17">
+  <div class="bgimg"><img src="assets/ch_empires.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5</div>
+    <h1>5000–500 лет назад: империи, идеи, чума</h1>
+    <p class="lead">Пять тысяч лет письменной истории — 0.07% пути. Но именно здесь появилось почти всё, что мы считаем «человеческим»: философия, деньги, право, мировые религии, наука.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s18">
+  <div class="content">
+    <div class="kicker">Цивилизации · древность</div>
+    <h2>3000 до н.э. – 500 н.э.: осевое время</h2>
+    <div class="dg" style="margin-bottom:16px">
+      <div class="row" style="align-items:stretch">
+        <div class="bx am"><b>3000–2000 до н.э.</b><span>Египет объединён (3100), пирамиды (2600), Инд (Хараппа — канализация!), Шумер, Стоунхендж</span></div>
+        <div class="bx am"><b>2000–1200</b><span>Вавилон, Хаммурапи; Шан в Китае, гадательные кости; минойцы, микенцы; Моисей (?), монотеизм Эхнатона</span></div>
+        <div class="bx rd"><b>1200–800</b><span>катастрофа бронзового века: рухнули хетты, Микены, Угарит — засуха, «народы моря»; железо; алфавит; тёмные века Греции</span></div>
+        <div class="bx cy"><b>800–200</b><span>осевое время: Будда, Конфуций, Лао-цзы, Заратуштра, пророки Израиля, Сократ–Платон–Аристотель — все за 300 лет, независимо</span></div>
+        <div class="bx cy"><b>500–300</b><span>Афины: демократия, театр, история (Геродот), геометрия; Персия — первая мировая империя; Александр</span></div>
+        <div class="bx gr"><b>300 до н.э. – 200 н.э.</b><span>Рим, Хань, Маурьи, Парфия — четыре империи держат 2/3 человечества; Шёлковый путь; Архимед, Евклид, Эратосфен мерит Землю</span></div>
+        <div class="bx"><b>200–500</b><span>христианство из секты в госрелигию (313), падение Рима (476), Гупты в Индии — ноль и десятичная система</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Деньги</b> (событие № 8): монета — Лидия, 600 до н.э. До этого — бартер, зерно, слитки по весу. Монета с клеймом государства = доверие, которое не надо проверять. Бумажные — Китай, 800 н.э. Деньги — самая успешная выдумка: единственная вера, которую разделяют все.</li>
+          <li><b>Осевое время</b> (Ясперс): за 800–200 до н.э. в Китае, Индии, Иране, Израиле и Греции — независимо — возникли все великие философии и религии. Почему одновременно? Железо → дешёвое оружие → войны → рухнули старые царства → люди спросили «как жить правильно», а не «как угодить богу города». Гипотеза; факт — совпадение.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Население Земли</h3>
+        <table class="t">
+          <tr><th>Год</th><th>Людей</th><th>Комментарий</th></tr>
+          <tr><td>70 000 до н.э.</td><td class="d">~10 000 размножающихся</td><td class="d">бутылочное горлышко</td></tr>
+          <tr><td>10 000 до н.э.</td><td class="d">4 млн</td><td class="d">все — охотники</td></tr>
+          <tr><td>1 н.э.</td><td class="d">200–300 млн</td><td class="d">Рим + Хань — по 60 млн</td></tr>
+          <tr><td>1000</td><td class="d">300 млн</td><td class="d">почти без роста 1000 лет</td></tr>
+          <tr><td>1350</td><td class="d">370 → 300 млн</td><td class="d">Чёрная смерть: −30–60% Европы</td></tr>
+          <tr><td>1800</td><td class="d">1 млрд</td><td class="d">начало промышленной</td></tr>
+          <tr><td>1927</td><td class="d">2 млрд</td><td class="d">+1 млрд за 127 лет</td></tr>
+          <tr><td>1974</td><td class="d">4 млрд</td><td class="d">+2 млрд за 47 лет</td></tr>
+          <tr><td>2024</td><td class="d">8.1 млрд</td><td class="d">пик прогнозируют ~10.3 млрд в 2080-х</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s19">
+  <div class="content">
+    <div class="kicker">Цивилизации · средние века</div>
+    <h2>500–1450: не тёмные, а перераспределённые</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Европа</b> после Рима: население и грамотность упали, но не «тьма»: тяжёлый плуг, трёхполье, водяные мельницы (5000 в Англии в 1086), готика, университеты (Болонья 1088, Париж 1150, Оксфорд 1167), механические часы (1300) — первая машина, которая меняет мышление: время стало дискретным.</li>
+          <li><b>Исламский мир 750–1250</b> — центр науки: алгебра (аль-Хорезми, от него — «алгоритм»), оптика (Ибн аль-Хайсам — экспериментальный метод), медицина (Ибн Сина — учебник на 600 лет), Багдадский Дом мудрости — переводы всех греков. Арабские цифры — индийские, пришли через арабов в 1200-х (Фибоначчи).</li>
+          <li><b>Китай 600–1400</b> — самая богатая цивилизация: бумага (105 н.э.), печать с досок (700), порох (900), компас (1000), бумажные деньги (1000), доменные печи, фарфор, каналы на 1800 км. Флот Чжэн Хэ (1405) — корабли по 120 м, за 90 лет до Колумба с его 20-метровыми. Потом — самоизоляция.</li>
+          <li><b>Монголы 1206–1368</b> (событие № 9): самая большая сухопутная империя, 25% суши. Убили ~40 млн (10% населения планеты), но соединили Евразию: Шёлковый путь под одной властью — порох, печать, компас идут на Запад. И чума — тоже.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="rd">Событие № 10: Чёрная смерть, 1347–1353</h3>
+        <p><i>Yersinia pestis</i> из Центральной Азии по монгольским дорогам → Крым → генуэзские корабли → Мессина, 1347. За 6 лет — <b>25–50 млн в Европе, 30–60% населения</b>. Города вымирали на 70%. Флоренция: 120 → 50 тыс.</p>
+        <p style="margin-top:8px"><b>Последствия</b>: рабочих рук нет → зарплаты ×2–3 → крепостничество рушится в Западной Европе → крестьяне уходят в города → спрос на механизацию → печатный станок находит рынок. Церковь потеряла авторитет («молитвы не помогли»). Медицина — от Галена к вскрытиям. Пессимисты называют чуму акушеркой Ренессанса и капитализма.</p>
+        <p style="margin-top:8px" class="dim">Чума возвращалась каждые 10–20 лет до 1700-х. Ген CCR5-Δ32 (устойчивость к ВИЧ) у 10% европейцев — возможно, отобран чумой. Оспа, корь, тиф, холера — так же чистили города до вакцин и канализации.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 6: НОВОЕ ВРЕМЯ ============ -->
+<section class="slide chapter" id="s20">
+  <div class="bgimg"><img src="assets/ch_print.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6</div>
+    <h1>1450–1800: печать, океан, метод</h1>
+    <p class="lead">Триста лет, за которые Европа из отсталой окраины Евразии стала владеть половиной планеты. Три причины: станок, каравелла и привычка проверять.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s21">
+  <div class="content">
+    <div class="kicker">Новое время · информация и география</div>
+    <h2>События № 11 и № 12: печатный станок и Колумб</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="am">Гутенберг, 1450: копирование дешевле в 300 раз</h3>
+          <p>Наборный шрифт (отливка литер из сплава — сотни одинаковых), масляная краска, винтовой пресс от виноделов. Библия 1455 — 180 копий за то время, пока монах переписал бы одну. К 1500 — <b>20 млн книг</b> в Европе, больше, чем за предыдущую тысячу лет. Цена книги упала в 300 раз за 100 лет.</p>
+          <p style="margin-top:8px"><b>Следствия</b>: Лютер (1517) — 95 тезисов разлетелись по Германии за 2 недели; Реформация — первая медиа-революция. Грамотность с 5% до 50% за 200 лет (Северная Европа). Наука: Коперник, Везалий, Галилей — их могли читать все и <b>проверять</b>. Стандартизация языков. Национализм. Газеты (1605). Китай печатал 700 лет раньше, но иероглифы (десятки тысяч) не дали наборному шрифту выигрыша.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="cy">1492: два мира соединяются</h3>
+          <p>Колумб искал Индию, ошибся в размере Земли в 2 раза (Эратосфен знал точнее за 1700 лет до него). Но нашёл два континента, 60 млн человек и 12 тыс. лет изолированной эволюции культур и болезней.</p>
+          <p style="margin-top:8px"><b>Колумбов обмен</b>: в Европу — картофель, кукуруза, томат, какао, табак, перец, индейка; в Америку — лошадь, корова, свинья, пшеница, сахар, кофе. Картофель кормит Северную Европу → население ×2 за XVIII век. Кукуруза — Африку и Китай.</p>
+          <p style="margin-top:8px" class="rd"><b>И оспа</b>: у американцев не было иммунитета ни к чему евразийскому. За 100 лет — <b>−90% населения обеих Америк</b>, 50+ млн человек. Крупнейшая демографическая катастрофа в истории. Лес отрос на заброшенных полях так, что, возможно, снизил CO₂ и усилил малый ледниковый период.</p>
+          <p style="margin-top:8px" class="dim">Затем — трансатлантическое рабство: 12.5 млн африканцев за 350 лет, 2 млн умерли в пути. Сахар, хлопок, табак — первые глобальные товары, все на рабах.</p>
+        </div>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:14px"><b>Магеллан–Элькано, 1519–22</b>: первое кругосветное — из 270 человек вернулись 18. Планета впервые измерена на практике. Дальше — Ост-Индские компании (1600, 1602): первые акционерные общества, первая биржа (Амстердам, 1602), первые корпорации сильнее государств.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s22">
+  <div class="bgimg"><img src="assets/ch_science.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Новое время · метод</div>
+    <h2>Событие № 13: научная революция — 1543–1687</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Что нового</b>: не знания — <b>метод</b>. До этого истина — у авторитета (Аристотель, Библия, Гален). Теперь: гипотеза → эксперимент → измерение → любой может повторить → публикация. Знание стало <b>накопительным и самоисправляющимся</b>. Единственное изобретение, которое производит все остальные.</li>
+          <li><b>Коперник 1543</b> (Земля не центр) → <b>Везалий 1543</b> (вскрыл человека, Гален ошибался в 200 местах) → <b>Галилей 1610</b> (телескоп: горы на Луне, спутники Юпитера; закон падения — экспериментом, не рассуждением) → <b>Кеплер 1609</b> (орбиты — эллипсы, по данным Браге) → <b>Гарвей 1628</b> (кровь циркулирует) → <b>Ньютон 1687</b>: три закона + гравитация объясняют и яблоко, и Луну одной формулой. Небо и Земля — одна физика.</li>
+          <li><b>Институты</b>: Королевское общество (1660, девиз «Nullius in verba» — ничьим словам не верь), Академия наук Парижа (1666), первые журналы (1665), рецензирование. Наука стала профессией с правилами.</li>
+          <li><b>Инструменты</b>: телескоп (1608), микроскоп (1620-е — Левенгук увидел бактерий, 1676), барометр, маятниковые часы (Гюйгенс, 1656 — точность с 15 мин до 15 с в сутки), термометр. Каждый прибор — новый орган чувств.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Просвещение 1690–1789: применить метод к обществу</h3>
+        <ul>
+          <li><b>Локк</b> (1690): власть — договор, а не от бога; права на жизнь, свободу, собственность.</li>
+          <li><b>Монтескьё</b> (1748): разделение властей. <b>Вольтер</b>: терпимость, «раздавите гадину» (церковь). <b>Руссо</b>: народный суверенитет.</li>
+          <li><b>Смит</b> (1776): «Богатство народов» — рынок как самоорганизация, разделение труда.</li>
+          <li><b>Энциклопедия</b> Дидро (1751–72, 28 томов) — всё знание, доступное всем, в алфавитном порядке. Википедия XVIII века.</li>
+          <li><b>Практика</b>: США 1776 («все люди созданы равными» — при рабстве), Франция 1789 (Декларация прав, гильотина, Наполеон). Отмена рабства: Британия 1833, США 1865, Бразилия 1888.</li>
+          <li><b>Вакцина</b> (Дженнер, 1796) — оспа побеждена: первая болезнь, стёртая с планеты (1980).</li>
+        </ul>
+        <p style="margin-top:8px" class="dim">Идея, что мир можно понять и улучшить разумом, а не смириться, — сама по себе событие. До 1700 года «прогресс» как понятие не существовало: золотой век был в прошлом.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 7: ИНДУСТРИЯ ============ -->
+<section class="slide chapter" id="s23">
+  <div class="bgimg"><img src="assets/ch_industry.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 7</div>
+    <h1>1760–1945: машины, энергия, война</h1>
+    <p class="lead">Двести лет, за которые изменилось больше, чем за предыдущие двести тысяч. Человек впервые получил энергию не от мускулов, ветра и воды — и мир сорвался с места.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s24">
+  <div class="content">
+    <div class="kicker">Индустрия · энергия</div>
+    <h2>Событие № 14: промышленная революция — 1760–1850</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Почему Англия</b>: уголь у поверхности рядом с реками; дорогой труд + дешёвый уголь = выгодно заменять людей машинами; патентное право (1624); банки и биржа; колонии как рынок и источник хлопка; протестантская грамотность; нет разрушительных войн на своей земле после 1651.</li>
+          <li><b>Цепочка</b>: прялка «Дженни» (1764) → водяная прядильная машина (1769) → паровая машина Уатта (1776, КПД ×4 против Ньюкомена) → фабрика: 1000 веретён под одной крышей, работают 24 часа → хлопок дешевле в 10 раз → Индия (ткала вручную) разорена. Кокс вместо древесного угля (1709) → дешёвая сталь (Бессемер, 1856) → рельсы, мосты, машины.</li>
+          <li><b>Паровоз</b> (1825, Стоктон–Дарлингтон; 1830 Ливерпуль–Манчестер): скорость человека впервые с эпохи лошади — с 15 до 50 км/ч, потом 100. К 1900 — 1 млн км путей. Пароход (1807), телеграф (1837) — информация быстрее гонца впервые за всю историю. Часовые пояса (1884) — потому что поезда.</li>
+          <li><b>Цена</b>: 14-часовой день, дети с 6 лет на фабриках, Манчестер — средняя продолжительность жизни рабочего 17 лет (1840). Луддиты, чартисты, Маркс (1848). Фабричные законы, профсоюзы, 8-часовой день — только к 1900-м.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Энергия на человека: главный график цивилизации</h3>
+        <table class="t">
+          <tr><th>Эпоха</th><th>Источник</th><th>кВт·ч/чел/день</th></tr>
+          <tr><td>Охотник</td><td class="d">еда, костёр</td><td class="d">~5</td></tr>
+          <tr><td>Земледелец</td><td class="d">+ скот, дрова</td><td class="d">~12</td></tr>
+          <tr><td>Средневековье</td><td class="d">+ водяные и ветряные мельницы</td><td class="d">~25</td></tr>
+          <tr><td>1850, Англия</td><td class="d">уголь</td><td class="d">~80</td></tr>
+          <tr><td>1950, США</td><td class="d">уголь, нефть, электричество</td><td class="d">~200</td></tr>
+          <tr><td>2020, США</td><td class="d">+ газ, атом, ВИЭ</td><td class="d">~230</td></tr>
+          <tr><td>2020, мир в среднем</td><td class="d"></td><td class="d">~60</td></tr>
+        </table>
+        <p style="margin-top:8px">У среднего американца сегодня «работает» энергетический эквивалент 200 рабов. Всё, что мы называем «уровнем жизни», — это доступ к энергии. Она и есть главный сюжет последних 250 лет — от угля через нефть к тому, что будет дальше.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s25">
+  <div class="content">
+    <div class="kicker">Индустрия · вторая волна</div>
+    <h2>1870–1914: электричество, химия, бактерии</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Электричество</b>: Фарадей (1831, генератор) → Эдисон (1879, лампа; 1882, первая электростанция) → Тесла и Вестингауз (1888, переменный ток) → к 1930 — города электрифицированы. Свет без огня впервые. Ночь отменена.</li>
+          <li><b>Нефть и ДВС</b>: скважина Дрейка (1859), Отто (1876), Бенц (1886), Дизель (1897), Форд (1908), Райты (1903). Нефть — самая плотная переносимая энергия: 1 л = 10 кВт·ч = 3 дня работы человека.</li>
+          <li><b>Химия</b>: Менделеев (1869), синтетические красители (1856), удобрения (Габер–Бош, 1909 — азот из воздуха: <b>кормит половину человечества сегодня</b>; без него — не более 4 млрд), аспирин (1899), пластмассы (бакелит, 1907). Динамит (1867) — Нобель и его премия.</li>
+          <li><b>Событие № 15: микробная теория</b> (Пастер 1860-е, Кох 1876–82): болезни — от микробов, а не от «дурного воздуха». Антисептика (Листер, 1867), канализация (Лондон, 1865, после холеры), пастеризация, вакцины от бешенства, дифтерии. <b>Детская смертность с 40% до 5% за 100 лет</b> — главная причина взрывного роста населения. Не рождаемость выросла — перестали умирать дети.</li>
+          <li><b>Связь</b>: телефон (1876), радио (1895), кино (1895). <b>Дарвин</b> (1859) — человек в природе, не над ней. <b>Фрейд</b> — и не хозяин в собственной голове. <b>Эйнштейн</b> (1905, 1915) — и время не абсолютно.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="rd">Событие № 16: мировые войны — 1914–1945</h3>
+        <p>Индустрия, применённая к убийству. <b>ПМВ</b>: 20 млн погибших; пулемёт, газ, танк, самолёт, подлодка; три империи рухнули, четвёртая — в революцию (1917: коммунизм на 1/6 суши на 74 года). Версаль → Гитлер.</p>
+        <p style="margin-top:8px"><b>ВМВ</b>: 70–85 млн (3% человечества), больше половины — гражданские. Холокост: 6 млн промышленно. Тотальная война: вся экономика на фронт. Технологии: радар, реактивный двигатель, ракета (Фау-2), пенициллин массово (1943), компьютер (Colossus, ENIAC), <b>атомная бомба</b> (1945) — человек впервые может уничтожить себя как вид.</p>
+        <p style="margin-top:8px" class="dim">Следствия: ООН, деколонизация (1947–1975, 750 млн людей получили независимость), Бреттон-Вудс, ГУЛАГ и Холодная война, Нюрнберг и понятие «преступление против человечности», всеобщая декларация прав человека (1948). И — мир между великими державами уже 80 лет: самый длинный за письменную историю.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 8: СЕГОДНЯ ============ -->
+<section class="slide chapter" id="s26">
+  <div class="bgimg"><img src="assets/ch_modern.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 8</div>
+    <h1>1945–2026: Великое ускорение</h1>
+    <p class="lead">Восемьдесят лет — одна человеческая жизнь. За неё: население ×3, экономика ×15, средняя жизнь с 45 до 73 лет, человек на Луне, геном прочитан, весь мир в кармане. И климат, который мы сдвинули.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s27">
+  <div class="content">
+    <div class="kicker">Сегодня · что стало лучше</div>
+    <h2>Событие № 17: великое ускорение — цифры, в которые трудно поверить</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="gr">1950 → 2024</h3>
+          <table class="t">
+            <tr><th>Показатель</th><th>1950</th><th>2024</th></tr>
+            <tr><td>Население</td><td class="d">2.5 млрд</td><td class="d">8.1 млрд</td></tr>
+            <tr><td>Продолжительность жизни (мир)</td><td class="d">46 лет</td><td class="d">73 года</td></tr>
+            <tr><td>Детская смертность до 5 лет</td><td class="d">22%</td><td class="d">3.7%</td></tr>
+            <tr><td>Крайняя бедность (&lt;$2.15/день)</td><td class="d">~60%</td><td class="d">~9%</td></tr>
+            <tr><td>Грамотность взрослых</td><td class="d">56%</td><td class="d">87%</td></tr>
+            <tr><td>Голодающих</td><td class="d">~50%</td><td class="d">~9%</td></tr>
+            <tr><td>Женщин в парламентах</td><td class="d">3%</td><td class="d">27%</td></tr>
+            <tr><td>Смертей в войнах на 100 тыс./год</td><td class="d">~20 (пик ВМВ 200+)</td><td class="d">~1–2</td></tr>
+            <tr><td>Людей с электричеством</td><td class="d">~40%</td><td class="d">91%</td></tr>
+            <tr><td>С мобильным телефоном</td><td class="d">0</td><td class="d">~85% (5.6 млрд)</td></tr>
+            <tr><td>Оспа / полио / корь</td><td class="d">2 млн / 350 тыс. / 2.6 млн смертей в год</td><td class="d">0 / ~30 случаев / 130 тыс.</td></tr>
+          </table>
+        </div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Зелёная революция</b> (Борлоуг, 1960-е): карликовая пшеница + удобрения + ирригация → урожайность ×3. Индия из голода — в экспортёра за 10 лет. Спасён от голода ~1 млрд. Предсказанный Мальтусом и Эрлихом голод не наступил.</li>
+          <li><b>Антибиотики</b> (1943+), вакцины (полио 1955, корь 1963), ОРТ-раствор от диареи (спасает 1 млн детей в год за 10 центов) — медицина стала работать массово.</li>
+          <li><b>Событие № 18: контрацепция</b> (таблетка, 1960). Впервые в истории женщина решает, когда и сколько. Рождаемость: с 5 детей на женщину (1960) до 2.3 (2024). Демографический переход завершается: Корея — 0.7, Европа — 1.5, Африка — 4. Пик населения — 2080-е, потом спад. Это меняет всё: экономику, пенсии, войны.</li>
+          <li><b>Глобализация</b>: контейнер (1956) — доставка подешевела в 10 раз; ВТО; Китай с 1978 — 800 млн из бедности за 40 лет, крупнейшее сокращение бедности в истории.</li>
+        </ul>
+        <div class="note gold"><b>Парадокс</b>: по всем измеримым показателям человечество живёт лучше, чем когда-либо, — и в опросах большинство считает, что мир становится хуже. Новости про самолёт, который упал, не про 100 000, которые сели.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s28">
+  <div class="content">
+    <div class="kicker">Сегодня · информация</div>
+    <h2>Событие № 19: компьютер и сеть — 1945–2007</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Транзистор</b> (1947) → интегральная схема (1958) → микропроцессор (1971, Intel 4004, 2300 транзисторов) → закон Мура: удвоение каждые 2 года 50 лет подряд → сегодня 10¹⁰ транзисторов на чипе. Вычисление подешевело в 10¹² раз — ни одна технология в истории так не падала в цене.</li>
+          <li><b>Персональный компьютер</b> (Apple II 1977, IBM PC 1981, Mac 1984, Windows 1985) — компьютер из машинного зала на стол каждому.</li>
+          <li><b>Интернет</b>: ARPANET (1969), TCP/IP (1983), Web (Бернерс-Ли, 1989–91 — и отдал бесплатно), Mosaic (1993), Google (1998), Wikipedia (2001), YouTube (2005). Все знания человечества — у каждого, мгновенно, даром. Печатный станок ×1000.</li>
+          <li><b>Смартфон</b> (iPhone, 2007): за 15 лет — у 5.6 млрд человек. Компьютер + камера + GPS + связь со всеми в кармане у пастуха в Кении. Соцсети (Facebook 2004): 5 млрд аккаунтов. Впервые все люди планеты в одной сети — со всеми следствиями: арабская весна, фейки, поляризация, TikTok.</li>
+          <li><b>ИИ</b> (событие № 20?): нейросети (1943 идея, 2012 — ImageNet, 2017 — трансформер, 2022 — ChatGPT). Машина впервые говорит, пишет, рисует, кодит на уровне человека. Что это — новый печатный станок, новое электричество или новый огонь — узнаем через 20 лет. Это первое событие в списке, у которого мы живём внутри.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Космос: 1957–</h3>
+        <table class="t">
+          <tr><td>1957</td><td class="d">Спутник</td></tr>
+          <tr><td>1961</td><td class="d">Гагарин — первый человек за пределами планеты</td></tr>
+          <tr><td>1969</td><td class="d">Луна — первый шаг вида на другое тело. 12 человек до 1972</td></tr>
+          <tr><td>1977</td><td class="d">Вояджеры — первые объекты, покидающие систему</td></tr>
+          <tr><td>1990</td><td class="d">Хаббл; «бледно-голубая точка»</td></tr>
+          <tr><td>2000</td><td class="d">МКС — люди в космосе непрерывно 25 лет</td></tr>
+          <tr><td>2021</td><td class="d">JWST — видим первые галактики</td></tr>
+        </table>
+        <h3 style="margin-top:12px">Биология</h3>
+        <table class="t">
+          <tr><td>1953</td><td class="d">структура ДНК</td></tr>
+          <tr><td>1978</td><td class="d">первый ребёнок из пробирки</td></tr>
+          <tr><td>2003</td><td class="d">геном человека прочитан ($3 млрд; сегодня $200)</td></tr>
+          <tr><td>2012</td><td class="d">CRISPR — редактирование ДНК; 2018 — первые отредактированные дети (Китай, скандал)</td></tr>
+          <tr><td>2020</td><td class="d">мРНК-вакцина за 11 месяцев</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s29">
+  <div class="bgimg"><img src="assets/ch_future.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Сегодня · цена и развилки</div>
+    <h2>Антропоцен: мы стали геологической силой</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Климат</b>: CO₂ с 280 ppm (1750) до 425 (2024) — выше, чем за 3 млн лет. +1.3 °C уже; +2.5–3 к 2100 при текущих обещаниях. Не конец света, но: миграции сотен миллионов, урожаи, кораллы, уровень моря +0.5–1 м. Механизм известен с 1896 (Аррениус). Спор не о физике, а о цене решений.</li>
+          <li><b>Биосфера</b>: 96% массы млекопитающих — люди и их скот; дикие — 4%. Вымирание идёт в 100–1000 раз быстрее фона — шестое великое. Половина коралловых рифов. Но: озоновая дыра затягивается (Монреаль, 1987 — работает), леса в Европе и Китае растут, китов больше.</li>
+          <li><b>Оружие</b>: 12 000 ядерных боеголовок. Один раз почти (1962, 1983). Пока — самое эффективное миротворческое средство в истории.</li>
+          <li><b>Демография</b>: пик и спад. Впервые человечество будет сжиматься не от чумы, а по выбору. Стареющая планета — беспрецедентно.</li>
+          <li><b>Направленная эволюция</b>: CRISPR, ЭКО с отбором эмбрионов, нейроинтерфейсы (Neuralink, 2024), продление жизни. Впервые вид может править собственный геном. Естественный отбор для человека почти выключен медициной — что дальше, решаем сами.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">20 событий, которые всё изменили</h3>
+        <table class="t" style="font-size:13px">
+          <tr><td>1</td><td class="d">Прямохождение, 7–4 млн</td><td>11</td><td class="d">Печатный станок, 1450</td></tr>
+          <tr><td>2</td><td class="d">Камень и мясо, 2.6 млн</td><td>12</td><td class="d">Колумбов обмен, 1492</td></tr>
+          <tr><td>3</td><td class="d">Огонь и варка, 1 млн–400 тыс.</td><td>13</td><td class="d">Научный метод, 1543–1687</td></tr>
+          <tr><td>4</td><td class="d">Язык и символы, 100–50 тыс.</td><td>14</td><td class="d">Паровая машина, 1776</td></tr>
+          <tr><td>5</td><td class="d">Заселение планеты, 70–12 тыс.</td><td>15</td><td class="d">Микробная теория, 1860–80</td></tr>
+          <tr><td>6</td><td class="d">Земледелие, 12–8 тыс.</td><td>16</td><td class="d">Мировые войны и атом, 1914–45</td></tr>
+          <tr><td>7</td><td class="d">Город и письмо, 5.5–5 тыс.</td><td>17</td><td class="d">Антибиотики, вакцины, удобрения, 1943–70</td></tr>
+          <tr><td>8</td><td class="d">Деньги, 600 до н.э.</td><td>18</td><td class="d">Контрацепция, 1960</td></tr>
+          <tr><td>9</td><td class="d">Монголы соединяют Евразию, 1206</td><td>19</td><td class="d">Компьютер и сеть, 1947–2007</td></tr>
+          <tr><td>10</td><td class="d">Чёрная смерть, 1347</td><td>20</td><td class="d">ИИ и редактирование генома, 2012–</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Закономерность: интервалы сжимаются. Между 1 и 2 — 4 млн лет. Между 19 и 20 — 60. Каждое событие ускоряет следующее, потому что даёт больше людей, энергии и информации.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ИТОГИ ============ -->
+<section class="slide" id="s30">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Семь миллионов лет на одном слайде</h2>
+    <table class="t" style="font-size:14.5px">
+      <tr><th>Период</th><th>Кто</th><th>Что появилось</th><th>Что это изменило</th></tr>
+      <tr><td>7–4 млн</td><td class="d">сахелантроп, ардипитек</td><td class="d">прямохождение</td><td class="d">свободные руки, саванна, дальние переходы</td></tr>
+      <tr><td>4–2 млн</td><td class="d">австралопитеки</td><td class="d">полностью двуногие, первые сколы</td><td class="d">десяток видов, все вымерли, кроме одной ветви</td></tr>
+      <tr><td>2.6–0.3 млн</td><td class="d">Homo habilis, erectus, heidelbergensis</td><td class="d">орудия, мясо, огонь, варка, копья, выход из Африки</td><td class="d">мозг ×3, кишечник −, зубы −, три континента</td></tr>
+      <tr><td>300–40 тыс.</td><td class="d">sapiens + неандертальцы + денисовцы + 3</td><td class="d">язык, искусство, украшения, погребения, лодки</td><td class="d">кооперация незнакомых; 5 видов → 1 (с примесью)</td></tr>
+      <tr><td>70–12 тыс.</td><td class="d">sapiens</td><td class="d">все континенты, собака, лук, игла, керамика</td><td class="d">мегафауна вымерла; адаптации к климату</td></tr>
+      <tr><td>12–5 тыс.</td><td class="d">земледельцы</td><td class="d">злаки, скот, деревня, город, письмо, бронза, колесо</td><td class="d">×100 плотность, государство, неравенство, эпидемии</td></tr>
+      <tr><td>5 тыс. – 500 лет</td><td class="d">цивилизации</td><td class="d">железо, деньги, философия, религии, право, империи, университеты</td><td class="d">400 млн человек, Евразия соединена, чума</td></tr>
+      <tr><td>500–80 лет</td><td class="d">Новое время</td><td class="d">печать, океан, метод, пар, электричество, микробы, атом</td><td class="d">1 → 2.5 млрд; энергия ×10; жизнь 30 → 46 лет</td></tr>
+      <tr><td>80 лет – сейчас</td><td class="d">мы</td><td class="d">антибиотики, ДНК, таблетка, чип, сеть, ИИ, CRISPR</td><td class="d">8 млрд; жизнь 73; бедность 60% → 9%; климат +1.3°</td></tr>
+    </table>
+    <div class="note">Три двигателя на всём пути: <b>энергия</b> (мясо → огонь → зерно → уголь → нефть → атом), <b>информация</b> (язык → письмо → печать → сеть) и <b>численность</b> (больше людей — больше идей — больше людей). Каждый виток ускорял следующий. Биология не менялась 300 тыс. лет; всё остальное — культура, накопленная и переданная.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s31">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <div class="kicker amber">Финал</div>
+    <h1>Следы в пепле</h1>
+    <p class="lead">3.66 миллиона лет назад трое прошли по свежему вулканическому пеплу в Лаэтоли. Один шёл след в след за другим. Их мозг был меньше твоего втрое, они не умели говорить, не знали огня, и до первого города оставалось столько же времени, сколько от них до нас, умноженное на тысячу.</p>
+    <p class="lead" style="margin-top:14px">Мы — единственный выживший из двух десятков видов людей, потомки десяти тысяч человек, прошедших через горлышко, обладатели тела охотника-собирателя, живущего в городе, придуманном 5000 лет назад, с телефоном, придуманным 20 лет назад. Ничто из этого не было запланировано. И всё это — ты.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- SLIDES_END -->
+
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>

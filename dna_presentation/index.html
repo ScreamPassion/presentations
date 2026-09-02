@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ДНК: два метра текста в каждой клетке</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #5fd68a; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Genetics deep dive · Гвендолин-ночные-лекции</div>
+    <h1>ДНК: два метра текста в каждой клетке</h1>
+    <p class="lead">Полная анатомия наследственности: как четыре буквы кодируют человека, как клетка читает и копирует три миллиарда символов без единой ошибки (почти), почему ты похож на родителей ровно наполовину, как за $200 читают геном и за $2000 его правят — и где наука кончается и начинается страх.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 1: ОТКРЫТИЕ ============ -->
+<section class="slide chapter" id="s2">
+  <div class="bgimg"><img src="assets/ch_discovery.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1</div>
+    <h1>Как нашли: от горошка до фотографии 51</h1>
+    <p class="lead">Мендель считал горошины в монастырском саду, и его 35 лет никто не читал. Через 90 лет двое парней в Кембридже собрали из жести и проволоки модель, которая объяснила всё живое.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">Открытие · хронология</div>
+    <h2>Сто лет до спирали</h2>
+    <div class="dg" style="margin-bottom:16px">
+      <div class="row" style="align-items:stretch">
+        <div class="bx am"><b>1866 Мендель</b><span>28 000 растений гороха: признаки наследуются дискретными «факторами», 3:1. Опубликовано в Брно, забыто до 1900</span></div>
+        <div class="bx am"><b>1869 Мишер</b><span>выделил из гноя на бинтах «нуклеин» — кислоту из ядер. Никто не понял, зачем</span></div>
+        <div class="bx"><b>1910 Морган</b><span>дрозофилы: гены лежат на хромосомах линейно, сцеплены; карты генов</span></div>
+        <div class="bx"><b>1928 Гриффит</b><span>мёртвые бактерии передают живым признак — что-то в них «трансформирует»</span></div>
+        <div class="bx cy"><b>1944 Эвери</b><span>это «что-то» — ДНК, не белок. Никто не поверил: слишком простая молекула</span></div>
+        <div class="bx cy"><b>1950 Чаргафф</b><span>A = T, G = C во всех организмах. Намёк на пары</span></div>
+        <div class="bx gr"><b>1952 Франклин</b><span>рентгенограмма «фото 51»: крест — спираль, период 3.4 нм, 10 оснований на виток</span></div>
+        <div class="bx gr"><b>1953 Уотсон, Крик</b><span>двойная спираль; статья на 1 страницу: «не ускользнуло от нашего внимания, что спаривание предполагает механизм копирования»</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Почему не верили в ДНК</b>: белки — 20 разных аминокислот, сложные, разнообразные. ДНК — 4 одинаковых нуклеотида, «скучная». Казалось, что информации в ней не уместить. Оказалось — как в двоичном коде: важно не разнообразие символов, а длина текста.</li>
+          <li><b>Розалинд Франклин</b> сделала снимок, по которому Уотсон и Крик поняли структуру — снимок ей не принадлежал, его показал без её ведома Уилкинс. Она умерла в 1958 от рака в 37 лет; Нобель 1962 достался Уотсону, Крику и Уилкинсу — посмертно не дают. В статье 1953 года её данные упомянуты как «неопубликованные».</li>
+          <li><b>Что дальше</b>: 1958 — Мезельсон и Сталь доказали полуконсервативное копирование; 1961 — Ниренберг расшифровал первый кодон (UUU = фенилаланин); 1966 — весь генетический код; 1970 — рестриктазы (ножницы); 1977 — Сэнгер, чтение последовательности; 1983 — ПЦР (Маллис, придумал за рулём); 1990–2003 — геном человека; 2012 — CRISPR.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Масштаб</h3>
+        <table class="t">
+          <tr><td>Длина ДНК в одной клетке</td><td class="d">~2 м (3.2 млрд пар × 0.34 нм × 2 копии)</td></tr>
+          <tr><td>В теле (37 трлн клеток)</td><td class="d">~7·10¹³ м — ~470 раз до Солнца</td></tr>
+          <tr><td>Ядро, куда всё упаковано</td><td class="d">6 мкм — как 40 км нити в теннисный мяч</td></tr>
+          
+          <tr><td>Генов (кодирующих белки)</td><td class="d">~20 000 — меньше, чем у риса (37 000) или водяной блохи (31 000)</td></tr>
+          <tr><td>Доля генома, кодирующая белки</td><td class="d">1.5%. Остальное — регуляция, повторы, вирусные останки (8%), «мусор» (спорно)</td></tr>
+          <tr><td>Различие между двумя людьми</td><td class="d">0.1% — 3 млн позиций; шимпанзе — 1.2%</td></tr>
+          
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2: СТРУКТУРА ============ -->
+<section class="slide chapter" id="s4">
+  <div class="bgimg"><img src="assets/ch_structure.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2</div>
+    <h1>Молекула: лестница, скрученная в спираль</h1>
+    <p class="lead">Четыре буквы, два правила спаривания, одна геометрия. Из этого — вся сложность живого. Структура сама подсказывает, как её копировать: в этом и была гениальность 1953 года.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="content">
+    <div class="kicker">Молекула · строение</div>
+    <h2>Нуклеотиды, пары, спираль: что из чего</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Нуклеотид</b> — кирпич: сахар (дезоксирибоза) + фосфат + одно из четырёх оснований: <b>A</b>денин, <b>T</b>имин, <b>G</b>уанин, <b>C</b>итозин. Сахар и фосфат чередуются в цепочку — это «перила» лестницы, всегда одинаковые. Основания торчат внутрь — это «ступеньки», и только они несут информацию.</li>
+          <li><b>Комплементарность</b>: A всегда напротив T (2 водородные связи), G напротив C (3 связи). Геометрия: пурин (большой) + пиримидин (маленький) = одинаковая ширина ступеньки. Поэтому Чаргафф видел A = T. Поэтому одна цепь <b>полностью определяет</b> другую — зная одну, восстановишь вторую. Это и есть механизм копирования и ремонта.</li>
+          <li><b>Направление</b>: у цепи есть начало (5') и конец (3') — по номерам атомов углерода в сахаре. Две цепи антипараллельны: одна 5'→3', другая 3'→5'. Все ферменты читают и пишут только в одном направлении — отсюда половина сложностей репликации.</li>
+          <li><b>Спираль</b>: правозакрученная, 10.5 пар на виток, диаметр 2 нм, шаг 3.4 нм. Две бороздки — большая и малая; белки-регуляторы «читают» буквы через большую бороздку, не расплетая. Скручена, потому что так энергетически выгоднее упаковать плоские основания стопкой — гидрофобные, они прячутся от воды внутрь.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="svgbox">
+          <div class="dg">
+            <div class="lbl mono">Фрагмент двойной цепи (развёрнуто):</div>
+            <div class="row" style="justify-content:center;gap:4px;font-family:Consolas,monospace;font-size:13px">
+              <span class="lbl mono">5'</span>
+              <div class="bx" style="flex:0 0 auto;padding:6px 10px;border-color:var(--cyan)"><b style="color:var(--cyan)">A</b></div>
+              <div class="bx" style="flex:0 0 auto;padding:6px 10px;border-color:var(--amber)"><b style="color:var(--amber)">T</b></div>
+              <div class="bx" style="flex:0 0 auto;padding:6px 10px;border-color:var(--green)"><b style="color:var(--green)">G</b></div>
+              <div class="bx" style="flex:0 0 auto;padding:6px 10px;border-color:var(--red)"><b style="color:var(--red)">C</b></div>
+              <div class="bx" style="flex:0 0 auto;padding:6px 10px;border-color:var(--cyan)"><b style="color:var(--cyan)">A</b></div>
+              <div class="bx" style="flex:0 0 auto;padding:6px 10px;border-color:var(--cyan)"><b style="color:var(--cyan)">A</b></div>
+              <div class="bx" style="flex:0 0 auto;padding:6px 10px;border-color:var(--green)"><b style="color:var(--green)">G</b></div>
+              <span class="lbl mono">3'</span>
+            </div>
+            <div class="row" style="justify-content:center;gap:4px;font-family:Consolas,monospace;font-size:11px;color:var(--faint)">
+              <span style="width:20px"></span><span style="width:34px;text-align:center">‖</span><span style="width:34px;text-align:center">‖</span><span style="width:34px;text-align:center">|||</span><span style="width:34px;text-align:center">|||</span><span style="width:34px;text-align:center">‖</span><span style="width:34px;text-align:center">‖</span><span style="width:34px;text-align:center">|||</span>
+            </div>
+            <div class="row" style="justify-content:center;gap:4px;font-family:Consolas,monospace;font-size:13px">
+              <span class="lbl mono">3'</span>
+              <div class="bx" style="flex:0 0 auto;padding:6px 10px;border-color:var(--amber)"><b style="color:var(--amber)">T</b></div>
+              <div class="bx" style="flex:0 0 auto;padding:6px 10px;border-color:var(--cyan)"><b style="color:var(--cyan)">A</b></div>
+              <div class="bx" style="flex:0 0 auto;padding:6px 10px;border-color:var(--red)"><b style="color:var(--red)">C</b></div>
+              <div class="bx" style="flex:0 0 auto;padding:6px 10px;border-color:var(--green)"><b style="color:var(--green)">G</b></div>
+              <div class="bx" style="flex:0 0 auto;padding:6px 10px;border-color:var(--amber)"><b style="color:var(--amber)">T</b></div>
+              <div class="bx" style="flex:0 0 auto;padding:6px 10px;border-color:var(--amber)"><b style="color:var(--amber)">T</b></div>
+              <div class="bx" style="flex:0 0 auto;padding:6px 10px;border-color:var(--red)"><b style="color:var(--red)">C</b></div>
+              <span class="lbl mono">5'</span>
+            </div>
+            <div class="cap">‖ — две водородные связи (A–T), ||| — три (G–C). Участки, богатые G–C, прочнее — в них ДНК «плавится» при более высокой температуре; ПЦР использует это. Нижняя цепь — точный негатив верхней: разорви, и каждая достроит себе пару.</div>
+          </div>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>РНК</b> — сестра: сахар рибоза (лишний OH — химически активнее, живёт часы, не годы), урацил (U) вместо тимина, одна цепь, сворачивается в петли и работает как фермент (рибозимы). Вероятно, жизнь начиналась с РНК — она и хранит, и катализирует; ДНК — позднейший стабильный архив.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s6">
+  <div class="bgimg"><img src="assets/ch_genome.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Молекула · упаковка</div>
+    <h2>Хромосомы: как два метра влезают в шесть микрон</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Уровень 1 — нуклеосома</b>: 147 пар ДНК обмотаны 1.65 раза вокруг катушки из 8 белков-гистонов. Как бусины на нитке через каждые 200 пар. Сжатие ×7.</li>
+          <li><b>Уровень 2 — хроматин</b>: нить нуклеосом сворачивается в волокно 30 нм, потом в петли, закреплённые на белковом каркасе (когезины, CTCF), петли — в домены (TAD). Сжатие ×40 → ×1000. В рабочем состоянии (интерфаза) хромосомы — рыхлые территории в ядре, каждая на своём месте.</li>
+          
+          <li><b>Открыто / закрыто</b>: плотно упакованный участок (гетерохроматин) — гены выключены, к ним не подобраться. Рыхлый (эухроматин) — читаются. Клетка печени и нейрон имеют <b>одну и ту же ДНК</b>, но разную упаковку — потому разные. Это эпигенетика (глава 6).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Кариотип человека: 46 = 23 × 2</h3>
+        <table class="t">
+          <tr><th></th><th>Что</th><th>Заметки</th></tr>
+          <tr><td>22 пары аутосом</td><td class="d">по одной от мамы и папы, пронумерованы по размеру: 1-я — 248 млн пар, 2000 генов; 21-я — 47 млн, 230 генов</td><td class="d">2-я хромосома — слияние двух обезьяньих (у шимпанзе 48); шов виден</td></tr>
+          <tr><td>X</td><td class="d">155 млн пар, 800 генов</td><td class="d">у женщин одна из двух случайно выключается в каждой клетке (тельце Барра) — отсюда пятна у кошек</td></tr>
+          <tr><td>Y</td><td class="d">57 млн пар, всего ~70 генов, половина — мусор</td><td class="d">SRY включает мужское развитие; строго отец → сын</td></tr>
+          <tr><td>Митохондриальная ДНК</td><td class="d">кольцо 16 569 пар, 37 генов, сотни копий в клетке</td><td class="d">только от матери; бывшая бактерия; мутирует в 10 раз быстрее — часы для генеалогии</td></tr>
+          <tr><td>Теломеры</td><td class="d">концы хромосом: TTAGGG × 2000 раз</td><td class="d">укорачиваются при каждом делении (~50 пар); закончились — клетка стареет. Теломераза удлиняет — в стволовых и в раке</td></tr>
+          
+        </table>
+        
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 3: КАК РАБОТАЕТ ============ -->
+<section class="slide chapter" id="s7">
+  <div class="bgimg"><img src="assets/ch_replication.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3</div>
+    <h1>Три машины: копировать, читать, строить</h1>
+    <p class="lead">Центральная догма: ДНК → РНК → белок. Три молекулярные машины делают это в каждой клетке каждую секунду с точностью, которой нет ни у одного завода.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s8">
+  <div class="content">
+    <div class="kicker">Машины · репликация</div>
+    <h2>Копирование: 3 миллиарда букв за 8 часов с одной ошибкой на миллиард</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/ch_replication.png" alt=""><div class="pcap">Репликационная вилка: хеликаза расплетает, полимераза строит по каждой цепи новую — комплементарную. Итог: две двойных спирали, в каждой одна старая цепь и одна новая (полуконсервативно).</div></div>
+      <table class="t pt">
+        <tr><th>Участник</th><th>Что делает</th><th>Детали</th></tr>
+        <tr><td><b>Ориджины</b></td><td class="d">точки старта — у человека ~50 000 на геном, стартуют одновременно</td><td class="d">иначе 3 млрд пар по 50 в секунду — 2 года; так — 8 часов</td></tr>
+        <tr><td><b>Хеликаза</b></td><td class="d">мотор, расплетающий спираль: рвёт водородные связи, 1000 пар/с</td><td class="d">впереди — топоизомераза режет и сшивает цепь, снимая закрутку (иначе спираль запуталась бы в узел)</td></tr>
+        <tr><td><b>ДНК-полимераза</b></td><td class="d">берёт свободные нуклеотиды, ставит напротив матрицы по правилу A–T/G–C, сшивает. 50 пар/с у человека (1000 у бактерий)</td><td class="d">работает только 5'→3' и только продолжая существующую цепь — не с нуля</td></tr>
+        <tr><td><b>Праймаза</b></td><td class="d">делает короткий РНК-стартер (праймер), с которого полимераза может начать</td><td class="d">потом праймеры вырезаются и заменяются ДНК</td></tr>
+        <tr><td><b>Ведущая и отстающая цепи</b></td><td class="d">одна цепь строится непрерывно вслед за вилкой; другая — «наоборот» направлена, поэтому кусками по 100–200 пар (фрагменты Оказаки), назад от вилки</td><td class="d">лигаза сшивает фрагменты. Следствие: концы (теломеры) недостраиваются — укорачивание</td></tr>
+        <tr><td><b>Корректура</b></td><td class="d">полимераза после каждой буквы проверяет форму пары; не та — откусывает (экзонуклеаза) и ставит снова. Ошибки 1:10⁵ → 1:10⁷</td><td class="d">потом mismatch repair проходит и ловит остаток → 1:10⁹–10¹⁰</td></tr>
+        <tr><td><b>Ремонт повреждений</b></td><td class="d">каждый день в каждой клетке — 10 000–100 000 повреждений (УФ, радикалы, тепло): вырезание оснований, вырезание нуклеотидов, сшивание разрывов</td><td class="d">Нобель 2015; сломанный ремонт — BRCA1/2 (рак груди), пигментная ксеродерма (УФ смертелен), прогерия</td></tr>
+        <tr><td><b>Скорость и цена</b></td><td class="d">клетка тратит на репликацию ~10% всей энергии за цикл</td><td class="d">37 трлн клеток × деления → в теле каждую секунду копируется ~10¹⁸ пар оснований</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s9">
+  <div class="bgimg"><img src="assets/ch_transcription.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Машины · транскрипция</div>
+    <h2>Чтение: ген → мРНК, и почему из 20 000 генов получается 100 000 белков</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Ген</b> — участок ДНК (1000–2 000 000 пар), с которого делается рабочая копия. Перед ним — <b>промотор</b>: посадочная площадка с «адресом»; вокруг — <b>энхансеры</b> и <b>сайленсеры</b>: усилители и глушители, иногда за 1 млн пар, которые петлёй подтягиваются к промотору. Кто, где и когда сядет на промотор — решают <b>транскрипционные факторы</b> (2000 штук у человека): белки, читающие ДНК через большую бороздку.</li>
+          <li><b>РНК-полимераза II</b> садится на промотор, расплетает 15 пар, ползёт по гену 30–60 нуклеотидов/с и синтезирует РНК-копию одной цепи (заменяя T на U). Ген в 10 000 пар — 5 минут. Активный ген могут читать десятки полимераз подряд, как поезда.</li>
+          <li><b>Созревание</b>: сырая РНК (пре-мРНК) — на 90% мусор. Гены человека — мозаика: <b>экзоны</b> (кодирующие куски, в среднем 150 пар) разделены <b>интронами</b> (некодирующими, до 100 000 пар). <b>Сплайсинг</b> вырезает интроны и сшивает экзоны. Плюс кэп на 5'-конец и поли-A хвост на 3' — паспорт и защита.</li>
+          <li><b>Альтернативный сплайсинг</b>: один ген — экзоны сшиваются в разных комбинациях → разные белки. Ген DSCAM у дрозофилы — 38 016 вариантов. У человека — 95% генов сплайсируются альтернативно: 20 000 генов → 100 000+ белков. Поэтому «мало генов» не значит «просто».</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Регуляция — вот где сложность</h3>
+        <p>Все 200 типов клеток тела имеют одинаковую ДНК. Различие — <b>какие гены включены</b>. Нейрон читает 8000 генов, из них 1000 — только нейронных; гепатоцит — свои. Управляет каскад: гормон → рецептор → сигнальные белки → транскрипционный фактор → промоторы 50 генов → белки → ещё факторы. Сеть из 20 000 узлов с обратными связями.</p>
+        <p style="margin-top:8px"><b>Hox-гены</b>: 39 генов, включающиеся вдоль тела эмбриона по порядку — от головы к хвосту — <b>в том же порядке, что лежат на хромосоме</b>. Одинаковы у мухи, мыши и человека. Мутация — нога на месте усика. Это «главный план тела», 600 млн лет без изменений.</p>
+        <p style="margin-top:8px"><b>Некодирующие РНК</b>: 98.5% генома не кодирует белок, но 80% транскрибируется. Микро-РНК (22 нуклеотида) глушат мРНК; длинные нкРНК (XIST выключает X-хромосому) управляют упаковкой. «Мусорной ДНК» с каждым годом всё меньше — но повторов и вирусных останков много и правда.</p>
+        <p style="margin-top:8px" class="dim">мРНК живёт минуты–часы, потом разбирается. Хочешь, чтобы белок был — держи ген включённым. Это делает систему быстрой: клетка перестраивает набор белков за час.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s10">
+  <div class="bgimg"><img src="assets/ch_ribosome.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Машины · трансляция</div>
+    <h2>Сборка белка: код из трёх букв, один на всё живое</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Код</b>: мРНК читается тройками — <b>кодонами</b>. 4³ = 64 кодона на 20 аминокислот + 3 стоп-сигнала (UAA, UAG, UGA). Избыточность: лейцин — 6 кодонов, метионин — 1 (AUG, он же старт). Код <b>один и тот же</b> у бактерии, гриба, дуба и тебя — с крошечными отклонениями в митохондриях. Главное доказательство единого происхождения жизни: код мог быть любым, а он один.</li>
+          <li><b>Рибосома</b> — машина из 80 белков и 4 РНК (у человека 80S: 4.2 МДа, 25 нм). Каталитическое ядро — <b>РНК</b>, не белок: рибозим. Ползёт по мРНК, кодон за кодоном, 5–10 аминокислот/с. Белок в 300 аминокислот — минута. В клетке — 10 млн рибосом, они — 30% сухой массы.</li>
+          <li><b>тРНК</b> — переводчик: 76 нуклеотидов, клеверный лист; на одном конце антикодон (комплементарен кодону), на другом — соответствующая аминокислота, пришитая ферментом-синтетазой (20 штук, по одной на аминокислоту — они и есть «словарь» кода). Рибосома сводит кодон с антикодоном, переносит растущую цепь на новую аминокислоту, сдвигается на 3 буквы.</li>
+          <li><b>После</b>: цепь сворачивается в 3D за миллисекунды (шапероны помогают; неправильно свёрнутые — прионы, Альцгеймер), режется, украшается сахарами и фосфатами, отправляется по адресу (сигнальная последовательность — почтовый индекс). Средний белок живёт дни, потом разбирается протеасомой и аминокислоты идут снова в дело.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">От гена к признаку: пример</h3>
+        <div class="dg">
+          <div class="row">
+            <div class="bx cy"><b>ДНК</b><span>…GAG…</span></div>
+            <div class="arr">→</div>
+            <div class="bx cy"><b>мРНК</b><span>…GAG…</span></div>
+            <div class="arr">→</div>
+            <div class="bx gr"><b>Глутамат</b><span>6-я аминокислота β-глобина</span></div>
+            <div class="arr">→</div>
+            <div class="bx gr"><b>Гемоглобин</b><span>растворим, гибкий эритроцит</span></div>
+          </div>
+          <div class="row">
+            <div class="bx rd"><b>ДНК</b><span>…G<u>T</u>G… (одна замена)</span></div>
+            <div class="arr rd">→</div>
+            <div class="bx rd"><b>мРНК</b><span>…GUG…</span></div>
+            <div class="arr rd">→</div>
+            <div class="bx rd"><b>Валин</b><span>гидрофобный</span></div>
+            <div class="arr rd">→</div>
+            <div class="bx rd"><b>HbS</b><span>слипается в волокна → серповидные клетки</span></div>
+          </div>
+          <div class="cap"><b>Серповидноклеточная анемия</b>: одна буква из 3 млрд. Две копии — болезнь (закупорка сосудов, боль, смерть к 40–50 без лечения). Одна копия — здоров и <b>устойчив к малярии</b>: паразит не живёт в таких клетках. Поэтому мутация держится в Африке у 10–40% населения: цена одного гомозиготного ребёнка — защита остальных. В 2023 одобрено первое CRISPR-лекарство (Casgevy) — именно от неё.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 4: НАСЛЕДОВАНИЕ ============ -->
+<section class="slide chapter" id="s11">
+  <div class="bgimg"><img src="assets/ch_inheritance.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4</div>
+    <h1>Наследование: почему ты не копия и не среднее</h1>
+    <p class="lead">От каждого родителя — ровно половина. Но какая половина — лотерея с 2²³ × перетасовкой исходами. Братья и сёстры делят в среднем 50%, но никогда не одинаковые 50%.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s12">
+  <div class="content">
+    <div class="kicker">Наследование · мейоз и Мендель</div>
+    <h2>Мейоз, кроссинговер и три правила Менделя</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Мейоз</b> — деление, делающее половые клетки с 23 хромосомами вместо 46. Перед ним каждая пара хромосом (мамина и папина копии) ложится рядом и <b>обменивается кусками</b> — кроссинговер, 1–3 разрыва на хромосому. Результат: в яйцеклетку уходит не «мамина 7-я», а мозаика из маминой и папиной 7-й. Потом пары расходятся случайно: 2²³ = 8.4 млн комбинаций даже без кроссинговера.</li>
+          <li><b>Отсюда</b>: ты — 50% от каждого родителя (точно, по хромосомам), ~25% от каждого дедушки-бабушки (в среднем; реально 18–32%), с братом — 50% в среднем (37–63% реально). Однояйцевые близнецы — 100% (минус ~5 новых мутаций у каждого). Двоюродные — 12.5%.</li>
+          <li><b>Мендель</b>: признак определяют два <b>аллеля</b> (варианта гена), по одному от каждого родителя. <b>Доминантный</b> проявляется при одной копии, <b>рецессивный</b> — только при двух. Гетерозиготы Aa × Aa → AA : Aa : aa = 1 : 2 : 1, фенотипы 3 : 1. Каждый признак — независимо (если гены на разных хромосомах или далеко).</li>
+          <li><b>Реальность сложнее</b>: цвет глаз — не один ген, а 16; рост — 12 000 вариантов по 0.1 мм каждый; неполное доминирование, кодоминирование (группы крови AB), сцепленное с полом (гемофилия, дальтонизм — на X: у мужчин одна копия, скрыть нечем), митохондриальное (только от матери), импринтинг (важно, от кого — Прадера–Вилли vs Ангельмана: одна делеция, разный родитель, разная болезнь).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Моногенные болезни — то, что Мендель предсказывает точно</h3>
+        <table class="t">
+          <tr><th>Болезнь</th><th>Тип</th><th>Ген / частота</th></tr>
+          <tr><td>Муковисцидоз</td><td class="d">рецессивный</td><td class="d">CFTR; 1:25 европейцев — носитель, 1:2500 — болен</td></tr>
+          <tr><td>Серповидноклеточная</td><td class="d">рецессивный</td><td class="d">HBB; до 40% носителей в малярийных зонах</td></tr>
+          <tr><td>Гемофилия A</td><td class="d">X-сцепленный</td><td class="d">F8; 1:5000 мальчиков; Романовы от Виктории</td></tr>
+          <tr><td>Хорея Гентингтона</td><td class="d">доминантный, поздний</td><td class="d">HTT: 36+ повторов CAG; 50% детям; дебют в 40; тест возможен, лечения нет</td></tr>
+          
+          <tr><td>Фенилкетонурия</td><td class="d">рецессивный</td><td class="d">PAH; скрининг всех новорождённых; диета — здоров</td></tr>
+          <tr><td>BRCA1/2</td><td class="d">доминантный, предрасположенность</td><td class="d">риск рака груди 70% vs 12%; Джоли</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">7000 моногенных болезней, все вместе — 1% рождений. Остальное (диабет 2, гипертония, шизофрения, рост, IQ) — полигенно: тысячи вариантов по чуть-чуть + среда. Наследуемость роста 80%, IQ 50–80%, но ни один ген не объясняет больше 1%.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s13">
+  <div class="bgimg"><img src="assets/ch_mutation.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Наследование · мутации</div>
+    <h2>Мутации: сырьё эволюции и причина рака</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Откуда</b>: ошибки копирования (1 на 10⁹ — но 3 млрд × триллионы делений), УФ (сшивка соседних T — загар и меланома), радиация (двойные разрывы), химия (табак — 150 мутаций на клетку лёгкого на год курения), вирусы (вставки), спонтанный распад оснований (10 000 в день). Отец передаёт в 4 раза больше новых мутаций, чем мать, и +2 за каждый год возраста — сперматогонии делятся всю жизнь.</li>
+          <li><b>Типы</b>: замена буквы (SNP — 90%; синонимичная — код избыточен, ничего; миссенс — другая аминокислота; нонсенс — стоп посреди белка), вставка/выпадение (сдвиг рамки — весь белок после — мусор), дупликация гена (сырьё для новых функций), инверсия, транслокация (филадельфийская хромосома — лейкоз), изменение числа хромосом.</li>
+          <li><b>Соматические vs зародышевые</b>: мутация в клетке кожи — умрёт с тобой; в половой — уйдёт детям. ~70 новых у каждого ребёнка, из них в кодирующей части — 1–2. Почти все нейтральны. Вредные вычищаются отбором за поколения, полезные — раз в миллион — закрепляются. Эволюция — это статистика этих ошибок.</li>
+          <li><b>Рак</b> — эволюция внутри тела: клетка накапливает 5–10 «драйверных» мутаций (онкоген включился — газ; супрессор выключился — тормоза: p53 сломан в 50% всех опухолей) и начинает делиться без остановки, обманывая иммунитет и отращивая сосуды. Занимает 10–30 лет — поэтому болезнь возраста. Секвенирование опухоли → таргетная терапия под конкретную мутацию.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Полезные мутации у людей — недавние</h3>
+        <table class="t">
+          <tr><th>Мутация</th><th>Когда / где</th><th>Что даёт</th></tr>
+          <tr><td>LCT (лактаза не выключается)</td><td class="d">7 тыс. лет, Европа; независимо в Африке</td><td class="d">молоко во взрослом возрасте; 90% скандинавов vs 5% китайцев</td></tr>
+          <tr><td>SLC24A5, светлая кожа</td><td class="d">8–10 тыс. лет, Европа</td><td class="d">витамин D под слабым солнцем</td></tr>
+          <tr><td>EPAS1</td><td class="d">тибетцы, от денисовцев</td><td class="d">жизнь на 4000 м без сгущения крови</td></tr>
+          <tr><td>CCR5-Δ32</td><td class="d">10% европейцев</td><td class="d">иммунитет к ВИЧ; берлинский пациент вылечен пересадкой от носителя</td></tr>
+          <tr><td>PCSK9 — потеря функции</td><td class="d">2% афроамериканцев</td><td class="d">холестерин −40%, инфаркты −88%; скопирован в лекарство</td></tr>
+          <tr><td>ALDH2*2</td><td class="d">40% восточных азиатов</td><td class="d">не расщепляет ацетальдегид — краснеют от алкоголя, меньше алкоголизма</td></tr>
+          <tr><td>Дупликация AMY1</td><td class="d">земледельческие народы</td><td class="d">больше амилазы — крахмал усваивается лучше</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Эволюция человека не остановилась: за 10 тыс. лет — сотни вариантов под отбором. Просто медицина и культура теперь сильнее, чем отбор по выживанию.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 5: ТЕХНОЛОГИИ ============ -->
+<section class="slide chapter" id="s14">
+  <div class="bgimg"><img src="assets/ch_sequencing.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5</div>
+    <h1>Технологии: прочитать, скопировать, вырезать</h1>
+    <p class="lead">Первый геном человека стоил $3 млрд и 13 лет. Сегодня — $200 и сутки. Падение цены в 10 миллионов раз за 20 лет — быстрее закона Мура в 1000 раз. Что это дало.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s15">
+  <div class="content">
+    <div class="kicker">Технологии · чтение и копирование</div>
+    <h2>ПЦР и секвенирование: две машины, на которых стоит вся современная биология</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="am">ПЦР (1983, Маллис, Нобель 1993)</h3>
+          <p>Размножить нужный кусок ДНК в миллиард раз за 2 часа. Цикл: нагреть до 95 °C (цепи разошлись) → остудить до 55 (праймеры — короткие синтетические кусочки, обрамляющие цель — прилипли) → 72 °C (термостойкая полимераза из бактерии горячих источников достраивает). Каждый цикл — ×2. 30 циклов — 10⁹ копий из одной молекулы.</p>
+          <p style="margin-top:8px"><b>Где</b>: ковид-тест (ищем РНК вируса: обратная транскрипция + ПЦР в реальном времени, Ct — число циклов до сигнала), криминалистика (одна клетка с окурка → профиль), отцовство, диагностика инфекций и мутаций, клонирование генов, вся молекулярная биология. Самая используемая техника в науке.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="cy">Секвенирование</h3>
+          <table class="t">
+            <tr><th>Поколение</th><th>Как</th><th>Цифры</th></tr>
+            <tr><td><b>Сэнгер</b> (1977)</td><td class="d">полимераза + меченые «стоп-нуклеотиды» → фрагменты разной длины → по размеру читаем букву за буквой</td><td class="d">800 букв за раз; геном человека — 13 лет, $3 млрд (2003)</td></tr>
+            <tr><td><b>NGS / Illumina</b> (2006)</td><td class="d">ДНК нарезают на миллионы кусков, каждый размножают в пятно на стекле, синтезируют по букве с флуоресценцией, фотографируют — миллиард пятен параллельно</td><td class="d">геном за сутки, $200–600; 3 млрд букв × 30-кратное покрытие</td></tr>
+            <tr><td><b>Длинные чтения</b> (PacBio, Oxford Nanopore, 2014+)</td><td class="d">нанопора: молекула ДНК протягивается через дырку в мембране, каждое основание меняет ток по-своему; читает 10 000–1 000 000 букв подряд, сразу, с USB-флешки</td><td class="d">T2T — первый полный геном без дыр (2022); диагноз новорождённому за 8 часов; секвенирование в поле и на МКС</td></tr>
+          </table>
+          <p style="margin-top:8px"><b>Что даёт</b>: диагноз редких болезней, терапия по мутациям опухоли, пренатальный тест по крови матери, фармакогенетика, скрининг новорождённых, метагеномика, палеогенетика (Нобель 2022), 40 млн генотипированных потребителей.</p>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s16">
+  <div class="bgimg"><img src="assets/ch_crispr.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Технологии · редактирование</div>
+    <h2>CRISPR: иммунная система бактерий стала текстовым редактором генома</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Откуда</b>: у бактерий в геноме — архив кусочков ДНК вирусов, которые их атаковали (CRISPR-повторы, замечены в 1987, поняты в 2007 на йогуртовых культурах Danisco). Белок <b>Cas9</b> берёт копию куска (гид-РНК, 20 букв), ищет совпадение в любой ДНК и <b>режет</b> обе цепи. Бактериальный антивирус с памятью.</li>
+          <li><b>2012, Дудна и Шарпантье</b> (Нобель 2020): гид-РНК можно написать <b>любую</b> — и Cas9 разрежет геном в любом выбранном месте из 3 млрд. Клетка чинит разрыв: либо криво (ген сломан — «нокаут»), либо по подсунутому шаблону (вписали нужную последовательность). Редактирование стало занимать неделю и $100 вместо года и $100 000 (цинковые пальцы, TALEN).</li>
+          <li><b>Версии</b>: base editing (2016, Лю) — меняет одну букву без разрыва (C→T, A→G) — точнее и безопаснее; prime editing (2019) — вписывает до 40 букв без разрыва; CRISPRa/i — включает/выключает гены не трогая последовательность; эпигенетические редакторы — меняют метки.</li>
+          <li><b>Проблемы</b>: off-target (резка в похожих местах — ищут, минимизируют), мозаицизм (не все клетки отредактированы), доставка (как довести Cas9 в нужные клетки живого человека — вирусные векторы, липидные наночастицы; в печень легко, в мозг — нет), крупные перестройки при двойном разрыве, иммунный ответ на бактериальный белок.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Что уже сделано на людях</h3>
+        <table class="t">
+          <tr><th>Год</th><th>Что</th></tr>
+          <tr><td>2019</td><td class="d">Виктория Грей — первый пациент: клетки костного мозга отредактированы (включён фетальный гемоглобин), серповидноклеточная анемия — в ремиссии 5+ лет</td></tr>
+          <tr><td>2023</td><td class="d"><b>Casgevy</b> — первое одобренное CRISPR-лекарство (FDA, UK): серповидноклеточная и β-талассемия; $2.2 млн за курс, излечение</td></tr>
+          <tr><td>2021–24</td><td class="d">редактирование <b>внутри тела</b>: PCSK9 в печени (холестерин −55% одной инъекцией, VERVE-101), транстиретиновый амилоидоз (NTLA-2001), наследственная слепота (EDIT-101 — прямо в глаз)</td></tr>
+          
+          <tr><td>2018</td><td class="d"><b>Хэ Цзянькуй</b>, Китай: отредактировал CCR5 у эмбрионов — родились две девочки. Мозаицизм, непредсказуемые правки, ноль медицинской необходимости. 3 года тюрьмы, всемирный мораторий на зародышевую линию</td></tr>
+          <tr><td>В разработке</td><td class="d">ВИЧ (вырезать провирус), Гентингтон, мышечная дистрофия Дюшенна, рак (CAR-T с CRISPR — Т-клетки, перепрограммированные на опухоль), пересадка свиных органов (10 генов правок — почка в человеке 2024, 130 дней)</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s17">
+  <div class="content">
+    <div class="kicker">Технологии · применения</div>
+    <h2>Вакцины, ГМО, криминалистика, генеалогия: ДНК в быту</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="am">мРНК-вакцины (2020)</h3>
+          <p>Классика: вырастить вирус, убить, вколоть — год. мРНК: прочитать геном вируса (январь 2020, за 2 дня), выбрать ген шипа, синтезировать мРНК с его кодом, упаковать в липидную наночастицу, вколоть. Клетки плеча сами печатают шип 1–2 дня, иммунитет его запоминает, мРНК распадается. От последовательности до первого укола — 63 дня. Не заходит в ядро, не трогает ДНК (у человека нет обратной транскриптазы для этого), выводится за дни. Нобель 2023 (Карико, Вайсман — псевдоуридин, чтобы иммунитет не уничтожал мРНК сразу).</p>
+          <p style="margin-top:6px" class="dim">Дальше: персональные вакцины от рака (мРНК с мутациями твоей опухоли — Moderna/Merck, фаза III), грипп+ковид, ВИЧ, малярия.</p>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3 class="cy">ГМО</h3>
+          <p>Вставка гена из другого вида. Bt-кукуруза (ген бактериального токсина против гусениц — −40% инсектицидов), Roundup Ready соя, золотой рис (витамин A — 250 тыс. ослепших детей в год без него; 20 лет блокировался активистами), инсулин (1982 — из E. coli, до этого из свиных поджелудочных), сычужный фермент (90% сыра), папайя на Гавайях (спасена от вируса). 30 лет, триллионы порций, ни одного подтверждённого вреда здоровью (метаанализы, Национальные академии 2016). Вред — экономический (монополии, патенты) и экологический (монокультуры) — реален, но не от «генов».</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Криминалистика и генеалогия</h3>
+          <ul>
+            <li><b>ДНК-профиль</b> (1984, Джеффрис): 20 участков с повторами (STR), у каждого разная длина — уникальная комбинация, 1:10¹⁸. По волосу, слюне, капле. Первый — 1987, Питчфорк (заодно освободили невиновного). Innocence Project: 375 оправданных по ДНК в США.</li>
+            <li><b>Генеалогический поиск</b>: убийца из Голден-Стейт (2018) — через ДНК троюродных родственников на GEDmatch. Если 2% населения в базах — найти можно почти любого через кузенов. Приватность ДНК не индивидуальна — она семейная.</li>
+            <li><b>23andMe / MyHeritage</b>: 600 000 SNP за $100 — предки по регионам (точность ±континент), родственники, 50 черт, риски (BRCA, APOE4 — Альцгеймер ×12; думай, хочешь ли знать). 23andMe банкрот в 2025 — 15 млн геномов на продажу.</li>
+            <li><b>Палеогенетика</b>: неандертальцы, денисовцы, «Чеддарский человек», чума 1350 по зубам, происхождение индоевропейцев (ямная культура), одомашнивание собаки, 2-миллионолетняя ДНК из Гренландии (2022).</li>
+            <li><b>Экология</b>: eDNA из стакана воды реки — все виды рыб; из воздуха — животные зоопарка. Хранение данных в ДНК: 215 ПБ на грамм, Microsoft/Twist — записали и прочитали.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 6: ЭПИГЕНЕТИКА И ЭТИКА ============ -->
+<section class="slide chapter" id="s18">
+  <div class="bgimg"><img src="assets/ch_epigenetics.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6</div>
+    <h1>Над геномом: эпигенетика, среда, границы</h1>
+    <p class="lead">ДНК — партитура, не музыка. Что реально играет — решают метки на ней, среда и случай. И вопросы, на которые у науки нет ответа, потому что они не научные.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s19">
+  <div class="content">
+    <div class="kicker">Над геномом · эпигенетика</div>
+    <h2>Эпигенетика: как одна ДНК даёт 200 типов клеток и что из среды передаётся</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Метилирование</b>: к цитозину в паре CG пришивается метильная группа (CH₃). Метилированный промотор — ген молчит. Устанавливается в развитии, копируется при делении (клетка печени делится в клетки печени), стирается почти полностью в половых клетках и раннем эмбрионе — каждое поколение стартует с чистого листа. Почти: ~1% меток (импринтированные гены) переживают.</li>
+          <li><b>Гистоновый код</b>: хвосты гистонов помечаются ацетилом (открыть), метилом (закрыть или открыть — смотря где), фосфатом. Десятки типов меток — «язык» над буквами ДНК. Ридеры, райтеры и эрейзеры — сотни белков. Лекарства от рака (вориностат, азацитидин) — именно сюда.</li>
+          <li><b>Среда пишет в метки</b>: голод в Голландии зимой 1944 — дети, зачатые тогда, через 60 лет имели другое метилирование IGF2 и больше ожирения и диабета. Курение, стресс, диета, физнагрузка меняют метилирование измеримо. <b>Эпигенетические часы</b> (Хорват, 2013): по 353 CpG-сайтам определяют биологический возраст ±3 года; курение ускоряет, спорт замедляет.</li>
+          <li><b>Передаётся ли детям</b>: у растений и червей — да, поколениями. У мышей — на 1–2 поколения (запах ацетофенона → страх у внуков, 2013; спорно). У человека — данные слабые и спорные: голландская зима — только у детей, не у внуков. Ламарк не воскрес; но что мать ела и курила в беременность — влияет на ребёнка через метки, это твёрдо.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Гены vs среда: что известно</h3>
+        <table class="t">
+          <tr><th>Признак</th><th>Наследуемость*</th><th>Комментарий</th></tr>
+          <tr><td>Рост</td><td class="d">80%</td><td class="d">но за 100 лет европейцы выросли на 11 см — среда (питание)</td></tr>
+          <tr><td>Вес / ИМТ</td><td class="d">40–70%</td><td class="d">гены задают аппетит и склад; калории — среда</td></tr>
+          <tr><td>IQ</td><td class="d">20% в детстве → 80% к старости</td><td class="d">с возрастом человек сам выбирает среду под гены</td></tr>
+          <tr><td>Шизофрения</td><td class="d">80%</td><td class="d">но конкордантность близнецов — 50%: гены необходимы, не достаточны</td></tr>
+          
+          
+          <tr><td>Родной язык</td><td class="d">0%</td><td class="d">полностью среда — пример, что «врождённое» ≠ «генетическое»</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">*Наследуемость — доля разброса признака <b>в популяции</b>, объяснимая генами. Не «на сколько % ты от генов». Для одного человека вопрос бессмыслен: прямоугольник — на сколько % от ширины?</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s20">
+  <div class="bgimg"><img src="assets/ch_ethics.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Над геномом · границы</div>
+    <h2>Что можно, что нельзя и что не решено</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="gr">Консенсус: да</h3>
+          <ul>
+            <li>Соматическое редактирование (тело пациента, не потомство) при тяжёлых болезнях — Casgevy, PCSK9, слепота. Это лекарство, как любое другое.</li>
+            <li>ПГТ — отбор эмбрионов при ЭКО против моногенных болезней (Гентингтон, муковисцидоз) — 30 лет практики.</li>
+            <li>Скрининг новорождённых, пренатальная диагностика, носительство перед браком (Тай-Сакс у ашкеназов — почти исчез).</li>
+            <li>ГМО в еде и лекарствах, генная терапия (Zolgensma от СМА — $2.1 млн, спасает младенцев).</li>
+          </ul>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3 class="rd">Консенсус: нет (пока)</h3>
+          <ul>
+            <li><b>Редактирование зародышевой линии</b> (эмбрионов, которые родятся): мораторий с 2015, подтверждён после Хэ Цзянькуя. Аргументы: необратимо для всех потомков, off-target неизвестны, есть альтернатива (отбор эмбрионов), нет согласия того, кого редактируют.</li>
+            <li>Клонирование человека — запрещено везде, где есть закон; технически (Долли, 1996; обезьяны, 2018) — возможно, эффективность 1–5%, дефекты.</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Не решено — и решать придётся</h3>
+          <ul>
+            <li><b>Полигенный отбор эмбрионов</b>: Orchid, Genomic Prediction продают «выбор эмбриона с меньшим риском диабета/шизофрении» — точность мала, разница между эмбрионами одной пары — 1–3 см роста, 2–3 балла IQ. Но продают. Где граница между «против болезни» и «за признак»?</li>
+            <li><b>Улучшение vs лечение</b>: миостатин (мышцы ×2 — у коров есть), EPO, устойчивость к ВИЧ — болезнь или апгрейд? Рынок ответит раньше этики.</li>
+            <li><b>Неравенство</b>: $2 млн за Casgevy при 8 млн больных в Африке. Генная терапия — для богатых стран, пока цена не упадёт в 100 раз (in vivo — путь).</li>
+            <li><b>Приватность</b>: геном нельзя сменить, как пароль; он выдаёт родственников; страховщики и работодатели (GINA в США — частично защищает; в России — нет закона). 23andMe банкрот — куда 15 млн геномов?</li>
+            <li><b>Детерминизм</b>: «ген агрессии», «ген гомосексуальности», «ген гениальности» — не существуют; полигенные индексы объясняют 5–15%. Но общество любит простые ответы, и евгеника 1920-х начиналась с такой же уверенности.</li>
+            <li><b>Синтетическая жизнь</b>: геном бактерии написан с нуля (Вентер, 2010), дрожжи — 50% хромосом синтетические (2023), проект «геном человека с нуля» (HGP-write). Зачем — не ясно; что можно — почти всё.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ИТОГИ ============ -->
+<section class="slide" id="s21">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Вся генетика на одном слайде</h2>
+    <table class="t" style="font-size:14.5px">
+      <tr><th>Уровень</th><th>Что это</th><th>Ключевое число</th><th>Что ломается</th></tr>
+      <tr><td>Нуклеотид</td><td class="d">A, T, G, C на сахарофосфатной цепи; A–T, G–C</td><td class="d">0.34 нм на пару; 2 или 3 водородные связи</td><td class="d">замена одной буквы — серповидноклеточная</td></tr>
+      <tr><td>Ген</td><td class="d">участок, кодирующий белок или РНК; промотор, экзоны, интроны</td><td class="d">~20 000; 1.5% генома; 95% сплайсируются альтернативно</td><td class="d">7000 моногенных болезней — 1% рождений</td></tr>
+      <tr><td>Хромосома</td><td class="d">ДНК на гистонах, 23 пары + мтДНК</td><td class="d">2 м → 6 мкм, сжатие ×10 000</td><td class="d">трисомии, транслокации, укорочение теломер</td></tr>
+      <tr><td>Репликация</td><td class="d">хеликаза + полимераза, полуконсервативно</td><td class="d">50 пар/с × 50 000 точек; ошибка 1:10¹⁰</td><td class="d">рак — накопление ошибок за 30 лет</td></tr>
+      <tr><td>Транскрипция + сплайсинг</td><td class="d">ген → мРНК, регуляция 2000 факторами</td><td class="d">30–60 нукл/с; мРНК живёт часы</td><td class="d">регуляторные мутации — большинство полигенных рисков</td></tr>
+      <tr><td>Трансляция</td><td class="d">рибосома читает кодоны, тРНК приносит аминокислоты</td><td class="d">64 кодона → 20 АК; 10 АК/с; код един для всей жизни</td><td class="d">нонсенс, сдвиг рамки; неправильное сворачивание</td></tr>
+      <tr><td>Наследование</td><td class="d">мейоз, кроссинговер, 50% от каждого</td><td class="d">8.4 млн комбинаций; 70 новых мутаций/ребёнок</td><td class="d">Мендель для 1%, полигения для остального</td></tr>
+      <tr><td>Эпигенетика</td><td class="d">метилирование, гистоновый код — что включено</td><td class="d">200 типов клеток из одной ДНК; часы ±3 года</td><td class="d">среда пишет метки; детям — почти не передаётся</td></tr>
+      <tr><td>Чтение</td><td class="d">ПЦР, Сэнгер, Illumina, нанопоры</td><td class="d">$3 млрд → $200 за 20 лет</td><td class="d">прочитать легко, понять — 1.5%</td></tr>
+      <tr><td>Редактирование</td><td class="d">CRISPR/Cas9, base/prime editing</td><td class="d">первое лекарство 2023; $2.2 млн</td><td class="d">off-target, доставка, зародышевая линия — мораторий</td></tr>
+    </table>
+    <div class="note">Одна идея под всем: <b>жизнь — это текст, который умеет копировать сам себя с ошибками</b>. Ошибки — цена копирования и одновременно единственный источник новизны. Мы первые, кто научился этот текст читать и править, — и первые, кому придётся решать, что в нём менять.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s22">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Финал</div>
+    <h1>Четыре буквы, четыре миллиарда лет</h1>
+    <p class="lead">Каждая клетка твоего тела хранит текст, который непрерывно копировался 4 миллиарда лет — от первой молекулы РНК в океане через бактерий, рыб, землероек и обезьян — ни разу не прервавшись. Одна непрерывная цепочка копий. Все, у кого она оборвалась, не оставили потомков. Ты — 100 миллионов поколений безошибочного (почти) копирования.</p>
+    <p class="lead" style="margin-top:14px">В 1953 году двое поняли, как это устроено. В 2003 мы прочитали текст целиком. В 2012 научились его править. В 2023 первого человека вылечили, исправив одну букву. Дальше — вопрос не «можем ли», а «что именно». И ответ на него не в ДНК.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- SLIDES_END -->
+
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>

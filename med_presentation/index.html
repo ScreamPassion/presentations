@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Молекула против клетки — анатомия лекарства</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #4fd8c8; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Medicine deep dive · Гвендолин-ночные-лекции</div>
+    <h1>Молекула против клетки</h1>
+    <p class="lead">Полная анатомия лекарства: как одна молекула находит свою мишень среди триллионов клеток, почему антибиотик убивает бактерию и не убивает тебя, как из десяти тысяч кандидатов доживает один — и где именно две таблетки, безопасные по отдельности, вместе становятся ядом.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 1: МИШЕНЬ ============ -->
+<section class="slide chapter" id="s2">
+  <div class="bgimg"><img src="assets/ch_target.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1</div>
+    <h1>Мишень: как молекула находит замок</h1>
+    <p class="lead">Лекарство ничего не «лечит». Оно связывается с одним конкретным белком и меняет его поведение. Всё остальное — следствия.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">Мишень · четыре типа замков</div>
+    <h2>Почти все лекарства бьют по четырём видам белков</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Рецепторы</b> — антенны на поверхности клетки (или внутри). Лекарство либо нажимает на них (<b>агонист</b>: морфин на μ-опиоидный), либо затыкает, чтобы не нажал родной лиганд (<b>антагонист</b>: бета-блокатор на адреналиновый рецептор).</li>
+          <li><b>Ферменты</b> — молекулярные станки. Ингибитор садится в рабочий карман станка и стопорит его: аспирин глушит ЦОГ, статины — ГМГ-КоА-редуктазу, пенициллин — транспептидазу бактерий.</li>
+          <li><b>Ионные каналы</b> — ворота в мембране. Лидокаин затыкает натриевые каналы нерва — сигнал боли не проходит. Амлодипин — кальциевые в сосудах.</li>
+          <li><b>Транспортёры</b> — насосы. СИОЗС-антидепрессанты блокируют насос обратного захвата серотонина, и он дольше висит в синапсе.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Кто на чём сидит (примеры)</h3>
+        <table class="t">
+          <tr><th>Лекарство</th><th>Мишень</th><th>Что делает</th></tr>
+          <tr><td>Ибупрофен</td><td class="d">фермент ЦОГ-1/2</td><td class="d">ингибитор</td></tr>
+          <tr><td>Омепразол</td><td class="d">протонная помпа желудка</td><td class="d">необратимый ингибитор</td></tr>
+          <tr><td>Лоратадин</td><td class="d">H1-рецептор гистамина</td><td class="d">антагонист</td></tr>
+          <tr><td>Сальбутамол</td><td class="d">β2-рецептор бронхов</td><td class="d">агонист</td></tr>
+          <tr><td>Метформин</td><td class="d">митохондрии / AMPK</td><td class="d">до сих пор спорят</td></tr>
+          <tr><td>Пенициллин</td><td class="d">PBP (транспептидаза)</td><td class="d">убивает бактерию</td></tr>
+        </table>
+        <p style="margin-top:10px">Всего у человека ~20 000 генов, но «лекарственных» мишеней — около 700. Половина всех таблеток в мире бьёт по одному семейству — GPCR-рецепторам.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s4">
+  <div class="content">
+    <div class="kicker">Мишень · физика связывания</div>
+    <h2>Замок и ключ — ложь, правда — это статистика</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Молекула лекарства не «летит к мишени». Она болтается в крови броуновским движением, миллиард раз в секунду сталкивается с чем попало и <b>иногда прилипает</b> — водородными связями, гидрофобными контактами, зарядами.</li>
+          <li>Прилипла — подержалась — отвалилась. Сколько держится, задаёт <b>аффинность</b> (K<sub>d</sub>): концентрация, при которой занята половина мишеней. У хороших лекарств — наномоли, то есть одна молекула на миллиард молекул воды.</li>
+          <li>Эффект — это <b>доля занятых мишеней в данный момент</b>. Отсюда кривая доза–эффект: S-образная, с плато. Больше дозы, чем нужно для плато, — только побочки.</li>
+          <li><b>Селективность</b> — во сколько раз хуже молекула липнет к похожим белкам. Идеальной не бывает: у любой таблетки есть 5–50 «случайных» мишеней. Это и есть источник большей части побочных эффектов.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="svgbox">
+          <div class="dg">
+            <div class="lbl mono">Кривая доза–эффект (лог-шкала дозы):</div>
+            <svg viewBox="0 0 400 200" style="max-width:100%">
+              <line x1="40" y1="170" x2="380" y2="170" stroke="#223041" stroke-width="2"/>
+              <line x1="40" y1="170" x2="40" y2="20" stroke="#223041" stroke-width="2"/>
+              <path d="M 45 168 C 120 168, 150 160, 190 95 C 230 30, 270 25, 375 22" fill="none" stroke="#4fd8c8" stroke-width="3"/>
+              <path d="M 45 168 C 200 168, 230 165, 260 120 C 300 60, 330 30, 375 22" fill="none" stroke="#ff6b7a" stroke-width="2" stroke-dasharray="5 4"/>
+              <line x1="190" y1="170" x2="190" y2="95" stroke="#ffb347" stroke-dasharray="3 3"/>
+              <line x1="40" y1="95" x2="190" y2="95" stroke="#ffb347" stroke-dasharray="3 3"/>
+              <circle cx="190" cy="95" r="5" fill="#ffb347"/>
+            </svg>
+            <div class="row" style="gap:18px;flex-wrap:wrap">
+              <span class="lbl"><span style="color:var(--cyan)">━</span> эффект: терапия</span>
+              <span class="lbl"><span style="color:var(--red)">╍</span> эффект: токсичность</span>
+              <span class="lbl"><span style="color:var(--amber)">●</span> EC<sub>50</sub> — половина максимума</span>
+            </div>
+            <div class="cap">Расстояние между синей и красной кривой — <b>терапевтический индекс</b>. У парацетамола он мал (×10), у пенициллина огромен (×100+), у дигоксина — почти нет: лечебная доза и отравление рядом.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="content">
+    <div class="kicker">Мишень · после связывания</div>
+    <h2>Что происходит за первые миллисекунды после «щелчка»</h2>
+    <div class="dg" style="margin-bottom:22px">
+      <div class="row">
+        <div class="bx cy"><b>Связывание</b><span>молекула села в карман рецептора</span></div>
+        <div class="arr">→</div>
+        <div class="bx cy"><b>Конформация</b><span>белок меняет форму, как рычаг</span></div>
+        <div class="arr">→</div>
+        <div class="bx am"><b>Вторичный мессенджер</b><span>G-белок → цАМФ / Ca²⁺ / IP₃</span></div>
+        <div class="arr">→</div>
+        <div class="bx am"><b>Каскад киназ</b><span>усиление ×1000: одна молекула → тысячи событий</span></div>
+        <div class="arr">→</div>
+        <div class="bx gr"><b>Ответ клетки</b><span>сокращение, секреция, транскрипция</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Быстрые эффекты</b> (секунды): ионные каналы и GPCR. Адреналин в вену — пульс через 5 секунд. Лидокаин — онемение через минуту.</li>
+          <li><b>Медленные</b> (часы–дни): лекарство меняет экспрессию генов. Стероиды заходят внутрь клетки, садятся на ядерный рецептор, он идёт в ядро и включает/выключает сотни генов. Поэтому преднизолон «раскачивается» сутки.</li>
+          <li><b>Очень медленные</b> (недели): антидепрессанты поднимают серотонин за часы, а эффект приходит через 3–4 недели — мозг должен перестроить рецепторы. Это не мистика, а нейропластичность.</li>
+        </ul>
+      </div>
+      <div class="note gold"><b>Толерантность</b> — обратная сторона усиления. Клетка, которую постоянно долбят агонистом, прячет рецепторы внутрь (интернализация) и снижает их число (down-regulation). Через месяц та же доза даёт вполовину меньше — опиоиды, бензодиазепины, капли для носа. А резко убрать — рецепторов мало, родного лиганда не хватает: <b>синдром отмены</b>.</div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2: ПУТЬ ============ -->
+<section class="slide chapter" id="s6">
+  <div class="bgimg"><img src="assets/ch_adme.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2</div>
+    <h1>Путь в теле: ADME</h1>
+    <p class="lead">Мишень — это полдела. Сначала молекула должна выжить в желудке, проскочить печень, доехать до нужного органа и не быть вымытой почками через полчаса.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s7">
+  <div class="content">
+    <div class="kicker">Путь · четыре буквы</div>
+    <h2>Absorption · Distribution · Metabolism · Excretion</h2>
+    <div class="dg" style="margin-bottom:20px">
+      <div class="row">
+        <div class="bx cy"><b>A — всасывание</b><span>рот → желудок → кишечник → кровь воротной вены</span></div>
+        <div class="arr">→</div>
+        <div class="bx am"><b>Печень: first pass</b><span>первый проход, часть дозы гибнет тут</span></div>
+        <div class="arr">→</div>
+        <div class="bx cy"><b>D — распределение</b><span>кровь → ткани, жир, мозг (или нет)</span></div>
+        <div class="arr">→</div>
+        <div class="bx am"><b>M — метаболизм</b><span>CYP450, конъюгация → водорастворимые куски</span></div>
+        <div class="arr">→</div>
+        <div class="bx gr"><b>E — выведение</b><span>почки (моча), печень (желчь → кал), лёгкие</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Биодоступность</b> — какая доля таблетки вообще доехала до системного кровотока. У морфина ~30%, у нитроглицерина 1% (поэтому под язык, мимо печени), у инсулина 0% — белок переваривается, только укол.</li>
+          <li><b>Липофильность решает</b>: чтобы пройти сквозь мембрану кишки, молекула должна быть достаточно жирной; чтобы плавать в крови — достаточно водной. Медхимики годами балансируют это (правило Липински: масса &lt;500, logP &lt;5).</li>
+          <li><b>Гематоэнцефалический барьер</b> — сплошная стена эндотелия с насосами-вышибалами (P-gp). Лоратадин через него не проходит — не клонит в сон; димедрол проходит — клонит. Одна и та же мишень, разница только в доставке.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Период полувыведения T½</h3>
+        <p>Время, за которое концентрация в крови падает вдвое. Через 5 T½ лекарство считается вымытым (осталось 3%).</p>
+        <table class="t" style="margin-top:8px">
+          <tr><th>Препарат</th><th>T½</th><th>Следствие</th></tr>
+          <tr><td>Аденозин</td><td class="d">~10 секунд</td><td class="d">колют болюсом в вену</td></tr>
+          <tr><td>Ибупрофен</td><td class="d">2 ч</td><td class="d">3–4 раза в день</td></tr>
+          <tr><td>Амоксициллин</td><td class="d">1 ч</td><td class="d">каждые 8 ч, иначе провал</td></tr>
+          <tr><td>Азитромицин</td><td class="d">~68 ч</td><td class="d">3 дня пьёшь, неделю работает</td></tr>
+          <tr><td>Амиодарон</td><td class="d">~50 дней</td><td class="d">насыщение месяцами</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s8">
+  <div class="bgimg"><img src="assets/ch_liver.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Путь · печень</div>
+    <h2>CYP450: мясорубка, через которую проходит всё чужое</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Печень не знает, что такое «лекарство». Для неё это <b>ксенобиотик</b> — чужая молекула, и её надо сделать водорастворимой и выкинуть. Тем же аппаратом, что и токсины растений, которые мы ели миллионы лет.</li>
+          <li><b>Фаза I</b>: ферменты цитохрома P450 (их ~57, важных — 6) окисляют молекулу, цепляя к ней -OH. Главные рабочие лошади: <b>CYP3A4</b> (половина всех лекарств), <b>CYP2D6</b>, <b>CYP2C9</b>, <b>CYP2C19</b>, <b>CYP1A2</b>.</li>
+          <li><b>Фаза II</b>: к -OH пришивают глюкуроновую кислоту, сульфат или глутатион. Молекула становится тяжёлой, полярной — почки её выкидывают.</li>
+          <li>Иногда мясорубка делает наоборот: <b>пролекарство</b> активируется в печени. Клопидогрел сам ничего не делает — его превращает CYP2C19. У 30% азиатов и 3% европейцев этот ген «медленный» — и препарат для них почти пустышка.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Фармакогенетика: почему одному помогает, другого травит</h3>
+          <ul>
+            <li><b>CYP2D6</b>: 7% европейцев — «медленные метаболизаторы» (кодеин для них — ничего, он не превращается в морфин), 1–2% — «ультрабыстрые» (кодеин для них — передоз морфином, есть смерти детей).</li>
+            <li><b>CYP2C9 + VKORC1</b>: доза варфарина различается в 10 раз между людьми — определяют генетикой.</li>
+            <li><b>HLA-B*57:01</b>: носителям нельзя абакавир — смертельная аллергия. Тест обязателен перед назначением.</li>
+          </ul>
+        </div>
+        <div class="note warn" style="margin-top:14px"><b>Почему детям и старикам меньше:</b> у новорождённых CYP ещё не включились (серый синдром от хлорамфеникола), у стариков печень и почки на 30–50% медленнее. Доза — это не масса тела, это скорость мясорубки.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s9">
+  <div class="content">
+    <div class="kicker">Путь · концентрация во времени</div>
+    <h2>Терапевтическое окно: зачем «по часам»</h2>
+    <div class="cols">
+      <div>
+        <div class="svgbox">
+          <div class="dg">
+            <div class="lbl mono">Концентрация в крови, приём каждые 8 ч:</div>
+            <svg viewBox="0 0 420 200" style="max-width:100%">
+              <rect x="30" y="60" width="380" height="60" fill="#6ee7a011"/>
+              <line x1="30" y1="60" x2="410" y2="60" stroke="#ff6b7a" stroke-dasharray="4 3"/>
+              <line x1="30" y1="120" x2="410" y2="120" stroke="#4fd8c8" stroke-dasharray="4 3"/>
+              <path d="M 30 175 L 40 90 C 60 100, 90 130, 130 150 L 140 78 C 160 88, 190 118, 230 140 L 240 72 C 260 82, 290 112, 330 135 L 340 70 C 360 80, 390 108, 410 128" fill="none" stroke="#ffb347" stroke-width="2.5"/>
+              <line x1="30" y1="175" x2="410" y2="175" stroke="#223041" stroke-width="2"/>
+              <text x="34" y="54" fill="#ff6b7a" font-size="11" font-family="Consolas">токсично</text>
+              <text x="50" y="167" fill="#4fd8c8" font-size="11" font-family="Consolas">ниже — не работает</text>
+              <text x="300" y="112" fill="#6ee7a0" font-size="11" font-family="Consolas">окно</text>
+            </svg>
+            <div class="cap">Каждый приём — пик, между приёмами — спад. Цель: держать кривую внутри зелёной зоны. Пропустил приём — провалился под нижнюю линию; выпил две сразу — пробил верхнюю.</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Steady state</b> наступает через ~5 T½ регулярного приёма: сколько заходит, столько и выводится. До этого концентрация растёт с каждой дозой — поэтому эффект антидепрессантов «накапливается».</li>
+          <li><b>Нагрузочная доза</b>: если ждать 5 T½ нельзя (амиодарон — 250 дней!), первую дозу дают большую, чтобы сразу выскочить в окно.</li>
+          <li><b>Пролонги (XR, SR, ретард)</b>: таблетка с матрицей, из которой молекула вымывается 12–24 ч. Пилы становятся пологими. Разгрызть такую — получить всю суточную дозу за час.</li>
+          <li><b>Кишечнорастворимая оболочка</b>: защищает от кислоты желудка (омепразол разваливается в кислоте) или желудок от препарата (аспирин). Тоже нельзя ломать.</li>
+        </ul>
+        <div class="note"><b>Для антибиотиков</b> это критично вдвойне: провал под нижнюю линию — это часы, когда бактерии не гибнут, а <b>учатся</b>. Об этом — в главе про резистентность.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 3: АНТИБИОТИКИ ============ -->
+<section class="slide chapter" id="s10">
+  <div class="bgimg"><img src="assets/ch_antibiotics.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3</div>
+    <h1>Антибиотики: селективное убийство</h1>
+    <p class="lead">Бактерия — живая клетка, ты — набор живых клеток. Весь фокус антибиотика — найти то, что есть у неё и нет у тебя, и ударить именно туда.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s11">
+  <div class="bgimg"><img src="assets/ch_history.png" alt="" style="object-position:center 30%"></div>
+  <div class="content">
+    <div class="kicker">Антибиотики · откуда взялись</div>
+    <h2>Грибы воевали с бактериями миллиард лет до нас</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>1928, Флеминг</b>: забытая чашка Петри со стафилококком, на ней плесень <i>Penicillium</i>, вокруг плесени — мёртвая зона. Гриб выделяет вещество, которое убивает бактерий-конкурентов за еду. Это и есть антибиотик в исходном смысле: <b>оружие одного микроба против другого</b>.</li>
+          <li><b>1940–45, Флори и Чейн</b> превратили плесневой сок в лекарство. Первый пациент — полицейский с сепсисом от царапины розой: ожил, потом пенициллин кончился, умер. Его мочу перегоняли, чтобы добыть препарат обратно.</li>
+          <li><b>Ваксман, 1943</b>: стрептомицин из почвенной бактерии <i>Streptomyces</i>. Оказалось, почва — гигантский арсенал: <b>2/3 всех антибиотиков</b> родом из стрептомицетов (тетрациклин, эритромицин, ванкомицин, гентамицин…).</li>
+          <li>Потом — химия: сульфаниламиды (синтез с нуля, 1935), фторхинолоны (1980-е). И полусинтетика — берём природный скелет, пришиваем группы: амоксициллин = пенициллин + аминогруппа.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Золотой век и стена</h3>
+        <table class="t">
+          <tr><th>Годы</th><th>Что открыли</th></tr>
+          <tr><td>1940-е</td><td class="d">пенициллин, стрептомицин, хлорамфеникол, тетрациклин</td></tr>
+          <tr><td>1950-е</td><td class="d">эритромицин, ванкомицин, метициллин</td></tr>
+          <tr><td>1960-е</td><td class="d">цефалоспорины, гентамицин, ампициллин</td></tr>
+          <tr><td>1970–80-е</td><td class="d">фторхинолоны, карбапенемы, азитромицин</td></tr>
+          <tr><td>1990–2010</td><td class="d">линезолид, даптомицин — и почти всё</td></tr>
+          <tr><td>2010-е+</td><td class="d">единицы. Большая фарма ушла из темы</td></tr>
+        </table>
+        <p style="margin-top:10px">Новых <b>классов</b> антибиотиков с 1987 года — считаные штуки. Причина экономическая: курс на 7 дней за 500 рублей против статинов «на всю жизнь». Про это — в главе о создании.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s12">
+  <div class="content">
+    <div class="kicker">Антибиотики · карта мишеней</div>
+    <h2>Пять мест, где бактерия отличается от тебя</h2>
+    <div class="dg" style="margin-bottom:18px">
+      <div class="row" style="align-items:stretch">
+        <div class="bx am"><b>1. Клеточная стенка</b><span>у тебя её нет вообще</span><span style="color:var(--amber);margin-top:4px">β-лактамы, ванкомицин</span></div>
+        <div class="bx cy"><b>2. Рибосома 70S</b><span>у тебя 80S, другая форма</span><span style="color:var(--cyan);margin-top:4px">макролиды, тетрациклины, аминогликозиды</span></div>
+        <div class="bx cy"><b>3. ДНК-гираза</b><span>у тебя топоизомеразы другие</span><span style="color:var(--cyan);margin-top:4px">фторхинолоны</span></div>
+        <div class="bx gr"><b>4. Синтез фолата</b><span>ты фолат ешь, бактерия строит</span><span style="color:var(--green);margin-top:4px">сульфаниламиды, триметоприм</span></div>
+        <div class="bx rd"><b>5. Мембрана</b><span>у бактерий другой состав липидов</span><span style="color:var(--red);margin-top:4px">полимиксины, даптомицин</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Это и есть <b>селективная токсичность</b> — принцип Эрлиха 1900-х: «волшебная пуля» должна попадать в паразита и промахиваться по хозяину. Чем уникальнее мишень — тем меньше побочек.</li>
+          <li><b>Клеточная стенка</b> — идеальная мишень: у человека её нет совсем, поэтому пенициллин можно лить граммами. Побочки β-лактамов — почти только аллергия.</li>
+          <li><b>Рибосома</b> — мишень хуже: наша митохондриальная рибосома похожа на бактериальную (митохондрии — бывшие бактерии). Отсюда ототоксичность аминогликозидов и угнетение костного мозга от хлорамфеникола.</li>
+        </ul>
+      </div>
+      <div class="note gold"><b>Почему антибиотик не работает на вирус.</b> У вируса нет ни стенки, ни рибосомы, ни своего метаболизма — он использует твои. Ударить по «вирусной рибосоме» = ударить по твоей. Антибиотик при ОРВИ — это удар по твоему микробиому за ноль пользы плюс тренировка резистентности у бактерий, которые в тебе живут постоянно.</div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s13">
+  <div class="bgimg"><img src="assets/ch_wall.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Антибиотики · β-лактамы</div>
+    <h2>Пенициллин: бактерия лопается от собственного давления</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Внутри бактерии осмотическое давление 5–20 атмосфер — как в шине грузовика. Держит его <b>пептидогликан</b>: сетка из сахарных нитей, сшитых короткими пептидами. Как кольчуга.</li>
+          <li>Когда бактерия растёт и делится, ей надо резать кольчугу и вплетать новые звенья. Сшивает звенья фермент <b>транспептидаза</b> (PBP — penicillin-binding protein).</li>
+          <li>Пенициллин — <b>структурный обманщик</b>: его β-лактамное кольцо похоже на D-Ala-D-Ala, концевой фрагмент, который PBP сшивает. Фермент хватает пенициллин, кольцо раскрывается и <b>навсегда</b> ковалентно пришивается к активному центру. Станок заклинило.</li>
+          <li>Бактерия продолжает расти, автолизины продолжают резать старую стенку, а новую никто не сшивает. Дырка — и клетку разрывает давлением. <b>Лизис</b>. Потому β-лактамы работают только на <b>делящиеся</b> бактерии — спящую не тронут.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Семейство β-лактамов (одно кольцо, разные хвосты)</h3>
+          <table class="t">
+            <tr><th>Группа</th><th>Примеры</th><th>Особенность</th></tr>
+            <tr><td>Пенициллины</td><td class="d">амоксициллин, ампициллин</td><td class="d">узкие, дешёвые</td></tr>
+            <tr><td>+ ингибитор</td><td class="d">амоксиклав (+клавуланат)</td><td class="d">клавуланат — приманка для β-лактамазы</td></tr>
+            <tr><td>Цефалоспорины I–V</td><td class="d">цефазолин → цефтриаксон → цефепим</td><td class="d">каждое поколение шире</td></tr>
+            <tr><td>Карбапенемы</td><td class="d">меропенем, имипенем</td><td class="d">«последний резерв» стационаров</td></tr>
+            <tr><td>Монобактамы</td><td class="d">азтреонам</td><td class="d">только грам-минус</td></tr>
+          </table>
+        </div>
+        <div class="note" style="margin-top:14px"><b>Грам+ vs грам−:</b> у грам-положительных (стафилококк, стрептококк) стенка толстая и снаружи — пенициллин заходит легко. У грам-отрицательных (кишечная палочка, псевдомонада) стенка тонкая, но спрятана под второй, внешней мембраной с воротами-поринами. Туда пролезает не всякий β-лактам — отсюда деление на «узкие» и «широкие».</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s14">
+  <div class="bgimg"><img src="assets/ch_ribosome.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Антибиотики · рибосома</div>
+    <h2>Заклинить станок по производству белков</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Рибосома — машина, которая читает мРНК и собирает белок. У бактерий она 70S (субъединицы 30S + 50S), у нас 80S (40S + 60S). Разница в форме карманов — в неё и целятся.</li>
+          <li><b>30S-блокаторы.</b> <b>Тетрациклины</b> садятся туда, куда должна прийти тРНК с аминокислотой — сборка стоит. <b>Аминогликозиды</b> (гентамицин, амикацин) искажают чтение кода: рибосома собирает бракованные белки, они встраиваются в мембрану, мембрана течёт — бактерия гибнет. Единственные <b>бактерицидные</b> из рибосомных.</li>
+          <li><b>50S-блокаторы.</b> <b>Макролиды</b> (азитромицин, эритромицин) затыкают выходной туннель, из которого должна вылезать растущая белковая цепь. <b>Линезолид</b> мешает самому старту сборки. <b>Хлорамфеникол</b> блокирует пептидилтрансферазу — момент пришивания аминокислоты.</li>
+          <li>Большинство рибосомных — <b>бактериостатики</b>: не убивают, а останавливают рост. Добивает иммунитет. Поэтому у пациентов с нейтропенией их одних мало.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Цидный vs статический</h3>
+          <table class="t">
+            <tr><th></th><th>Бактерицидные</th><th>Бактериостатические</th></tr>
+            <tr><td>Что делают</td><td class="d">убивают (лизис, мембрана)</td><td class="d">замораживают рост</td></tr>
+            <tr><td>Кто</td><td class="d">β-лактамы, аминогликозиды, фторхинолоны, ванкомицин</td><td class="d">макролиды, тетрациклины, сульфаниламиды, линезолид</td></tr>
+            <tr><td>Когда обязательны</td><td class="d">менингит, эндокардит, сепсис, иммунодефицит</td><td class="d">хватает при обычных инфекциях</td></tr>
+          </table>
+        </div>
+        <div class="note warn" style="margin-top:14px"><b>Антагонизм:</b> пенициллин убивает только растущую бактерию; тетрациклин останавливает рост. Дать вместе — тетрациклин защитит бактерию от пенициллина. Классическая ошибка комбинирования, известная с 1950-х (менингит, летальность выросла с 21% до 79% при добавлении хлортетрациклина к пенициллину).</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s15">
+  <div class="content">
+    <div class="kicker">Антибиотики · ДНК, фолат, мембрана</div>
+    <h2>Остальные три двери</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>ДНК-гираза: фторхинолоны</h3>
+        <p>Бактериальная хромосома — кольцо длиной 1.5 мм, упакованное в клетку 2 мкм. Чтобы её читать и копировать, гираза режет двойную спираль, перекручивает и сшивает обратно.</p>
+        <p style="margin-top:8px"><b>Ципрофлоксацин, левофлоксацин</b> ловят гиразу в момент, когда ДНК разрезана, и не дают сшить. Клетка с порезанной хромосомой умирает. Бактерицидно и быстро.</p>
+        <p style="margin-top:8px" class="rd">Цена: наши топоизомеразы всё-таки похожи. Побочки — разрывы сухожилий (ахилл), нейропатия, аритмия. В 2018 FDA ограничило применение при простых инфекциях.</p>
+      </div>
+      <div class="card">
+        <h3 class="am">Фолат: сульфаниламиды</h3>
+        <p>Фолиевая кислота нужна всем для синтеза ДНК. Мы получаем её из еды. Бактерия <b>синтезирует сама</b> — у неё есть фермент, которого у нас нет: дигидроптероатсинтаза.</p>
+        <p style="margin-top:8px"><b>Сульфаниламид</b> — двойник её субстрата (пара-аминобензойной кислоты). Фермент хватает подделку, фолат не строится, ДНК не копируется, рост стоит.</p>
+        <p style="margin-top:8px"><b>Триметоприм</b> бьёт по следующему ферменту той же цепи. Вместе (ко-тримоксазол, «Бисептол») — синергия: два блока в одном конвейере.</p>
+        <p style="margin-top:8px" class="dim">Первый массовый антибактериальный препарат (1935) и первый, к которому появилась резистентность (1940-е).</p>
+      </div>
+      <div class="card">
+        <h3 class="rd">Мембрана: полимиксины</h3>
+        <p><b>Колистин</b> — катионный пептид, который липнет к отрицательно заряженному липополисахариду внешней мембраны грам-отрицательных, встраивается и делает дырки. Как детергент.</p>
+        <p style="margin-top:8px">Работает даже на «спящие» бактерии — мембрана есть всегда. Поэтому это оружие против тех, на кого больше ничего нет.</p>
+        <p style="margin-top:8px" class="rd">Цена: наши мембраны тоже заряжены. Нефро- и нейротоксичность такая, что колистин сняли с полок в 1970-х — и вернули в 2000-х, когда карбапенем-резистентные клебсиеллы не оставили выбора.</p>
+        <p style="margin-top:8px" class="dim"><b>Даптомицин</b> — то же для грам+: сверлит мембрану, калий утекает, клетка глохнет.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s16">
+  <div class="bgimg"><img src="assets/ch_resistance.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Антибиотики · резистентность</div>
+    <h2>Бактерия отвечает: четыре стратегии выживания</h2>
+    <div class="dg" style="margin-bottom:18px">
+      <div class="row" style="align-items:stretch">
+        <div class="bx rd"><b>1. Разрушить оружие</b><span>β-лактамазы режут кольцо пенициллина. Тысячи вариантов: TEM, CTX-M, KPC, NDM-1</span></div>
+        <div class="bx am"><b>2. Изменить мишень</b><span>MRSA: новый PBP2a, к которому β-лактамы не липнут. VRE: D-Ala-D-Lac вместо D-Ala-D-Ala</span></div>
+        <div class="bx cy"><b>3. Выкачать наружу</b><span>эффлюкс-помпы: насосы в мембране выбрасывают антибиотик быстрее, чем он заходит</span></div>
+        <div class="bx gr"><b>4. Не впускать</b><span>грам− закрывают порины; биоплёнка — слизь, куда лекарство не проникает</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Резистентность <b>не возникает «от антибиотика»</b>. В любой популяции из миллиарда бактерий уже есть мутанты с одной из этих защит. Антибиотик убивает всех остальных — и освобождает им место. Чистый дарвиновский отбор за 20 минут на поколение.</li>
+          <li>Хуже: гены защиты лежат на <b>плазмидах</b> — кольцах ДНК, которыми бактерии обмениваются при контакте (конъюгация), даже между разными видами. Кишечная палочка может передать ген β-лактамазы клебсиелле за один вечер в твоём кишечнике.</li>
+          <li><b>Недопитый курс</b>: убил чувствительных, оставил полурезистентных с субтерапевтической дозой — идеальный тренажёр. Отсюда правило «по часам и до конца» (хотя оптимальную длину курсов сейчас пересматривают — часто в сторону короче).</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="rd">ESKAPE — шестёрка, которую ВОЗ боится</h3>
+          <ul>
+            <li><b>E</b>nterococcus faecium (VRE — устойчив к ванкомицину)</li>
+            <li><b>S</b>taphylococcus aureus (MRSA — метициллин-резистентный)</li>
+            <li><b>K</b>lebsiella pneumoniae (карбапенемазы KPC, NDM)</li>
+            <li><b>A</b>cinetobacter baumannii (панрезистентные штаммы в ОРИТ)</li>
+            <li><b>P</b>seudomonas aeruginosa (природно почти ко всему)</li>
+            <li><b>E</b>nterobacter spp.</li>
+          </ul>
+          <p style="margin-top:8px">~1.3 млн смертей в год напрямую от резистентных инфекций (2019), прогноз на 2050 — 10 млн/год. Больше, чем рак.</p>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Треть антибиотиков в мире</b> идёт не людям, а скоту — как стимулятор роста. Это самый большой тренажёр резистентности на планете.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s17">
+  <div class="content">
+    <div class="kicker">Антибиотики · сопутствующий ущерб</div>
+    <h2>Микробиом: ты — на 50% бактерии, и антибиотик про это не знает</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>В кишечнике живёт ~38 триллионов бактерий — столько же, сколько твоих клеток. Сотни видов, ~200 г массы (не «2 кг», как любят писать). Они переваривают клетчатку, делают витамины K и B12, тренируют иммунитет и <b>занимают место</b>, не пуская патогенов.</li>
+          <li>Антибиотик широкого спектра — это ковровая бомбардировка. За неделю амоксиклава разнообразие падает на 30–50%. Восстанавливается месяцами, некоторые виды — никогда.</li>
+          <li><b>Clostridioides difficile</b>: спороносная бактерия, живёт у многих тихо, потому что соседи не дают разгуляться. Убил соседей — она захватывает кишку, выделяет токсины: псевдомембранозный колит. 13–30 тыс. смертей в год в США. Лечение — ванкомицин внутрь или… пересадка чужого кала.</li>
+          <li><b>Кандида</b>: грибок, антибиотик его не трогает, а конкурентов убивает. Отсюда молочница после курса.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Побочки по классам (то, что стоит знать)</h3>
+          <table class="t">
+            <tr><th>Класс</th><th>Фирменная побочка</th></tr>
+            <tr><td>Пенициллины</td><td class="d">аллергия (1–10%), анафилаксия (0.01%)</td></tr>
+            <tr><td>Аминогликозиды</td><td class="d">глухота, почки — только в стационаре под контролем</td></tr>
+            <tr><td>Тетрациклины</td><td class="d">жёлтые зубы у детей, фотосенсибилизация</td></tr>
+            <tr><td>Фторхинолоны</td><td class="d">сухожилия, аорта, психика, QT</td></tr>
+            <tr><td>Макролиды</td><td class="d">QT-удлинение, тошнота (мотилиновый агонист)</td></tr>
+            <tr><td>Метронидазол</td><td class="d">дисульфирам-эффект с алкоголем — рвёт жёстко</td></tr>
+            <tr><td>Линезолид</td><td class="d">серотониновый синдром с антидепрессантами</td></tr>
+          </table>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Пробиотики после курса?</b> Доказательства слабые: в РКИ 2018 (Cell) пробиотик <b>задерживал</b> возврат родной флоры. Лучше работает клетчатка — корм для своих.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 4: КАК УБИВАЮТ КЛЕТКИ ============ -->
+<section class="slide chapter" id="s18">
+  <div class="bgimg"><img src="assets/ch_kill.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4</div>
+    <h1>Убить своё: когда мишень — твои же клетки</h1>
+    <p class="lead">Рак, аутоиммунка, отторжение трансплантата. Тут врага не отличить по клеточной стенке — он сделан из тебя. Приходится бить по тому, чем он злоупотребляет.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s19">
+  <div class="content">
+    <div class="kicker">Убить своё · химиотерапия</div>
+    <h2>Цитостатики: бьём по всем, кто делится</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Раковая клетка отличается от нормальной в основном одним: <b>она делится без остановки</b>. Классическая химия бьёт по механике деления — и попадает во всех, кто делится быстро: костный мозг, слизистая кишки, волосяные луковицы. Отсюда вся триада: анемия/инфекции, тошнота/диарея, облысение.</li>
+          <li><b>Алкилирующие</b> (циклофосфамид, цисплатин): пришивают к ДНК химические группы, сшивают две нити между собой. Копировать такую ДНК нельзя — клетка идёт в апоптоз.</li>
+          <li><b>Антиметаболиты</b> (метотрексат, 5-фторурацил): подделки под кирпичи ДНК. 5-FU выглядит как урацил, встраивается — и ломает синтез тимидина. Метотрексат блокирует фолат — тот же приём, что у сульфаниламидов, но против своих.</li>
+          <li><b>Яды веретена</b> (паклитаксел, винкристин): веретено деления — микротрубочки, которые растаскивают хромосомы. Таксаны замораживают их, винка-алкалоиды не дают собраться. Клетка застывает в митозе и умирает.</li>
+          <li><b>Ингибиторы топоизомераз</b> (доксорубицин, иринотекан): тот же трюк, что фторхинолоны с гиразой, — но по человеческим ферментам.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Как клетка умирает: апоптоз vs некроз</h3>
+          <p><b>Апоптоз</b> — запрограммированное самоубийство. Повреждена ДНК → белок p53 замечает → включает каспазы → клетка аккуратно режет себя на пузырьки, макрофаги съедают. Тихо, без воспаления. Цель любой химии — <b>довести до апоптоза</b>.</p>
+          <p style="margin-top:8px"><b>Некроз</b> — грязная смерть: мембрана рвётся, содержимое вываливается, воспаление. Так умирают от ожога или от ишемии. Так же лопается бактерия от пенициллина.</p>
+          <p style="margin-top:8px" class="rd">Многие опухоли ломают p53 — и становятся глухи к сигналу «умри». Это главная причина резистентности к химии.</p>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Почему циклами:</b> 3 недели между курсами — время, чтобы костный мозг (делится быстрее опухоли) восстановился, а опухоль — не успела. Гонка на истощение с расчётом на разную скорость регенерации.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s20">
+  <div class="content">
+    <div class="kicker">Убить своё · точечное оружие</div>
+    <h2>Таргетная терапия и иммуноонкология: прицел вместо ковра</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Иматиниб (Гливек), 2001</b> — точка поворота. При хроническом миелолейкозе в клетках сломанный слитый белок BCR-ABL, киназа, которая всегда «включена». Иматиниб садится в её АТФ-карман и глушит. Здоровым клеткам он не нужен — почти без побочек. Пятилетняя выживаемость с 30% до 90%.</li>
+          <li><b>Моноклональные антитела</b> (все на -маб): трастузумаб липнет к рецептору HER2 на клетках рака груди и метит их для иммунитета. Ритуксимаб — к CD20 на B-лимфоцитах. Антитело — белок 150 кДа, через рот не идёт, только капельница; зато селективность — абсолютная.</li>
+          <li><b>ADC — антитело-лекарство</b>: к антителу пришит яд, в 1000 раз сильнее обычной химии. Антитело доставляет его адресно, клетка глотает, яд высвобождается внутри. Троянский конь.</li>
+          <li><b>Чекпойнт-ингибиторы</b> (пембролизумаб, ниволумаб): опухоль выставляет белок PD-L1 — «я свой, не трогай» — и T-клетки её пропускают. Антитело закрывает этот значок, и иммунитет сам добивает. Нобелевка 2018. Побочки — аутоиммунные: иммунитет, сорвавшийся с поводка, бьёт и по щитовидке, и по кишке.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Иммуносупрессия: когда убивать надо иммунитет</h3>
+          <p>Пересаженная почка — чужая по HLA, T-клетки её атакуют. Надо заглушить их, не убив пациента инфекциями.</p>
+          <ul style="margin-top:8px">
+            <li><b>Циклоспорин, такролимус</b>: блокируют кальцинейрин → T-клетка не может выработать интерлейкин-2 → не размножается. Открыты в грибке из почвы Норвегии.</li>
+            <li><b>Глюкокортикоиды</b> (преднизолон): заходят в ядро, выключают гены воспаления пачками. Быстро, мощно, грязно — сахар, кости, психика.</li>
+            <li><b>Метотрексат в малых дозах</b> при ревматоидном артрите: та же молекула, что в химии, в 100 раз меньше доза — уже не цитостатик, а иммуномодулятор.</li>
+            <li><b>Анти-TNF</b> (адалимумаб, инфликсимаб): антитело перехватывает главный сигнал воспаления. Самые продаваемые лекарства планеты в 2010-х.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s21">
+  <div class="bgimg"><img src="assets/ch_pain.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Убить своё · боль и воспаление</div>
+    <h2>Обезболивающие: три разных выключателя</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>НПВС: ибупрофен, диклофенак, аспирин</h3>
+        <p>При повреждении клетки выделяют <b>простагландины</b> — местные гормоны боли, жара и воспаления. Делает их фермент <b>ЦОГ</b> (циклооксигеназа). НПВС затыкают ЦОГ — простагландинов нет, нерв не раздражается, температура не поднимается.</p>
+        <p style="margin-top:8px" class="rd">Но ЦОГ-1 ещё делает простагландины, защищающие желудок и держащие почечный кровоток. Отсюда язвы и почки. Селективные ЦОГ-2 (целекоксиб) щадят желудок — но повышают риск инфаркта (рофекоксиб отозван в 2004, ~60 000 смертей).</p>
+        <p style="margin-top:8px" class="dim">Аспирин уникален: <b>необратимо</b> ацетилирует ЦОГ в тромбоцитах, а у них нет ядра — новый фермент не сделать. 75 мг в день — и тромбоциты выключены на неделю.</p>
+      </div>
+      <div class="card">
+        <h3 class="am">Парацетамол: загадка</h3>
+        <p>Снимает боль и жар, но <b>не</b> воспаление. ЦОГ на периферии почти не трогает. Работает, видимо, в мозге — через ЦОГ-3 / каннабиноидную систему / серотониновые пути. Точный механизм неизвестен спустя 130 лет применения.</p>
+        <p style="margin-top:8px" class="rd">Зато отлично известна токсичность: печень превращает 5% в <b>NAPQI</b> — реактивный метаболит, который обычно тут же гасится глутатионом. 8–10 г за раз (16 таблеток) — глутатион кончается, NAPQI сжигает гепатоциты. Главная причина острой печёночной недостаточности в западном мире.</p>
+        <p style="margin-top:8px" class="dim">Антидот — N-ацетилцистеин, тот самый АЦЦ от кашля: предшественник глутатиона.</p>
+      </div>
+      <div class="card">
+        <h3 class="rd">Опиоиды: морфин, фентанил, трамадол</h3>
+        <p>Агонисты <b>μ-опиоидных рецепторов</b> — тех, для которых природа создала эндорфины. Сидят на нейронах боли в спинном мозге (сигнал не доходит) и в мозге (боль есть, но <b>не важна</b>).</p>
+        <p style="margin-top:8px">Те же рецепторы — в дыхательном центре и кишечнике: <b>угнетение дыхания</b> (причина смерти при передозе) и запор.</p>
+        <p style="margin-top:8px" class="rd">Фентанил в 100 раз сильнее морфина: очень липофильный, за секунды в мозг. 2 мг — смертельная доза. Толерантность растёт за недели, отмена — ад. Антидот <b>налоксон</b> — антагонист, выбивает опиоид из рецептора за минуту.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s22">
+  <div class="bgimg"><img src="assets/ch_toxic.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Убить своё · доза</div>
+    <h2>Всё яд, и всё лекарство: где проходит граница</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Парацельс, 1538</b>: «Только доза делает вещество ядом». В фармакологии это число: <b>LD<sub>50</sub></b> — доза, от которой гибнет половина подопытных, и <b>ED<sub>50</sub></b> — доза, дающая эффект у половины. Их отношение — <b>терапевтический индекс</b>.</li>
+          <li>Вода: LD<sub>50</sub> ~6 л за раз (гипонатриемия, отёк мозга). Кофеин: ~10 г = 100 чашек. Ботулотоксин: 1 нг/кг — самый ядовитый известный белок, и он же в Ботоксе в дозе 0.00001 от летальной.</li>
+          <li>Механизмы токсичности — те же, что и терапии, только <b>не там или не столько</b>: тот же β-блокатор, что снижает пульс, в передозе останавливает сердце. Тот же инсулин, что снижает сахар, в передозе убивает мозг гипогликемией.</li>
+          <li>Отдельный класс — <b>идиосинкразия</b>: реакция не от дозы, а от генетики. 1 на 10 000 получает от карбамазепина синдром Стивенса–Джонсона (кожа слезает). Это не предсказать кривой доза–эффект.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Узкое окно: где ошибка в 2 раза — уже беда</h3>
+          <table class="t">
+            <tr><th>Препарат</th><th>Зачем</th><th>Что при передозе</th></tr>
+            <tr><td>Дигоксин</td><td class="d">сердечная недостаточность</td><td class="d">аритмия, смерть; контроль в крови</td></tr>
+            <tr><td>Литий</td><td class="d">биполярное расстройство</td><td class="d">тремор → почки → кома; окно 0.6–1.2 ммоль/л</td></tr>
+            <tr><td>Варфарин</td><td class="d">разжижение крови</td><td class="d">кровотечение; контроль INR раз в 2–4 нед</td></tr>
+            <tr><td>Теофиллин</td><td class="d">астма</td><td class="d">судороги, аритмия</td></tr>
+            <tr><td>Гентамицин</td><td class="d">тяжёлые инфекции</td><td class="d">глухота навсегда, почки</td></tr>
+            <tr><td>Инсулин</td><td class="d">диабет</td><td class="d">гипогликемия за 20 минут</td></tr>
+          </table>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Широкое окно</b> — почему пенициллин можно детям «на глазок», а амоксициллин продают в сиропе: даже десятикратная доза — только диарея. Это не заслуга врача, это заслуга мишени, которой у нас нет.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 5: КАК СОЗДАЮТ ============ -->
+<section class="slide chapter" id="s23">
+  <div class="bgimg"><img src="assets/ch_pipeline.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5</div>
+    <h1>Как рождается таблетка: 10 000 → 1</h1>
+    <p class="lead">Двенадцать лет, два миллиарда долларов и девяносто процентов провалов на последнем этапе. Разбираем конвейер, из которого выходит одна молекула из десяти тысяч.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s24">
+  <div class="content">
+    <div class="kicker">Создание · конвейер</div>
+    <h2>От гипотезы до аптеки: воронка</h2>
+    <div class="dg" style="margin-bottom:20px">
+      <div class="row" style="align-items:stretch">
+        <div class="bx cy"><b>Мишень</b><span>какой белок ломать?<br>1–2 года</span></div>
+        <div class="arr">→</div>
+        <div class="bx cy"><b>Скрининг</b><span>10 000–1 000 000 молекул<br>роботы, HTS</span></div>
+        <div class="arr">→</div>
+        <div class="bx cy"><b>Hit → Lead</b><span>~250 «хитов» → десятки лидов<br>медхимия, 2–3 года</span></div>
+        <div class="arr">→</div>
+        <div class="bx am"><b>Преклиника</b><span>клетки, мыши, собаки<br>токс, ADME, 1–2 года</span></div>
+        <div class="arr">→</div>
+        <div class="bx am"><b>Фазы I–III</b><span>~5 кандидатов → 1<br>6–7 лет</span></div>
+        <div class="arr">→</div>
+        <div class="bx gr"><b>Регистрация</b><span>FDA / EMA / Минздрав<br>1–2 года</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Мишень</b>: сначала надо доказать, что белок X вообще виноват в болезни. Генетика человека (нокауты у людей — люди с мутацией PCSK9 не имеют атеросклероза → ингибиторы PCSK9), животные модели, CRISPR-нокауты. Ошибка здесь — 10 лет впустую: так провалились почти все лекарства от Альцгеймера по амилоидной гипотезе.</li>
+          <li><b>HTS</b>: робот капает библиотеку из миллиона молекул на планшеты по 1536 лунок с очищенным белком-мишенью и смотрит, где сигнал изменился. Неделя работы. Хитов — 0.1%, большинство — мусор (агрегаторы, флуоресцентные артефакты).</li>
+          <li><b>Hit-to-lead</b>: химики берут хит и делают 500 его вариантов, отслеживая SAR (структура–активность). Цель: аффинность в наномоли, растворимость, стабильность в микросомах печени, отсутствие hERG-блока (аритмия) — всё одновременно.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Числа отрасли</h3>
+        <table class="t">
+          <tr><td>Средний срок мишень → рынок</td><td class="d">10–15 лет</td></tr>
+          <tr><td>Стоимость с учётом провалов</td><td class="d">$1–2.6 млрд</td></tr>
+          <tr><td>Дошли до клиники → одобрены</td><td class="d">~10%</td></tr>
+          <tr><td>Главная причина провала в III фазе</td><td class="d">не работает (50%), токсично (25%)</td></tr>
+          <tr><td>Новых молекул одобряет FDA в год</td><td class="d">40–60</td></tr>
+          <tr><td>Патент</td><td class="d">20 лет с подачи, на рынке остаётся 8–12</td></tr>
+        </table>
+        <p style="margin-top:10px">Отсюда цена: препарат окупает не себя, а девять проваленных братьев. И отсюда экономика антибиотиков: 7-дневный курс не отбивает миллиард, статины «навсегда» — отбивают.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s25">
+  <div class="bgimg"><img src="assets/ch_trials.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Создание · клиника</div>
+    <h2>Три фазы: сначала «не убьёт ли», потом «работает ли»</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3>Фаза I — безопасность</h3>
+          <p>20–100 <b>здоровых</b> добровольцев (кроме онкологии — там сразу больные). Начинают с 1/100 от дозы, безопасной для животных, поднимают ступенями. Смотрят ADME у человека, побочки, максимальную переносимую дозу. ~70% проходят.</p>
+          <p style="margin-top:6px" class="rd">2006, TGN1412: антитело, безвредное у обезьян, за час вызвало цитокиновый шторм у всех шести добровольцев. С тех пор — по одному, с интервалом.</p>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3 class="am">Фаза II — есть ли сигнал</h3>
+          <p>100–300 пациентов с болезнью. Подбирают дозу, ищут эффект, часто с плацебо. Здесь гибнет большинство: ~33% проходят. «Работало на мышах» — не работает у людей.</p>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3 class="gr">Фаза III — доказательство</h3>
+          <p>1000–5000 пациентов, десятки стран, <b>двойное слепое рандомизированное</b> против плацебо или стандарта. 2–4 года, $200–500 млн. Смотрят «жёсткие» исходы: смерть, инфаркт, а не «снизился холестерин». Проходят ~50%.</p>
+        </div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Почему двойное слепое</b>: плацебо даёт 30–40% эффекта при боли, депрессии, ВСД. Если врач знает, кто на препарате, — он видит улучшение там, где хочет. Единственный способ отделить молекулу от веры — чтобы никто не знал.</li>
+          <li><b>Рандомизация</b> убивает скрытые переменные: без неё врачи бессознательно дают новый препарат тем, кто «полегче», и он «работает».</li>
+          <li><b>Суррогатные точки</b> — ловушка. Препараты, снижающие аритмию (CAST, 1989), <b>повышали</b> смертность в 2.5 раза. Аритмия ушла, пациенты умерли. С тех пор регуляторы требуют клинических исходов, а не лабораторных цифр.</li>
+          <li><b>Фаза IV</b> — после выхода. Только на миллионах пациентов видны побочки 1:10 000. Так сняли рофекоксиб, так нашли тромбозы от вакцины AZ, так узнали про сухожилия и фторхинолоны через 20 лет продаж.</li>
+        </ul>
+        <div class="note gold"><b>Дженерик</b> — та же молекула после истечения патента, доказывают только биоэквивалентность (концентрация в крови ±20%). Стоит в 10–50 раз меньше. <b>Биоаналог</b> — копия антитела: молекула из 1300 аминокислот, идеально не воспроизвести, нужны клинические испытания, но урезанные.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s26">
+  <div class="content">
+    <div class="kicker">Создание · откуда берут молекулы</div>
+    <h2>Четыре источника: природа, химия, антитела, случайность</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>Природа</h3>
+        <ul>
+          <li><b>Почва и плесень</b>: почти все антибиотики, циклоспорин, статины (ловастатин из <i>Aspergillus</i>), рапамицин (с острова Пасхи).</li>
+          <li><b>Растения</b>: морфин (мак), аспирин (кора ивы → салицин), паклитаксел (тихоокеанский тис — 6 деревьев на пациента, пока не научились синтезировать), артемизинин (полынь, малярия, Нобель 2015), дигоксин (наперстянка).</li>
+          <li><b>Животные</b>: каптоприл — из яда бразильской гадюки, эксенатид (диабет) — из слюны ядозуба, зиконотид — из яда конуса.</li>
+        </ul>
+        <p style="margin-top:8px" class="dim">Природа перебирала молекулы 3 млрд лет. Мы пока только копируем.</p>
+      </div>
+      <div class="card">
+        <h3 class="am">Рациональный дизайн</h3>
+        <ul>
+          <li>Есть 3D-структура мишени (рентген, крио-ЭМ, теперь AlphaFold) → рисуем молекулу под карман на компьютере → синтезируем → проверяем.</li>
+          <li>Так сделали <b>ингибиторы протеазы ВИЧ</b> (1995 — ВИЧ из смертного приговора стал хроникой), <b>иматиниб</b>, <b>осельтамивир</b> (Тамифлю), <b>нирматрелвир</b> (Паксловид, за 2 года).</li>
+          <li><b>Фрагментный подход</b>: сначала ищут мелкие куски, липнущие к разным частям кармана, потом сшивают. Вемурафениб (меланома) — первый такой.</li>
+          <li><b>AI-дизайн</b>: 2020-е, первые молекулы в фазе II. Пока ускоряет hit-to-lead, а не отменяет клинику.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="gr">Биологические и случайные</h3>
+        <ul>
+          <li><b>Антитела</b>: иммунизируют мышь (или человеческую библиотеку в фаге), отбирают B-клетку с нужным антителом, клонируют. Гуманизируют, чтобы наш иммунитет не отверг. Инсулин, гормон роста, факторы свёртывания — рекомбинантные белки в дрожжах и E. coli.</li>
+          <li><b>Серендипность</b>: силденафил (Виагра) — провал как сердечный препарат, добровольцы отказывались возвращать таблетки. Миноксидил — от давления, побочка — рос волос. Хлорпромазин — антигистамин, оказался первым нейролептиком. Метформин — из козлятника, 60 лет игнорировали.</li>
+          <li><b>Репозиционирование</b>: старая молекула — новая болезнь. Талидомид, убийца 10 000 младенцев, вернулся как лекарство от миеломы.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 6: ВЗАИМОДЕЙСТВИЯ ============ -->
+<section class="slide chapter" id="s27">
+  <div class="bgimg"><img src="assets/ch_interact.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6</div>
+    <h1>Взаимодействия: когда 1 + 1 = 10</h1>
+    <p class="lead">Средний пациент старше 65 принимает 5+ препаратов. Каждая пара может мешать другой в печени, в почках, на рецепторе — и это главная предотвратимая причина смертей от лекарств.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s28">
+  <div class="content">
+    <div class="kicker">Взаимодействия · фармакокинетика</div>
+    <h2>Драка за мясорубку: индукторы и ингибиторы CYP</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Два препарата метаболизируются одним CYP. Один из них садится на фермент крепче — второй <b>не перерабатывается</b>, его концентрация растёт в 2–10 раз. Это <b>ингибирование</b>. Быстро: часы.</li>
+          <li><b>Индукция</b> наоборот: препарат заставляет печень наделать больше фермента. Всё, что через него идёт, вымывается быстрее — и перестаёт работать. Медленно: дни–недели, и так же медленно откатывается.</li>
+          <li><b>Грейпфрут</b>: фуранокумарины в соке необратимо убивают CYP3A4 в стенке кишечника. Один стакан — и биодоступность симвастатина ×3–15, фелодипина ×3, некоторых препаратов — на трое суток. Реальный рабдомиолиз от статина с грейпфрутом описан.</li>
+          <li><b>Зверобой</b> («натуральный антидепрессант»): мощный индуктор CYP3A4 и P-gp. Отменяет действие противозачаточных (беременности), циклоспорина (отторжение почки), антиретровирусных.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Главные игроки</h3>
+          <table class="t">
+            <tr><th>Роль</th><th>Кто</th><th>Последствие</th></tr>
+            <tr><td class="rd">Ингибиторы 3A4</td><td class="d">кларитромицин, флуконазол, ритонавир, грейпфрут</td><td class="d">субстраты ×2–20: статины, бензодиазепины, антикоагулянты</td></tr>
+            <tr><td class="rd">Ингибиторы 2D6</td><td class="d">флуоксетин, пароксетин, бупропион</td><td class="d">трамадол и кодеин не активируются; метопролол ×3</td></tr>
+            <tr><td class="cy">Индукторы</td><td class="d">рифампицин, карбамазепин, фенитоин, зверобой, курение (1A2)</td><td class="d">контрацептивы, варфарин, ВИЧ-терапия — перестают работать</td></tr>
+            <tr><td class="am">P-gp</td><td class="d">верапамил, амиодарон, хинидин</td><td class="d">дигоксин ×2 — токсичность</td></tr>
+          </table>
+        </div>
+        <div class="note warn" style="margin-top:12px"><b>Ритонавир</b> — настолько сильный ингибитор 3A4, что его добавляют <b>специально</b>: в Паксловиде он не лечит ковид, а не даёт печени сжечь нирматрелвир. Побочка, ставшая инструментом. Но с ним нельзя половину домашней аптечки.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s29">
+  <div class="content">
+    <div class="kicker">Взаимодействия · фармакодинамика</div>
+    <h2>Драка за мишень: сложение, вычитание, умножение</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Аддитивность</b>: два седативных = двойная седация. Алкоголь + бензодиазепин + опиоид — три депрессанта ЦНС на разных рецепторах, каждый по себе не смертелен, вместе — остановка дыхания. Это механизм большинства «случайных» передозов.</li>
+          <li><b>Синергизм</b>: эффект больше суммы. Амоксициллин + клавуланат. Триметоприм + сульфаметоксазол. В онкологии — почти всегда комбинации: по разным мишеням, чтобы опухоль не убежала одной мутацией.</li>
+          <li><b>Антагонизм</b>: НПВС снижают эффект гипотензивных (задерживают натрий, глушат простагландины почек). Бета-блокатор против сальбутамола при астме — прямая борьба за β-рецептор.</li>
+          <li><b>Кумуляция по побочке</b>: три разных препарата, каждый чуть удлиняет QT (макролид + флуконазол + ондансетрон) — вместе torsades de pointes и внезапная смерть. У каждого в инструкции написано «редко».</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="rd">Классические смертельные пары</h3>
+          <table class="t">
+            <tr><th>Пара</th><th>Что происходит</th></tr>
+            <tr><td>Варфарин + аспирин/НПВС</td><td class="d">кровь не сворачивается + язва = кровотечение</td></tr>
+            <tr><td>СИОЗС + трамадол / линезолид / МАО-и</td><td class="d">серотониновый синдром: гипертермия, судороги</td></tr>
+            <tr><td>Нитраты + силденафил</td><td class="d">оба расширяют сосуды через NO/цГМФ → коллапс</td></tr>
+            <tr><td>иАПФ + калий / спиронолактон</td><td class="d">гиперкалиемия → остановка сердца</td></tr>
+            <tr><td>Метотрексат + НПВС / триметоприм</td><td class="d">НПВС держат метотрексат в почках → костный мозг гибнет</td></tr>
+            <tr><td>Метронидазол + алкоголь</td><td class="d">блок ацетальдегиддегидрогеназы → отравление ацетальдегидом</td></tr>
+            <tr><td>Тетрациклин + молоко / антациды</td><td class="d">хелат с Ca²⁺/Mg²⁺ в кишке — не всасывается вообще</td></tr>
+          </table>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Инструмент:</b> любую пару можно пробить в чекерах взаимодействий (Drugs.com, Medscape, Lexicomp). Врачи делают это не всегда — фармацевт в аптеке обязан, но в России этот слой почти выпал.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s30">
+  <div class="content">
+    <div class="kicker">Взаимодействия · с телом</div>
+    <h2>Еда, алкоголь, беременность и почки: четыре модификатора</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Еда.</b> Жирная пища удваивает всасывание липофильных препаратов (итраконазол, некоторые ВИЧ-препараты — «только с едой»). Другие, наоборот, конкурируют с аминокислотами за транспортёр (леводопа — «за час до еды»). Кальций хелатирует тетрациклины и фторхинолоны. Витамин K в шпинате и капусте гасит варфарин.</li>
+          <li><b>Алкоголь.</b> Острый приём — ингибитор CYP2E1, конкурент за фермент (парацетамол становится токсичнее). Хронический — индуктор: у алкоголиков парацетамол активнее превращается в NAPQI при пустом глутатионе. «Двойной удар».</li>
+          <li><b>Беременность.</b> Плацента — не барьер, а фильтр по размеру и заряду. Проходит почти всё мелкое и жирное. Талидомид — 1957–61, 10 000 детей без конечностей: у мышей тератогенности не было. С тех пор — обязательные тесты на двух видах и категории A/B/C/D/X.</li>
+          <li><b>Почки.</b> С возрастом клиренс креатинина падает; после 75 у большинства он вдвое ниже молодого. Всё, что выводится почками (метформин, дигоксин, аминогликозиды, габапентин), накапливается. Дозу считают по формуле Кокрофта–Голта, а не по весу.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Полипрагмазия: каскад назначений</h3>
+          <div class="dg">
+            <div class="row">
+              <div class="bx"><b>Амлодипин</b><span>от давления</span></div>
+              <div class="arr am">→</div>
+              <div class="bx"><b>отёки ног</b><span>побочка</span></div>
+              <div class="arr am">→</div>
+              <div class="bx"><b>Фуросемид</b><span>«от отёков»</span></div>
+            </div>
+            <div class="row">
+              <div class="bx"><b>падает калий</b><span>побочка</span></div>
+              <div class="arr am">→</div>
+              <div class="bx"><b>Калий / спиронолактон</b><span>«от калия»</span></div>
+              <div class="arr am">→</div>
+              <div class="bx rd"><b>+ иАПФ</b><span>гиперкалиемия</span></div>
+            </div>
+            <div class="cap">Каждое следующее назначение лечит побочку предыдущего. Через год — 8 препаратов, из которых нужен один. Разбор такой цепи назад называется <b>депрескрайбинг</b> и считается отдельным врачебным навыком.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 7: ВИРУСЫ И ПРОЧЕЕ ============ -->
+<section class="slide chapter" id="s31">
+  <div class="bgimg"><img src="assets/ch_virus.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 7</div>
+    <h1>За пределами бактерий: вирусы, вакцины, гормоны</h1>
+    <p class="lead">Вирус не живёт сам — он арендует твою клетку. Значит, бить надо по тому, что он приносит с собой, и это гораздо более узкая цель.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s32">
+  <div class="content">
+    <div class="kicker">Вирусы · противовирусные</div>
+    <h2>Антивирус: бить по тому, что вирус привёз с собой</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Вирус — это инструкция (ДНК/РНК) в белковой коробке. Размножаться сам не умеет: заставляет твою клетку печатать копии. Почти вся машинерия — <b>твоя</b>. Уникальны лишь несколько его собственных ферментов — они и есть мишени.</li>
+          <li><b>Полимеразы</b>: <b>ацикловир</b> (герпес) — подделка под гуанозин, встраивается в вирусную ДНК и обрывает цепь. Гениальность: активирует его вирусная тимидинкиназа — в незаражённой клетке он инертен. Селективность почти абсолютная. <b>Ремдесивир</b>, <b>софосбувир</b> (гепатит C — излечение за 12 недель, первое лекарство, реально вылечивающее хронический вирус) — тот же принцип.</li>
+          <li><b>Протеазы</b>: вирус печатает белок одной длинной колбасой и режет его своей протеазой. Заблокируй — коробка не собирается. Ингибиторы протеазы ВИЧ (1995), нирматрелвир (Паксловид).</li>
+          <li><b>Вход и выход</b>: осельтамивир блокирует нейраминидазу — вирус гриппа не может отцепиться от клетки и заразить соседнюю. Работает только в первые 48 ч.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">ВИЧ: почему три препарата</h3>
+          <p>Обратная транскриптаза ВИЧ ошибается раз в 10 000 нуклеотидов — <b>каждая</b> копия вируса с мутацией. Миллиард копий в день = резистентность к любому одному препарату за недели.</p>
+          <p style="margin-top:8px">Решение (1996, ВААРТ): три препарата по трём мишеням — обратная транскриптаза (×2) + интеграза или протеаза. Вероятность тройной мутации в одном вирионе ≈ 0. Вирус не исчезает (сидит в латентных резервуарах), но не размножается: неопределяемая нагрузка, нормальная продолжительность жизни, не передаётся.</p>
+          <p style="margin-top:8px" class="dim">Сейчас — одна таблетка в день (Биктарви) или укол раз в 2 месяца (каботегравир).</p>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Почему нет «таблетки от ОРВИ»:</b> 200+ разных вирусов, у каждого своя полимераза, болезнь проходит за 5 дней сама. Разработка за $2 млрд на 5-дневную самопроходящую болезнь — экономически невозможна. Всё, что «от простуды», — симптоматика: жар, насморк, боль.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s33">
+  <div class="content">
+    <div class="kicker">Вирусы · вакцины</div>
+    <h2>Вакцина — единственное лекарство, которое работает до болезни</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Идея одна во всех платформах: показать иммунитету <b>кусок врага без врага</b>. B-клетки, чьё случайное антитело подошло, размножаются, часть становится клетками памяти. При реальной встрече — ответ за 1–2 дня вместо 10–14.</li>
+          <li><b>Живые ослабленные</b> (корь, краснуха, полио оральная, БЦЖ): вирус, пропущенный через сотни пассажей в чужих клетках, потерял агрессию, но выглядит как настоящий. Самый сильный и долгий иммунитет, одна-две дозы на жизнь. Нельзя при иммунодефиците.</li>
+          <li><b>Инактивированные / субъединичные</b> (грипп, гепатит B, ВПЧ, коклюш): убитый вирус или один его белок из дрожжей. Безопасно, но слабо — нужны адъюванты (соли алюминия, раздражающие иммунитет) и повторы.</li>
+          <li><b>мРНК</b> (Pfizer, Moderna): даём клетке инструкцию, она сама печатает белок-шип на 2–3 дня, иммунитет его видит. Не заходит в ядро, не меняет ДНК, распадается за дни. Разработка — недели, а не годы: меняешь только последовательность. Нобель 2023.</li>
+          <li><b>Векторные</b> (Спутник, AstraZeneca): безвредный аденовирус несёт гена шипа. Тот же принцип, другая доставка.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="gr">Что дали вакцины (числа)</h3>
+          <table class="t">
+            <tr><th>Болезнь</th><th>Было</th><th>Стало</th></tr>
+            <tr><td>Оспа</td><td class="d">300 млн смертей в XX веке</td><td class="d">0 с 1977 — искоренена</td></tr>
+            <tr><td>Полио</td><td class="d">350 000 параличей/год (1988)</td><td class="d">&lt;50 диких случаев/год</td></tr>
+            <tr><td>Корь</td><td class="d">2.6 млн смертей/год (до 1963)</td><td class="d">~130 000 — растёт с отказами</td></tr>
+            <tr><td>Гемофильная инф. b</td><td class="d">главный менингит детей</td><td class="d">−99%</td></tr>
+            <tr><td>ВПЧ</td><td class="d">рак шейки матки</td><td class="d">−90% у привитых до 17 лет (Швеция)</td></tr>
+          </table>
+        </div>
+        <div class="note warn" style="margin-top:12px"><b>Коллективный иммунитет</b> — не абстракция: при R₀ кори = 15 нужно 94% привитых, чтобы вирус не нашёл цепочку. Каждый отказ снижает защиту для тех, кому нельзя (онкобольные, младенцы). Прививка — единственное лекарство, которое принимаешь ради других.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s34">
+  <div class="content">
+    <div class="kicker">Прочее · заместить и подкрутить</div>
+    <h2>Гормоны, статины, антикоагулянты: не убить, а настроить</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>Замещение</h3>
+        <p>Организм не делает нужное — дадим извне. <b>Инсулин</b> (1922 — до этого диабет I типа = смерть за год; сейчас — рекомбинантный человеческий из E. coli, аналоги с модифицированной скоростью). <b>Левотироксин</b> при гипотиреозе — самый назначаемый препарат США. <b>Эритропоэтин</b>, <b>факторы свёртывания</b> при гемофилии, <b>ферменты</b> при болезни Гоше ($300 000/год).</p>
+        <p style="margin-top:8px" class="dim">Особенность: узкое окно (инсулин) и пожизненность. Ошибка дозы — ежедневный риск.</p>
+      </div>
+      <div class="card">
+        <h3 class="am">Статины</h3>
+        <p>Блокируют ГМГ-КоА-редуктазу — первый фермент синтеза холестерина в печени. Печень, лишённая своего, вытаскивает ЛПНП-рецепторами холестерин из крови. ЛПНП −30–50%, инфаркты −25–35% за 5 лет.</p>
+        <p style="margin-top:8px">Самые изученные лекарства в истории: 200 000+ пациентов в РКИ. Побочка — боли в мышцах (реальные у ~5%, «ноцебо» — ещё у 10%), рабдомиолиз — 1:100 000, особенно с CYP3A4-ингибиторами (см. грейпфрут).</p>
+        <p style="margin-top:8px" class="dim">Открыты в 1976 Акирой Эндо в плесени <i>Penicillium citrinum</i>. Опять гриб.</p>
+      </div>
+      <div class="card">
+        <h3 class="rd">Антикоагулянты</h3>
+        <p><b>Варфарин</b> (1954, изначально крысиный яд): блокирует витамин K-редуктазу — печень не может активировать факторы свёртывания. Начинает работать через 3–5 дней (старые факторы должны вымыться), окно узкое, сотни взаимодействий, контроль INR.</p>
+        <p style="margin-top:8px"><b>Гепарин</b>: активирует антитромбин — работает за минуты, только укол. <b>НОАК</b> (ривароксабан, апиксабан, дабигатран): прямые ингибиторы фактора Xa / тромбина, без контроля INR, без еды-зверобоя. Вытеснили варфарин за 10 лет.</p>
+        <p style="margin-top:8px" class="dim">Аспирин — тоже антитромботик, но по тромбоцитам, а не по факторам. Разные тромбы: артериальный (тромбоцитарный) vs венозный (фибриновый).</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ИТОГИ ============ -->
+<section class="slide" id="s35">
+  <div class="content">
+    <div class="kicker">Итоги · карта механизмов</div>
+    <h2>Все лекарства на одном слайде</h2>
+    <table class="t" style="font-size:15px">
+      <tr><th>Стратегия</th><th>Как</th><th>Примеры</th><th>Главная слабость</th></tr>
+      <tr><td>Убить чужое</td><td class="d">мишень, которой нет у хозяина</td><td class="d">β-лактамы, фторхинолоны, ацикловир</td><td class="d">резистентность, микробиом</td></tr>
+      <tr><td>Убить своё</td><td class="d">бить по тому, чем клетка злоупотребляет</td><td class="d">цитостатики, иматиниб, чекпойнты</td><td class="d">узкое окно, мутации опухоли</td></tr>
+      <tr><td>Заткнуть рецептор</td><td class="d">антагонист / блокатор</td><td class="d">β-блокаторы, антигистаминные, налоксон</td><td class="d">рецептор есть и там, где не надо</td></tr>
+      <tr><td>Нажать рецептор</td><td class="d">агонист</td><td class="d">опиоиды, сальбутамол, инсулин</td><td class="d">толерантность, отмена</td></tr>
+      <tr><td>Заглушить фермент</td><td class="d">ингибитор в активном центре</td><td class="d">НПВС, статины, иАПФ, омепразол</td><td class="d">фермент нужен и в других тканях</td></tr>
+      <tr><td>Заместить</td><td class="d">дать то, чего не хватает</td><td class="d">инсулин, тироксин, факторы свёртывания</td><td class="d">пожизненно, дозирование</td></tr>
+      <tr><td>Научить иммунитет</td><td class="d">показать кусок врага заранее</td><td class="d">все вакцины</td><td class="d">работает только до болезни</td></tr>
+      <tr><td>Навести иммунитет</td><td class="d">антитело метит мишень или снимает тормоз</td><td class="d">трастузумаб, пембролизумаб, анти-TNF</td><td class="d">цена, аутоиммунные побочки</td></tr>
+    </table>
+    <div class="note">Всё — вариации одной идеи: <b>найти белок, который отличает больное состояние от здорового, и изменить его работу</b>. Различаются лишь степень отличия (стенка бактерии — абсолютное, делящаяся раковая клетка — почти никакого) и цена ошибки.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s36">
+  <div class="content">
+    <div class="kicker">Итоги · правила для домашней аптечки</div>
+    <h2>Что из этого следует лично для тебя</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>Антибиотики</h3>
+        <ul>
+          <li>Не при ОРВИ, не «на всякий случай», не по совету аптекаря.</li>
+          <li>По часам, а не «три раза в день» — держать концентрацию в окне.</li>
+          <li>Курс до конца по назначению; остатки не хранить «на следующий раз».</li>
+          <li>Метронидазол — ни грамма алкоголя. Тетрациклины/фторхинолоны — не с молоком и антацидами.</li>
+          <li>Если через 48–72 ч не легче — это не «подождать», это сменить препарат.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Обезболивающие</h3>
+        <ul>
+          <li>Парацетамол: не больше 3–4 г/сутки, и помнить, что он <b>внутри</b> «ТераФлю», «Колдрекса», «Солпадеина».</li>
+          <li>Ибупрофен — с едой, не на голодный желудок, не при язве, не с варфарином, не более 1.2 г/сутки без врача.</li>
+          <li>Парацетамол + ибупрофен вместе — законно и эффективнее каждого: разные механизмы.</li>
+          <li>Пролонги и оболочки не ломать и не грызть.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="rd">Взаимодействия</h3>
+        <ul>
+          <li>Грейпфрут и зверобой — проверить со всем, что принимаешь постоянно.</li>
+          <li>Любой новый препарат — прогнать через чекер взаимодействий, не надеясь на врача.</li>
+          <li>Алкоголь + любой седатив (снотворное, антигистамин I поколения, опиоид) — не суммируется, а умножается.</li>
+          <li>После 65 у себя или родителей: раз в год — ревизия списка, что реально нужно.</li>
+          <li>«Натуральное» и «БАД» — тоже молекулы с CYP и мишенями, просто без исследований.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s37">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <div class="kicker amber">Финал</div>
+    <h1>Одна молекула, десять порядков</h1>
+    <p class="lead">Таблетка → желудок → воротная вена → CYP450 → кровь → мембрана → карман белка → конформация → каскад → гены → клетка → орган → ты. Нанометры молекулы против метров тела — и на каждом уровне она может не дойти, дойти не туда или дойти слишком хорошо.</p>
+    <p class="lead" style="margin-top:14px">А антибиотик — это ещё и война, которую грибы и бактерии ведут миллиард лет. Мы в ней участвуем лет восемьдесят, и уже почти проиграли один раунд.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- SLIDES_END -->
+
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>

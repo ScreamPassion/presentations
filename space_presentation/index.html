@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Вселенная: от Большого взрыва до Вояджера</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #8ab4ff; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Space deep dive · Гвендолин-ночные-лекции</div>
+    <h1>Вселенная: от Большого взрыва до Вояджера</h1>
+    <p class="lead">Полная карта известного космоса: как из горячей точки за 13.8 миллиарда лет получились галактики, звёзды и мы; что происходит внутри Солнца и на каждой планете; где во Вселенной идёт дождь из железа, а где океаны под километрами льда; что такое чёрная дыра на самом деле — и как далеко человек реально дотянулся.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 1: ВСЕЛЕННАЯ ============ -->
+<section class="slide chapter" id="s2">
+  <div class="bgimg"><img src="assets/ch_bigbang.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1</div>
+    <h1>13.8 миллиарда лет за три минуты</h1>
+    <p class="lead">Мы знаем, что было через одну секунду после начала, с точностью лучше, чем знаем погоду на завтра. И не знаем, что было до 10⁻⁴³ секунды. Между этими двумя фактами — вся космология.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">Вселенная · хронология</div>
+    <h2>От кварков до галактик: что когда случилось</h2>
+    <div class="dg" style="margin-bottom:18px">
+      <div class="row" style="align-items:stretch">
+        <div class="bx am"><b>10⁻³⁶–10⁻³² с</b><span>инфляция: раздувание в 10²⁶ раз; квантовые флуктуации → зародыши галактик</span></div>
+        <div class="bx am"><b>10⁻⁶ с</b><span>кварки слипаются в протоны и нейтроны; T = 10¹³ К</span></div>
+        <div class="bx cy"><b>1 с – 3 мин</b><span>нуклеосинтез: 75% H, 25% He по массе — и всё</span></div>
+        <div class="bx cy"><b>380 000 лет</b><span>рекомбинация: атомы, свет отделяется от вещества → реликтовое излучение</span></div>
+        <div class="bx"><b>100–400 млн лет</b><span>первые звёзды, тёмные века кончаются</span></div>
+        <div class="bx gr"><b>1 млрд лет</b><span>галактики, квазары, реионизация</span></div>
+        <div class="bx gr"><b>9.2 млрд лет</b><span>Солнце и Земля</span></div>
+        <div class="bx gr"><b>13.8 млрд</b><span>ты</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Большой взрыв — не взрыв в пространстве.</b> Это расширение самого пространства, везде сразу. Нет центра, нет «места, где он был» — он был здесь, и там, и в каждой точке. Галактики не летят сквозь пространство — пространство между ними растягивается.</li>
+          <li><b>Три столпа доказательств.</b> (1) Хаббл, 1929: все галактики удаляются, скорость ∝ расстоянию. (2) Реликтовое излучение, 1965: вся Вселенная светится в микроволнах при 2.725 К — остывший свет момента рекомбинации, предсказан за 17 лет до открытия. (3) Соотношение водород/гелий/дейтерий/литий совпадает с расчётом нуклеосинтеза первых трёх минут до процента.</li>
+          <li><b>Реликтовое излучение</b> — самая старая фотография Вселенной. Неоднородности 1:100 000 на карте Planck — это те самые инфляционные флуктуации, из которых выросли галактики. Их спектр — шесть чисел (ΛCDM), описывающих Вселенную целиком. Все шесть измерены до 1%.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Из чего состоит Вселенная (по энергии)</h3>
+          <table class="t">
+            <tr><th>Компонент</th><th>Доля</th><th>Что знаем</th></tr>
+            <tr><td>Тёмная энергия</td><td class="d">68%</td><td class="d">ускоряет расширение с 5 млрд лет назад; природа неизвестна (Λ?)</td></tr>
+            <tr><td>Тёмная материя</td><td class="d">27%</td><td class="d">держит галактики, не светит, не сталкивается; частица не найдена</td></tr>
+            <tr><td>Обычное вещество</td><td class="d">4.9%</td><td class="d">из них звёзды — 0.5%; остальное — газ между галактиками</td></tr>
+            <tr><td>Нейтрино</td><td class="d">0.1–0.5%</td><td class="d">300 штук в каждом см³, почти невесомые</td></tr>
+            <tr><td>Фотоны</td><td class="d">0.005%</td><td class="d">411 реликтовых в см³</td></tr>
+          </table>
+          <p style="margin-top:10px">Всё, из чего сделано всё, что ты видел, — 5%. Остальные 95% — два слова, за которыми стоят два «не знаем». Это не провал, а честная бухгалтерия: мы измерили, сколько чего-то есть, до того как поняли, что это.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s4">
+  <div class="content">
+    <div class="kicker">Вселенная · размеры</div>
+    <h2>Масштаб: сколько на самом деле «далеко»</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Световой год</b> — 9.46·10¹² км. Свет от Солнца идёт 8 минут, от Нептуна — 4 часа, от ближайшей звезды (Проксима) — 4.2 года, от центра Галактики — 26 000 лет, от Андромеды — 2.5 млн лет. Смотря на Андромеду, видишь свет, вышедший, когда по Земле ходил <i>Homo habilis</i>.</li>
+          <li><b>Наблюдаемая Вселенная</b> — сфера радиусом 46.5 млрд световых лет (больше 13.8, потому что пространство расширялось, пока свет летел). Внутри — ~2 триллиона галактик, ~10²³ звёзд. За горизонтом — ещё столько же или бесконечно; свет оттуда не дойдёт никогда.</li>
+          <li><b>Пустота — норма.</b> Если Солнце — шарик 1 см, Земля — пылинка в метре от него, Нептун — в 30 м, а ближайшая звезда — в 300 <b>километрах</b>. Галактики при этом «плотно»: расстояние между ними всего в 20–30 раз больше их размера. Звёзды почти никогда не сталкиваются, галактики — постоянно.</li>
+          <li><b>Скорость</b>: 300 000 км/с — не быстро, а мучительно медленно на этих масштабах. Вояджер (17 км/с) до Проксимы летел бы 75 000 лет. Расширение Вселенной уносит далёкие галактики быстрее света — не нарушая относительности: движется не они, а пространство.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Лестница расстояний</h3>
+          <table class="t">
+            <tr><th>Объект</th><th>Расстояние</th><th>Как измерили</th></tr>
+            <tr><td>Луна</td><td class="d">384 000 км</td><td class="d">лазер до уголкового отражателя, ±1 мм</td></tr>
+            <tr><td>Солнце</td><td class="d">1 а.е. = 150 млн км</td><td class="d">радар до Венеры + Кеплер</td></tr>
+            <tr><td>Проксима Центавра</td><td class="d">4.24 св. года</td><td class="d">параллакс — Земля в разных точках орбиты</td></tr>
+            <tr><td>Центр Галактики</td><td class="d">26 000 св. лет</td><td class="d">орбиты звёзд вокруг чёрной дыры</td></tr>
+            <tr><td>Андромеда</td><td class="d">2.5 млн св. лет</td><td class="d">цефеиды — звёзды-маяки с известной яркостью</td></tr>
+            <tr><td>Скопление Девы</td><td class="d">54 млн</td><td class="d">сверхновые Ia — стандартные свечи</td></tr>
+            <tr><td>Самая далёкая галактика (JADES-GS-z14)</td><td class="d">13.5 млрд лет назад</td><td class="d">красное смещение z = 14.3: свет растянут в 15 раз</td></tr>
+          </table>
+          <p style="margin-top:8px" class="dim">Каждая ступень калибруется предыдущей. Ошибка внизу — ошибка везде. «Хаббловское напряжение» (два способа дают 67 и 73 км/с/Мпк) — возможно, дыра в этой лестнице, а возможно — новая физика.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2: СОЛНЦЕ ============ -->
+<section class="slide chapter" id="s5">
+  <div class="bgimg"><img src="assets/ch_sun.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2</div>
+    <h1>Солнце: реактор на 4.6 миллиарда лет</h1>
+    <p class="lead">99.86% массы Солнечной системы. Всё остальное — планеты, луны, кометы, ты — погрешность округления. Разбираем слоями, от центра к короне.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="content">
+    <div class="kicker">Солнце · строение</div>
+    <h2>Шесть слоёв: от 15 миллионов градусов до 5500 и обратно к миллиону</h2>
+    <div class="dg" style="margin-bottom:18px">
+      <div class="row" style="align-items:stretch">
+        <div class="bx rd"><b>Ядро</b><span>0–0.25 R. 15 млн К, 150 г/см³. Синтез: 600 млн т водорода/с → 4 млн т в энергию</span></div>
+        <div class="bx am"><b>Лучистая зона</b><span>0.25–0.7 R. Фотон идёт наружу 170 000 лет, переизлучаясь каждый миллиметр</span></div>
+        <div class="bx am"><b>Конвективная зона</b><span>0.7–1 R. Кипит как каша: горячее вверх, холодное вниз. Гранулы 1000 км</span></div>
+        <div class="bx"><b>Фотосфера</b><span>«поверхность», 500 км толщиной, 5500 °C. Отсюда свет. Пятна: 3500 °C, магнитные пробки</span></div>
+        <div class="bx cy"><b>Хромосфера</b><span>2000 км, 4000→20 000 К. Видна при затмении красной каёмкой</span></div>
+        <div class="bx cy"><b>Корона</b><span>млн км, 1–3 млн К (!). Разрежена. Источник солнечного ветра</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Почему не взрывается</b>: саморегуляция. Чуть горячее → давление выше → ядро расширяется → остывает → синтез замедляется. Идеальный термостат, работающий 4.6 млрд лет с точностью до долей процента. Плюс синтез в pp-цикле мучительно медленный — протон в среднем ждёт 9 млрд лет, чтобы слиться (нужно слабое взаимодействие в момент туннелирования).</li>
+          <li><b>Парадокс короны</b>: над поверхностью в 5500 °C висит газ при 2 000 000 °C. Как чайник греет воздух над собой до тысячи градусов. Объяснение — магнитное: пересоединение силовых линий и волны Альвена сбрасывают энергию в разреженную плазму. Parker Solar Probe с 2018 залезает внутрь короны это проверить.</li>
+          <li><b>Солнечный ветер</b> — 1 млн тонн плазмы в секунду, 400–800 км/с. Долетает до Земли за 2–4 дня, сдувается магнитосферой — полярные сияния там, где просачивается. Дальше — надувает гелиосферу, пузырь радиусом 120 а.е., границу которого Вояджеры пересекли в 2012 и 2018.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Солнце в цифрах</h3>
+          <table class="t">
+            <tr><td>Масса</td><td class="d">2·10³⁰ кг = 333 000 Земель</td></tr>
+            <tr><td>Радиус</td><td class="d">696 000 км = 109 Земель; внутри поместится 1.3 млн</td></tr>
+            <tr><td>Мощность</td><td class="d">3.8·10²⁶ Вт — за секунду больше, чем человечество за всю историю ×10 000</td></tr>
+            <tr><td>На Землю доходит</td><td class="d">1361 Вт/м² — половина миллиардной доли</td></tr>
+            <tr><td>Состав</td><td class="d">73% H, 25% He, 2% остального (O, C, Fe, Ne…)</td></tr>
+            <tr><td>Вращение</td><td class="d">25 дней на экваторе, 35 у полюсов — не твёрдое тело</td></tr>
+            <tr><td>Цикл активности</td><td class="d">11 лет: пятна, вспышки, переполюсовка магнитного поля</td></tr>
+            <tr><td>Класс</td><td class="d">G2V — жёлтый карлик; средняя, ничем не примечательная звезда</td></tr>
+            <tr><td>Возраст / осталось</td><td class="d">4.6 млрд / ~5 млрд лет на главной последовательности</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s7">
+  <div class="content">
+    <div class="kicker">Солнце · погода и будущее</div>
+    <h2>Вспышки, событие Кэррингтона и красный гигант</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Вспышка</b> — магнитное пересоединение над пятнами: за минуты высвобождается 10²⁵ Дж (миллиард мегатонн). Рентген долетает за 8 минут — глушит радиосвязь на дневной стороне. Следом, если повезёт, <b>корональный выброс массы</b> (CME) — миллиард тонн плазмы, 1–3 дня в пути.</li>
+          <li><b>1859, событие Кэррингтона</b>: CME долетел за 17 часов, сияния видели на Кубе и в Колумбии, телеграфные провода искрили и работали с отключённым питанием. Повтор сегодня — наведённые токи выжгут трансформаторы ЛЭП (заменять — годы), спутники GPS ослепнут, интернет-кабели без питания. Оценка ущерба — $1–2 трлн. Вероятность за 10 лет — ~10%.</li>
+          <li><b>2012, 23 июля</b> — выброс кэррингтонского класса прошёл через орбиту Земли, где Земля была 9 дней назад. Промах.</li>
+          <li><b>Будущее</b>: светимость растёт на 1% каждые 100 млн лет. Через 1 млрд лет океаны выкипят. Через 5 млрд водород в ядре кончится, Солнце раздуется в красный гигант до орбиты Земли, потом сбросит оболочку (планетарная туманность) и останется белым карликом размером с Землю — остывать триллионы лет.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="rd">Жизненный цикл Солнца</h3>
+          <div class="dg">
+            <div class="row">
+              <div class="bx"><b>−4.6 млрд</b><span>коллапс облака, протозвезда, зажигание</span></div>
+              <div class="arr">→</div>
+              <div class="bx gr"><b>0 (сейчас)</b><span>главная последовательность, середина пути</span></div>
+              <div class="arr">→</div>
+              <div class="bx am"><b>+1 млрд</b><span>+10% яркости, Земля — парник, океаны испаряются</span></div>
+            </div>
+            <div class="row">
+              <div class="bx rd"><b>+5 млрд</b><span>H кончился в ядре; красный гигант ×200, Меркурий и Венера поглощены</span></div>
+              <div class="arr">→</div>
+              <div class="bx am"><b>+5.1 млрд</b><span>гелиевая вспышка, горение He → C, O. 100 млн лет</span></div>
+              <div class="arr">→</div>
+              <div class="bx cy"><b>+5.2 млрд</b><span>сброс оболочки; белый карлик 0.5 M☉, размером с Землю</span></div>
+            </div>
+            <div class="cap">Солнцу не хватает массы на сверхновую (нужно &gt;8 M☉). Оно уйдёт тихо. Белый карлик будет остывать до чёрного карлика ~10¹⁵ лет — дольше нынешнего возраста Вселенной в 100 000 раз.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 3: ПЛАНЕТЫ ============ -->
+<section class="slide chapter" id="s8">
+  <div class="bgimg"><img src="assets/ch_rocky.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3</div>
+    <h1>Солнечная система: восемь миров и толпа мелочи</h1>
+    <p class="lead">Четыре каменных шара внутри, четыре газовых гиганта снаружи, между ними — обломки несостоявшейся планеты, за ними — ледяной хлам до половины светового года. Разбираем каждый.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s9">
+  <div class="content">
+    <div class="kicker">Планеты · внутренние</div>
+    <h2>Каменные: Меркурий, Венера, Земля, Марс</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="am">Меркурий</h3>
+          <p>Меньше Ганимеда и Титана. Год 88 дней, сутки 176 — двое суток на год. Днём +430 °C, ночью −180: нет атмосферы, нечему держать тепло. <b>Ядро — 85% радиуса</b>: похоже, когда-то он был больше, но удар сорвал мантию. В полярных кратерах — водяной лёд, куда никогда не заглядывает Солнце.</p>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3 class="rd">Венера</h3>
+          <p>Близнец Земли по размеру — и ад. 92 атмосферы CO₂ (как на глубине 900 м под водой), +465 °C везде и всегда — горячее Меркурия при вдвое большем расстоянии: парниковый эффект в терминальной стадии. Облака из серной кислоты. Вращается <b>назад</b> и медленнее, чем обращается: день длиннее года. Советские «Венеры» работали на поверхности до 2 часов, потом плавились.</p>
+          <p style="margin-top:6px" class="dim">Была ли она когда-то с океанами? Вероятно, первые 1–2 млрд лет. Что пошло не так — главный урок для Земли.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="cy">Земля</h3>
+          <p>Единственная с жидкой водой на поверхности, тектоникой плит и кислородной атмосферой (кислород — продукт жизни, без неё исчезнет за миллионы лет). Магнитное поле от жидкого железного ядра — щит от солнечного ветра, без него было бы как на Марсе. <b>Луна</b> — аномально огромная (1/81 массы): осколок столкновения с планетой размером с Марс 4.5 млрд лет назад. Стабилизирует наклон оси — без неё климат мотало бы от 0 до 85°.</p>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3 class="am">Марс</h3>
+          <p>Половина Земли по размеру, десятая по массе. Атмосфера 0.6% земной, CO₂. Средняя −60 °C, летом на экваторе до +20. <b>Была вода</b>: русла рек, дельты, озёрные отложения, минералы, растущие только в воде — 3.5–4 млрд лет назад Марс был тёплым и мокрым. Потерял магнитное поле (ядро остыло) → солнечный ветер сдул атмосферу → вода замёрзла и ушла в грунт. Олимп — 22 км, в 2.5 раза выше Эвереста. Долина Маринер — 4000 км, 7 км глубиной.</p>
+          <p style="margin-top:6px" class="dim">На нём сейчас работают Curiosity, Perseverance, китайский Zhurong (спит), 8 орбитальных аппаратов. Ingenuity — первый вертолёт на другой планете, 72 полёта.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s10">
+  <div class="bgimg"><img src="assets/ch_giants.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Планеты · внешние</div>
+    <h2>Гиганты: Юпитер, Сатурн, Уран, Нептун</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="am">Юпитер</h3>
+          <p>318 Земель, 2.5× массы всех остальных планет вместе. Не «мог бы стать звездой» — нужно ещё 80 таких. Атмосфера — водород и гелий, как у Солнца; внизу, при 4 млн атмосфер, водород становится <b>жидким металлом</b> — отсюда магнитное поле в 20 000 раз сильнее земного. Большое красное пятно — шторм размером с Землю, идёт минимум 350 лет. День — 10 часов.</p>
+          <p style="margin-top:6px" class="dim">Гравитационный пылесос: ловит и выбрасывает кометы, защищая внутреннюю систему. Шумейкер–Леви 9 в 1994 — 21 фрагмент, шрамы размером с Землю.</p>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3 class="cy">Сатурн</h3>
+          <p>Плотность 0.69 г/см³ — плавал бы в воде. Кольца: 280 000 км в диаметре, <b>10–100 метров толщиной</b>, лёд от пылинок до домов. Молодые — 100–400 млн лет (динозавры их не видели), исчезнут через ~100 млн: сыплются на планету. На северном полюсе — устойчивый шестиугольный шторм, 30 000 км.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Уран</h3>
+          <p>Лежит на боку: ось наклонена на 98°, полюса смотрят на Солнце по 42 года. Вероятно, сбит ударом. Самая холодная атмосфера в системе (−224 °C) — почти не выделяет внутреннего тепла, в отличие от остальных гигантов. Метан даёт бирюзовый цвет. Внутри — «ледяной гигант»: вода, аммиак, метан под давлением; возможно, дожди из алмазов.</p>
+          <p style="margin-top:6px" class="dim">Посещён один раз, Вояджером-2 в 1986, за 6 часов пролёта. Всё, что знаем, — оттуда и с телескопов.</p>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3>Нептун</h3>
+          <p>Открыт «на кончике пера» в 1846: Уран отклонялся от орбиты, Леверье посчитал, где должна быть планета, — нашли в градусе от расчёта. Самые быстрые ветры в системе, 2100 км/ч. Тритон — спутник, захваченный из пояса Койпера, вращается назад и упадёт на планету через 3.6 млрд лет. С Земли невидим глазом; полный оборот — 165 лет, с открытия сделал один.</p>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Общее у всех четырёх</b>: нет поверхности — газ уплотняется в жидкость постепенно. У всех кольца (у Юпитера, Урана, Нептуна — тонкие, тёмные). У всех десятки спутников: Сатурн — 274 (2025), Юпитер — 97.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s11">
+  <div class="bgimg"><img src="assets/ch_moons.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Планеты · спутники</div>
+    <h2>Луны интереснее планет: океаны, вулканы, метановые озёра</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Европа (Юпитер)</b>: ледяная корка 15–25 км, под ней — <b>океан солёной воды 60–150 км глубиной</b>, вдвое больше всех земных океанов. Греется приливами: Юпитер мнёт её, как мячик. На дне — вероятно, гидротермальные источники. Главный кандидат на жизнь в системе. Europa Clipper прилетит в 2030.</li>
+          <li><b>Энцелад (Сатурн)</b>: 500 км, из южного полюса бьют гейзеры — Cassini пролетел сквозь них и нащупал воду, соль, органику, водород, фосфор (2023). Всё, что нужно для жизни, в одном плюмаже. Океан под 30 км льда.</li>
+          <li><b>Титан (Сатурн)</b>: единственный спутник с плотной атмосферой (1.5 атм, азот) и единственное тело, кроме Земли, с <b>жидкостью на поверхности</b> — озёра и реки метана и этана при −180 °C. Дожди, дюны из органики, оранжевый смог. Huygens сел в 2005. Dragonfly — вертолёт — полетит в 2028.</li>
+          <li><b>Ио (Юпитер)</b>: самое вулканически активное тело в системе — 400 вулканов, фонтаны серы на 500 км, поверхность обновляется за миллион лет. Приливный разогрев на максимуме.</li>
+          <li><b>Ганимед</b>: крупнее Меркурия, единственный спутник с собственным магнитным полем. <b>Тритон</b>: гейзеры азота при −235 °C. <b>Миранда</b>: рельеф 20 км, как разбитая и склеенная. <b>Луна</b>: скучная, но единственная, где были люди.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="cy">Где во Вселенной вода (жидкая)</h3>
+          <table class="t">
+            <tr><th>Тело</th><th>Где</th><th>Сколько (Земля = 1)</th></tr>
+            <tr><td>Земля</td><td class="d">поверхность</td><td class="d">1</td></tr>
+            <tr><td>Европа</td><td class="d">под 20 км льда</td><td class="d">2–3</td></tr>
+            <tr><td>Ганимед</td><td class="d">слоями между льдами</td><td class="d">~25</td></tr>
+            <tr><td>Титан</td><td class="d">под 100 км льда (вода+аммиак)</td><td class="d">~15</td></tr>
+            <tr><td>Каллисто</td><td class="d">под 150 км</td><td class="d">~20</td></tr>
+            <tr><td>Энцелад</td><td class="d">под 30 км, южный полюс тоньше</td><td class="d">0.01</td></tr>
+            <tr><td>Плутон, Церера, Мимас, Диона</td><td class="d">вероятно</td><td class="d">?</td></tr>
+          </table>
+          <p style="margin-top:8px">Жидкой воды в Солнечной системе в <b>десятки раз</b> больше, чем на Земле, — и почти вся под льдом, вдали от Солнца, подогреваемая приливами. Обитаемая зона — не только там, где тепло от звезды.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s12">
+  <div class="bgimg"><img src="assets/ch_small.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Планеты · мелочь</div>
+    <h2>Астероиды, кометы, Плутон и облако Оорта</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Главный пояс</b> (2.2–3.3 а.е.): ~1–2 млн тел больше километра, общая масса — 4% Луны. Не «планета, которая развалилась», а планета, которая не собралась — Юпитер мешал. <b>Церера</b> (940 км) — карликовая планета с солёной водой под корой и криовулканом. Пояс пустой: зонды летят сквозь него, не целясь.</li>
+          <li><b>Околоземные</b>: ~35 000 известных, из них 2400 «потенциально опасных» (&gt;140 м, подходят ближе 7.5 млн км). Тунгуска 1908 — 50 м, Челябинск 2013 — 20 м. Убийца динозавров — 10 км, раз в 100 млн лет. DART в 2022 врезался в Диморф и сдвинул его орбиту на 32 минуты — первая проверка планетарной защиты.</li>
+          <li><b>Пояс Койпера</b> (30–50 а.е.): ледяные тела, <b>Плутон</b> (2370 км, меньше Луны), Эрида (тяжелее Плутона — поэтому его и «разжаловали» в 2006), Макемаке, Хаумеа. New Horizons в 2015: у Плутона азотные ледники, горы из водяного льда, голубая дымка, сердце Томбо, вероятно — подлёдный океан.</li>
+          <li><b>Облако Оорта</b> (2000–100 000 а.е., до половины расстояния к соседней звезде): триллионы ледяных ядер. Отсюда — долгопериодические кометы. Никто его не видел, но кометы откуда-то берутся. Вояджер долетит туда через 300 лет и выйдет через 30 000.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Кометы: грязные снежки</h3>
+          <p>Ядро 1–50 км: лёд (вода, CO₂, CO, метан) + пыль + органика. Ближе к Солнцу лёд сублимирует — <b>кома</b> (100 000 км) и два хвоста: пылевой (изогнутый, жёлтый) и ионный (прямой, голубой, от Солнца). Хвост — до 100 млн км, а массы — как в комнате воздуха.</p>
+          <p style="margin-top:8px"><b>Галлея</b>: 76 лет, следующий раз 2061. <b>Rosetta</b> (2014): два года на орбите Чурюмова–Герасименко, Philae на поверхности: ядро — 4 км утка, плотность как пробка, пахнет тухлыми яйцами и миндалём, органика — включая глицин и фосфор.</p>
+          <p style="margin-top:8px" class="dim">Оумуамуа (2017) и Борисов (2019) — первые межзвёздные гости: пролетели сквозь систему по гиперболе и ушли навсегда.</p>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Метеор / метеорит / астероид:</b> астероид — камень в космосе; метеор — «падающая звезда», след в атмосфере (обычно пылинка 1 мм); метеорит — то, что долетело до земли. 50 тонн в день сыплется на Землю, почти всё — пыль.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 4: ЗВЁЗДЫ ============ -->
+<section class="slide chapter" id="s13">
+  <div class="bgimg"><img src="assets/ch_stars.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4</div>
+    <h1>Звёзды: масса решает всё</h1>
+    <p class="lead">Одна цифра при рождении — масса — определяет, каким цветом звезда будет светить, сколько проживёт и чем закончит: тихим карликом, нейтронной звездой или чёрной дырой.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s14">
+  <div class="content">
+    <div class="kicker">Звёзды · классификация</div>
+    <h2>Диаграмма Герцшпрунга–Рассела: где живут звёзды</h2>
+    <div class="cols">
+      <div>
+        <div class="svgbox">
+          <div class="dg">
+            <div class="lbl mono">Светимость (лог) vs температура (горячие слева):</div>
+            <svg viewBox="0 0 420 300" style="max-width:100%">
+              <line x1="40" y1="270" x2="400" y2="270" stroke="#223041" stroke-width="2"/>
+              <line x1="40" y1="270" x2="40" y2="20" stroke="#223041" stroke-width="2"/>
+              <path d="M 60 30 C 120 70, 180 130, 240 175 C 290 210, 340 240, 390 262" fill="none" stroke="#8a97a8" stroke-width="14" opacity=".35" stroke-linecap="round"/>
+              <circle cx="70" cy="38" r="9" fill="#7b9cff"/><text x="84" y="34" fill="#7b9cff" font-size="10" font-family="Consolas">O/B: Ригель, Спика</text>
+              <circle cx="150" cy="105" r="6" fill="#dfe6ff"/><text x="160" y="100" fill="#dfe6ff" font-size="10" font-family="Consolas">A: Сириус, Вега</text>
+              <circle cx="235" cy="172" r="5" fill="#ffe28a"/><text x="245" y="168" fill="#ffe28a" font-size="10" font-family="Consolas">G: Солнце</text>
+              <circle cx="300" cy="218" r="4" fill="#ffb347"/><text x="310" y="214" fill="#ffb347" font-size="10" font-family="Consolas">K: Альдебаран-подобные</text>
+              <circle cx="370" cy="255" r="3" fill="#ff6b7a"/><text x="255" y="250" fill="#ff6b7a" font-size="10" font-family="Consolas">M: красные карлики, 75%</text>
+              <circle cx="330" cy="60" r="16" fill="#ff6b7a" opacity=".7"/><text x="250" y="48" fill="#ff6b7a" font-size="10" font-family="Consolas">сверхгиганты: Бетельгейзе</text>
+              <circle cx="310" cy="130" r="9" fill="#ffb347" opacity=".8"/><text x="325" y="134" fill="#ffb347" font-size="10" font-family="Consolas">гиганты: Арктур</text>
+              <circle cx="120" cy="235" r="3" fill="#dfe6ff"/><text x="130" y="240" fill="#dfe6ff" font-size="10" font-family="Consolas">белые карлики: Сириус B</text>
+              <text x="44" y="288" fill="#55606e" font-size="10" font-family="Consolas">30 000 К</text>
+              <text x="340" y="288" fill="#55606e" font-size="10" font-family="Consolas">3 000 К</text>
+              <text x="180" y="200" fill="#8a97a8" font-size="10" font-family="Consolas" transform="rotate(38 180 200)">главная последовательность</text>
+            </svg>
+            <div class="cap">Диагональ — где звёзды жгут водород, 90% жизни. Положение на ней задаёт масса. Сойти с неё — значит начать умирать: раздуться в гиганта (вправо-вверх) или съёжиться в белый карлик (влево-вниз).</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Цвет = температура</b>. Красные — холодные (3000 К), голубые — горячие (30 000+). Не наоборот, как в кране. Спектральные классы O B A F G K M — «Oh Be A Fine Girl, Kiss Me». Солнце — G2, скромный жёлтый.</li>
+          <li><b>Масса решает</b>: светимость ∝ M³·⁵, время жизни ∝ M⁻²·⁵. Звезда в 10 масс Солнца светит в 3000 раз ярче и живёт 30 млн лет вместо 10 млрд. Красный карлик 0.1 M☉ — 10 триллионов лет: ни один ещё не умер, Вселенная моложе.</li>
+          <li><b>Красные карлики — 75% всех звёзд</b>, но ни одного не видно глазом. Всё, что ты видишь на небе, — редкие яркие звёзды за сотни световых лет. Проксима Центавра — красный карлик в 4 св. годах, 11-я величина.</li>
+          <li><b>Рождение</b>: облако газа (молекулярное, 10 К) сжимается под своей гравитацией, фрагментируется, каждый кусок греется сжатием до 10 млн К — зажигается синтез. 1–10 млн лет. Звёзды рождаются пачками — скопления, потом расходятся. Солнце потеряло своих сестёр 4 млрд лет назад.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s15">
+  <div class="bgimg"><img src="assets/ch_death.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Звёзды · смерть</div>
+    <h2>Три финала: карлик, нейтронная звезда, чёрная дыра</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3 class="cy">&lt; 8 M☉ → белый карлик</h3>
+        <p>Водород кончился → ядро сжимается, оболочка раздувается (красный гигант) → гелий горит в углерод и кислород → оболочка сброшена (планетарная туманность, 10 000 лет красоты) → остаётся <b>углеродно-кислородное ядро</b>: 0.6 M☉ в шаре размером с Землю, плотность тонна на см³.</p>
+        <p style="margin-top:8px">Держится давлением вырождения электронов (Паули). Не горит — остывает. Предел Чандрасекара 1.44 M☉: тяжелее — электроны не удержат.</p>
+        <p style="margin-top:8px" class="dim">Если рядом звезда-донор и карлик доберёт до предела — <b>сверхновая Ia</b>: термоядерный взрыв всего карлика целиком, всегда одной яркости → стандартная свеча для измерения Вселенной.</p>
+      </div>
+      <div class="card">
+        <h3 class="am">8–25 M☉ → нейтронная звезда</h3>
+        <p>Тяжёлая звезда жжёт всё до железа за миллионы лет: слоями, как луковица. Железо не горит. Ядро в 1.4 M☉ теряет опору и <b>за секунду</b> падает с 6000 км до 10 км. Протоны + электроны → нейтроны + нейтрино. Отскок + 10⁴⁶ Дж в нейтрино → <b>сверхновая II</b>: ярче галактики месяц.</p>
+        <p style="margin-top:8px">Остаток: 1.4–2 M☉ в 20 км. Плотность ядра атома, чайная ложка — миллиард тонн. Вращение до 700 об/с (пульсары), поле 10¹² Гс (магнетары). Кора — железная, твёрже стали в 10 млрд раз.</p>
+        <p style="margin-top:8px" class="dim">SN 1987A — последняя близкая (170 000 св. лет); поймали 25 нейтрино за 13 секунд. Бетельгейзе — следующий кандидат, любой день в ближайшие 100 000 лет.</p>
+      </div>
+      <div class="card">
+        <h3 class="rd">&gt; 25 M☉ → чёрная дыра</h3>
+        <p>Ядро слишком тяжёлое даже для нейтронов (предел ~2.5–3 M☉). Ничто не останавливает коллапс. Материя уходит за горизонт событий — и о ней больше нечего сказать. Остаётся масса, вращение, заряд. Всё.</p>
+        <p style="margin-top:8px">Самые массивные (&gt;40 M☉) могут коллапсировать <b>без сверхновой</b> — просто исчезнуть. Такие «пропавшие звёзды» ищут и находят.</p>
+        <p style="margin-top:8px" class="dim">Первые звёзды Вселенной (население III) — сотни масс Солнца, чистый водород, жили 2 млн лет. Их чёрные дыры — семена сверхмассивных в центрах галактик. Ни одну пока не видели напрямую.</p>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:16px"><b>Всё тяжелее гелия</b> в тебе — из этих смертей. Углерод и кислород — из планетарных туманностей звёзд как Солнце. Железо — из сверхновых. Золото, платина, уран — из слияний нейтронных звёзд (GW170817, 2017: увидели и услышали). Ты — переработанный звёздный пепел минимум второго поколения.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 5: ЧЁРНЫЕ ДЫРЫ ============ -->
+<section class="slide chapter" id="s16">
+  <div class="bgimg"><img src="assets/ch_blackhole.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5</div>
+    <h1>Чёрные дыры: где кончается физика</h1>
+    <p class="lead">Не «дыра» и не «всасывает». Это область, откуда не выходит ничего, включая свет, — и единственное место во Вселенной, где общая относительность и квантовая механика обязаны встретиться и пока не договорились.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s17">
+  <div class="content">
+    <div class="kicker">Чёрные дыры · анатомия</div>
+    <h2>Горизонт, сингулярность, диск и почему время останавливается</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Горизонт событий</b> — не поверхность, а граница: радиус Шварцшильда R = 2GM/c². Для Солнца — 3 км, для Земли — 9 мм. Внутри вторая космическая скорость больше скорости света; наружу не выйдет ничего. Снаружи чёрная дыра — <b>обычный гравитирующий объект</b>: замени Солнце на чёрную дыру той же массы, Земля продолжит крутиться как ни в чём не бывало.</li>
+          <li><b>Сингулярность</b> — в центре, где ОТО даёт бесконечную плотность. Это не физика, это место, где формулы сломались. Что там на самом деле — нужна квантовая гравитация, которой нет.</li>
+          <li><b>Время</b>: для внешнего наблюдателя падающий объект замедляется, краснеет и застывает на горизонте навечно. Для самого падающего — пролетает горизонт за конечное время, ничего особого не замечая (у сверхмассивной), и достигает центра за секунды. Оба правы. У звёздной дыры приливы разорвут раньше горизонта — спагеттификация.</li>
+          <li><b>Аккреционный диск</b>: падающий газ закручивается, трётся, греется до миллионов градусов, светит в рентгене. Чёрная дыра не чёрная — она окружена самым ярким объектом Вселенной: квазар на диске сверхмассивной дыры светит как 1000 галактик. <b>Джеты</b>: магнитное поле выбрасывает часть вещества вдоль оси почти со скоростью света на миллионы световых лет.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Три сорта</h3>
+          <table class="t">
+            <tr><th>Тип</th><th>Масса</th><th>Откуда</th><th>Пример</th></tr>
+            <tr><td>Звёздные</td><td class="d">3–100 M☉</td><td class="d">коллапс массивных звёзд</td><td class="d">Cygnus X-1 (первая, 1971), GW150914 (36+29)</td></tr>
+            <tr><td>Промежуточные</td><td class="d">100–10⁵</td><td class="d">? слияния, плотные скопления</td><td class="d">GW190521 (142 M☉) — единичные</td></tr>
+            <tr><td>Сверхмассивные</td><td class="d">10⁶–10¹⁰</td><td class="d">в центре каждой крупной галактики; как выросли так быстро — загадка</td><td class="d">Стрелец A* (4 млн), M87* (6.5 млрд), TON 618 (66 млрд)</td></tr>
+          </table>
+          <h3 style="margin-top:14px">Как их увидели</h3>
+          <ul>
+            <li><b>Рентген</b> от диска (1970-е): звезда крутится вокруг невидимого тяжёлого партнёра.</li>
+            <li><b>Орбиты звёзд</b> вокруг Стрельца A*: 30 лет наблюдений, звезда S2 разгоняется до 7700 км/с в перицентре. Нобель 2020.</li>
+            <li><b>Гравитационные волны</b> (LIGO, 2015): рябь пространства от слияния двух дыр, 1.3 млрд лет в пути. 3 массы Солнца в энергию за 0.2 с. Нобель 2017. Сейчас — ~300 событий.</li>
+            <li><b>Тень</b> (EHT, 2019): M87*, потом Стрелец A* (2022). Телескоп размером с Землю, разрешение — апельсин на Луне. Оранжевое кольцо — свет, обёрнутый вокруг горизонта.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s18">
+  <div class="content">
+    <div class="kicker">Чёрные дыры · парадоксы</div>
+    <h2>Хокинг, информация и что будет через 10¹⁰⁰ лет</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Излучение Хокинга (1974)</b>: у горизонта квантовые флуктуации рождают пары частиц; одна падает, другая улетает. Дыра <b>излучает</b> как тело с температурой T ∝ 1/M и медленно испаряется. Для звёздной дыры T = 10⁻⁸ К — холоднее реликтового фона, она пока поглощает больше, чем излучает. Испарится за 10⁶⁷ лет. Сверхмассивная — 10¹⁰⁰. Ни одного фотона Хокинга не поймано и не будет.</li>
+          <li><b>Информационный парадокс</b>: ОТО говорит — что упало, потеряно. Квантовая механика — информация не уничтожается никогда (унитарность). Излучение Хокинга тепловое, оно не несёт информации о том, что упало. Кто-то из двух столпов физики неправ. 50 лет спора; текущий консенсус (2019+, «острова», голография) — информация выходит, закодированная в излучении, но как — на пальцах не объяснить.</li>
+          <li><b>Голографический принцип</b>: энтропия дыры ∝ <b>площади</b> горизонта, не объёму (Бекенштейн–Хокинг). Вся информация внутри помещается на поверхности. Обобщение: возможно, наша трёхмерная Вселенная — голограмма двумерной границы. Это не метафора, а рабочая математика (AdS/CFT, 1997), 20 000 цитирований.</li>
+          <li><b>Кротовые норы, белые дыры, путешествия во времени</b> — математически допустимы в ОТО, физически — требуют отрицательной энергии, которой в нужных количествах нет. Пока — фантастика с уравнениями.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="rd">Мифы</h3>
+          <table class="t">
+            <tr><th>Миф</th><th>Реальность</th></tr>
+            <tr><td>«Засасывает всё вокруг»</td><td class="d">гравитация как у любой массы; с расстояния орбиты Земли дыра в массу Солнца — то же Солнце, только тёмное</td></tr>
+            <tr><td>«Стрелец A* съест Галактику»</td><td class="d">4 млн M☉ против 10¹² — ест звезду раз в 10 000 лет</td></tr>
+            <tr><td>«БАК создаст дыру и уничтожит Землю»</td><td class="d">даже если — 10⁻²³ кг, испарится за 10⁻⁸⁰ с. Космические лучи бьют атмосферу в 10⁷ раз сильнее 4 млрд лет</td></tr>
+            <tr><td>«Внутри — другая вселенная»</td><td class="d">математика допускает; проверить нельзя в принципе</td></tr>
+            <tr><td>«Дыра — это дырка в пространстве»</td><td class="d">это объект с массой, как звезда, только плотнее и без поверхности</td></tr>
+          </table>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Ближайшая</b> известная — Gaia BH1, 1560 св. лет. Ближайшая сверхмассивная — наша, 26 000 св. лет. Никакой угрозы ни от одной. Блуждающие звёздные дыры в Галактике — ~100 млн; шанс, что одна проходит через Солнечную систему за время её жизни, — около нуля.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 6: ГАЛАКТИКИ ============ -->
+<section class="slide chapter" id="s19">
+  <div class="bgimg"><img src="assets/ch_galaxies.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6</div>
+    <h1>Галактики и крупная структура</h1>
+    <p class="lead">Двести миллиардов звёзд в нашей — и два триллиона галактик в видимой Вселенной, выстроенных в паутину из нитей и стен вокруг пустот размером в сотни миллионов световых лет.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s20">
+  <div class="content">
+    <div class="kicker">Галактики · наша и соседи</div>
+    <h2>Млечный Путь: где мы живём, и с кем столкнёмся</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Млечный Путь</b>: спираль с баром, 100 000 св. лет в диаметре, 1000 — толщиной диска. 100–400 млрд звёзд, масса ~1.5·10¹² M☉ — из них звёзды 5%, остальное тёмная материя в гало. Солнце — в рукаве Ориона, 26 000 св. лет от центра, крутится со скоростью 230 км/с, оборот — 230 млн лет (последний раз здесь были динозавры триасового периода).</li>
+          <li><b>Центр</b>: балдж из старых звёзд, Стрелец A* (4 млн M☉), пузыри Ферми — следы вспышки активности 6 млн лет назад. Плотность звёзд в миллион раз выше нашей: небо там никогда не тёмное. С Земли центр закрыт пылью — видно только в ИК и радио.</li>
+          <li><b>Местная группа</b>: ~80 галактик в 10 млн св. лет. Две большие — мы и <b>Андромеда</b> (M31, 1 трлн звёзд, 2.5 млн св. лет), Треугольник (M33) и десятки карликов. Магеллановы Облака — наши спутники, видны с юга глазом, БМО — 160 000 св. лет.</li>
+          <li><b>Столкновение с Андромедой</b>: сближаемся 110 км/с, встреча через ~4.5 млрд лет. Звёзды не столкнутся (пустота), но галактики перемешаются за 2 млрд лет в эллиптическую «Милкомеду». Солнце, вероятно, выбросит на окраину. Свежие данные Gaia (2025): шанс полного слияния — только ~50%, может и разойтись.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Типы галактик (Хаббл, 1926)</h3>
+          <table class="t">
+            <tr><th>Тип</th><th>Что это</th><th>Доля / пример</th></tr>
+            <tr><td>Спиральные (S, SB)</td><td class="d">диск, рукава, газ, молодые звёзды, активное звездообразование</td><td class="d">~60% ярких; Млечный Путь, Андромеда, M51</td></tr>
+            <tr><td>Эллиптические (E)</td><td class="d">шар или эллипсоид старых красных звёзд, газа почти нет, новых звёзд нет</td><td class="d">результат слияний; M87, гиганты в центрах скоплений до 10¹³ M☉</td></tr>
+            <tr><td>Линзовидные (S0)</td><td class="d">диск без рукавов, промежуточные</td><td class="d">Сомбреро</td></tr>
+            <tr><td>Неправильные (Irr)</td><td class="d">без формы, часто — искажённые приливами</td><td class="d">Магеллановы Облака</td></tr>
+            <tr><td>Карликовые</td><td class="d">10⁷–10⁹ звёзд, самый многочисленный тип</td><td class="d">~50 спутников у Млечного Пути</td></tr>
+          </table>
+          <p style="margin-top:8px" class="dim">Спиральные рукава — не «потоки звёзд», а волны плотности, как пробка на трассе: звёзды въезжают и выезжают, а пробка стоит. В рукавах газ сжимается — там рождаются звёзды, поэтому они яркие и голубые.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s21">
+  <div class="content">
+    <div class="kicker">Галактики · крупная структура</div>
+    <h2>Космическая паутина и тёмная материя</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Иерархия</b>: галактики → группы (десятки) → скопления (тысячи, как Дева в 54 млн св. лет, Кома) → сверхскопления (Ланиакея, 500 млн св. лет, 100 000 галактик, мы на её окраине) → <b>нити и стены</b> вокруг <b>пустот</b> (войды, 100–300 млн св. лет почти без галактик). Великая стена Геркулес–Северная Корона — 10 млрд св. лет, самая большая известная структура.</li>
+          <li><b>Паутина</b> — прямой потомок реликтовых флуктуаций 1:100 000. Тёмная материя первой собралась в нити (не мешает давление света), обычное вещество стекло в её гравитационные ямы. Компьютерные симуляции (Millennium, IllustrisTNG) из шести чисел ΛCDM воспроизводят паутину, неотличимую от реальной.</li>
+          <li><b>Тёмная материя — почему верим</b>: (1) звёзды на окраинах галактик крутятся слишком быстро (Рубин, 1970-е) — должны были улететь; (2) галактики в скоплениях движутся слишком быстро (Цвикки, 1933); (3) гравитационное линзирование показывает массу, где нет света; (4) скопление Пуля: газ столкнулся и застрял, масса прошла сквозь. (5) Без неё галактики не успели бы собраться за 13.8 млрд лет.</li>
+          <li><b>Что это</b> — не знаем. Не обычная материя (нуклеосинтез запрещает). Не чёрные дыры (микролинзирование). Кандидаты: WIMP (ищут 30 лет, не нашли), аксионы, стерильные нейтрино. Или гравитация работает иначе (MOND) — но Пуля и реликт против.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Тёмная энергия: расширение ускоряется</h3>
+          <p>1998: две группы измеряли замедление расширения по сверхновым Ia — и нашли <b>ускорение</b>. Нобель 2011. С ~5 млрд лет назад нечто с отрицательным давлением расталкивает пространство. Простейшее объяснение — космологическая постоянная Λ Эйнштейна, энергия самого вакуума. Проблема: квантовая теория поля предсказывает её в 10¹²⁰ раз больше. Худшее расхождение теории с экспериментом в истории науки.</p>
+          <p style="margin-top:8px"><b>Следствие</b>: через 100 млрд лет все галактики за пределами Местной группы уйдут за горизонт — их свет никогда не дойдёт. Астрономы будущего увидят одну галактику в пустоте и не смогут открыть Большой взрыв. Мы живём в окно, когда космология вообще возможна.</p>
+          <p style="margin-top:8px" class="dim">DESI (2024–25): намёки, что тёмная энергия <b>слабеет</b> со временем. Если подтвердится — Λ не константа, и вся картина будущего меняется.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 7: ЭКЗОПЛАНЕТЫ ============ -->
+<section class="slide chapter" id="s22">
+  <div class="bgimg"><img src="assets/ch_exoplanets.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 7</div>
+    <h1>Экзопланеты: 6000 чужих миров</h1>
+    <p class="lead">До 1995 года мы знали одну планетную систему. Сейчас — тысячи, и большинство не похожи ни на что у нас: планеты из лавы, из алмаза, с дождём из стекла и с двумя солнцами.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s23">
+  <div class="content">
+    <div class="kicker">Экзопланеты · как находят и что нашли</div>
+    <h2>Методы поиска и зоопарк миров</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3>Как находят (планету не видно)</h3>
+          <table class="t">
+            <tr><th>Метод</th><th>Принцип</th><th>Сколько</th></tr>
+            <tr><td>Транзит</td><td class="d">планета проходит по диску звезды — блеск падает на 0.01–1%. Kepler, TESS</td><td class="d">~75%</td></tr>
+            <tr><td>Лучевые скорости</td><td class="d">звезда качается от планеты — доплер ±1 м/с. Так открыли первую (51 Peg b, 1995, Нобель 2019)</td><td class="d">~20%</td></tr>
+            <tr><td>Микролинзирование</td><td class="d">планета усиливает свет фоновой звезды</td><td class="d">~200, далёкие</td></tr>
+            <tr><td>Прямая съёмка</td><td class="d">заслонить звезду коронографом; только большие и далёкие от звезды</td><td class="d">~70</td></tr>
+            <tr><td>Астрометрия</td><td class="d">звезда чертит петлю на небе. Gaia — тысячи скоро</td><td class="d">начинается</td></tr>
+          </table>
+          <p style="margin-top:8px" class="dim">Транзит + спектр: во время прохождения часть света идёт через атмосферу планеты — JWST читает в нём H₂O, CO₂, CH₄, SO₂. Так ищут биомаркеры.</p>
+        </div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Горячие юпитеры</b> (51 Peg b, WASP-12b): газовый гигант в 0.05 а.е., год — 3 дня, 1500–2500 °C. Первое открытие, потому что легче всего найти. Никто не ожидал: гигант не может сформироваться так близко — значит, мигрировал. Вся теория формирования планет переписана.</li>
+          <li><b>Суперземли и мини-нептуны</b> (1.5–4 R⊕) — самый частый тип во Вселенной, и <b>у нас его нет</b>. Что это — большие камни или маленькие газовые — спорят. Долина Фултона (разрыв на 1.8 R⊕): атмосферы сдувает звездой.</li>
+          <li><b>Экзотика</b>: 55 Cnc e — океан лавы; HD 189733b — ветер 8700 км/ч и дождь из стекла; PSR B1620-26 b — планета у пульсара, 12.7 млрд лет; Kepler-16b — два солнца, как Татуин; TrES-2b — чернее угля, отражает 1%; WASP-76b — дождь из железа на ночной стороне; K2-18b — возможно, океан под водородом, спор про диметилсульфид (2023–25).</li>
+          <li><b>Статистика</b>: планет в Галактике больше, чем звёзд. У каждой пятой солнцеподобной — планета земного размера в обитаемой зоне: ~10 млрд в Галактике. Ближайшая, вероятно, в 10–15 св. годах.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s24">
+  <div class="content">
+    <div class="kicker">Экзопланеты · жизнь</div>
+    <h2>Обитаемая зона, Ферми и что искать</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Обитаемая зона</b> — где на поверхности может быть жидкая вода: не слишком близко (кипит), не слишком далеко (лёд). У Солнца — 0.95–1.7 а.е. У красного карлика — в 20 раз ближе, и там планета <b>приливно захвачена</b> (одна сторона вечно к звезде) и получает вспышки в 1000 раз сильнее солнечных. TRAPPIST-1: 7 земель у карлика в 40 св. годах, три в зоне; JWST пока атмосферы у внутренних не нашёл.</li>
+          <li><b>Зона — не гарантия</b>: Венера в ней (по некоторым оценкам), Марс на краю. И не единственный вариант: Европа и Энцелад далеко за зоной, а вода есть. Обитаемость — свойство планеты, не орбиты.</li>
+          <li><b>Биомаркеры</b>: кислород + метан вместе (реагируют, должен быть источник), фосфин, диметилсульфид, красный край хлорофилла. Все — с оговорками: небиологические пути тоже есть. Один спектр ничего не докажет; нужны десятки миров и статистика. JWST может, но на пределе; следующий — Habitable Worlds Observatory, 2040-е.</li>
+          <li><b>Парадокс Ферми</b>: 10 млрд обитаемых планет, 13 млрд лет — где все? Варианты: жизнь редка (абиогенез — один раз?); сложная жизнь редка (2 млрд лет одноклеточных на Земле); разум редок; цивилизации короткоживущи; «великий фильтр» впереди; они есть, но молчат/далеко/не хотят; мы первые. Ни одного наблюдения ни за, ни против за 60 лет SETI. Уравнение Дрейка — способ упорядочить незнание, а не ответ.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Ближайшие интересные</h3>
+          <table class="t">
+            <tr><th>Система</th><th>Расстояние</th><th>Что там</th></tr>
+            <tr><td>Проксима Центавра b</td><td class="d">4.2 св. г.</td><td class="d">1.1 M⊕ в зоне, но у вспыхивающего карлика; атмосфера — неизвестно</td></tr>
+            <tr><td>Барнарда</td><td class="d">6 св. г.</td><td class="d">4 мелких планеты (2024), все горячие</td></tr>
+            <tr><td>Тау Кита</td><td class="d">12 св. г.</td><td class="d">солнцеподобная, 4 кандидата, два у края зоны</td></tr>
+            <tr><td>TRAPPIST-1</td><td class="d">40 св. г.</td><td class="d">7 земель, 3 в зоне; b и c — без плотной атмосферы (JWST)</td></tr>
+            <tr><td>LHS 1140 b</td><td class="d">49 св. г.</td><td class="d">возможно, океанский мир с атмосферой — лучший кандидат 2024</td></tr>
+            <tr><td>K2-18b</td><td class="d">124 св. г.</td><td class="d">«гикеан»; DMS-спор не разрешён</td></tr>
+            <tr><td>Kepler-452b</td><td class="d">1800 св. г.</td><td class="d">«Земля 2.0»: 1.6 R⊕, год 385 дней, звезда G2</td></tr>
+          </table>
+          <p style="margin-top:8px" class="dim">Долететь: Breakthrough Starshot — грамм-зонды с лазерным парусом, 20% c, до Проксимы за 20 лет. Технически на грани, финансово — нет. Пока — только смотреть.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 8: ОСВОЕНИЕ ============ -->
+<section class="slide chapter" id="s25">
+  <div class="bgimg"><img src="assets/ch_explore.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 8</div>
+    <h1>Освоение: как далеко мы реально дотянулись</h1>
+    <p class="lead">Люди — до Луны, 384 000 км, последний раз в 1972. Роботы — до края Солнечной системы. Всё остальное — свет, который мы ловим. Разбираем, кто где был и что дальше.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s26">
+  <div class="content">
+    <div class="kicker">Освоение · история</div>
+    <h2>От Спутника до Артемиды: 70 лет за один слайд</h2>
+    <div class="dg" style="margin-bottom:16px">
+      <div class="row" style="align-items:stretch">
+        <div class="bx am"><b>1957</b><span>Спутник-1. 83 кг, «бип-бип», мир вздрогнул</span></div>
+        <div class="bx am"><b>1961</b><span>Гагарин, 108 минут. 1963 — Терешкова. 1965 — Леонов в открытом космосе</span></div>
+        <div class="bx cy"><b>1969</b><span>Аполлон-11. 12 человек на Луне до 1972, 382 кг грунта</span></div>
+        <div class="bx"><b>1971–86</b><span>станции: Салют, Скайлэб, Мир (15 лет, 437 дней Полякова)</span></div>
+        <div class="bx"><b>1977</b><span>Вояджеры. 1981 — Шаттл. 1990 — Хаббл</span></div>
+        <div class="bx gr"><b>1998–</b><span>МКС: 420 т, 16 стран, люди на орбите без перерыва 25 лет</span></div>
+        <div class="bx gr"><b>2010-е</b><span>SpaceX: возврат ступеней (2015), Falcon Heavy, Crew Dragon (2020)</span></div>
+        <div class="bx rd"><b>2020-е</b><span>JWST (2021), Artemis I (2022), Starship (2023–), Chang'e-6 обратная сторона</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Почему космос дорогой</b>: ракетное уравнение Циолковского. Чтобы разогнать 1 кг до орбитальных 7.8 км/с, нужно сжечь ~20 кг топлива, и топливо надо нести с собой. Ракета на старте — 90–95% топлива. Полезная нагрузка Сатурна V — 4% массы. До Марса — ещё вдвое хуже.</li>
+          <li><b>Революция многоразовости</b>: Шаттл обещал, не смог ($1.5 млрд/пуск). Falcon 9 — первая ступень садится и летает до 20+ раз: цена килограмма на НОО упала с $50 000 (Шаттл) до ~$2500. Starship при полной многоразовости обещает $100–200. Это меняет всё: не «что можно», а «что дёшево».</li>
+          <li><b>Люди vs роботы</b>: человек на Марсе — $100–500 млрд, робот — $2–3 млрд и не нужно возвращать. Все научные открытия за 50 лет — от роботов. Но флаг ставят люди. Обе программы идут параллельно, конфликтуя за бюджет.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Что стоит и что летало</h3>
+        <table class="t">
+          <tr><th>Носитель</th><th>На НОО</th><th>Цена пуска</th><th>Статус</th></tr>
+          <tr><td>Сатурн V</td><td class="d">140 т</td><td class="d">$1.2 млрд (в текущих)</td><td class="d">1967–73, 13 пусков</td></tr>
+          <tr><td>Space Shuttle</td><td class="d">27 т</td><td class="d">$1.5 млрд</td><td class="d">135 пусков, 2 катастрофы</td></tr>
+          <tr><td>Союз-2</td><td class="d">8 т</td><td class="d">$50 млн</td><td class="d">самая летавшая семья, 1900+</td></tr>
+          <tr><td>Falcon 9</td><td class="d">22 т</td><td class="d">$67 млн (внутр. ~$20)</td><td class="d">~100 пусков/год</td></tr>
+          <tr><td>SLS</td><td class="d">95 т</td><td class="d">$2+ млрд</td><td class="d">Artemis, 1 пуск</td></tr>
+          <tr><td>Starship</td><td class="d">100–150 т</td><td class="d">цель $10 млн</td><td class="d">испытания, орбиты нет</td></tr>
+          <tr><td>Long March 5</td><td class="d">25 т</td><td class="d">—</td><td class="d">Тяньгун, Chang'e</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s27">
+  <div class="bgimg"><img src="assets/ch_probes.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Освоение · роботы</div>
+    <h2>Зонды: кто куда долетел</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="am">Каждую планету посещали</h3>
+          <table class="t">
+            <tr><th>Куда</th><th>Кто и когда</th></tr>
+            <tr><td>Меркурий</td><td class="d">Mariner 10 (1974), MESSENGER на орбите (2011–15), BepiColombo прибывает 2026</td></tr>
+            <tr><td>Венера</td><td class="d">Венера-7 — первая посадка на другую планету (1970); Венера-13 — 127 мин, цветные фото; Magellan — карта радаром</td></tr>
+            <tr><td>Марс</td><td class="d">~50 миссий, половина провалилась. Викинги 1976, Sojourner 1997, Spirit/Opportunity (15 лет вместо 90 дней), Curiosity 2012–, Perseverance 2021–</td></tr>
+            <tr><td>Юпитер</td><td class="d">Pioneer 10/11, Вояджеры, Galileo (8 лет, зонд в атмосферу), Juno 2016–, JUICE и Europa Clipper в пути</td></tr>
+            <tr><td>Сатурн</td><td class="d">Cassini 2004–17: 13 лет, Huygens на Титан, финал — в атмосферу</td></tr>
+            <tr><td>Уран, Нептун</td><td class="d">только Voyager 2, 1986 и 1989. Больше никто. Uranus Orbiter — 2030-е, если дадут денег</td></tr>
+            <tr><td>Плутон</td><td class="d">New Horizons 2015, пролёт на 14 км/с относительно Плутона, потом Аррокот в поясе Койпера</td></tr>
+            <tr><td>Солнце</td><td class="d">Parker Solar Probe — 6.1 млн км от поверхности, 690 000 км/ч, самый быстрый рукотворный объект</td></tr>
+            <tr><td>Астероиды, кометы</td><td class="d">Hayabusa 1/2, OSIRIS-REx — грунт на Землю; Rosetta; DART — таран</td></tr>
+          </table>
+        </div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Вояджер-1</b>: запущен 1977, 165 а.е. (24.7 млрд км), самый далёкий объект человечества. Сигнал идёт 23 часа. Мощность РИТЭГ упала до 200 Вт — приборы отключают по одному, до ~2030. Потом полетит молча: через 40 000 лет пройдёт в 1.6 св. года от звезды Gliese 445. Золотая пластинка с музыкой и «Здравствуйте» на 55 языках — на случай.</li>
+          <li><b>Межзвёздное пространство</b>: оба Вояджера пересекли гелиопаузу (2012, 2018) — солнечный ветер уступил межзвёздному. Но до облака Оорта им 300 лет, до его края — 30 000. «Вышел из Солнечной системы» — смотря что считать границей.</li>
+          <li><b>Гравитационные манёвры</b>: Вояджеры воспользовались редким выравниванием планет (раз в 175 лет) — каждая планета подкидывала скорость. Без этого до Нептуна — 30 лет вместо 12. Cassini разогнался о Венеру дважды, Землю и Юпитер. Это единственный способ летать далеко на химических двигателях.</li>
+          <li><b>Кто в пути</b>: JUICE (Юпитер, 2031), Europa Clipper (2030), BepiColombo (Меркурий, 2026), Psyche (металлический астероид, 2029), Dragonfly (Титан, 2034), Hera (к Диморфу), Тяньвэнь-2 (астероид → комета), Lucy (троянцы Юпитера).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s28">
+  <div class="bgimg"><img src="assets/ch_mars.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Освоение · люди</div>
+    <h2>Луна снова, потом Марс: что мешает</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Артемида</b>: возврат на Луну. Artemis I (2022) — беспилотный облёт. II — пилотируемый облёт, 2026. III — посадка, не раньше 2027–28, на Starship HLS у южного полюса, где лёд в тени кратеров. Цель — база и «Gateway» на орбите. Китай — свою посадку к 2030, с Россией — станцию ILRS. Гонка снова.</li>
+          <li><b>Марс — почему сложно</b>: 6–9 месяцев пути, окно раз в 26 месяцев, миссия — 2.5–3 года. <b>Радиация</b>: без магнитосферы и атмосферы — 0.7 Зв за перелёт туда-обратно (предел карьеры астронавта — 1 Зв), плюс солнечные вспышки — смертельно без укрытия. <b>Посадка</b>: атмосфера слишком тонкая для парашютов, слишком плотная, чтобы игнорировать; всё тяжелее тонны сажали только на тросах с ракетного крана. Человеческий корабль — 20–100 т. Никто не знает как.</li>
+          <li><b>Тело</b>: в невесомости кости теряют 1–1.5% массы в месяц, мышцы атрофируются, зрение портится (SANS), иммунитет падает. Полгода на МКС — восстановление год. Марсианская гравитация 0.38g — неизвестно, хватит ли. Психология — 3 года в жестянке с 4–6 людьми и задержкой связи до 22 минут.</li>
+          <li><b>Терраформирование</b> — фантастика на тысячелетия: всего CO₂ на Марсе не хватит даже до 0.02 атм (NASA, 2018). Реалистично — купола и подземные базы. Илон говорит про 2030-е; NASA — 2040-е; оба, скорее всего, оптимисты.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Где сейчас люди</h3>
+          <table class="t">
+            <tr><th>Станция</th><th>Орбита</th><th>Экипаж</th><th>Срок</th></tr>
+            <tr><td>МКС</td><td class="d">420 км</td><td class="d">7 постоянно</td><td class="d">до 2030, потом сведут в океан</td></tr>
+            <tr><td>Тяньгун</td><td class="d">390 км</td><td class="d">3 постоянно</td><td class="d">с 2021, расширяется</td></tr>
+          </table>
+          <h3 style="margin-top:14px">Рекорды</h3>
+          <table class="t">
+            <tr><td>Дальше всех</td><td class="d">Аполлон-13, 400 171 км от Земли (1970)</td></tr>
+            <tr><td>Дольше всех за раз</td><td class="d">Поляков, 437 дней (Мир, 1994–95)</td></tr>
+            <tr><td>Всего в космосе</td><td class="d">Кононенко, 1111 дней</td></tr>
+            <tr><td>Людей в космосе</td><td class="d">~700; на Луне — 12, все американцы, все мужчины, 1969–72</td></tr>
+            <tr><td>Погибло</td><td class="d">18 в полёте (Союз-1, Союз-11, Челленджер, Колумбия) + 3 на земле (Аполлон-1)</td></tr>
+            <tr><td>Одновременно</td><td class="d">19 человек (сентябрь 2024)</td></tr>
+          </table>
+          <p style="margin-top:8px" class="dim">Космический туризм: Inspiration4, Polaris Dawn (первый частный выход, 2024), Blue Origin — 11 минут за $ несколько сотен тысяч. Орбита — от $55 млн.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s29">
+  <div class="bgimg"><img src="assets/ch_future.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Освоение · телескопы</div>
+    <h2>Глаза: чем мы всё это видим</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Хаббл</b> (1990–): 2.4 м на орбите 540 км. Пять ремонтов астронавтами. Возраст Вселенной с 10–20 до 13.8 млрд, тёмная энергия, глубокие поля (10 000 галактик в точке размером с песчинку на вытянутой руке). 1.6 млн наблюдений, 21 000 статей. Умрёт от трения об атмосферу в 2030-х, если не поднять.</li>
+          <li><b>JWST</b> (2021–): 6.5 м из 18 золотых сегментов, в точке L2 за 1.5 млн км, охлаждён до −233 °C, работает в инфракрасном — видит сквозь пыль и ловит свет, растянутый расширением. Самые далёкие галактики (z = 14, 290 млн лет после взрыва — слишком большие и слишком рано, теория чешет голову), атмосферы экзопланет, рождение звёзд. Топливо на 20 лет.</li>
+          <li><b>С Земли</b>: VLT (4×8.2 м, Чили), Keck (2×10 м), Subaru. Адаптивная оптика — зеркало гнётся 1000 раз в секунду, компенсируя дрожь атмосферы: резче Хаббла. <b>ELT</b> (39 м, 2029) — соберёт в 15 раз больше света, чем любой сейчас. <b>Vera Rubin</b> (2025–) — снимает всё небо каждые 3 ночи, 20 ТБ за ночь, миллионы тревог о новых объектах в сутки.</li>
+          <li><b>Не свет</b>: LIGO/Virgo/KAGRA — гравитационные волны; IceCube — нейтрино из кубического километра льда; Event Horizon Telescope — радио с разрешением в микросекунды дуги; Gaia — 2 млрд звёзд с положениями до 10 микросекунд, 3D-карта Галактики.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Что дальше</h3>
+          <table class="t">
+            <tr><th>Проект</th><th>Когда</th><th>Зачем</th></tr>
+            <tr><td>Nancy Grace Roman</td><td class="d">2027</td><td class="d">поле в 100 раз шире Хаббла; тёмная энергия, микролинзирование</td></tr>
+            <tr><td>PLATO (ESA)</td><td class="d">2026</td><td class="d">земли у солнцеподобных звёзд</td></tr>
+            <tr><td>ELT</td><td class="d">2029</td><td class="d">прямая съёмка экзопланет, первые звёзды</td></tr>
+            <tr><td>LISA</td><td class="d">2035</td><td class="d">гравитационные волны в космосе: слияния сверхмассивных дыр</td></tr>
+            <tr><td>Habitable Worlds Observatory</td><td class="d">2040-е</td><td class="d">спектры 25 землеподобных планет — биомаркеры</td></tr>
+            <tr><td>SKA</td><td class="d">2029+</td><td class="d">радио: квадратный километр антенн, тёмные века Вселенной</td></tr>
+            <tr><td>Einstein Telescope</td><td class="d">2035+</td><td class="d">подземный детектор ГВ, все слияния во Вселенной</td></tr>
+          </table>
+          <p style="margin-top:8px" class="dim">Главная угроза телескопам с Земли — мегаконстелляции: 7000 Starlink уже, планы на 40 000+; полосы на снимках, радиошум. Небо перестаёт быть тёмным.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ИТОГИ ============ -->
+<section class="slide" id="s30">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Вся Вселенная на одном слайде</h2>
+    <table class="t" style="font-size:15px">
+      <tr><th>Масштаб</th><th>Что там</th><th>Как узнали</th><th>Что не знаем</th></tr>
+      <tr><td>10⁻¹⁵ – 10⁻¹⁰ м</td><td class="d">ядра, атомы — 75% H, 25% He с первых 3 минут</td><td class="d">нуклеосинтез, спектры</td><td class="d">почему материи больше антиматерии</td></tr>
+      <tr><td>10⁶ – 10⁸ м</td><td class="d">планеты: 4 каменных, 4 газовых, луны с океанами</td><td class="d">зонды на каждой; посадки на 8 телах</td><td class="d">есть ли жизнь на Европе/Энцеладе</td></tr>
+      <tr><td>10⁹ м</td><td class="d">Солнце: 15 млн К в центре, термостат на 10 млрд лет</td><td class="d">нейтрино, гелиосейсмология, Parker</td><td class="d">почему корона в 300 раз горячее поверхности</td></tr>
+      <tr><td>10¹³ – 10¹⁶ м</td><td class="d">Солнечная система до Оорта; 6000 экзопланет</td><td class="d">Вояджеры, транзиты, доплер</td><td class="d">почему у нас нет суперземель</td></tr>
+      <tr><td>10¹⁷ – 10²¹ м</td><td class="d">звёзды всех масс, их смерти, чёрные дыры</td><td class="d">HR-диаграмма, сверхновые, LIGO, EHT</td><td class="d">что внутри горизонта; парадокс информации</td></tr>
+      <tr><td>10²¹ – 10²⁴ м</td><td class="d">Млечный Путь, Местная группа, сверхскопления, паутина</td><td class="d">Gaia, обзоры, линзирование</td><td class="d">что такое тёмная материя (27%)</td></tr>
+      <tr><td>10²⁶ м</td><td class="d">наблюдаемая Вселенная: 2 трлн галактик, 13.8 млрд лет</td><td class="d">реликт, сверхновые Ia, ΛCDM из 6 чисел</td><td class="d">что такое тёмная энергия (68%); что до 10⁻⁴³ с; конечна ли</td></tr>
+    </table>
+    <div class="note">Одна закономерность на всех масштабах: <b>гравитация собирает, давление и вращение сопротивляются, и всё, что мы видим, — временное равновесие между ними</b>. Звезда, галактика, диск планет, Солнечная система, скопление — одна и та же борьба на разных размерах. Побеждает всегда гравитация, вопрос только когда.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s31">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <div class="kicker amber">Финал</div>
+    <h1>Бледно-голубая точка</h1>
+    <p class="lead">Вояджер-1, 1990, 6 млрд км: по просьбе Сагана камеру развернули назад. Земля — 0.12 пикселя в солнечном луче. Всё, что когда-либо случилось с людьми, — на этой точке.</p>
+    <p class="lead" style="margin-top:14px">Мы узнали возраст Вселенной с точностью до процента, взвесили её, сфотографировали тень чёрной дыры, услышали столкновение двух других, нашли шесть тысяч чужих миров и посадили роботов на восемь тел. Сами при этом были только на Луне. Самое далёкое, до чего дотянулась рука, — 400 000 км. Самое далёкое, до чего дотянулся глаз, — 13.5 миллиарда лет. Разрыв между ними — и есть повод продолжать.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- SLIDES_END -->
+
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>

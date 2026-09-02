@@ -1,0 +1,1874 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Оружие и баллистика: современный арсенал</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #c8d45a; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Modern arsenal deep dive · Гвендолин-ночные-лекции</div>
+    <h1>Оружие и баллистика: современный арсенал</h1>
+    <p class="lead">От пули до боеголовки в мегатонну: что реально стоит на вооружении прямо сейчас, что только что сняли и что вот-вот поступит. Физика попадания, стрелковка, броня, авиация, флот, ПВО - и отдельно, с цифрами и радиусами, ядерное оружие и триада. Только открытые источники: справочники, SIPRI, FAS, Glasstone, NUKEMAP.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s2">
+  <div class="content">
+    <div class="kicker">Вступление · карта арсенала</div>
+    <h2>Десять этажей одной лестницы: от 1 кДж до 200 ПДж</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/ch_overview.png" alt="">
+        <div class="pcap">Спираль масштаба: пистолет, автомат, танк, истребитель, подлодка, МБР. Каждый виток - примерно на три порядка больше энергии, денег и дальности. Вся дека - подъём по этой спирали.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Единица измерения всей деки - джоуль.</b> Пуля 9×19 несёт ~500 Дж, автоматная 5.45 - ~1400, винтовочная 7.62×54R - ~3300, крупнокалиберная 12.7 - ~17 000. Танковый подкалиберный снаряд - ~8-10 <b>мегаджоулей</b> (в 6000 раз больше автоматной пули). Дальше начинается химия взрывчатки: 1 кг тротила = 4.18 МДж.</li>
+          <li><b>Потом - скачок в другую вселенную.</b> Хиросима (15 кт) = 63 <b>тераджоуля</b>: в миллион раз больше танкового снаряда. Боеголовка МБР (800 кт) - ещё в 50 раз больше. Царь-бомба (50 Мт) - 210 <b>петаджоулей</b>, столько энергии Земля получает от Солнца примерно за секунду.</li>
+          <li><b>Второй параметр - дальность.</b> Автомат эффективен на 400-500 м, снайпер - на 1.5-3.5 км, гаубица - 30-70 км, РСЗО - 80-500 км, крылатая ракета - 1500-5500 км, МБР - 11 000-18 000 км (то есть куда угодно). По дороге меняется всё: физика полёта, наведение, цена и кто принимает решение о пуске.</li>
+          <li><b>Правило чтения деки:</b> все цифры - из открытых справочников и заявлений производителей. Там, где число спорное или оценочное (пробитие снарядов, мощность боеголовок), стоит пометка «оценка». Секретов тут нет, есть школьная физика и много таблиц.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">Вступление · шкала энергии</div>
+    <h2>Логарифмическая линейка поражения</h2>
+    <div class="dg">
+      <div class="row">
+        <div class="bx"><b>9×19 Para</b><span>~500 Дж</span></div>
+        <div class="bx"><b>5.45×39</b><span>~1.4 кДж</span></div>
+        <div class="bx"><b>7.62×54R</b><span>~3.3 кДж</span></div>
+        <div class="bx"><b>12.7×108</b><span>~17 кДж</span></div>
+        <div class="bx cy"><b>30-мм БПС</b><span>~0.3 МДж</span></div>
+        <div class="bx cy"><b>125-мм БОПС</b><span>~8-10 МДж</span></div>
+      </div>
+      <div class="row">
+        <div class="bx am"><b>Javelin (БЧ)</b><span>~35 МДж (8.4 кг ВВ)</span></div>
+        <div class="bx am"><b>ФАБ-500 (ВВ)</b><span>~1 ГДж</span></div>
+        <div class="bx am"><b>Tomahawk (450 кг)</b><span>~2 ГДж</span></div>
+        <div class="bx am"><b>ФАБ-3000</b><span>~6 ГДж</span></div>
+        <div class="bx rd"><b>GBU-57 MOP</b><span>~10 ГДж, 13.6 т</span></div>
+        <div class="bx rd"><b>Хиросима, 15 кт</b><span>63 ТДж</span></div>
+      </div>
+      <div class="row">
+        <div class="bx rd"><b>W87, 300 кт</b><span>1.25 ПДж</span></div>
+        <div class="bx rd"><b>W88, 475 кт</b><span>2 ПДж</span></div>
+        <div class="bx rd"><b>B83, 1.2 Мт</b><span>5 ПДж</span></div>
+        <div class="bx rd"><b>Castle Bravo, 15 Мт</b><span>63 ПДж</span></div>
+        <div class="bx rd"><b>Царь-бомба, 50 Мт</b><span>210 ПДж</span></div>
+        <div class="bx"><b>Весь арсенал мира</b><span>~12 000 ББ, оценка ~ 2-3 Гт</span></div>
+      </div>
+    </div>
+    <div class="cols" style="margin-top:18px">
+      <div class="card">
+        <h3>Три баллистики - три науки</h3>
+        <ul>
+          <li><b>Внутренняя</b> - что происходит в стволе: давление, горение пороха, разгон. Длится ~1 мс.</li>
+          <li><b>Внешняя</b> - полёт: гравитация, сопротивление воздуха, ветер, вращение Земли. От долей секунды до 30 минут (МБР).</li>
+          <li><b>Терминальная</b> - встреча с целью: пробитие, кавитация, осколки, ударная волна. Микросекунды, но именно за них платят.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Почему джоули - не всё</h3>
+        <p>Пуля .50 BMG и 30-мм снаряд отличаются энергией в 20 раз, но танку одинаково безразличны: важна не энергия, а её <b>плотность</b> на пятне контакта (длинный тонкий стержень БОПС) или <b>способ доставки</b> (кумулятивная струя со скоростью 8-10 км/с). А для ядерного заряда важна вообще не энергия, а высота подрыва: одна и та же бомба на земле и в воздухе даёт разные зоны поражения в разы.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 1: БАЛЛИСТИКА ============ -->
+<section class="slide chapter" id="s4">
+  <div class="bgimg"><img src="assets/ch_ballistics.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1</div>
+    <h1>Баллистика: физика попадания</h1>
+    <p class="lead">Миллисекунда в стволе, секунды в воздухе, микросекунды в цели. Три раздела одной науки, которые объясняют, почему снайпер целится в небо, а танковый снаряд похож на карандаш.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="content">
+    <div class="kicker">Баллистика · внутренняя</div>
+    <h2>Внутри ствола: миллисекунда при 3000 атмосфер</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+      <div>
+        <div class="pimg">
+          <img src="assets/cartridge_cut.png" alt="" style="width:100%;border-radius:12px;border:1px solid var(--line);display:block">
+          <div class="pcap"><b>Патрон в разрезе:</b> капсюль, латунная гильза, 1.5-3 г нитроцеллюлозного пороха, пуля с оболочкой и сердечником. Порох не взрывается, а <b>горит</b> - за 0.3-0.5 мс, давая до 300-430 МПа (3000-4300 атм) в патроннике. Гильза при выстреле раздувается и герметизирует затвор, потом упруго возвращается.</div>
+        </div>
+      </div>
+      <div>
+        <div class="pimg">
+          <img src="assets/barrel_rifling.png" alt="" style="width:100%;border-radius:12px;border:1px solid var(--line);display:block">
+          <div class="pcap"><b>Нарезы</b> закручивают пулю до 200-300 тысяч об/мин - гироскоп, который держит её носом вперёд. Ствол АК-74 (415 мм) разгоняет пулю до 900 м/с за ~1 мс с ускорением ~400 000 g. Каждый выстрел - тепло и эрозия: ресурс ствола 10-20 тыс. выстрелов у автомата, 1-2 тыс. у снайперской .338, 200-500 у танковой пушки.</div>
+        </div>
+      </div>
+    </div>
+    <div class="cols" style="margin-top:14px">
+      <div class="card">
+        <h3>Что даёт длина ствола</h3>
+        <p>5.56×45: из 20" M16 - ~945 м/с, из 14.5" M4 - ~905, из 10.3" Mk18 - ~800. Каждые -10 см длины - минус 30-50 м/с, и главное - падает дальность, на которой пуля ещё фрагментируется (M193/M855 «работают» выше ~760 м/с). Отсюда мода на 6.8×51 у армии США: тот же короткий ствол, но 80 000 psi (550 МПа) в гибридной гильзе - и энергия винтовочного 7.62 на 400 м.</p>
+      </div>
+      <div class="card">
+        <h3 class="am">Дульный срез: 165 дБ</h3>
+        <p>На выходе пули давление ещё ~50 МПа - отсюда дульная волна, вспышка и звук 160-170 дБ. Глушитель не «выключает» выстрел, а снижает его до 130-140 дБ (уровень отбойного молотка), плюс убирает вспышку. Дульный тормоз, наоборот, гасит отдачу на 30-50%, но бьёт по ушам соседей. Ни один современный снайпер и штурмовик без банки не воюет.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="content">
+    <div class="kicker">Баллистика · внешняя</div>
+    <h2>Полёт: гравитация, воздух, ветер и вращение планеты</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Пуля летит по параболе, испорченной воздухом.</b> Сопротивление отнимает у 5.45 половину скорости к 500 м. Поэтому ствол всегда смотрит выше цели: прицел «пристрелян» на 100 м, а на 500 м пуля падает уже на метр-полтора. У пули важен <b>баллистический коэффициент</b> (BC): тяжёлая и остроносая (.338 LM, BC ~0.7) теряет скорость вдвое медленнее, чем лёгкая 5.45 (BC ~0.3).</li>
+          <li><b>Ветер - главный враг после 300 м.</b> Боковой 4-5 м/с сносит 5.56 на 500 м примерно на метр, 7.62×51 - на 0.7 м, .338 - на 0.5 м. На 1500 м снос уже 3-5 метров, и его надо угадывать по траве и миражу: именно поэтому у снайпера есть второй номер.</li>
+          <li><b>Дальше вылезают эффекты, которых нет в учебнике за 9 класс:</b> деривация (вращающаяся пуля уходит вбок на 20-30 см на 1000 м), эффект Кориолиса (10-15 см на километре, на 3 км - уже метр), падение плотности воздуха с высотой и температурой. Всё это считает баллистический калькулятор в прицеле или на запястье.</li>
+          <li><b>Дозвуковой переход.</b> Пуля, замедляясь ниже 340 м/с, попадает в турбулентный трансзвук и «плывёт». Для 7.62×51 это ~900 м, для .338 LM - ~1500 м, для .50 BMG - ~2000 м. Именно здесь проходит граница реальных дальностей снайперов, а не там, где кончается энергия.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Падение и снос на 500 м (пристрелка 100 м, ветер 4.5 м/с)</h3>
+          <table class="t">
+            <tr><th>Патрон</th><th>V₀, м/с</th><th>Падение</th><th>Снос</th><th>Время</th></tr>
+            <tr><td>5.45×39 (7Н6)</td><td class="d">900</td><td class="d">~1.3 м</td><td class="d">~1.0 м</td><td class="d">0.8 с</td></tr>
+            <tr><td>5.56×45 (M855)</td><td class="d">915</td><td class="d">~1.2 м</td><td class="d">~1.0 м</td><td class="d">0.75 с</td></tr>
+            <tr><td>7.62×39</td><td class="d">715</td><td class="d">~2.3 м</td><td class="d">~1.4 м</td><td class="d">1.0 с</td></tr>
+            <tr><td>7.62×51 (M80)</td><td class="d">840</td><td class="d">~1.4 м</td><td class="d">~0.7 м</td><td class="d">0.75 с</td></tr>
+            <tr><td>.338 Lapua (250 гр)</td><td class="d">915</td><td class="d">~1.0 м</td><td class="d">~0.5 м</td><td class="d">0.65 с</td></tr>
+            <tr><td>.50 BMG (M33)</td><td class="d">890</td><td class="d">~1.1 м</td><td class="d">~0.5 м</td><td class="d">0.65 с</td></tr>
+          </table>
+          <p class="dim" style="margin-top:8px">Цифры округлены по стандартным баллистическим таблицам; конкретный ствол и пуля дадут ±15%.</p>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Эффективная дальность</b> - не «докуда долетит», а докуда обученный стрелок стабильно попадает по ростовой фигуре: автомат 400-500 м, пулемёт 800-1000 м, СВД 800 м, .338 - 1500 м, .50 - 1800 м. Летит всё это в 3-5 раз дальше.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s7">
+  <div class="content">
+    <div class="kicker">Баллистика · терминальная</div>
+    <h2>Встреча с целью: пробитие, кавитация и классы брони</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Пуля в мягкой ткани делает две полости.</b> Постоянная - раневой канал диаметром с пулю. Временная - «кавитация» в 10-30 диаметров, схлопывающаяся за миллисекунды: у высокоскоростных пуль (свыше 700 м/с) именно она рвёт ткани далеко от канала. Плюс опрокидывание: длинная пуля 5.45 с полостью в носике начинает кувыркаться через 5-10 см. Останавливающее действие пистолетной 9 мм - в основном миф: работает только попадание в ЦНС или крупные сосуды.</li>
+          <li><b>Бронепробитие - это плотность энергии.</b> Обычная пуля со свинцовым сердечником расплющивается о сталь. Бронебойная (Б-32, M995, 7Н24) несёт закалённый стальной или карбид-вольфрамовый сердечник и пробивает 10-мм стальную плиту с 100-200 м. Керамика (карбид бора, карбид кремния) не пробивается, а <b>крошит</b> сердечник, потом полиэтилен UHMWPE ловит осколки. Сталь дешевле, но даёт рикошет и осколки-«спалл».</li>
+          <li><b>Осколки убивают чаще пуль.</b> В артиллерийской войне 70-80% ранений - осколочные. 152-мм ОФ снаряд даёт ~3000 осколков со скоростью 1000-1500 м/с, радиус сплошного поражения 30-40 м, отдельные осколки летят на 300+ м. Отсюда каски, плитники и окопы «в полный профиль»: против осколков они работают, против прямого попадания - нет.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Классы бронезащиты (кратко)</h3>
+          <table class="t">
+            <tr><th>Класс</th><th>Держит</th><th>Аналог</th></tr>
+            <tr><td>ГОСТ Бр1-Бр2</td><td class="d">9×18 ПМ, 9×19 Para</td><td class="d">NIJ II / IIIA (HG1/HG2)</td></tr>
+            <tr><td>Бр3</td><td class="d">9×19 7Н21 бронебойный</td><td class="d">-</td></tr>
+            <tr><td>Бр4</td><td class="d">5.45 ПС, 7.62×39 ПС (обычные)</td><td class="d">NIJ III / RF1</td></tr>
+            <tr><td>Бр5</td><td class="d">7.62×54R ЛПС, 5.45 7Н10, 5.56 M855</td><td class="d">NIJ III+ / RF2</td></tr>
+            <tr><td>Бр6</td><td class="d">12.7×108 Б-32 (бронебойная)</td><td class="d">выше NIJ IV / RF3 (.30-06 M2 AP)</td></tr>
+          </table>
+          <p class="dim" style="margin-top:8px">NIJ 0101.07 (2023) заменил римские уровни на HG1/HG2 (пистолеты) и RF1/RF2/RF3 (винтовки). Каска - обычно Бр2/IIIA: осколки и пистолет, автоматную пулю не держит.</p>
+        </div>
+        <div class="note warn" style="margin-top:12px"><b>Тупая травма</b> - плита остановила пулю, но 1.4 кДж ушли в грудную клетку: прогиб до 44 мм по стандарту, перелом рёбер и ушиб лёгких - норма. Это «выжил», а не «не заметил».</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s8">
+  <div class="content">
+    <div class="kicker">Баллистика · артиллерийская и ракетная</div>
+    <h2>Когда снаряд летит минуту: навесная стрельба и коррекция</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Гаубица стреляет в небо.</b> При угле 45° и начальной скорости ~900 м/с 155-мм снаряд поднимается на 10-15 км, летит 60-90 секунд и падает под крутым углом, а по дороге его сносят ветер и вращение Земли на сотни метров. Отсюда метеопост, баллистический вычислитель и корректировщик (сейчас - дрон над целью). Круговое вероятное отклонение (КВО) обычного снаряда на 25 км - 100-200 м.</li>
+          <li><b>Дальность растёт тремя способами:</b> длинный ствол (52 калибра вместо 39: +30% дальности), донный газогенератор base bleed (+25-30%: убирает разрежение за снарядом), реактивный ускоритель (активно-реактивный снаряд, +40%). Итог для 155/52: 30 км обычным, 40 км с base bleed, 55-70 км ракетно-планирующим (Vulcano, Excalibur S).</li>
+          <li><b>Коррекция превращает 200 м в 5.</b> Спутниковая (Excalibur M982, Краснополь-М2 с ГЛОНАСС, взрыватель-корректор M1156 PGK) или лазерная по подсветке (Краснополь, Copperhead). Но 2023-24 годы показали: под плотной РЭБ спутниковый Excalibur в Украине терял до 90% эффективности, а лазерный Краснополь работает, пока дрон держит луч.</li>
+          <li><b>Ракета против снаряда.</b> Снаряд дёшев ($3-8 тыс.), но ограничен стволом. Реактивный снаряд РСЗО (GMLRS, Торнадо-С) дорог ($150-500 тыс.), зато летит 70-120 км с КВО 5-10 м и не изнашивает ничего. Баллистическая ракета (Искандер, ATACMS, PrSM) - $1-3 млн, 300-500 км, квазибаллистическая траектория с манёвром, чтобы ПРО не решила задачу Кеплера заранее.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Максимальная дальность ствольной артиллерии</h3>
+          <table class="t">
+            <tr><th>Система</th><th>Калибр</th><th>ОФ</th><th>Спец. снаряд</th></tr>
+            <tr><td>Д-30 / 2С1</td><td class="d">122/38</td><td class="d">15.3 км</td><td class="d">21.9 км АРС</td></tr>
+            <tr><td>2С19М2 Мста-С</td><td class="d">152/47</td><td class="d">24.7 км</td><td class="d">29 км АРС</td></tr>
+            <tr><td>2С35 Коалиция-СВ</td><td class="d">152/52</td><td class="d">~40 км</td><td class="d">до 70 км (заявлено)</td></tr>
+            <tr><td>M777 / M109A7</td><td class="d">155/39</td><td class="d">24 км</td><td class="d">30 км BB, 40 км Excalibur</td></tr>
+            <tr><td>PzH 2000 / CAESAR / K9</td><td class="d">155/52</td><td class="d">30 км</td><td class="d">40 км BB, 55-70 км Vulcano/Excalibur S</td></tr>
+            <tr><td>2С7М Малка</td><td class="d">203/56</td><td class="d">37.5 км</td><td class="d">47.5 км АРС</td></tr>
+          </table>
+        </div>
+        <div class="dg" style="margin-top:12px">
+          <div class="row">
+            <div class="bx"><b>Стрельба</b><span>10-16 выстр/мин</span></div>
+            <div class="bx cy"><b>Полёт</b><span>60-90 с на 30 км</span></div>
+            <div class="bx am"><b>Контрбатарейный радар</b><span>засёк за 10-20 с</span></div>
+            <div class="bx rd"><b>Ответ</b><span>2-4 мин: пора уезжать</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2: СТРЕЛКОВОЕ ОРУЖИЕ ============ -->
+<section class="slide chapter" id="s9">
+  <div class="bgimg"><img src="assets/ch_small.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2</div>
+    <h1>Стрелковое оружие и пехота</h1>
+    <p class="lead">Автомат, пулемёт, снайперка, пистолет, гранатомёт и броня. Самая консервативная область: Калашников 1947 года и Браунинг 1933-го до сих пор в строю, но патрон впервые за 60 лет реально меняется.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s10">
+  <div class="content">
+    <div class="kicker">Стрелковое · автоматы</div>
+    <h2>Автоматы: три платформы держат весь мир</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/rifle_lineup.png" alt="">
+        <div class="pcap">Слева направо по идеологии: Калашников (газовый поршень с длинным ходом, живучесть), AR-15/M4 (прямой газоотвод, точность и лёгкость), булл-пап (короткий при длинном стволе), модульный HK416/MCX (поршень с коротким ходом, планки под всё).</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Образец</th><th>Патрон · масса · темп</th><th>Кто и с каких пор</th></tr>
+          <tr><td>АК-12 (обр. 2023)</td><td class="d">5.45×39 · 3.5 кг · 700 в/мин</td><td class="d">ВС РФ с 2018, доработан по опыту 2022-23 (планки, диоптр, без отсечки по 2)</td></tr>
+          <tr><td>АК-74М</td><td class="d">5.45×39 · 3.6 кг · 650</td><td class="d">основная масса армии РФ и СНГ, 1991</td></tr>
+          <tr><td>M4A1 / M16A4</td><td class="d">5.56×45 · 3.0 / 3.9 кг · 800</td><td class="d">США и 60+ стран, с 1994; в Украине с 2022</td></tr>
+          <tr><td>XM7 (SIG MCX Spear)</td><td class="d">6.8×51 · 3.7 кг (+банка 4.5)</td><td class="d">армия США, программа NGSW 2022; замена M4 в боевых частях</td></tr>
+          <tr><td>HK416 / G95 / HK416F</td><td class="d">5.56 · 3.5 кг</td><td class="d">Норвегия, Франция, Бундесвер (G95A1), спецназ США</td></tr>
+          <tr><td>QBZ-191</td><td class="d">5.8×42 · 3.4 кг</td><td class="d">НОАК с 2019, ушли от булл-папа QBZ-95</td></tr>
+          <tr><td>Tavor X95 / SCAR-L</td><td class="d">5.56</td><td class="d">Израиль; Бельгия и спецназ</td></tr>
+          <tr><td>АК-15 / АК-19</td><td class="d">7.62×39 / 5.56×45</td><td class="d">спецназ РФ; экспорт</td></tr>
+        </table>
+        <div class="note" style="margin-top:10px"><b>Тренд:</b> все идут к одному: планка Пикатинни на всю длину, коллиматор + магнифер, глушитель штатно, регулируемый приклад. Внутри - тот же 1950-е газоотвод. Революция не в железе, а в патроне 6.8×51 (см. далее) и в прицеле XM157 с баллистическим вычислителем и дальномером на каждом автомате.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s11">
+  <div class="content">
+    <div class="kicker">Стрелковое · боеприпасы</div>
+    <h2>Патроны: от 500 Дж до 17 000, и первый новый калибр за 60 лет</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/ammo_lineup.png" alt="">
+        <div class="pcap">По росту: пистолетный, малоимпульсный автоматный, промежуточный 7.62×39, винтовочный, .338 и крупнокалиберный. Масса пули - от 4 до 48 грамм, энергия - в 35 раз.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Патрон</th><th>Пуля · V₀ · E₀</th><th>Заметки</th></tr>
+          <tr><td>9×19 Parabellum</td><td class="d">8 г · 360 м/с · ~520 Дж</td><td class="d">весь мир пистолетов и ПП, 1902</td></tr>
+          <tr><td>5.45×39 (7Н6/7Н10/7Н24)</td><td class="d">3.4 г · 900 · ~1380</td><td class="d">7Н24 - карбид-вольфрамовый сердечник, Бр4 с 100 м</td></tr>
+          <tr><td>5.56×45 NATO (M855A1)</td><td class="d">4.0 г · 915 · ~1700</td><td class="d">A1 (2010) - стальной пенетратор, без свинца</td></tr>
+          <tr><td>7.62×39</td><td class="d">7.9 г · 715 · ~2000</td><td class="d">АКМ/АК-15; лучше в кустах, хуже на 300+</td></tr>
+          <tr><td>6.8×51 (.277 Fury)</td><td class="d">8.7 г · ~900 · ~3500</td><td class="d">США NGSW: гибридная гильза сталь+латунь, 550 МПа, пробивает плиту NIJ IV</td></tr>
+          <tr><td>7.62×51 NATO (M80A1)</td><td class="d">9.5 г · 840 · ~3400</td><td class="d">пулемёты, марксманы; ЕС и США</td></tr>
+          <tr><td>7.62×54R</td><td class="d">9.6 г · 830 · ~3300</td><td class="d">1891 года, ПКМ/СВД: старейший боевой патрон в строю</td></tr>
+          <tr><td>.338 Lapua Magnum</td><td class="d">16.2 г · 915 · ~6800</td><td class="d">снайперский стандарт 1500 м</td></tr>
+          <tr><td>12.7×108 / .50 BMG</td><td class="d">48 г · 820 · ~16 000 / 43 г · 890 · ~17 000</td><td class="d">Корд, НСВ / M2, Barrett</td></tr>
+          <tr><td>9×39 (СП-6, ПАБ-9)</td><td class="d">16 г · 290 · ~700</td><td class="d">дозвуковой, ВСС/АС «Вал»: тихо и Бр4 на 100 м</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s12">
+  <div class="content">
+    <div class="kicker">Стрелковое · пулемёты</div>
+    <h2>Пулемёты: 1933 год и 2023-й на одной позиции</h2>
+    <div class="part rev">
+      <div>
+        <table class="pt t">
+          <tr><th>Образец</th><th>Патрон · масса · темп</th><th>Роль</th></tr>
+          <tr><td>ПКМ / ПКП «Печенег»</td><td class="d">7.62×54R · 7.5 / 8.2 кг · 650</td><td class="d">единый пулемёт РФ; Печенег - несменный ствол с принудительным охлаждением, 600 выстр. очередью</td></tr>
+          <tr><td>РПЛ-20</td><td class="d">5.45×39 · 5.5 кг · лента</td><td class="d">новый ручной, ВС РФ с 2024, заменяет РПК-74</td></tr>
+          <tr><td>M240B / L</td><td class="d">7.62×51 · 12.3 / 10 кг · 650-950</td><td class="d">единый пулемёт США; FN MAG 1958 г.</td></tr>
+          <tr><td>M249 SAW → XM250</td><td class="d">5.56 · 7.5 кг → 6.8×51 · 6.6 кг</td><td class="d">XM250 (SIG) легче предшественника при вдвое большей энергии</td></tr>
+          <tr><td>FN Minimi Mk3 / MG5 / MG3</td><td class="d">5.56 / 7.62</td><td class="d">НАТО; MG3 - потомок MG42 1942 г., до сих пор в Бундесвере</td></tr>
+          <tr><td>«Корд» 6П50 / НСВ «Утёс»</td><td class="d">12.7×108 · 25.5 кг · 650</td><td class="d">крупнокалиберный РФ; на треноге, БТР, катерах</td></tr>
+          <tr><td>M2HB / M2A1 Browning</td><td class="d">.50 BMG · 38 кг · 500</td><td class="d">на вооружении с 1933, самое долгоживущее оружие в мире; M2A1 (2011) - быстросменный ствол</td></tr>
+          <tr><td>КПВТ</td><td class="d">14.5×114 · 52 кг · 600</td><td class="d">БТР-80/82: пробивает 20 мм стали на 1000 м</td></tr>
+        </table>
+      </div>
+      <div class="pimg">
+        <img src="assets/machinegun.png" alt="">
+        <div class="pcap">Единый пулемёт на сошках: 200-250 патронов в ленте, смена ствола каждые 200-400 выстрелов очередями, иначе перегрев и «крючок» ствола. Задача - не убить, а прижать: плотность огня 600 выстр/мин заставляет противника лежать, пока работают остальные.</div>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:10px"><b>Тренды:</b> США уходят на 6.8 мм (XM250), РФ - на ленточный 5.45 (РПЛ-20) и делает ставку на Печенег; все тянутся к тепловизору и «умному» прицелу на пулемёт. Крупнокалиберный ниша расширилась: 12.7 стал главным «анти-дроновым» стволом на пикапах и катерах.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s13">
+  <div class="content">
+    <div class="kicker">Стрелковое · снайперы</div>
+    <h2>Снайперское: от 800 м СВД до рекордных 3800</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/sniper_rifle.png" alt="">
+        <div class="pcap">Крупнокалиберная антиматериальная винтовка: 12.7 мм, дульный тормоз, прицел 5-25×, сошки, масса 12-14 кг. Цель - техника, РЛС, оптика и укрытия на 1.5-2 км, а не только люди.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Винтовка</th><th>Патрон · эфф. дальность</th><th>Заметки</th></tr>
+          <tr><td>СВД / СВДМ</td><td class="d">7.62×54R · 800 м</td><td class="d">1963 г.; массовая «марксманская» винтовка, полуавтомат</td></tr>
+          <tr><td>СВЧ (Чукавина)</td><td class="d">7.62×54R / .308 / .338 · 1000-1500</td><td class="d">замена СВД, ВС РФ с 2023</td></tr>
+          <tr><td>Orsis T-5000 / Lobaev DXL-4/5</td><td class="d">.338 LM / .408 / 12.7 · 1500-2500</td><td class="d">РФ, болтовые; DXL-5 «Опустошитель» заявлен на 3000 м</td></tr>
+          <tr><td>АСВК «Корд» / ОСВ-96</td><td class="d">12.7×108 · 1500-1800</td><td class="d">антиматериальные РФ</td></tr>
+          <tr><td>AI AXMC / AXSR, L115A3</td><td class="d">.338 LM · 1500</td><td class="d">Британия, США (Mk22 ASR), рекорд 2009 - 2475 м</td></tr>
+          <tr><td>Barrett M82A1 / MRAD Mk22</td><td class="d">.50 BMG · 1800 / .338 NM</td><td class="d">США, 60 стран; Mk22 - мультикалибр</td></tr>
+          <tr><td>McMillan TAC-50</td><td class="d">.50 BMG · 1800+</td><td class="d">рекорд 3540 м, Канада JTF2, Ирак 2017</td></tr>
+          <tr><td>CheyTac M200 Intervention</td><td class="d">.408 CheyTac · 2300</td><td class="d">лучший баллистический коэффициент из серийных</td></tr>
+        </table>
+        <div class="note" style="margin-top:10px"><b>Рекорды:</b> 3540 м (TAC-50, 2017) и заявленные 3800 м (Украина, ноябрь 2023, винтовка Horizon's Lord 12.7×114). На такой дистанции пуля летит ~10 секунд, падает на сотни метров, и стрелок целится выше цели на высоту 40-этажного дома: это уже артиллерия с оптикой.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s14">
+  <div class="content">
+    <div class="kicker">Стрелковое · короткоствол</div>
+    <h2>Пистолеты и пистолеты-пулемёты: оружие последнего метра</h2>
+    <div class="part rev">
+      <div>
+        <table class="pt t">
+          <tr><th>Образец</th><th>Патрон · магазин</th><th>Кто и с каких пор</th></tr>
+          <tr><td>ПЛ-15 (Лебедев) / ПЛК</td><td class="d">9×19 · 16 / 14</td><td class="d">ВС РФ и Росгвардия с 2022, замена ПМ 1951 г.</td></tr>
+          <tr><td>«Удав» 6П72</td><td class="d">9×21 · 18</td><td class="d">ВС РФ с 2019; патрон 7Н42 - Бр1-Бр2 с 50 м</td></tr>
+          <tr><td>ПЯ «Грач» (МР-443)</td><td class="d">9×19 · 18</td><td class="d">ВС РФ с 2003, критикуют за надёжность</td></tr>
+          <tr><td>Glock 17 Gen5 / 19X</td><td class="d">9×19 · 17</td><td class="d">полиция и армии 50+ стран, Британия L131A1</td></tr>
+          <tr><td>SIG P320 / M17, M18</td><td class="d">9×19 · 17-21</td><td class="d">армия США с 2017 (замена Beretta M9)</td></tr>
+          <tr><td>HK MP5 / MP7A2</td><td class="d">9×19 / 4.6×30 · 30/40</td><td class="d">MP5 с 1966 - спецназ и полиция; MP7 - «PDW», пробивает бронежилет Бр2</td></tr>
+          <tr><td>ПП-19-01 «Витязь» / ПП-2000</td><td class="d">9×19 · 30 / 20-44</td><td class="d">Росгвардия, ФСО, экипажи; «Витязь» на базе АКС-74У</td></tr>
+          <tr><td>FN P90 / B&amp;T APC9K</td><td class="d">5.7×28 · 50 / 9×19 · 30</td><td class="d">P90 - охрана и спецназ 40 стран; APC9K - армия США (SCW, 2019)</td></tr>
+        </table>
+      </div>
+      <div class="pimg">
+        <img src="assets/pistols.png" alt="">
+        <div class="pcap">Полимерная рама, ударниковый УСМ, 15-18 патронов, планка под фонарь и коллиматор - типовой служебный пистолет 2020-х. Все примерно одинаковы: разница в эргономике и в том, кто выиграл тендер.</div>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:10px"><b>Реальность:</b> пистолет в армии - статусный аксессуар и оружие экипажа техники. Доля пистолетных ранений на современной войне - доли процента. ПП живут в полиции, охране и у спецназа в помещениях, где длинный ствол мешает; в армии их вытеснили короткие автоматы (АКС-74У, Mk18, MCX Rattler).</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s15">
+  <div class="content">
+    <div class="kicker">Стрелковое · противотанковое</div>
+    <h2>Гранатомёты и ПТРК: пехота против брони</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/atgm.png" alt="">
+        <div class="pcap">Слева - ПТРК с блоком наведения (тепловизор, захват цели, «выстрелил-забыл»), справа - классический реактивный гранатомёт: 2 кг кумулятивной гранаты за $500 против $4 млн танка. Оба живут на плечах пехоты и решают одну и ту же задачу разной ценой.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Система</th><th>Дальность · пробитие*</th><th>Особенности</th></tr>
+          <tr><td>РПГ-7В2 (ПГ-7ВР)</td><td class="d">200-500 м · 600+ мм за ДЗ (тандем)</td><td class="d">1961 г., 40+ стран; термобарическая ТБГ-7В против укрытий</td></tr>
+          <tr><td>РПГ-28 / РПГ-30 «Крюк»</td><td class="d">300 м · 900 / 650 мм за ДЗ</td><td class="d">РПГ-30 - предварительный ложный выстрел, чтобы обмануть активную защиту</td></tr>
+          <tr><td>9К135 «Корнет-ЭМ»</td><td class="d">до 8-10 км · 1100-1300 мм за ДЗ</td><td class="d">лазерный луч, тандем; на «Тигре», БМП-2М, вертолётах</td></tr>
+          <tr><td>FGM-148 Javelin (F)</td><td class="d">2.5 км (4 км с новым БНУ) · ~750 мм</td><td class="d">ИК ГСН, атака сверху, «выстрелил-забыл», $200-250 тыс. выстрел</td></tr>
+          <tr><td>NLAW</td><td class="d">20-800 м · атака сверху</td><td class="d">одноразовый, 12.5 кг, прогнозная линия наведения без захвата; Британия/Швеция</td></tr>
+          <tr><td>Spike LR2 / SR</td><td class="d">5.5 км / 2 км</td><td class="d">Израиль, 35 стран; оптоволокно + ИК, оператор видит цель до удара</td></tr>
+          <tr><td>Carl Gustaf M4 / AT4 / M72 LAW</td><td class="d">84 мм, 500-1000 м / 300 м / 200 м</td><td class="d">M4 - 6.6 кг, многоразовый, 12 типов выстрелов; AT4 и LAW - одноразовые «трубы»</td></tr>
+          <tr><td>АГС-30 / Mk 19 / ГМ-94</td><td class="d">30 / 40 мм · 1700 / 2200 м</td><td class="d">автоматические гранатомёты - «пулемёт осколками»</td></tr>
+        </table>
+        <p class="dim" style="margin-top:6px">*Пробитие в мм гомогенной стали (RHA) - заявленные и оценочные величины из открытых источников.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s16">
+  <div class="content">
+    <div class="kicker">Стрелковое · защита</div>
+    <h2>Броня пехотинца: 10 кг керамики и полиэтилена</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Плитник вместо жилета.</b> Современный комплект: две плиты 25×30 см (грудь, спина), боковые 15×15, мягкий пакет из арамида/полиэтилена под ними от осколков и пистолета. Плиты класса Бр5 / NIJ IV - 2.5-3.5 кг каждая: керамика (карбид бора, карбид кремния, оксид алюминия) дробит сердечник, полиэтилен UHMWPE ловит остатки. Один выстрел в ту же точку - обычно всё, плита треснула.</li>
+          <li><b>Комплекты:</b> РФ - «Ратник» (6Б45 с плитами Бр5 фронтально, 6Б47 каска, 8-10 кг), 6Б45-1 с усилением по опыту СВО, «Сотник» на подходе; США - MSV/IOTV с плитами ESAPI/XSAPI (уровень выше NIJ IV, ~2.5 кг) и каска IHPS с накладкой против автоматной пули; Британия Virtus; Бундесвер IdZ-ES. Сталь (АР500) дешевле в 5 раз и держит несколько попаданий, но весит 4-5 кг и даёт осколки рикошета.</li>
+          <li><b>Итог: пехотинец несёт 25-45 кг</b> - броня, каска, оружие с боекомплектом, вода, связь, ПНВ, аптечка. Медицинская статистика Ирака/Афганистана и СВО: плитник снижает смертность от пуль и осколков в корпус в разы, а главные убийцы теперь - взрыв (мины, СВУ, дроны), кровопотеря конечностей (отсюда жгут у каждого) и осколки в голову и шею. Кевларовый шлем держит осколок и 9 мм, автоматную пулю в упор - нет.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/armor_plates.png" alt="">
+        <div class="pcap">Керамическая плита в разрезе: ударная поверхность из керамики, подложка из полиэтиленовых или арамидных слоёв, остановленный обломок сердечника. Пуля 7.62×54R в керамику - трещина в форме конуса и 25-40 мм «прогиба» в тело за плитой.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 3: ХОЛОДНОЕ ОРУЖИЕ ============ -->
+<section class="slide chapter" id="s17">
+  <div class="bgimg"><img src="assets/ch_cold.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3</div>
+    <h1>Холодное оружие в армии XXI века</h1>
+    <p class="lead">Штык-нож, лопатка, томагавк, мачете и парадная сабля. Ни одно из них не решает бой, но каждое до сих пор выдают по уставу, и штыковые атаки случались в 2004, 2009 и 2011 годах.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s18">
+  <div class="content">
+    <div class="kicker">Холодное · ножи и штыки</div>
+    <h2>Штык-ножи и боевые ножи: 95% работы - открыть паёк</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/knives.png" alt="">
+        <div class="pcap">Веером: штык-нож с ножнами-кусачками, тактический танто, кукри, тонкий кинжал и складник. Клинок 12-18 см, сталь 55-60 HRC, покрытие против бликов. Все они в первую очередь инструмент, во вторую - оружие.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Образец</th><th>Клинок · масса</th><th>Кто и зачем</th></tr>
+          <tr><td>6Х5 / 6Х9 (АК-74М / АК-12)</td><td class="d">160 мм · 300 г</td><td class="d">ВС РФ; ножны-кусачки для проволоки под током; 6Х9-1 - штатный для АК-12 с 2020-х</td></tr>
+          <tr><td>Ontario M9 / OKC-3S</td><td class="d">178 / 203 мм</td><td class="d">армия и КМП США; OKC-3S (2003) - под M16/M4, нож с «выступом» Bowie</td></tr>
+          <tr><td>Ka-Bar USMC</td><td class="d">178 мм · 320 г</td><td class="d">с 1942 г. и до сих пор в продаже морпехам; символ, а не устав</td></tr>
+          <tr><td>Glock FM 78/81</td><td class="d">165 мм · 200 г</td><td class="d">полевой нож Австрии, пила на обухе у 81; дёшев и неубиваем</td></tr>
+          <tr><td>Eickhorn KM2000 / KM4000</td><td class="d">172 мм</td><td class="d">Бундесвер, танто-профиль, стеклобой</td></tr>
+          <tr><td>Кукри (Гуркхи)</td><td class="d">250-300 мм · 500-600 г</td><td class="d">Британия и Индия, уставной клинок гуркхских частей; рубит как топор</td></tr>
+          <tr><td>Fairbairn-Sykes</td><td class="d">175 мм</td><td class="d">коммандос Британии с 1941; ныне эмблема и церемониал, но выдаётся</td></tr>
+          <tr><td>«Шайтан», «Витязь-НР», НРС-2</td><td class="d">160 мм</td><td class="d">спецназ РФ; НРС-2 - нож со стреляющим устройством под СП-4 в рукояти</td></tr>
+        </table>
+        <div class="note" style="margin-top:10px"><b>Штык в бою</b> - редкость, но не легенда: Басра 2004 (шотландцы Argyll and Sutherland Highlanders, бой у «Дэнни Бой», 20 солдат против ~100), Афганистан 2009 (лейтенант Джеймс Адамсон, Военный крест) и 2011 (капрал Шон Джонс). Уставы США, Британии и РФ штыковой бой по-прежнему включают в курс молодого бойца.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s19">
+  <div class="content">
+    <div class="kicker">Холодное · инструмент и церемониал</div>
+    <h2>Лопатка, томагавк, мачете и сабля: то, что реально носят</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>МПЛ-50 - главное холодное оружие русской армии.</b> Малая пехотная лопата образца 1869 года (конструкция датчанина Линнемана) выдаётся до сих пор: 50 см, 800 г, заточенная кромка. Ею копают окоп, колют дрова, метают на 10 м и рубят. У США - трёхсекционная E-tool 1967 г. и складная Gerber, у Бундесвера - Glock. Фраза «окоп в полный профиль» на СВО снова стала главным средством выживания, а лопатка - главным инструментом.</li>
+          <li><b>Томагавк и мачете живут по нишам.</b> Тактический томагавк (SOG, RMJ, Winkler) вернулся в американские подразделения через Афганистан: вскрыть дверь, разбить окно, сбить замок. Мачете - джунгли и саванна: Латинская Америка, Индия, Африка, спецназ в тропиках (Ontario, Tramontina, Cold Steel). В Европе и на СВО - никакой роли.</li>
+          <li><b>Церемониальное оружие никуда не делось.</b> Офицерский кортик в ВС РФ (с 1940-го, снова выдаётся выпускникам с 2000-х), Mameluke-сабля офицеров КМП США (с 1825 г., старейший предмет в снабжении), сабля NCO, кортики и палаши почётных караулов, шашка казачьих частей, кукри на парадах гуркхов, катласс Королевского флота. Ими не воюют, но с них начинается корпоративная идентичность армии.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/shovel_tomahawk.png" alt="">
+        <div class="pcap">Складная лопатка с заточкой, тактический томагавк и мачете. Из троих реальную ежедневную работу делает лопатка: за неделю на позиции солдат перекидывает ею несколько тонн грунта.</div>
+      </div>
+    </div>
+    <div class="dg" style="margin-top:12px">
+      <div class="row">
+        <div class="bx"><b>МПЛ-50</b><span>1869 г., до сих пор в строю</span></div>
+        <div class="bx"><b>M2 Browning</b><span>1933 г.</span></div>
+        <div class="bx"><b>7.62×54R</b><span>1891 г.</span></div>
+        <div class="bx"><b>Mameluke</b><span>1825 г.</span></div>
+        <div class="bx cy"><b>АК</b><span>1947 г.</span></div>
+        <div class="bx am"><b>B-52</b><span>1955 г., летать до 2050-х</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 4: БРОНЕТЕХНИКА, АРТИЛЛЕРИЯ, ДРОНЫ ============ -->
+<section class="slide chapter" id="s20">
+  <div class="bgimg"><img src="assets/ch_armor.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4</div>
+    <h1>Броня, артиллерия и дроны</h1>
+    <p class="lead">Танк за $4-10 млн, гаубица на 70 км, реактивный снаряд на 500 км и FPV-дрон за $500, который сжигает первые два. Наземная война 2020-х: самая быстро меняющаяся часть арсенала.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s21">
+  <div class="content">
+    <div class="kicker">Броня · основные боевые танки</div>
+    <h2>ОБТ: 45-70 тонн, 1200-1500 л.с., один калибр на всех</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/tank.png" alt="">
+        <div class="pcap">Танк 2020-х: динамическая защита, панели радара активной защиты на башне, тепловизор командира и наводчика, «козырёк» от дронов сверху. Экипаж 3-4, скорость 60-70 км/ч, запас хода 400-500 км.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Танк</th><th>Масса · пушка · двигатель</th><th>Статус</th></tr>
+          <tr><td>Т-90М «Прорыв»</td><td class="d">48 т · 125 2А46М-5 · 1130 л.с.</td><td class="d">основной новый танк РФ с 2020, ДЗ «Реликт», «Калина» СУО</td></tr>
+          <tr><td>Т-72Б3М / Т-80БВМ</td><td class="d">46 т · 125 · 840 / 1250 (ГТД)</td><td class="d">массовая модернизация; Т-80БВМ - газотурбинный, производство возобновлено</td></tr>
+          <tr><td>Т-14 «Армата»</td><td class="d">55 т · 125 2А82-1М · 1500</td><td class="d">необитаемая башня, капсула экипажа, КАЗ «Афганит»; малая серия, в бой не пошёл</td></tr>
+          <tr><td>M1A2 SEPv3 → M1E3</td><td class="d">66.8 т · 120 M256 · 1500 (ГТД)</td><td class="d">США; SEPv3 с Trophy; M1E3 (~2030) - облегчить и автомат заряжания</td></tr>
+          <tr><td>Leopard 2A7V / 2A8</td><td class="d">64 т · 120 L/55 · 1500</td><td class="d">Германия и 10 стран; 2A8 (2025+) с Trophy, Чехия/Норвегия/Литва</td></tr>
+          <tr><td>Challenger 3</td><td class="d">66 т · 120 L55A1 гладкоствольная</td><td class="d">Британия, 148 машин, 2027; впервые отказ от нарезной пушки</td></tr>
+          <tr><td>K2 Black Panther</td><td class="d">55 т · 120 L/55 · 1500</td><td class="d">Корея; Польша купила 1000 (180 + K2PL)</td></tr>
+          <tr><td>Merkava Mk4 Barak</td><td class="d">65 т · 120 · 1500</td><td class="d">Израиль, 2023; Trophy, ИИ-СУО, двигатель спереди</td></tr>
+          <tr><td>Type 99A / Type 10 / Leclerc XLR</td><td class="d">55 / 44 / 57 т</td><td class="d">Китай, Япония, Франция; Type 10 - самый лёгкий современный ОБТ</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s22">
+  <div class="content">
+    <div class="kicker">Броня · пушки и снаряды</div>
+    <h2>Танковая пушка: карандаш из вольфрама на 1700 м/с</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>БОПС - главный снаряд.</b> Бронебойный оперённый подкалиберный: стержень из вольфрамового сплава или обеднённого урана длиной 600-900 мм и диаметром 25-30 мм, разогнанный до 1650-1750 м/с. Поддон (сабо) отделяется за дульным срезом. Стержень не пробивает броню, а <b>прожигает</b> её гидродинамически: и он, и броня в точке контакта ведут себя как жидкости. Пробитие растёт с длиной стержня, отсюда гонка за длину и 55-калиберные стволы.</li>
+          <li><b>Кумулятивный (HEAT) не зависит от скорости:</b> медная воронка схлопывается в струю 8-10 км/с и пробивает 600-1000 мм стали. Против него работают динамическая защита (ДЗ) и решётки. Универсальный ОФ/программируемый (DM11, M1147 AMP, 3ОФ26) стал главным «рабочим» снарядом: 90% целей танка - не танки.</li>
+          <li><b>125 против 120.</b> Советские 2А46М и новая 2А82-1М (Т-14, длиннее и с большей энергией) с автоматом заряжания на 22 выстрела в карусели под башней. Западные Rh-120 L/44 и L/55 с четвёртым членом экипажа-заряжающим и боеукладкой в нише башни с вышибными панелями. Обе схемы под конец жизни: KF51 Panther несёт 130-мм Rh-130, франко-германский ASCALON целится в 140 мм.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/apfsds.png" alt="">
+        <div class="pcap">БОПС в разрезе (стержень, отделяющийся поддон, оперение) и кумулятивный снаряд с медной воронкой. Один делает дырку диаметром с палец, второй - струёй металла.</div>
+      </div>
+    </div>
+    <table class="pt t" style="margin-top:12px">
+      <tr><th>Снаряд</th><th>Тип · материал</th><th>Пробитие на 2 км (оценки)</th><th>Кто</th></tr>
+      <tr><td>3БМ60 «Свинец-2» / 3БМ59 «Свинец-1»</td><td class="d">БОПС · вольфрам / уран</td><td class="d">~650-700 мм</td><td class="d">РФ, Т-90М, Т-72Б3М (с 2020-х массово)</td></tr>
+      <tr><td>3БМ44М «Лекало» / 3БМ42 «Манго»</td><td class="d">БОПС · вольфрам</td><td class="d">~600 / ~500 мм</td><td class="d">РФ, основная масса боеукладок</td></tr>
+      <tr><td>M829A4</td><td class="d">БОПС · обеднённый уран</td><td class="d">~770+ мм (за ДЗ)</td><td class="d">США, Abrams, 2015</td></tr>
+      <tr><td>DM63 / DM73 / KE2020Neo</td><td class="d">БОПС · вольфрам</td><td class="d">~700 / +8% / +20%</td><td class="d">Германия и Leopard-клуб; DM73 - 2021</td></tr>
+      <tr><td>9М119М1 «Инвар-М» / 3УБК21 «Спринтер»</td><td class="d">ПТУР через ствол</td><td class="d">900 мм, 5 км</td><td class="d">РФ; уникальная для Запада возможность</td></tr>
+    </table>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s23">
+  <div class="content">
+    <div class="kicker">Броня · защита</div>
+    <h2>Активная и динамическая защита: сбить снаряд до брони</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/aps.png" alt="">
+        <div class="pcap">Комплекс активной защиты (КАЗ) в работе: радар засёк гранату за 50-100 м, пусковая отстрелила контрснаряд, взрыв в 5-10 м от борта. Время реакции - 0.3-0.5 с. Первый в мире КАЗ - советский «Дрозд» 1983 г.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Система</th><th>Принцип</th><th>Носители · статус</th></tr>
+          <tr><td>Trophy (Rafael)</td><td class="d">радар + ударное ядро дробью</td><td class="d">Merkava (первый бой 2011), Abrams SEPv3, Leopard 2A8, Challenger 3; сотни реальных перехватов</td></tr>
+          <tr><td>Iron Fist (Elbit)</td><td class="d">радар + осколочный контрснаряд</td><td class="d">Bradley M2A4E1 (2025), CV90 Нидерландов, Merkava Mk4</td></tr>
+          <tr><td>«Арена-М»</td><td class="d">радар + кассеты по периметру башни</td><td class="d">заявлена для Т-72Б3М/Т-90М, показана 2021-23; массово не видна</td></tr>
+          <tr><td>«Афганит»</td><td class="d">РЛС АФАР + мортиры + завесы</td><td class="d">Т-14 / Т-15 (Армата), в серии не подтверждён</td></tr>
+          <tr><td>StrikeShield / GL5</td><td class="d">распределённые сенсоры / радар</td><td class="d">Rheinmetall (Lynx, Boxer) / Китай (Type 99A, VT4)</td></tr>
+          <tr><td>ДЗ «Контакт-5» / «Реликт» / «Малахит»</td><td class="d">пластина ВВ выбивает бронеплиту навстречу</td><td class="d">К-5 (1988) - первая против БОПС; Реликт - Т-90М, Т-72Б3М обр. 2022; Малахит - Т-14</td></tr>
+          <tr><td>ARAT / BRAT / Решётки / «Мангалы»</td><td class="d">ДЗ плитками / противокумулятивные экраны / козырьки</td><td class="d">Abrams, Bradley; козырьки от FPV и Javelin с 2021 стали штатными у всех сторон</td></tr>
+        </table>
+        <div class="note warn" style="margin-top:10px"><b>2023-25: гонка «козырёк - дрон».</b> Против FPV пошли РЭБ-подавители на броне («Волнорез», «Сания»), сетки и «сараи» на башнях. Ответ - FPV на оптоволокне (10-20 км кабеля, глушить нечего) и удары в корму и МТО. КАЗ против медленного дрона пока никто массово не доказал.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s24">
+  <div class="content">
+    <div class="kicker">Броня · БМП и БТР</div>
+    <h2>БМП и БТР: везти пехоту и не сгореть</h2>
+    <div class="part rev">
+      <div>
+        <table class="pt t">
+          <tr><th>Машина</th><th>Масса · вооружение · десант</th><th>Кто</th></tr>
+          <tr><td>БМП-3 / БМП-3М</td><td class="d">18.7 т · 100-мм 2А70 + 30-мм 2А72 + ПТУР · 7</td><td class="d">РФ, основной новый выпуск; плавает; «Манул» на подходе</td></tr>
+          <tr><td>БМП-2М «Бережок» / БТР-82А</td><td class="d">14.3 / 15.4 т · 30 мм + 4 «Корнет» / 30 мм · 7</td><td class="d">РФ, самые массовые в войсках</td></tr>
+          <tr><td>«Курганец-25» / «Бумеранг» / Т-15</td><td class="d">25 / 25 / 48 т · 30 или 57 мм · 8</td><td class="d">РФ, платформы 2015 г.; в малой серии или на испытаниях</td></tr>
+          <tr><td>M2A4 Bradley / M2A4E1</td><td class="d">30+ т · 25-мм M242 + TOW · 6</td><td class="d">США; в Украине с 2023 показала живучесть; A4E1 с Iron Fist 2025</td></tr>
+          <tr><td>Puma</td><td class="d">43 т · 30-мм MK30-2 + Spike · 6</td><td class="d">Бундесвер, самая защищённая и дорогая БМП (~€17 млн)</td></tr>
+          <tr><td>CV90 Mk IV / Lynx KF41</td><td class="d">37 / 44 т · 35-50 мм / 30-35 мм · 8</td><td class="d">10 стран / Венгрия, Италия; кандидаты на XM30 (замена Bradley)</td></tr>
+          <tr><td>Boxer / Stryker / Patria AMV</td><td class="d">38 / 20 / 27 т · колёсные 8×8</td><td class="d">Германия, Британия, Австралия / США (30-мм Dragoon) / Финляндия, Польша (Rosomak)</td></tr>
+          <tr><td>Namer / Eitan</td><td class="d">60 / 35 т</td><td class="d">Израиль: тяжёлый БТР на шасси Merkava - самый защищённый в мире</td></tr>
+          <tr><td>ZBD-04A / ZBL-08</td><td class="d">24 / 21 т · 100+30 мм / 30 мм</td><td class="d">Китай; ZBD-04A - идеология БМП-3</td></tr>
+        </table>
+      </div>
+      <div class="pimg">
+        <img src="assets/ifv.png" alt="">
+        <div class="pcap">Тяжёлая БМП: необитаемый модуль с 30-35-мм пушкой и ПТУР, десант выходит через аппарель. Главный спор десятилетия: 20 т и плавать (БМП-3) или 40+ т и выжить (Puma, Lynx, Namer). Война 2022+ отвечает в пользу тяжёлых.</div>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:10px"><b>Что убивает БМП:</b> мины и FPV в крышу, а не танки. Отсюда «мангалы», РЭБ, V-образное днище, мины-детекторы и тренд на 30-мм программируемые снаряды против дронов у всех новых машин.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s25">
+  <div class="content">
+    <div class="kicker">Артиллерия · ствольная</div>
+    <h2>Самоходные гаубицы: 155/52 стал мировым стандартом</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/howitzer.png" alt="">
+        <div class="pcap">Момент выстрела 155-мм самоходки: 900 м/с, 40+ кг снаряда, ударная волна кладёт траву в радиусе 30 м. Норматив: развернуться за 30-60 с, дать 3-6 выстрелов, уехать до ответа контрбатарейной РЛС.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>САУ</th><th>Калибр · дальность · темп</th><th>Кто</th></tr>
+          <tr><td>2С19М2 «Мста-С» / 2С3М / 2С1</td><td class="d">152/47 · 25-29 км · до 10 в/мин</td><td class="d">РФ, основа; 2С3 и 2С1 - из хранения, массово</td></tr>
+          <tr><td>2С35 «Коалиция-СВ»</td><td class="d">152/52 · 40-70 км · 16 в/мин</td><td class="d">РФ, первые в войсках 2023; автомат заряжания, необитаемая башня</td></tr>
+          <tr><td>2С43 «Мальва» / 2С7М «Малка» / 2С4 «Тюльпан»</td><td class="d">152 колёсная / 203 мм 47 км / 240-мм миномёт 20 км</td><td class="d">РФ; Малка и Тюльпан - самые тяжёлые калибры в строю</td></tr>
+          <tr><td>M109A7 Paladin / M777</td><td class="d">155/39 · 24-40 км · 4 в/мин / 5</td><td class="d">США; M777 - 4.2 т, титан, вертолётом; ERCA 58 кал. отменён 2024</td></tr>
+          <tr><td>PzH 2000</td><td class="d">155/52 · 30-56 км · 10 в/мин (3 за 9 с)</td><td class="d">Германия, Нидерланды, Италия, Украина; эталон, но капризна</td></tr>
+          <tr><td>CAESAR Mk I/II / Archer / RCH 155</td><td class="d">155/52 колёсные · 40+ км · 6-8 в/мин</td><td class="d">Франция (Украина 50+) / Швеция, Британия / Boxer, Бундесвер 2025, стрельба в движении</td></tr>
+          <tr><td>K9A1/A2 Thunder / Krab / «Богдана»</td><td class="d">155/52 · 40 км · 6-8 в/мин</td><td class="d">Корея (2000+ выпущено, Польша 672, Норвегия, Египет) / Польша / Украина 2022</td></tr>
+          <tr><td>PLZ-05 / PLZ-52 / ATMOS 2000</td><td class="d">155/52 · 50 км</td><td class="d">Китай / Израиль</td></tr>
+        </table>
+        <p class="dim" style="margin-top:6px">Управляемые снаряды: Excalibur (GPS, 40-57 км, КВО 4 м), Краснополь-М2 (лазер, 25 км), SMArt 155 и BONUS (два самонаводящихся суббоеприпаса сверху), Vulcano (80 км), M1156 PGK (взрыватель-корректор к обычным снарядам).</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s26">
+  <div class="content">
+    <div class="kicker">Артиллерия · реактивная</div>
+    <h2>РСЗО: от 20 км «Града» до 500 км PrSM</h2>
+    <div class="part rev">
+      <div>
+        <table class="pt t">
+          <tr><th>Система</th><th>Калибр · ракет · дальность</th><th>Заметки</th></tr>
+          <tr><td>БМ-21 «Град» / «Торнадо-Г»</td><td class="d">122 мм · 40 · 20-40 км</td><td class="d">1963 г., 60+ стран; Торнадо-Г - навигация и автоматика</td></tr>
+          <tr><td>«Ураган-1М» / «Смерч» / «Торнадо-С»</td><td class="d">220/300 · 15-30 / 12 · 70-90 / 120 км</td><td class="d">Торнадо-С: 9М542 с ГЛОНАСС, КВО ~10 м, с 2017</td></tr>
+          <tr><td>ТОС-1А / ТОС-2 / ТОС-3</td><td class="d">220 мм термобарические · 24 / 18 · 6-10 км</td><td class="d">«огнемётные системы»: залп накрывает 4 га объёмным взрывом</td></tr>
+          <tr><td>M142 HIMARS / M270A2</td><td class="d">227 мм · 6 / 12 GMLRS · 70-80 км</td><td class="d">США и 15 стран; GMLRS-ER 150 км (2025); 1 ATACMS 300 км или 2 PrSM</td></tr>
+          <tr><td>PrSM Increment 1</td><td class="d">500+ км · КВО ~5 м</td><td class="d">США с 2023, замена ATACMS; Inc.2 с ГСН против кораблей, Inc.4 - 1000 км</td></tr>
+          <tr><td>PULS (Elbit) / Chunmoo K239</td><td class="d">122-306 мм · до 300 км / 130-239 мм · 80-290 км</td><td class="d">Израиль (Германия, Дания, Нидерланды выбрали 2023-24) / Корея (Польша 290 шт.)</td></tr>
+          <tr><td>PHL-16 (PCH-191)</td><td class="d">370 мм · 8 · 350 км; 750-мм ТБР 500 км</td><td class="d">Китай, аналог HIMARS в бригадах у Тайваня</td></tr>
+          <tr><td>«Полонез» / «Вильха-М» / Pinaka</td><td class="d">301 мм 300 км / 300 мм 130 км / 214 мм 75 км</td><td class="d">Беларусь (китайская A200) / Украина / Индия</td></tr>
+        </table>
+      </div>
+      <div class="pimg">
+        <img src="assets/mlrs.png" alt="">
+        <div class="pcap">Залп колёсной РСЗО управляемыми ракетами. Сдвиг эпохи: «Град» кладёт 40 неуправляемых ракет по площади, HIMARS - 6 ракет по 6 точкам с точностью до нескольких метров. Площадь уступила точности, залп - серии.</div>
+      </div>
+    </div>
+    <div class="dg" style="margin-top:10px">
+      <div class="row">
+        <div class="bx"><b>Град, 122 мм</b><span>$1-2 тыс./ракета · 40 км</span></div>
+        <div class="bx cy"><b>GMLRS</b><span>~$160 тыс. · 80 км · КВО 5 м</span></div>
+        <div class="bx cy"><b>Торнадо-С 9М542</b><span>120 км · ГЛОНАСС</span></div>
+        <div class="bx am"><b>ATACMS</b><span>~$1.5 млн · 300 км · снимается</span></div>
+        <div class="bx am"><b>Искандер-М 9М723</b><span>500 км · 480 кг · квазибаллистика</span></div>
+        <div class="bx rd"><b>PrSM</b><span>500+ км · с 2023</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s27">
+  <div class="content">
+    <div class="kicker">Дроны · поле боя</div>
+    <h2>Дроны: $500 против $4 миллионов</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/drone.png" alt="">
+        <div class="pcap">FPV-квадрокоптер на 7-10 дюймов с гранатой от РПГ-7 или кумулятивным зарядом заходит в корму танка, сверху планирует барражирующий боеприпас. 2024 год: Украина выпустила ~2 млн дронов, РФ - сопоставимо; на них приходится до 70-80% поражений техники.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Класс · образцы</th><th>БЧ · дальность · цена</th><th>Заметки</th></tr>
+          <tr><td>FPV (7-10", «Судный день», «Упырь», Vyriy)</td><td class="d">1-3 кг · 5-20 км · $400-700</td><td class="d">управление по видео; оптоволоконные (2024-25) - до 20-30 км, не глушатся</td></tr>
+          <tr><td>«Ланцет-3» / «Изделие-53» / «Куб»</td><td class="d">3-5 кг · 40-70 км · ~$35 тыс.</td><td class="d">РФ, ZALA; главный охотник за артиллерией и ПВО с 2022</td></tr>
+          <tr><td>«Герань-2» (Shahed-136) / «Герань-3»</td><td class="d">50-90 кг · 1800-2500 км · $20-50 тыс.</td><td class="d">поршневой / реактивный (600 км/ч, 2025); серии по 500-800 в ночь; «Гербера» - дешёвая ложная</td></tr>
+          <tr><td>Switchblade 300/600 / ALTIUS-600</td><td class="d">2 / 23 кг · 10 / 40 км</td><td class="d">США; 600 несёт БЧ Javelin; Coyote Block 2 - антидрон-перехватчик</td></tr>
+          <tr><td>«Орлан-10/30», Supercam, ZALA, Shark, «Лелека»</td><td class="d">разведка · 120-600 км</td><td class="d">глаза артиллерии; «Орлан-30» подсвечивает лазером для Краснополя</td></tr>
+          <tr><td>Bayraktar TB2 / Akinci / Kizilelma</td><td class="d">150 кг МАМ · 27 ч · $5 млн</td><td class="d">Турция, 30+ стран; TB2 - звезда 2020-22, потом ушёл в тень ПВО</td></tr>
+          <tr><td>MQ-9B Reaper / MQ-1C Gray Eagle / MQ-25</td><td class="d">1.7 т (4 Hellfire + бомбы) · 27 ч · $30 млн</td><td class="d">США; MQ-25 Stingray - палубный заправщик 2026</td></tr>
+          <tr><td>«Орион», С-70 «Охотник», Wing Loong II, CH-5, Hermes 900</td><td class="d">200-2000 кг · 20-40 ч</td><td class="d">РФ / Китай / Израиль; «Охотник» - реактивный стелс-ведомый Су-57</td></tr>
+          <tr><td>«Лютый», «Паляниця», FP-1</td><td class="d">50-75 кг · 1000-1500 км</td><td class="d">Украина, удары по НПЗ и аэродромам 2024-25</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s28">
+  <div class="content">
+    <div class="kicker">Инженерные · мины</div>
+    <h2>Мины: самое дешёвое оружие, самая дорогая уборка</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Противотанковые - основа.</b> ТМ-62М (7-7.5 кг тротила, 1960-е, на СВО ставят миллионами штук, часто в 2-3 яруса), ПТМ-3 и ПТМ-4 (магнитный взрыватель, ставятся дистанционно), M19 и M15 (США), DM31 (Германия). Гусеница отрывается от 5-7 кг ВВ, днище пробивает 10-12 кг или ударное ядро (ТМ-83, M93 Hornet). Плотность в 2023 году: 4-5 мин на метр фронта, поля глубиной 5-15 км.</li>
+          <li><b>Дистанционное минирование меняет тактику:</b> ИСДМ «Земледелие» (2020, 50 ракет 122 мм, минирует площадь 15 км за минуты ПТМ-4 и ПОМ-3 с сейсмодатчиком), кассетные 155-мм RAAM/ADAM, M87 Volcano (960 мин с грузовика или вертолёта), 9М27К3 «Ураган» с ПФМ-1 «Лепесток» (37 г, запрещён Оттавой). Против пехоты: ОЗМ-72 (выпрыгивающая, 25 м), МОН-50/90/100 (направленные, до 100 м), M18A1 Claymore (700 шариков, 50 м, стоит на вооружении 60 лет).</li>
+          <li><b>Оттавская конвенция 1997</b> (164 государства) запрещает противопехотные, но не подписаны РФ, США, Китай, Индия, Пакистан, Израиль, обе Кореи. В марте-июне 2025 из неё <b>вышли</b> Польша, Литва, Латвия, Эстония и Финляндия. Разминирование: УР-77 «Метеорит» и M58 MICLIC (шнур 90 м с тонной ВВ), тралы КМТ и катки, роботы Uran-6, Bozena; всерьёз - только руками сапёра со скоростью 10-50 м² в день.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/mines.png" alt="">
+        <div class="pcap">Противотанковая мина в грунте с нажимной крышкой и ракета дистанционного минирования, рассыпающая малые мины. Минное поле 2023 года стало главной причиной провала наступлений с обеих сторон.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 5: АВИАЦИЯ И РАКЕТЫ ============ -->
+<section class="slide chapter" id="s29">
+  <div class="bgimg"><img src="assets/ch_air.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5</div>
+    <h1>Авиация и авиационное оружие</h1>
+    <p class="lead">Пятое поколение уже серийное, шестое объявлено, бомба стала планирующей, ракета «воздух-воздух» бьёт на 300 км, а гиперзвук перестал быть словом из презентаций.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s30">
+  <div class="content">
+    <div class="kicker">Авиация · пятое и шестое поколение</div>
+    <h2>Стелс-истребители: кто реально летает, а кто на слайдах</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/fighter.png" alt="">
+        <div class="pcap">Двухдвигательный стелс-истребитель с открытыми внутренними отсеками: оружие внутри, антенны вписаны в обшивку, ЭПР - «с птицу». Пятое поколение = малозаметность + АФАР + сверхзвуковой крейсер + слияние данных со всех сенсоров.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Самолёт</th><th>Выпущено · год</th><th>Заметки</th></tr>
+          <tr><td>F-22A Raptor</td><td class="d">187 · 2005</td><td class="d">США, лучший воздушный бой; производство закрыто в 2011, списание 2030-е</td></tr>
+          <tr><td>F-35A/B/C Lightning II</td><td class="d">1100+ · 2015</td><td class="d">20 стран; $80-100 млн; B - вертикальная посадка, C - палубный; носитель B61-12 с 2024</td></tr>
+          <tr><td>Су-57 / Су-57М</td><td class="d">~20-40 (оценки) · 2020</td><td class="d">РФ, двигатель 2-го этапа «Изделие 30» с 2025; применяется издалека (Х-59МК2, Х-69)</td></tr>
+          <tr><td>J-20 / J-20A</td><td class="d">300+ (оценки) · 2017</td><td class="d">Китай, самый массовый после F-35; двигатели WS-15 с 2023</td></tr>
+          <tr><td>J-35 / J-35A</td><td class="d">серия с 2024</td><td class="d">Китай, палубный и сухопутный; экспорт в Пакистан обсуждается</td></tr>
+          <tr><td>KF-21 Boramae / TF Kaan</td><td class="d">поставки 2026 / первый полёт 2024</td><td class="d">Корея (4.5 покол., 120 шт.) / Турция</td></tr>
+          <tr><td>B-21 Raider</td><td class="d">первый полёт нояб. 2023</td><td class="d">США, стелс-бомбардировщик, 100+ шт., ~$700 млн, IOC ~2027</td></tr>
+          <tr><td>F-47 (NGAD) / F/A-XX</td><td class="d">объявлен март 2025 / выбор 2025-26</td><td class="d">США, шестое поколение Boeing (ВВС) / ВМС; «ведомые» дроны CCA</td></tr>
+          <tr><td>GCAP (Tempest) / FCAS / J-36, J-50</td><td class="d">2035 / 2040 / полёты с дек. 2024</td><td class="d">Британия-Япония-Италия / Франция-Германия-Испания (буксует) / Китай, два прототипа без хвоста</td></tr>
+        </table>
+        <div class="note" style="margin-top:8px"><b>Шестое поколение</b> - это не «ещё стелс», а истребитель как узел сети: ведомые дроны (CCA, Loyal Wingman), ИИ-помощник, лазер самообороны и ракеты на 400+ км. Все программы дороже $100 млрд и ни одна пока не летает серийно.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s31">
+  <div class="content">
+    <div class="kicker">Авиация · поколение 4++</div>
+    <h2>Рабочие лошади: 4++ делают 90% вылетов</h2>
+    <div class="part rev">
+      <div>
+        <table class="pt t">
+          <tr><th>Самолёт</th><th>Радар · нагрузка</th><th>Кто · заметки</th></tr>
+          <tr><td>Су-35С / Су-30СМ2</td><td class="d">«Ирбис-Э» ПФАР 400 км · 8 т</td><td class="d">РФ, 100+ / 130+; носители Р-37М и Р-77-1, костяк истребительной авиации</td></tr>
+          <tr><td>Су-34 / Су-34М</td><td class="d">8 т · радиус 1100 км</td><td class="d">РФ, главный бомбардировщик с УМПК: 150+ построено, крупнейший выпуск среди боевых</td></tr>
+          <tr><td>МиГ-31БМ / МиГ-31К</td><td class="d">«Заслон-АМ» · 2.8 М</td><td class="d">РФ, перехватчик 1981 г.; К - носитель «Кинжала»</td></tr>
+          <tr><td>F-15EX Eagle II</td><td class="d">APG-82 АФАР · 13.4 т, 12 ракет</td><td class="d">США с 2024, $90 млн; «грузовик ракет» для F-35 и F-22</td></tr>
+          <tr><td>F-16 Block 70/72 / F-16AM</td><td class="d">APG-83 АФАР</td><td class="d">25 стран; Украина с 2024 (AM из Дании, Нидерландов, Норвегии, Бельгии)</td></tr>
+          <tr><td>F/A-18E/F Block III</td><td class="d">APG-79 · 8 т</td><td class="d">ВМС США, Австралия, Кувейт; палубная основа до F/A-XX</td></tr>
+          <tr><td>Rafale F4 / F5</td><td class="d">RBE2 АФАР · 9.5 т</td><td class="d">Франция; Индия (36 + 26 палубных + 114), Египет, ОАЭ, Индонезия; носитель ASMP-A</td></tr>
+          <tr><td>Eurofighter Typhoon Tr.4 / Gripen E</td><td class="d">ECRS Mk2 / Raven ES-05 АФАР</td><td class="d">Британия, Германия, Италия, Испания / Швеция, Бразилия; Gripen - самый дешёвый в час</td></tr>
+          <tr><td>J-16 / J-10C / J-15</td><td class="d">АФАР · 12 / 6 т</td><td class="d">Китай; J-10C с PL-15 в Пакистане (май 2025, заявленные победы над Rafale)</td></tr>
+          <tr><td>Су-30МКИ / Tejas Mk1A / JF-17 Block III</td><td class="d">Индия 260+ / Индия / Пакистан</td><td class="d">южноазиатский баланс; JF-17 - китайско-пакистанский, АФАР KLJ-7A</td></tr>
+        </table>
+      </div>
+      <div class="pimg">
+        <img src="assets/gen45.png" alt="">
+        <div class="pcap">Многоцелевой истребитель 4++ с ракетами и баками под крылом: не стелс, но АФАР, сверхманёвренность, 8-13 т нагрузки и цена вдвое ниже пятого поколения. Именно эти машины пускают планирующие бомбы и крылатые ракеты, не входя в зону ПВО.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s32">
+  <div class="content">
+    <div class="kicker">Авиация · «воздух-воздух»</div>
+    <h2>Ракеты В-В: бой ушёл за горизонт</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/aam.png" alt="">
+        <div class="pcap">Три класса: ближняя (ИК ГСН, отклоняемый вектор тяги, бой «на визуале» до 30-40 км), средняя (активная радиолокационная ГСН, 100-200 км), сверхдальняя (300-400 км, охота за АВАКСами и заправщиками). Скорость 4-6 М.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Ракета</th><th>ГСН · дальность</th><th>Кто · год</th></tr>
+          <tr><td>Р-73 / Р-74М (РВВ-МД)</td><td class="d">ИК · 30 / 40 км</td><td class="d">РФ, с нашлемным целеуказанием - легенда ближнего боя</td></tr>
+          <tr><td>Р-77-1 (РВВ-СД) / Р-77М</td><td class="d">АРЛ · 110 / ~190 км</td><td class="d">РФ; Р-77М с АФАР-ГСН для Су-57, с 2023-24</td></tr>
+          <tr><td>Р-37М (РВВ-БД)</td><td class="d">АРЛ · 300-400 км · 6 М</td><td class="d">РФ, МиГ-31БМ, Су-35С; главная угроза для Су-27/F-16 Украины на дальности</td></tr>
+          <tr><td>AIM-9X Block II / AIM-120D-3</td><td class="d">ИК · 35+ км / АРЛ · 160+ км</td><td class="d">США и 40 стран; AMRAAM - самая массовая, 14 000+ выпущено, и в NASAMS</td></tr>
+          <tr><td>AIM-260 JATM / AIM-174B</td><td class="d">АРЛ · ~200 км / 400 км</td><td class="d">США, ответ PL-15 (2025-26) / SM-6 с F/A-18, 2024 - самая дальняя на Западе</td></tr>
+          <tr><td>Meteor</td><td class="d">АРЛ, ПВРД · 200 км, зона неотвратимости 60 км</td><td class="d">MBDA; Rafale, Typhoon, Gripen, F-35 (с 2025-27); лучшая энергетика на конечном участке</td></tr>
+          <tr><td>PL-10 / PL-15 / PL-17</td><td class="d">ИК / АРЛ · 200-300 км / 400 км</td><td class="d">Китай; PL-15 - причина программы JATM; PL-17 на J-16 против АВАКС</td></tr>
+          <tr><td>IRIS-T / ASRAAM / MICA NG / Python-5</td><td class="d">ИК/АРЛ · 25-80 км</td><td class="d">Германия / Британия / Франция / Израиль; все переехали и в наземные ЗРК</td></tr>
+        </table>
+        <div class="note gold" style="margin-top:8px"><b>Дальность ≠ зона поражения.</b> 300 км - для неманеврирующей цели, летящей навстречу. Реальная «зона неотвратимости» (NEZ) - 30-60 км: дальше цель успевает уйти, сбросив энергию ракеты. Отсюда двухимпульсные двигатели, ПВРД у Meteor и АФАР-ГСН, которые видят цель сквозь помехи.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s33">
+  <div class="content">
+    <div class="kicker">Авиация · ударная и стратегическая</div>
+    <h2>Бомбардировщики: 1955 год ещё летает, 2023-й уже взлетел</h2>
+    <div class="part rev">
+      <div>
+        <table class="pt t">
+          <tr><th>Самолёт</th><th>Нагрузка · дальность</th><th>Кто · статус</th></tr>
+          <tr><td>Ту-160М / М2</td><td class="d">12 Х-101/102 или Х-БД · 12 000 км · 2 М</td><td class="d">РФ, ~16-17 в строю, новые с 2022; самый тяжёлый и быстрый боевой самолёт в мире</td></tr>
+          <tr><td>Ту-95МС / МСМ</td><td class="d">8 Х-101 наружу + 6 Х-55 внутри · 10 500 км</td><td class="d">РФ, ~50; 1956 г., турбовинтовой; основной носитель ударов КР с 2022</td></tr>
+          <tr><td>Ту-22М3 / М3М</td><td class="d">3 Х-22/Х-32 · 6800 км</td><td class="d">РФ, ~50; удары по Украине, потери 2022-25 в т.ч. на аэродромах (июнь 2025)</td></tr>
+          <tr><td>B-52H → B-52J</td><td class="d">31 т, 20 КР · 14 000 км</td><td class="d">США, 76; новые двигатели RR F130 и радар к 2033; служба до 2050-х - 100 лет самолёту</td></tr>
+          <tr><td>B-1B Lancer</td><td class="d">34 т, 24 JASSM · 9400 км</td><td class="d">США, 45; только неядерный (СНВ-1), списание по мере прихода B-21</td></tr>
+          <tr><td>B-2A Spirit</td><td class="d">18 т, 2 GBU-57 или 16 B61-12 · 11 000 км</td><td class="d">США, 19; удар по Фордо июнь 2025 - 7 самолётов, 37 ч полёта, 14 MOP</td></tr>
+          <tr><td>B-21 Raider</td><td class="d">~9 т · большая дальность</td><td class="d">США, второй прототип 2025; 100+ шт., заменит B-1 и B-2</td></tr>
+          <tr><td>H-6K / H-6N / H-20</td><td class="d">6 CJ-20 / аэробаллистическая КD-21 / стелс</td><td class="d">Китай, ~150 H-6; H-20 - объявлен, не показан</td></tr>
+          <tr><td>Су-24М / Су-25СМ3 / A-10C / Tornado</td><td class="d">штурмовики и фронтовые</td><td class="d">РФ / РФ / США (списание к 2029) / Германия (до 2030, носитель B61)</td></tr>
+        </table>
+      </div>
+      <div class="pimg">
+        <img src="assets/bomber.png" alt="">
+        <div class="pcap">Стелс-«летающее крыло» с открытым отсеком: два-три десятка тонн оружия за 10 000 км без дозаправки. Стратегическая авиация - самый гибкий, самый дорогой и единственный «отзываемый» компонент ядерной триады.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s34">
+  <div class="content">
+    <div class="kicker">Авиация · управляемые бомбы</div>
+    <h2>Бомбы научились планировать: 70 км от точки сброса</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/guided_bomb.png" alt="">
+        <div class="pcap">Комплект планирования и коррекции на обычной фугасной бомбе: раскладные крылья, хвостовой блок с рулями, спутниковая антенна. Бомба 1950-х за $5 тыс. + модуль за $20-30 тыс. = управляемое оружие на 60-70 км. Так работают JDAM-ER и российский УМПК.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Боеприпас</th><th>Масса · дальность · наведение</th><th>Заметки</th></tr>
+          <tr><td>ФАБ-250/500/1500/3000 + УМПК</td><td class="d">250-3000 кг · 60-70 км · ГЛОНАСС+ИНС</td><td class="d">РФ, с 2023 по тысяче+ в месяц; ФАБ-3000 с УМПК - лето 2024; главный инструмент штурма городов</td></tr>
+          <tr><td>УМПБ Д-30СН / «Дрель» ПБК-500У / КАБ-500С, КАБ-1500Л</td><td class="d">250 кг · 90 км / кассетная 500 кг планирующая / спутник, лазер</td><td class="d">РФ; УМПБ пускается и из РСЗО «Торнадо-С»</td></tr>
+          <tr><td>JDAM GBU-31/38 / JDAM-ER</td><td class="d">900 / 225 кг · 28 / 70 км · GPS+ИНС</td><td class="d">США и 30 стран, 500 000+ комплектов; КВО 5 м; в Украине с 2023 под РЭБ - проблемы</td></tr>
+          <tr><td>GBU-39 SDB / GBU-53 StormBreaker</td><td class="d">113 кг · 110 км / трёхрежимная ГСН</td><td class="d">США; GLSDB (SDB + ракета M26) с HIMARS 150 км - в Украине глушилась</td></tr>
+          <tr><td>Paveway IV / AASM Hammer / Spice 2000</td><td class="d">225 кг · 30 км / 250-1000 кг · 70 км / 900 кг · 100 км</td><td class="d">Британия / Франция (Украина 2024, устойчив к РЭБ) / Израиль (электрооптика)</td></tr>
+          <tr><td>GBU-57A/B MOP</td><td class="d">13 600 кг · пробивает ~60 м грунта / 8 м бетона</td><td class="d">США, только B-2; 14 штук по Фордо и Натанзу 22 июня 2025</td></tr>
+          <tr><td>GBU-43/B MOAB / БЕТАБ-500 / BLU-109</td><td class="d">9800 кг объёмного / бетонобойные</td><td class="d">MOAB - единственное применение 2017, Афганистан; бетонобойные - против ВПП и бункеров</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s35">
+  <div class="content">
+    <div class="kicker">Ракеты · крылатые</div>
+    <h2>Крылатые ракеты: 1500-5500 км на высоте 50 метров</h2>
+    <div class="part rev">
+      <div>
+        <table class="pt t">
+          <tr><th>Ракета</th><th>Дальность · БЧ · скорость</th><th>Носитель · заметки</th></tr>
+          <tr><td>Х-101 / Х-102 (ядерная)</td><td class="d">4500-5500 км · 400 кг · 0.7 М</td><td class="d">Ту-95МС, Ту-160; основная КР ударов с 2022, с 2024 - двойная БЧ и ловушки</td></tr>
+          <tr><td>«Калибр» 3М14 / 3М54</td><td class="d">1500-2500 км · 450 кг / 660 км, сверхзвуковой финиш</td><td class="d">корабли и ПЛ РФ (Каспий, Чёрное море); ядерный вариант существует</td></tr>
+          <tr><td>Х-59МК2 / Х-69 / Х-50</td><td class="d">290 / 290+ / ~1500 км · 310 кг</td><td class="d">РФ, тактические стелс-КР с Су-57, Су-34; Х-69 в бою с 2024</td></tr>
+          <tr><td>Х-22 / Х-32</td><td class="d">600 / 1000 км · 900 кг · 4+ М</td><td class="d">Ту-22М3; противокорабельные по происхождению, бьют по городам; почти не перехватываются</td></tr>
+          <tr><td>Tomahawk Block V / Va / Vb</td><td class="d">1600-2500 км · 450 кг · 0.75 М</td><td class="d">ВМС США, Британия, Япония, Австралия, Нидерланды; наземный Typhon (2023) - на Филиппинах и в Японии</td></tr>
+          <tr><td>JASSM-ER / JASSM-XR / LRASM</td><td class="d">925 / 1900 км · 450 кг</td><td class="d">США, F-15/16/35, B-1/2/52; XR - 2025; LRASM - противокорабельная</td></tr>
+          <tr><td>Storm Shadow / SCALP-EG</td><td class="d">560 км (экспорт 250) · 450 кг BROACH</td><td class="d">Британия, Франция; Украина с 2023, удары по Крыму и Курску</td></tr>
+          <tr><td>Taurus KEPD 350</td><td class="d">500 км · 480 кг MEPHISTO</td><td class="d">Германия, Испания, Корея; в Украину пока не передан</td></tr>
+          <tr><td>CJ-10 / CJ-20 / YJ-18 / Hoveyzeh</td><td class="d">1500-2000 км / 540 км / 1350 км</td><td class="d">Китай (наземные, H-6, корабли) / Иран (удары по Израилю 2024-25)</td></tr>
+          <tr><td>«Нептун» / «Фламинго» FP-5</td><td class="d">300 → 1000 км / 3000 км · 1150 кг</td><td class="d">Украина; Нептун потопил «Москву» апр. 2022; FP-5 - 2025, серия</td></tr>
+        </table>
+      </div>
+      <div class="pimg">
+        <img src="assets/cruise_missile.png" alt="">
+        <div class="pcap">Дозвуковая КР с раскрытым крылом на сверхмалой высоте: турбореактивный двигатель, ИНС + спутник + сличение рельефа и картинки, стелс-корпус. Летит 2-5 часов, огибает ПВО по маршруту из сотен точек.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s36">
+  <div class="content">
+    <div class="kicker">Ракеты · гиперзвук</div>
+    <h2>Гиперзвук: 5+ Махов с манёвром, а не по параболе</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/hypersonic.png" alt="">
+        <div class="pcap">Планирующий гиперзвуковой блок в плазменной оболочке на входе в атмосферу: 15-27 М, температура поверхности 2000°C, манёвр по курсу на тысячи км. Отличие от боеголовки МБР - не скорость (она такая же), а непредсказуемая траектория ниже луча радаров ПРО.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Система</th><th>Тип · скорость · дальность</th><th>Статус</th></tr>
+          <tr><td>Х-47М2 «Кинжал»</td><td class="d">аэробаллистическая · до 10 М · 1500-2000 км · 500 кг</td><td class="d">РФ, МиГ-31К, с 2017; в бою с 2022; Patriot перехватывал с мая 2023</td></tr>
+          <tr><td>3М22 «Циркон»</td><td class="d">ГПВРД · 8-9 М · ~1000 км</td><td class="d">РФ, фрегаты 22350, «Ясень-М»; первое боевое применение заявлено в 2024</td></tr>
+          <tr><td>«Авангард» (15Ю71)</td><td class="d">ГПБ на УР-100Н УТТХ · 20-27 М · межконтинентальная</td><td class="d">РФ, на дежурстве с дек. 2019; ядерный, оценки 0.8-2 Мт</td></tr>
+          <tr><td>«Орешник»</td><td class="d">БРСД (база РС-26) · 10+ М · ~5500 км · 6 ББ × 6 суббоеприпасов</td><td class="d">РФ, удар по Днепру 21.11.2024 (инертные ББ); размещение в Беларуси с 2025</td></tr>
+          <tr><td>DF-17 / DF-27 / YJ-21</td><td class="d">ГПБ DF-ZF · 1800-2500 / 5000-8000 км / корабельная ПКБР</td><td class="d">Китай; DF-17 с 2019, DF-27 замечен 2023, YJ-21 на эсминцах 055; парад 2025 - YJ-17/19/20</td></tr>
+          <tr><td>LRHW Dark Eagle / CPS</td><td class="d">ГПБ C-HGB · 17 М · 2775+ км</td><td class="d">США, армия (первая батарея 2025) / ВМС на Zumwalt 2025-26; неядерные</td></tr>
+          <tr><td>AGM-183A ARRW / HACM</td><td class="d">авиационная ГПБ / ГПВРД · 5+ М</td><td class="d">США, B-52 и F-15; ARRW «воскресили» в 2024-25, HACM ~2027</td></tr>
+          <tr><td>Fattah-1/2 / Hwasong-16B / BrahMos-II</td><td class="d">13-15 М заявлено · 1400 км / ГПБ / ГПВРД</td><td class="d">Иран (по Израилю 2024-25) / КНДР (апр. 2024) / Индия-РФ (разработка)</td></tr>
+        </table>
+        <div class="note" style="margin-top:8px"><b>Сколько это стоит на приёмнике:</b> Patriot PAC-3 MSE ($4 млн) сбил «Кинжал» ($10+ млн) - сработала не скорость, а траектория: аэробаллистическая ракета на финише предсказуема. Настоящие планирующие блоки и ГПВРД пока никто в бою не перехватывал, и системы против них (Glide Phase Interceptor, HBTSS) - на 2030-е.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 6: ПВО И ПРО ============ -->
+<section class="slide chapter" id="s37">
+  <div class="bgimg"><img src="assets/ch_ad.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6</div>
+    <h1>ПВО и ПРО: щит против всего, что летит</h1>
+    <p class="lead">От перехватчика в космосе за $60 млн до дробовика против FPV за $500. Экономика обороны перевернулась: сбивать стало дороже, чем запускать, и ответ ищут в лазерах и пушках.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s38">
+  <div class="content">
+    <div class="kicker">ПВО · дальняя и противоракетная</div>
+    <h2>Дальняя ПВО и ПРО: 400 км по самолёту, космос по ракете</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/sam.png" alt="">
+        <div class="pcap">Дивизион дальней ПВО: пусковые с 4 контейнерами, РЛС с фазированной решёткой, командный пункт. Ракета длиной 7-8 м уходит из контейнера «холодным» стартом, разгоняется до 6-8 М и бьёт на 200-400 км по самолёту или на 60-150 км по баллистической цели.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Система</th><th>Дальность · высота · ракета</th><th>Кто</th></tr>
+          <tr><td>С-400 «Триумф»</td><td class="d">250-400 км · 30 км · 48Н6ДМ, 40Н6; ТБР до 60 км</td><td class="d">РФ (~30 полков), Турция, Китай, Индия; потери в Крыму 2023-24 от ATACMS и Storm Shadow</td></tr>
+          <tr><td>С-500 «Прометей» / С-350 «Витязь»</td><td class="d">600 км, ПРО и спутники · 77Н6 / 120 км · 12 × 9М96</td><td class="d">РФ, с 2021, малая серия / с 2019, замена С-300ПС</td></tr>
+          <tr><td>А-135 «Амур» → А-235 «Нудоль»</td><td class="d">ПРО Москвы · 53Т6М · ядерный и кинетический перехват</td><td class="d">РФ, единственная действующая ПРО столицы с 1995</td></tr>
+          <tr><td>Patriot PAC-3 MSE</td><td class="d">160 км (PAC-2) · 20+ км · кинетический перехват ТБР</td><td class="d">США и 19 стран; Украина 8+ батарей: «Кинжал», Искандер, Ту-22М3 на 200 км</td></tr>
+          <tr><td>THAAD</td><td class="d">200 км · 150 км · заатмосферный и высотный перехват</td><td class="d">США (8 батарей), Израиль (окт. 2024), Саудовская Аравия, ОАЭ, Корея; удар Ирана июнь 2025 - 100+ пусков</td></tr>
+          <tr><td>Aegis SM-3 IIA / SM-6 / GBI + NGI</td><td class="d">2500 км, космос / 370-460 км / 44 в Аляске и Калифорнии</td><td class="d">США, Япония; SM-3 сбивал иранские БР апр. 2024 и июнь 2025; NGI - 2028</td></tr>
+          <tr><td>Arrow 2/3 / David's Sling / Iron Dome</td><td class="d">космос 2400 км / 300 км / 4-70 км Tamir</td><td class="d">Израиль, 3 эшелона + THAAD и Aegis; Arrow 3 у Германии с 2025; Iron Dome - 90% перехватов</td></tr>
+          <tr><td>SAMP/T NG (Aster 30 B1NT) / HQ-9B / HQ-19 / Barak 8</td><td class="d">150 км / 250-300 км / ПРО / 100 км</td><td class="d">Франция-Италия (Украина) / Китай, Пакистан / Китай / Индия-Израиль</td></tr>
+        </table>
+        <p class="dim" style="margin-top:6px">Golden Dome (США, 2025, $175 млрд): космический эшелон перехватчиков против МБР и гиперзвука - самая амбициозная программа ПРО с СОИ 1983 года.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s39">
+  <div class="content">
+    <div class="kicker">ПВО · средняя и ближняя</div>
+    <h2>Средняя и ближняя зона: где идёт настоящая война</h2>
+    <div class="part rev">
+      <div>
+        <table class="pt t">
+          <tr><th>Система</th><th>Дальность · боекомплект</th><th>Заметки</th></tr>
+          <tr><td>«Бук-М3» / «Бук-М2»</td><td class="d">70 / 45 км · 6 / 4 ракеты на ПУ</td><td class="d">РФ; главная средняя ПВО войск, 9М317М; Украина воюет на Бук-М1</td></tr>
+          <tr><td>«Тор-М2» / «Панцирь-С1 / СМ / СМД»</td><td class="d">16 км · 16 / 20-40 км · 12 ракет + 2×30 мм</td><td class="d">РФ; Тор - лучший результат по дронам; СМД - против БПЛА, 48 мини-ракет</td></tr>
+          <tr><td>NASAMS 2/3</td><td class="d">25-50 км · AMRAAM, AMRAAM-ER, AIM-9X</td><td class="d">Норвегия-США, 13 стран, Украина с 2022; защищает Вашингтон</td></tr>
+          <tr><td>IRIS-T SLM / SLS</td><td class="d">40 / 12 км · 8 ракет</td><td class="d">Германия; в Украине с окт. 2022, результативность ~90%</td></tr>
+          <tr><td>Skynex / Skyranger 30 / Gepard</td><td class="d">35-мм AHEAD 4 км / 30 мм + ракеты / 2×35 мм</td><td class="d">Rheinmetall; Gepard снят в 2010, вернулся в 2022 - лучший против «Гераней» по цене выстрела</td></tr>
+          <tr><td>Iron Dome / C-Dome / SkyHunter</td><td class="d">4-70 км · 20 Tamir на ПУ · $50-100 тыс. ракета</td><td class="d">Израиль; КМП США закупили; тысячи перехватов с 2011</td></tr>
+          <tr><td>M-SHORAD / Avenger / Coyote</td><td class="d">Stinger + Hellfire + 30 мм / Stinger / перехватчик-дрон</td><td class="d">США; Coyote Block 2 - основной антидрон в Ираке и на Ближнем Востоке</td></tr>
+          <tr><td>CAMM Sky Sabre / VL MICA / Spyder / HQ-17 / KM-SAM</td><td class="d">25 / 20 / 15-35 / 15 / 40 км</td><td class="d">Британия / Франция / Израиль / Китай / Корея (ОАЭ, Саудовская Аравия)</td></tr>
+        </table>
+      </div>
+      <div class="pimg">
+        <img src="assets/shorad.png" alt="">
+        <div class="pcap">Ближняя ПВО на колёсах: РЛС, ракеты и спаренная пушка бьют по дрону. Ключевой вопрос 2020-х - цена выстрела: ракета за $100 тыс.-4 млн против «Герани» за $30 тыс. Ответ - снаряды с программируемым подрывом, дешёвые мини-ракеты и лазеры.</div>
+      </div>
+    </div>
+    <div class="dg" style="margin-top:10px">
+      <div class="row">
+        <div class="bx rd"><b>Patriot PAC-3 MSE</b><span>~$4 млн</span></div>
+        <div class="bx am"><b>AMRAAM (NASAMS)</b><span>~$1 млн</span></div>
+        <div class="bx am"><b>IRIS-T SLM</b><span>~$400 тыс.</span></div>
+        <div class="bx cy"><b>Tamir (Iron Dome)</b><span>$50-100 тыс.</span></div>
+        <div class="bx cy"><b>Gepard, очередь 35 мм</b><span>$5-10 тыс.</span></div>
+        <div class="bx gr"><b>Лазер, выстрел</b><span>$1-13</span></div>
+        <div class="bx"><b>Цель: Shahed</b><span>$20-50 тыс.</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s40">
+  <div class="content">
+    <div class="kicker">ПВО · ПЗРК и антидрон</div>
+    <h2>ПЗРК и борьба с дронами: война на плечах и в окопах</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/manpads.png" alt="">
+        <div class="pcap">ПЗРК с ИК-ГСН: 6-8 км, 15-18 кг, захват по теплу двигателя. С 1970-х сбили больше самолётов и вертолётов, чем все ЗРК вместе. В 2022 вертолётная авиация обеих сторон ушла на «кабрирование» из-за них.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Система</th><th>Дальность · ГСН</th><th>Кто</th></tr>
+          <tr><td>«Игла-С» / «Верба» 9К333</td><td class="d">6 / 6.5 км · ИК / трёхспектральная</td><td class="d">РФ; Верба (2014) устойчива к тепловым ловушкам</td></tr>
+          <tr><td>FIM-92K Stinger</td><td class="d">4.8-8 км · ИК/УФ</td><td class="d">США; в Украине 2000+, производство возобновлено 2023; замена - NGSRI к 2027</td></tr>
+          <tr><td>Starstreak / Martlet LMM</td><td class="d">7 км · лазерный луч, 3+ М, три «дротика»</td><td class="d">Британия; не глушится и не отвлекается на ловушки</td></tr>
+          <tr><td>Piorun / Mistral 3 / RBS 70 NG</td><td class="d">6.5 / 8 / 9 км</td><td class="d">Польша (в Украине с 2022) / Франция / Швеция (лазерный луч)</td></tr>
+          <tr><td>QW-18, FN-16 / Misagh-2 / KP-SAM Chiron</td><td class="d">5-6 км</td><td class="d">Китай / Иран / Корея</td></tr>
+        </table>
+        <ul class="pts" style="margin-top:10px">
+          <li><b>Антидрон-арсенал 2025:</b> РЭБ (окопные «Волнорез», «Сания», «Буковель-AD», «Нота», «Красуха-4» на 300 км), антидрон-ружья (EDM4S, «Стилет», ЛПД-801), дробовики и картечь против FPV (штатно у штурмовиков обеих сторон), сетки над дорогами, дроны-перехватчики (Sting, «Йолка»), и 12.7-мм пулемёт на пикапе - главный убийца «Гераней» по числу.</li>
+          <li><b>Оптоволокно сломало РЭБ:</b> FPV на катушке 10-20 км кабеля не глушится и не отдаёт координаты оператора. Ответ - только кинетика: сетки, дробовик, пушка, лазер.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s41">
+  <div class="content">
+    <div class="kicker">ПВО · лазеры и СВЧ</div>
+    <h2>Оружие направленной энергии: $10 за выстрел</h2>
+    <div class="part rev">
+      <div>
+        <table class="pt t">
+          <tr><th>Система</th><th>Мощность · дальность</th><th>Статус</th></tr>
+          <tr><td>Iron Beam (Rafael)</td><td class="d">100 кВт · 7-10 км</td><td class="d">Израиль, первая серийная боевая лазерная ПВО: поставка ЦАХАЛу в конце 2025; сбивал ракеты и дроны в 2024-25</td></tr>
+          <tr><td>DragonFire</td><td class="d">50 кВт · монета с 1 км</td><td class="d">Британия, испытания 2024; на эсминцы Type 45 с 2027; £10 за выстрел</td></tr>
+          <tr><td>HELIOS / LOCUST / IFPC-HEL</td><td class="d">60 кВт / 20 кВт / 300 кВт</td><td class="d">ВМС США (USS Preble, 2022, испытан 2024) / армия США (Stryker DE M-SHORAD 50 кВт, 4 машины 2023) / прототип</td></tr>
+          <tr><td>«Пересвет» / «Задира»</td><td class="d">н/д · ослепление спутников / 5 км</td><td class="d">РФ; Пересвет на дежурстве с 2019 в дивизиях РВСН; Задира - заявлена в 2022, подтверждений мало</td></tr>
+          <tr><td>Silent Hunter / LW-30</td><td class="d">30 кВт · 4 км</td><td class="d">Китай; экспорт в Саудовскую Аравию (сбивал дроны хуситов 2022-24)</td></tr>
+          <tr><td>Epirus Leonidas / THOR / Skynet</td><td class="d">СВЧ-импульс · сотни метров, рой</td><td class="d">США; выжигают электронику десятков дронов разом; армия США 2024-25 - первые комплексы</td></tr>
+        </table>
+      </div>
+      <div class="pimg">
+        <img src="assets/laser.png" alt="">
+        <div class="pcap">Лазерная турель на грузовике жжёт рой дронов: луч 50-100 кВт держит точку на корпусе 2-5 секунд, пока не прогорит топливо или электроника. Ограничения: дождь, туман, пыль, одна цель за раз, и охлаждение на 100 кВт тепла.</div>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:10px"><b>Почему это революция и почему не сегодня:</b> стоимость выстрела - электричество, «магазин» бесконечен, скорость - свет. Но 100 кВт на цели - это 300-500 кВт с генератора и тонны охлаждения, дальность ограничена атмосферой, а зеркальные и вращающиеся корпуса удлиняют время прожига. К 2030 лазер закроет ближнюю зону от дронов и мин, но ракеты и самолёты останутся ракетам.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 7: ФЛОТ ============ -->
+<section class="slide chapter" id="s42">
+  <div class="bgimg"><img src="assets/ch_navy.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 7</div>
+    <h1>Флот: авианосцы, подлодки и ракеты у горизонта</h1>
+    <p class="lead">100 000 тонн с ядерным сердцем, подводные ракетоносцы на 16 ракет и дроны-катера за $250 тыс., которые прогнали Черноморский флот из Севастополя. Море - самый дорогой театр и самый уязвимый.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s43">
+  <div class="content">
+    <div class="kicker">Флот · надводные корабли</div>
+    <h2>Авианосцы и эсминцы: 11 против 3 против 1</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+      <div>
+        <div class="pimg">
+          <img src="assets/carrier.png" alt="" style="width:100%;height:230px;object-fit:cover;border-radius:12px;border:1px solid var(--line);display:block">
+          <div class="pcap"><b>Авианосцы.</b> США: 11 атомных (10 Nimitz + Ford 2017: 100 000 т, 75 самолётов, $13 млрд; Kennedy 2025, Enterprise 2029). Китай: Liaoning, Shandong, Fujian (80 000 т, электромагнитные катапульты, нояб. 2025), атомный Type 004 строится. Британия: 2 × Queen Elizabeth (65 000 т, F-35B). Франция: Charles de Gaulle (атомный, 42 000 т). Индия: Vikrant, Vikramaditya. Япония: Izumo/Kaga под F-35B. РФ: «Кузнецов» в ремонте с 2017, в 2025 - речь о списании.</div>
+        </div>
+      </div>
+      <div>
+        <div class="pimg">
+          <img src="assets/destroyer.png" alt="" style="width:100%;height:230px;object-fit:cover;border-radius:12px;border:1px solid var(--line);display:block">
+          <div class="pcap"><b>Эсминцы и фрегаты.</b> Arleigh Burke Flight III (9700 т, 96 ячеек, SPY-6; 74+ корабля с 1991), 3 Zumwalt (под гиперзвук CPS). Китай: 8+ Type 055 (13 000 т, 112 ячеек), 25+ Type 052D. Type 45 (Британия), FREMM (Франция, Италия), Sejong the Great (Корея, 128 ячеек), Maya (Япония). РФ: фрегаты 22350 (16-24 «Калибр»/«Оникс»/«Циркон», 4 в строю + 6), корветы 20380/85, МРК «Каракурт» и «Буян-М», крейсер «Нахимов» после 25 лет ремонта (2025, 80+ ракет).</div>
+        </div>
+      </div>
+    </div>
+    <div class="dg" style="margin-top:12px">
+      <div class="row">
+        <div class="bx"><b>ВМС США</b><span>~295 кораблей, 11 АВ, 9 УДК, 70 ПЛА/ПЛАРБ</span></div>
+        <div class="bx rd"><b>ВМС НОАК</b><span>~370 кораблей (по числу №1), 3 АВ, 60+ ПЛ</span></div>
+        <div class="bx cy"><b>ВМФ РФ</b><span>~ 1 АВ (в ремонте), ~60 ПЛ, упор на подлодки и «Калибры»</span></div>
+        <div class="bx am"><b>Британия / Франция / Япония / Индия</b><span>2 / 1 / 4 лёгких / 2 авианосца</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s44">
+  <div class="content">
+    <div class="kicker">Флот · подводный</div>
+    <h2>Подводные лодки: невидимая половина ядерного баланса</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/submarine.png" alt="">
+        <div class="pcap">Атомный ракетоносец под водой с открытыми крышками шахт. 150-170 м длины, 15-25 тыс. т, 90 суток автономности, глубина 400-500 м, шумность ниже фона океана. Один такой корабль несёт больше ядерной мощности, чем вся Вторая мировая.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Класс</th><th>Число · вооружение</th><th>Заметки</th></tr>
+          <tr><td>Ohio SSBN / SSGN</td><td class="d">14 · 20 Trident II / 4 · 154 Tomahawk</td><td class="d">США, 1981-97; замена - 12 Columbia (16 шахт, первая ~2028-31, $15 млрд каждая)</td></tr>
+          <tr><td>Virginia Block V / Seawolf / Los Angeles</td><td class="d">24+ / 3 / 20+ · торпеды, 12-40 Tomahawk</td><td class="d">США; Block V с модулем VPM (+28 КР); 3-5 Virginia уйдут Австралии (AUKUS, 2032+)</td></tr>
+          <tr><td>«Борей» / «Борей-А» (955/955А)</td><td class="d">8 в строю (2025) + 2 · 16 «Булава»</td><td class="d">РФ; «Князь Пожарский» - июль 2025; основа морских СЯС до 2050-х</td></tr>
+          <tr><td>«Дельфин» (667БДРМ)</td><td class="d">5 · 16 «Синева»/«Лайнер»</td><td class="d">РФ, Северный флот; доживают до полной замены «Бореями»</td></tr>
+          <tr><td>«Ясень-М» (885М) / 971 «Щука-Б» / 636.3</td><td class="d">5 + 4 · 32-40 «Калибр»/«Оникс»/«Циркон» / ~10 / 12 дизельных</td><td class="d">РФ; «Архангельск» дек. 2024, «Пермь» 2025 - первый штатный носитель «Циркона»</td></tr>
+          <tr><td>«Белгород» (09852) / «Хабаровск» (09851)</td><td class="d">6 «Посейдонов» каждый</td><td class="d">РФ; Белгород - 2022, крупнейшая ПЛ в мире (184 м); Хабаровск спущен нояб. 2025</td></tr>
+          <tr><td>Vanguard → Dreadnought / Astute</td><td class="d">4 → 4 (2030-е, 12 шахт) / 7 (5 в строю)</td><td class="d">Британия; весь ядерный арсенал - только на ПЛАРБ, одна всегда в море с 1969</td></tr>
+          <tr><td>Triomphant → SNLE 3G / Suffren</td><td class="d">4 · 16 M51 / 6 к 2030</td><td class="d">Франция; SNLE 3G с 2035</td></tr>
+          <tr><td>Type 094 / 096 / 093B / 095</td><td class="d">6 · 12 JL-2/JL-3 / строятся / 6+ / строятся</td><td class="d">Китай, база Хайнань; 096 - выход в Тихий океан с JL-3 (10 000+ км)</td></tr>
+          <tr><td>Arihant, Arighaat / KSS-III / Taigei / Type 212CD</td><td class="d">Индия 3 (K-4, 3500 км) / Корея (БРПЛ обычная) / Япония Li-ion / Германия-Норвегия</td><td class="d">неатомные - воздухонезависимые и литиевые: 2-3 недели под водой</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s45">
+  <div class="content">
+    <div class="kicker">Флот · противокорабельные</div>
+    <h2>Противокорабельные ракеты: убийцы авианосцев на 1500 км</h2>
+    <div class="part rev">
+      <div>
+        <table class="pt t">
+          <tr><th>Ракета</th><th>Дальность · БЧ · скорость</th><th>Носитель · заметки</th></tr>
+          <tr><td>П-800 «Оникс» / «Бастион»</td><td class="d">300-800 км · 250 кг · 2.5 М</td><td class="d">РФ, корабли, ПЛ, береговые комплексы; с 2022 бьют и по наземным целям</td></tr>
+          <tr><td>3М54 «Калибр» / 3М22 «Циркон» / Х-35У «Бал»</td><td class="d">660 км, сверхзвуковой финиш / 1000 км, 8 М / 260 км, дозвук</td><td class="d">РФ; Циркон - главная угроза авианосцам по версии ВМС США</td></tr>
+          <tr><td>Х-22 / Х-32</td><td class="d">600 / 1000 км · 900 кг · 4+ М</td><td class="d">Ту-22М3; создавались против авианосцев, 1 попадание = вывод из строя</td></tr>
+          <tr><td>Harpoon Block II+ / NSM / JSM</td><td class="d">240 / 185 / 500 км · 220 / 125 кг</td><td class="d">США и 30 стран / Норвегия (NMESIS у КМП США, Польша, Украина 2022) / F-35 внутренний отсек</td></tr>
+          <tr><td>AGM-158C LRASM / SM-6 / Tomahawk Va MST</td><td class="d">560+ / 370 / 1600 км</td><td class="d">США; LRASM - стелс с автономным выбором цели, с 2018; Tomahawk против кораблей с 2021</td></tr>
+          <tr><td>Exocet MM40 B3c / RBS15 Mk4 / Atmaca / Sea Venom</td><td class="d">200 / 300 / 250 / 20 км</td><td class="d">Франция / Швеция / Турция / вертолётная</td></tr>
+          <tr><td>BrahMos / BrahMos-ER</td><td class="d">290 → 800 км · 300 кг · 2.8-3 М</td><td class="d">Индия-РФ; Филиппины 2024, Вьетнам, Индонезия; удары по Пакистану май 2025</td></tr>
+          <tr><td>YJ-12 / YJ-18 / YJ-21 / DF-21D / DF-26</td><td class="d">400 / 540 / 1500 км ПКБР / 1500 км ПКБР / 4000 км</td><td class="d">Китай; DF-21D - первая противокорабельная баллистическая (2010), DF-26 - «убийца Гуама»</td></tr>
+          <tr><td>«Нептун» / Khalij Fars, Qader, Asef</td><td class="d">300 км / 300 км ПКБР, 300 км</td><td class="d">Украина (крейсер «Москва», 13.04.2022) / Иран и хуситы: первое боевое применение ПКБР - Красное море, нояб. 2023</td></tr>
+        </table>
+      </div>
+      <div class="pimg">
+        <img src="assets/antiship.png" alt="">
+        <div class="pcap">Сверхзвуковая ПКР на высоте гребня волны: корабельный радар видит её за 25-30 км (радиогоризонт), на 2.5 М это 30-40 секунд на реакцию. Дозвуковые ракеты дают 90 секунд, зато летят 3 часа и заходят с любой стороны. Баллистические ПКР бьют сверху на 10 М - против них только SM-3/SM-6 и молитва.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s46">
+  <div class="content">
+    <div class="kicker">Флот · торпеды и морские дроны</div>
+    <h2>Торпеды и безэкипажные катера: старое и новое оружие под ватерлинию</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/torpedo.png" alt="">
+        <div class="pcap">Тяжёлая 533-мм торпеда в разрезе: 300 кг БЧ, ГАС наведения, оптоволокно или провод к лодке, электро- или тепловой двигатель, 50-100 км хода на 50+ узлах. Рядом - безэкипажный катер: 5-6 м, 300-800 кг ВВ, 800 км, Starlink и камеры. Второй за 2023-24 годы сделал больше, чем первая за 30 лет.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Образец</th><th>Параметры</th><th>Кто · заметки</th></tr>
+          <tr><td>Mk 48 Mod 7 CBASS</td><td class="d">533 мм · 55 уз · 38+ км · 295 кг</td><td class="d">США, Австралия, Канада; стандарт тяжёлых торпед</td></tr>
+          <tr><td>Spearfish Mod 1 / F21 Artemis / DM2A4 / Black Shark</td><td class="d">80+ уз, 54 км / 50 км / 50 км, оптоволокно / 50 км</td><td class="d">Британия / Франция / Германия / Италия</td></tr>
+          <tr><td>УГСТ «Физик-1» / «Футляр» / ТЭ-2 / 65-76А</td><td class="d">50 км · 50 уз / модернизация 2017 / электрическая / 650 мм, 100 км, по кильватеру</td><td class="d">РФ; 65-76 - «убийца авианосцев» с 450-кг БЧ, снята после «Курска», по ряду данных вернулась</td></tr>
+          <tr><td>«Шквал» ВА-111</td><td class="d">200 уз (370 км/ч) · 13 км · суперкавитация</td><td class="d">РФ; без наведения, ракета под водой; Иран копирует («Hoot»)</td></tr>
+          <tr><td>Mk 54 / MU90 / Stingray / «Пакет-НК»</td><td class="d">лёгкие 324 мм с вертолётов и кораблей / противоторпеда</td><td class="d">США / Франция-Италия / Британия / РФ (единственный серийный антиторпедный комплекс)</td></tr>
+          <tr><td>Magura V5 / V7 · Sea Baby</td><td class="d">800 км · 320 кг · 42 уз / 850 кг, 1000 км</td><td class="d">Украина; потоплены БДК «Цезарь Куников», РК «Ивановец», «Сергей Котов»; Magura с Р-73 сбила 2 Ми-8 (дек. 2024) и Су-30 (май 2025)</td></tr>
+          <tr><td>Orca XLUUV / Manta Ray / Ghost Shark / «Посейдон»</td><td class="d">85 т, 10 000 км / DARPA 2024 / Австралия-Anduril 2025 / ядерный (глава 9)</td><td class="d">США / США / Австралия / РФ - большие подводные дроны на подходе у всех</td></tr>
+        </table>
+        <div class="note warn" style="margin-top:8px"><b>Итог Чёрного моря:</b> без флота Украина дронами и ракетами потопила или вывела из строя ~третьи крупных кораблей ЧФ, и он ушёл из Севастополя в Новороссийск. Флот за $10 млрд против катеров за $250 тыс. - главный урок для всех адмиралов планеты.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 8: ЯДЕРНОЕ ОРУЖИЕ - ФИЗИКА ============ -->
+<section class="slide chapter" id="s47">
+  <div class="bgimg"><img src="assets/ch_nuke.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 8</div>
+    <h1>Ядерное оружие: физика, мощности, радиусы</h1>
+    <p class="lead">Килотонны, мегатонны, psi и кал/см². Как устроен заряд в общих чертах, куда уходит энергия и что происходит на каждом километре от эпицентра. Все цифры - из Glasstone, NUKEMAP и открытых справочников.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s48">
+  <div class="content">
+    <div class="kicker">ЯО · принцип</div>
+    <h2>Как это работает: деление, синтез и две ступени</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+      <div>
+        <div class="pimg">
+          <img src="assets/nuke_physics.png" alt="" style="width:100%;height:230px;object-fit:cover;border-radius:12px;border:1px solid var(--line);display:block">
+          <div class="pcap"><b>Деление.</b> Ядро U-235 или Pu-239 ловит нейтрон, делится и выпускает 2-3 новых: ~80 поколений за микросекунду. 1 кг разделившегося урана = 17 кт. «Малыш» (15 кт) - 64 кг урана, разделилось ~0.7 кг; «Толстяк» (21 кт) - 6.2 кг плутония. Критическая масса голого шара U-235 - 52 кг, плутония - 10 кг; отражатель и обжатие снижают её в разы.</div>
+        </div>
+      </div>
+      <div>
+        <div class="pimg">
+          <img src="assets/warhead.png" alt="" style="width:100%;height:230px;object-fit:cover;border-radius:12px;border:1px solid var(--line);display:block">
+          <div class="pcap"><b>Синтез и две ступени.</b> Схема Теллера-Улама (1951): первичный заряд рентгеном обжимает вторичный из дейтерида лития, тот даёт синтез, оболочка из U-238 - ещё деление. Ivy Mike (1952) - 10.4 Мт; РДС-37 (1955) - 1.6 Мт, первый авиационный; Царь-бомба (1961) - 50 Мт со свинцом вместо урана, с ураном было бы 100. W88 - 475 кт при 360 кг: 1.3 кт на кг.</div>
+        </div>
+      </div>
+    </div>
+    <div class="dg" style="margin-top:12px">
+      <div class="row">
+        <div class="bx"><b>Пушечная схема</b><span>два куска U-235 навстречу; просто, неэффективно; «Малыш»</span></div>
+        <div class="bx cy"><b>Имплозия</b><span>сфера Pu обжимается взрывчаткой; все современные первички</span></div>
+        <div class="bx cy"><b>Бустирование</b><span>щепотка D-T газа в ядре: нейтронов больше, заряд легче, мощность регулируемая</span></div>
+        <div class="bx am"><b>Двухступенчатый</b><span>деление → синтез → деление; 100 кт - 50 Мт</span></div>
+        <div class="bx rd"><b>Dial-a-yield</b><span>B61-12: 0.3 / 1.5 / 10 / 50 кт из одного изделия</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s49">
+  <div class="content">
+    <div class="kicker">ЯО · поражающие факторы</div>
+    <h2>Куда уходит энергия: 50 / 35 / 5 / 10</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/blast_wave.png" alt="">
+        <div class="pcap">От эпицентра наружу: световой импульс (первые секунды, со скоростью света), затем ударная волна (звук: 1 км за 3 с), проникающая радиация в первую минуту, выпадения - часы и дни. Каждый фактор убивает на своём радиусе, и они складываются.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Фактор</th><th>Доля энергии</th><th>Порог · что происходит</th></tr>
+          <tr><td>Ударная волна</td><td class="d">~50%</td><td class="d">20 psi (1.4 атм): рушится железобетон, ветер 750 км/ч. 5 psi (0.34 атм): падают жилые дома, ветер 260 км/ч, гибель почти всех внутри. 1 psi: стёкла в осколки, ранения на 3-4 радиусах от 5 psi</td></tr>
+          <tr><td>Световое излучение</td><td class="d">~35%</td><td class="d">10 кал/см² - ожоги 3-й степени, 6 - 2-й, 3 - 1-й; поджигает ткань и бумагу. Вспышка ярче Солнца в тысячи раз; ослепление ночью на 50+ км</td></tr>
+          <tr><td>Проникающая радиация</td><td class="d">~5%</td><td class="d">нейтроны и гамма в первую минуту; 5 Зв - гибель половины за месяц, 8+ Зв - всех. Для мегатонных зарядов радиус меньше радиуса ожогов - «лишний» фактор</td></tr>
+          <tr><td>Радиоактивное заражение</td><td class="d">~10%</td><td class="d">только при наземном подрыве: грунт втягивается в шар и выпадает по ветру на сотни км. Правило 7-10: за 7 часов мощность дозы падает в 10 раз, за 2 суток - в 100</td></tr>
+          <tr><td>ЭМИ</td><td class="d">&lt;1%</td><td class="d">высотный взрыв: импульс E1 (наносекунды, электроника) и E3 (минуты, трансформаторы) на континент. Starfish Prime 1962 (1.4 Мт, 400 км) погасил фонари на Гавайях за 1400 км</td></tr>
+        </table>
+        <div class="note" style="margin-top:8px"><b>Огненный шар:</b> 10 млн °C в первую микросекунду, 7000°C на поверхности через секунду - горячее Солнца. Мегатонный шар вырастает до 2 км в диаметре за 10 секунд и поднимается на 20-40 км, вытягивая за собой «ножку» гриба из пыли. Гриб Царь-бомбы - 67 км высотой, 95 км шириной.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s50">
+  <div class="content">
+    <div class="kicker">ЯО · радиусы поражения</div>
+    <h2>Шкала мощностей: что делает каждый заряд в километрах</h2>
+    <div class="part rev">
+      <div>
+        <table class="pt t">
+          <tr><th>Мощность · пример</th><th>Огненный шар</th><th>20 psi</th><th>5 psi</th><th>Ожоги 3 ст.</th><th>Площадь 5 psi</th></tr>
+          <tr><td>0.3 кт · B61-12 (мин.)</td><td class="d">50 м</td><td class="d">0.16 км</td><td class="d">0.43 км</td><td class="d">0.4 км</td><td class="d">0.6 км²</td></tr>
+          <tr><td>15 кт · Хиросима</td><td class="d">190 м</td><td class="d">0.6 км</td><td class="d">1.6 км</td><td class="d">1.9 км</td><td class="d">8 км²</td></tr>
+          <tr><td>50 кт · B61-12 (макс.)</td><td class="d">300 м</td><td class="d">0.9 км</td><td class="d">2.4 км</td><td class="d">3.1 км</td><td class="d">18 км²</td></tr>
+          <tr><td>100 кт · Булава (ББ), W76-1 (90)</td><td class="d">400 м</td><td class="d">1.1 км</td><td class="d">3.0 км</td><td class="d">4.1 км</td><td class="d">28 км²</td></tr>
+          <tr><td>300 кт · W87, Ярс (ББ, оценка)</td><td class="d">620 м</td><td class="d">1.6 км</td><td class="d">4.4 км</td><td class="d">6.4 км</td><td class="d">61 км²</td></tr>
+          <tr><td>475 кт · W88 (Trident II)</td><td class="d">750 м</td><td class="d">1.85 км</td><td class="d">5.1 км</td><td class="d">7.7 км</td><td class="d">82 км²</td></tr>
+          <tr><td>800 кт · Воевода/Сармат (ББ, оценка), Тополь-М</td><td class="d">900 м</td><td class="d">2.2 км</td><td class="d">6.0 км</td><td class="d">9.6 км</td><td class="d">113 км²</td></tr>
+          <tr><td>1.2 Мт · B83</td><td class="d">1.05 км</td><td class="d">2.5 км</td><td class="d">6.9 км</td><td class="d">11.3 км</td><td class="d">150 км²</td></tr>
+          <tr><td>5 Мт · DF-5 (ББ, оценка)</td><td class="d">1.9 км</td><td class="d">4.1 км</td><td class="d">11 км</td><td class="d">20 км</td><td class="d">380 км²</td></tr>
+          <tr><td>15 Мт · Castle Bravo 1954</td><td class="d">2.9 км</td><td class="d">5.9 км</td><td class="d">16 км</td><td class="d">32 км</td><td class="d">800 км²</td></tr>
+          <tr><td>50 Мт · Царь-бомба 1961</td><td class="d">4.6 км</td><td class="d">8.8 км</td><td class="d">24 км</td><td class="d">52-100 км</td><td class="d">1800 км²</td></tr>
+        </table>
+        <p class="dim" style="margin-top:6px">Радиусы для воздушного подрыва на оптимальной высоте по формулам Glasstone/NUKEMAP; наземный подрыв даёт радиусы на 20-30% меньше, но выпадения. Для сравнения площадей: Манхэттен 59 км², Париж 105 км², Москва внутри МКАД 877 км², Берлин 891 км².</p>
+      </div>
+      <div class="pimg">
+        <img src="assets/fireball.png" alt="">
+        <div class="pcap">Огненный шар первых секунд: наземный подрыв, «юбка» пыли и кольцо конденсации. Правило масштаба: ударная волна растёт как корень кубический из мощности (×10 мощности = ×2.15 радиуса), световая - почти как корень квадратный. Поэтому мегатонные заряды жгут дальше, чем ломают.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s51">
+  <div class="content">
+    <div class="kicker">ЯО · высота, история, испытания</div>
+    <h2>Воздух или земля: одна бомба, два разных исхода</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/mushroom.png" alt="">
+        <div class="pcap">Гриб мегатонного наземного взрыва с побережья. Шапка - на высоте стратосферы, «ножка» - миллион тонн грунта, который через часы выпадет на 300-500 км по ветру. Castle Bravo (1954) засыпал пеплом атоллы и японских рыбаков за 150 км.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Воздушный подрыв</b> (Хиросима - 600 м, Нагасаки - 503 м, 1 Мт - оптимум ~2 км): ударная волна отражается от земли и «сливается» в усиленный фронт (эффект Маха), радиус 5 psi максимален, а выпадений почти нет - огненный шар не касается грунта. Так планируют удары по городам и войскам. <b>Наземный</b> (по шахтам и бункерам): воронка 100-300 м, радиусы меньше на четверть, но смертельные выпадения на десятки тысяч км².</li>
+          <li><b>Хиросима, 6 августа 1945:</b> 15 кт, 70-80 тысяч погибших сразу, 140 тысяч к концу года из 350-тысячного города; всё в радиусе 1.6 км - в ноль. <b>Нагасаки, 9 августа:</b> 21 кт, 40 тысяч сразу, 70 тысяч к концу года, холмы прикрыли часть города. <b>Царь-бомба, 30 октября 1961, Новая Земля,</b> подрыв на 4000 м: вспышку видели за 1000 км, стёкла выбило за 900 км, сейсмоволна трижды обошла планету, ожоги 3-й степени - на 100 км.</li>
+          <li><b>Испытаний - 2056+:</b> США 1032, СССР 715, Франция 210, Китай 45, Британия 45, Индия 3 (6 зарядов), Пакистан 2 (6), КНДР 6 (последнее - сентябрь 2017, 160-250 кт). Договор о всеобъемлющем запрещении (1996) так и не вступил в силу; РФ отозвала ратификацию в 2023. Все ядерные державы держат полигоны «в готовности», но с 1998 (кроме КНДР) - только компьютерное моделирование и подкритические опыты.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s52">
+  <div class="content">
+    <div class="kicker">ЯО · арсеналы</div>
+    <h2>Кто сколько держит: ~12 200 боезарядов на девять стран</h2>
+    <div class="part rev">
+      <div>
+        <table class="pt t">
+          <tr><th>Страна</th><th>Всего · развёрнуто (SIPRI/FAS 2025)</th><th>Носители · заметки</th></tr>
+          <tr><td>Россия</td><td class="d">~5460 · ~1720 стратегических + ~1550 тактических</td><td class="d">полная триада; модернизация ~95% носителей; ТЯО в Беларуси с 2023</td></tr>
+          <tr><td>США</td><td class="d">~5180 · ~1770 + ~100 B61 в Европе</td><td class="d">триада; программа обновления $1.7 трлн на 30 лет (Sentinel, Columbia, B-21, LRSO)</td></tr>
+          <tr><td>Китай</td><td class="d">~600 · растёт на ~100 в год</td><td class="d">прогноз Пентагона: 1000 к 2030; три новых шахтных поля (~320 шахт), отказ от «минимального сдерживания»</td></tr>
+          <tr><td>Франция</td><td class="d">290</td><td class="d">4 ПЛАРБ + ASMP-A на Rafale; в 2025 предложила «зонтик» Европе</td></tr>
+          <tr><td>Британия</td><td class="d">225 → до 260</td><td class="d">только Trident на Vanguard; в 2025 - покупка 12 F-35A под B61</td></tr>
+          <tr><td>Индия / Пакистан</td><td class="d">~180 / ~170</td><td class="d">гонка на юге: Agni-V с РГЧ (2024), Ababeel; конфликт мая 2025 - первый обмен ударами между ядерными державами такого масштаба</td></tr>
+          <tr><td>Израиль</td><td class="d">~90 (не признаёт)</td><td class="d">Jericho III, F-15I/F-35I, Dolphin с КР</td></tr>
+          <tr><td>КНДР</td><td class="d">~50 (материала на 90)</td><td class="d">Hwasong-18/19, тактическая Hwasan-31; заявленный ядерный подводный дрон «Хэиль»</td></tr>
+        </table>
+        <div class="note warn" style="margin-top:8px"><b>Договоров больше нет.</b> ДРСМД умер в 2019, ДСНВ (1550 ББ и 700 носителей) истёк 5 февраля 2026; в сентябре 2025 РФ предложила год добровольно соблюдать лимиты. Впервые с 1972 года у двух главных арсеналов нет ни одного ограничения и ни одной инспекции.</div>
+      </div>
+      <div class="pimg">
+        <img src="assets/arsenal.png" alt="">
+        <div class="pcap">Ряды боевых блоков на хранении. 12 000 зарядов - это в 6 раз меньше пика 1986 года (70 000), но суммарная мощность всё ещё ~2-3 гигатонны: 150 000 Хиросим. Впервые с 1990-х число боезарядов на дежурстве снова растёт.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 9: ЯДЕРНАЯ ТРИАДА ============ -->
+<section class="slide chapter" id="s53">
+  <div class="bgimg"><img src="assets/ch_triad.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 9</div>
+    <h1>Ядерная триада: шахты, лодки, бомбардировщики</h1>
+    <p class="lead">Три способа доставить заряд на другой континент, три причины, почему ни один из них нельзя убрать, и всё новое: «Сармат», «Авангард», «Буревестник», «Посейдон», Sentinel, Columbia, B-21, DF-41.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s54">
+  <div class="content">
+    <div class="kicker">Триада · зачем три</div>
+    <h2>Логика триады: неуязвимость ответного удара</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/triad.png" alt="">
+        <div class="pcap">Три плеча и командный центр между ними. Шахта - точная и быстрая, но её координаты известны. Лодка - неуязвима в океане, но связь односторонняя и медленная. Бомбардировщик - единственный, кого можно поднять и вернуть. Убери любое плечо - и у противника появится соблазн первого удара.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Время решения - минуты.</b> МБР летит 25-30 минут, БРПЛ с подхода - 10-15. СПРН (спутники и надгоризонтные РЛС «Воронеж» у РФ, SBIRS/Next-Gen OPIR, PAVE PAWS и LRDR у США) даёт 15-20 минут на оценку. Отсюда доктрина «пуск по предупреждению»: ракеты уходят до первых разрывов, пока шахты целы. Именно это делает ложные срабатывания (1983, Петров; 1995, норвежская ракета) самыми опасными моментами истории.</li>
+          <li><b>Управление.</b> РФ: система «Казбек» с терминалами «Чегет» (президент, министр обороны, НГШ), автоматизированная «Периметр» - при потере связи и признаках ударов ракеты-ретрансляторы передают приказ уцелевшим пусковым (существование признано, детали закрыты). США: NC3, «ядерный чемоданчик» с кодами, воздушные КП E-4B и E-6B, президент - единственный, кто отдаёт приказ, проверка «двух человек» на каждом звене.</li>
+          <li><b>Кто на дежурстве прямо сейчас:</b> у США ~400 Minuteman III в шахтах и 4-5 ПЛАРБ на патруле (каждая - до 80-160 ББ), бомбардировщики с 1991 не дежурят с ЯО на борту. У РФ - ~320 МБР (шахты и колёса), 1-3 ПЛАРБ в море, полки Ту-95МС и Ту-160. Из ~1700 развёрнутых ББ каждой стороны в первые 30 минут может уйти большая часть.</li>
+        </ul>
+        <div class="dg" style="margin-top:8px">
+          <div class="row">
+            <div class="bx"><b>Шахтная МБР</b><span>25-30 мин · КВО 100-200 м · уязвима</span></div>
+            <div class="bx cy"><b>Мобильная МБР</b><span>колёса и лес · сложнее найти</span></div>
+            <div class="bx am"><b>ПЛАРБ</b><span>10-15 мин с подхода · невидима</span></div>
+            <div class="bx gr"><b>Бомбардировщик</b><span>часы · отзываем · сигнал</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s55">
+  <div class="content">
+    <div class="kicker">Триада · МБР России, шахты</div>
+    <h2>Шахтные МБР РФ: «Воевода» уходит, «Сармат» не приходит</h2>
+    <div class="part rev">
+      <div>
+        <table class="pt t">
+          <tr><th>Ракета</th><th>Масса · дальность · нагрузка</th><th>Статус</th></tr>
+          <tr><td>Р-36М2 «Воевода» (SS-18 Satan)</td><td class="d">211 т · 11 000 км · 10 × ~750-800 кт</td><td class="d">жидкостная, 1988; последние ~30 снимаются к 2025-27 по мере прихода «Сармата»</td></tr>
+          <tr><td>РС-28 «Сармат» (SS-X-29)</td><td class="d">208 т · 18 000 км (через Южный полюс) · до 10 тяжёлых или 15 лёгких ББ, или «Авангарды»</td><td class="d">единственный успешный пуск апр. 2022; аварии 2023-24, взрыв в шахте Плесецка сент. 2024; «на дежурстве» объявлено в 2023, серия буксует</td></tr>
+          <tr><td>УР-100Н УТТХ (SS-19 Mod 4) + «Авангард»</td><td class="d">105 т · 10 000 км · 1 ГПБ (оценка 0.8-2 Мт)</td><td class="d">полки в Домбаровском с 2019, 12 ракет к 2027; ракеты 1980-х из хранения под новые блоки</td></tr>
+          <tr><td>РТ-2ПМ2 «Тополь-М» (шахтный)</td><td class="d">47 т · 11 000 км · 1 × ~800 кт</td><td class="d">60 ракет, Татищево, 1997; твёрдотопливная база «Ярса»</td></tr>
+          <tr><td>РС-24 «Ярс» (шахтный)</td><td class="d">49 т · 11 000 км · 3-4 × 100-300 кт (оценки)</td><td class="d">Козельск, Татищево; с 2014; вместе с мобильными - основа РВСН</td></tr>
+        </table>
+        <div class="note" style="margin-top:8px"><b>Итог по РВСН:</b> ~320 МБР с ~1200 ББ в 11 дивизиях; ~75% на «Ярсах». Шахты выдерживают давление 100+ атм и рассчитаны на близкий ядерный взрыв. Учения «Гром» с реальными пусками - ежегодно; последние осенью 2024 и 2025.</div>
+      </div>
+      <div class="pimg">
+        <img src="assets/icbm_silo.png" alt="">
+        <div class="pcap">Старт из шахты в снежном лесу: крышка в 100+ т отброшена, «миномётный» старт пороховым аккумулятором давления, маршевый двигатель включается над землёй. Через 3-5 минут ступени отработали, через 25 минут блоки входят в атмосферу на 7 км/с.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s56">
+  <div class="content">
+    <div class="kicker">Триада · МБР России, мобильные</div>
+    <h2>Мобильные МБР: 16 колёс, лес и 300 км маршрута</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/mobile_icbm.png" alt="">
+        <div class="pcap">Автономная пусковая установка на шасси МЗКТ-79221 (16×16, 120 т): ракета в контейнере, старт с любой площадки за минуты. Дивизия расходится по лесным маршрутам на сотни км - спутник видит колонну, но не знает, где она будет через час.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Комплекс</th><th>Ракета · ББ</th><th>Статус</th></tr>
+          <tr><td>«Тополь» (РТ-2ПМ, SS-25)</td><td class="d">1 × 800 кт · 10 000 км</td><td class="d">1985; последние полки сняты в 2023-24, ракеты идут на пуски спутников</td></tr>
+          <tr><td>«Тополь-М» (мобильный)</td><td class="d">1 × 800 кт · 11 000 км</td><td class="d">18 ПУ, Тейково, 2006; переходят на «Ярс»</td></tr>
+          <tr><td>РС-24 «Ярс» / «Ярс-С»</td><td class="d">3-4 × 100-300 кт (оценки) · 11 000 км</td><td class="d">~150-170 мобильных ПУ, 7 дивизий; основа сдерживания до 2040-х</td></tr>
+          <tr><td>«Осина-РВ» / «Кедр»</td><td class="d">н/д</td><td class="d">испытания 2024-25 (Плесецк) / замена «Ярса» с 2030-х, НИОКР с 2023</td></tr>
+          <tr><td>БЖРК «Баргузин»</td><td class="d">6 «Ярсов» в поезде</td><td class="d">отменён в 2017; «Молодец» (СССР) снят в 2005</td></tr>
+        </table>
+        <ul class="pts" style="margin-top:8px">
+          <li><b>Маршрут и охрана:</b> полк - 9 пусковых, машины обеспечения, инженерная разведка, БТР охраны, РЭБ и с 2019 - лазеры «Пересвет» для ослепления спутников над районом. Стартовые площадки заранее геодезически привязаны, но старт возможен и «с грунта» по ГЛОНАСС.</li>
+          <li><b>Мобильность - плата за точность:</b> КВО «Ярса» ~150-250 м против ~100 м у шахтных с астрокоррекцией. Для 300-кт блока по городу это неважно, по шахте противника - критично. Отсюда разделение ролей: шахты бьют по шахтам, мобильные и лодки - «гарантия ответа».</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s57">
+  <div class="content">
+    <div class="kicker">Триада · МБР США и остальных</div>
+    <h2>Minuteman III, Sentinel и китайские шахтные поля</h2>
+    <div class="part rev">
+      <div>
+        <table class="pt t">
+          <tr><th>Ракета</th><th>Дальность · ББ</th><th>Статус</th></tr>
+          <tr><td>LGM-30G Minuteman III</td><td class="d">13 000 км · 1 × W87-0 (300 кт) или W78 (335 кт) · КВО ~120 м</td><td class="d">США, 400 в 450 шахтах (Монтана, Вайоминг, Северная Дакота); 1970 г., продлён до 2030-х</td></tr>
+          <tr><td>LGM-35A Sentinel</td><td class="d">13 000+ км · W87-1</td><td class="d">Northrop; замена 1:1 к 2030-м; смета выросла до $141 млрд (+81%, 2024), сроки уехали на 2033+</td></tr>
+          <tr><td>DF-41 / DF-31AG / DF-5B, DF-5C</td><td class="d">12 000-15 000 км · до 10 ББ / 3 / 3-12</td><td class="d">Китай; DF-41 с 2019 на колёсах и в шахтах; 3 поля по 100+ шахт в пустынях (2021+); DF-5C и новая DF-61 на параде сент. 2025</td></tr>
+          <tr><td>Hwasong-17 / 18 / 19 / 20</td><td class="d">15 000 км · заявлено РГЧ</td><td class="d">КНДР; 18 и 19 - твердотопливные (2023, 2024, полёт 86 мин); 20 показана в 2025</td></tr>
+          <tr><td>Agni-V / Agni-VI / Agni-P</td><td class="d">5000-8000 км · РГЧ (испытание «Дивьястра», март 2024) / разработка / 2000 км</td><td class="d">Индия; канистра, колёса и ЖД; Пакистан отвечает Ababeel (РГЧ, 2200 км) и Shaheen-III (2750 км)</td></tr>
+          <tr><td>Jericho III</td><td class="d">4800-6500 км (оценки)</td><td class="d">Израиль; не подтверждается, «политика неопределённости»</td></tr>
+          <tr><td>Франция, Британия</td><td class="d">-</td><td class="d">наземных МБР нет: Франция закрыла плато Альбион в 1996, Британия никогда не имела</td></tr>
+        </table>
+      </div>
+      <div class="pimg">
+        <img src="assets/minuteman.png" alt="">
+        <div class="pcap">Шахта Minuteman III с открытой крышкой: 25 м глубины, ракета на пружинной подвеске, пусковой центр на 10 ракет с двумя офицерами под 30 м бетона. 400 таких точек на равнинах - «губка», которая должна впитать сотни вражеских боеголовок.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s58">
+  <div class="content">
+    <div class="kicker">Триада · БРПЛ</div>
+    <h2>Баллистические ракеты подводных лодок: старт из-под воды</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/slbm_launch.png" alt="">
+        <div class="pcap">Ракета вылетает из шахты на глубине 30-50 м под давлением газа, двигатель запускается над водой. Лодка при этом идёт 5 узлов и держит дифферент, за 15-20 секунд «стреляя» весь боекомплект. Trident II на выходе - 59 т, «Булава» - 37 т.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Ракета</th><th>Дальность · ББ · КВО</th><th>Носитель · статус</th></tr>
+          <tr><td>Р-30 «Булава» (3М30)</td><td class="d">9300 км · 6 (до 10) × 100-150 кт · ~350 м</td><td class="d">«Борей»; серия испытаний с 2005, официально принята в 2024; 16 на лодке = до 96-160 ББ</td></tr>
+          <tr><td>Р-29РМУ2.1 «Лайнер» / «Синева»</td><td class="d">11 500 км · 4 × 500 кт или до 10 × 100 кт</td><td class="d">жидкостные на 667БДРМ; лучшее отношение нагрузки к массе, снятие ~2030</td></tr>
+          <tr><td>UGM-133A Trident II D5LE</td><td class="d">12 000 км · до 8-12 × W76-1 (90 кт) / W88 (475 кт) / W76-2 (5-7 кт) · ~90 м</td><td class="d">Ohio, Vanguard (Британия); 1990/2017 LE; точность уровня шахтных МБР; D5LE2 для Columbia с 2030-х</td></tr>
+          <tr><td>M51.2 / M51.3</td><td class="d">9000+ км · 6-10 × TNO 100 кт</td><td class="d">Франция, Triomphant; M51.3 - испытание нояб. 2025, на боевое дежурство с 2026</td></tr>
+          <tr><td>JL-2 / JL-3</td><td class="d">7200 / 10 000+ км · 1 × 1 Мт / РГЧ</td><td class="d">Китай, Type 094 (6 лодок); JL-3 позволяет бить по США из Южно-Китайского моря</td></tr>
+          <tr><td>K-4 / K-5 / Pukguksong-3 / Hyunmoo-4-4</td><td class="d">3500 км / 5000+ / 1900 км / обычная</td><td class="d">Индия (Arihant) / разработка / КНДР / Корея - неядерная БРПЛ на KSS-III</td></tr>
+        </table>
+        <div class="note gold" style="margin-top:8px"><b>W76-2 (2019)</b> - «маломощная» боеголовка 5-7 кт на Trident: ответ на предполагаемую российскую доктрину ограниченного применения. Критики: пуск с ПЛАРБ неотличим от полномасштабного, что бы ни летело.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s59">
+  <div class="content">
+    <div class="kicker">Триада · ракетоносцы</div>
+    <h2>ПЛАРБ: кто сейчас в море и что придёт на смену</h2>
+    <div class="part rev">
+      <div>
+        <table class="pt t">
+          <tr><th>Класс</th><th>Число · шахт · водоизмещение</th><th>Заметки</th></tr>
+          <tr><td>Ohio</td><td class="d">14 · 20 (из 24, по ДСНВ) · 18 750 т</td><td class="d">США, 1981-97; 4-5 всегда на патруле; ~50% развёрнутых ББ США на них</td></tr>
+          <tr><td>Columbia (SSBN-826)</td><td class="d">12 · 16 · 20 800 т</td><td class="d">США, головная 2028-31; электродвижение, реактор на весь срок службы; $130 млрд программа</td></tr>
+          <tr><td>«Борей» / «Борей-А» (955/955А)</td><td class="d">3 + 5 (2025) + 2 · 16 · 24 000 т</td><td class="d">РФ, Северный и Тихоокеанский флоты; замена 667БДРМ; строятся ещё 2 до 2030</td></tr>
+          <tr><td>«Дельфин» (667БДРМ Delta IV)</td><td class="d">5 · 16 · 18 200 т</td><td class="d">РФ, 1984-90; последние снимут по мере прихода «Бореев»</td></tr>
+          <tr><td>Vanguard → Dreadnought</td><td class="d">4 · 16 (8 в загрузке) → 4 · 12</td><td class="d">Британия, CASD с 1969 - минимум одна лодка в море всегда; Dreadnought с 2030-х</td></tr>
+          <tr><td>Triomphant → SNLE 3G</td><td class="d">4 · 16 → 4 · 16</td><td class="d">Франция, одна всегда в море; 3G с 2035</td></tr>
+          <tr><td>Type 094 Jin → Type 096</td><td class="d">6 · 12 → строятся · 16-24</td><td class="d">Китай; первые полноценные патрули с 2015; 096 - тише и дальше</td></tr>
+          <tr><td>Arihant / Arighaat / Aridhaman</td><td class="d">2 + 1 · 4 K-4 или 12 K-15 · 6000 т</td><td class="d">Индия, 2016 / 2024 / 2025-26; первый шаг к морской триаде</td></tr>
+        </table>
+      </div>
+      <div class="pimg">
+        <img src="assets/ssbn.png" alt="">
+        <div class="pcap">Ракетоносец у пирса с открытыми шахтами в два ряда. Каждый выход на патруль - 70-90 суток тишины на 5-8 узлах в квадрате, известном только командованию. Связь - сверхдлинные волны, только «приём», буксируемая антенна на глубине.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s60">
+  <div class="content">
+    <div class="kicker">Триада · авиация</div>
+    <h2>Стратегическая авиация и её ракеты: единственное отзываемое плечо</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/strat_bomber.png" alt="">
+        <div class="pcap">Взлёт сверхзвукового ракетоносца с изменяемой стреловидностью на форсаже. Нагрузка - 12 крылатых ракет с ядерными или обычными БЧ на двух барабанах в отсеках. С 2022 года основной инструмент дальних ударов, но ядерных дежурств в воздухе нет ни у кого с 1991.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Носитель</th><th>Ядерное оружие</th><th>Заметки</th></tr>
+          <tr><td>Ту-160М (~17) / Ту-95МС, МСМ (~50)</td><td class="d">Х-102 (4500-5500 км, ~250 кт по оценкам), Х-55СМ (200 кт, 3000 км), Х-БД (6500+ км, 2023)</td><td class="d">РФ, Энгельс и Украинка; Ту-160М2 - новая постройка с 2022; удары дронами по аэродромам июнь 2025 («Паутина»)</td></tr>
+          <tr><td>Ту-22М3 (~50)</td><td class="d">Х-22/Х-32 с ядерной БЧ (по ДСНВ - не стратегический)</td><td class="d">РФ, дальняя авиация; фактически носитель Х-22 по наземным целям</td></tr>
+          <tr><td>B-52H → B-52J (76)</td><td class="d">20 AGM-86B ALCM (W80-1, 5-150 кт, 2500 км) → AGM-181 LRSO (W80-4, ~2030)</td><td class="d">США; свободнопадающих бомб больше не несёт; служить до 2050-х</td></tr>
+          <tr><td>B-2A (19) / B-21 (100+)</td><td class="d">16 B61-12 или B83-1 / B61-12 + LRSO</td><td class="d">США; B-21 - первые эскадрильи 2027-30, оба - «проникающие» носители против ПВО</td></tr>
+          <tr><td>F-35A / F-16 / F-15E / Tornado</td><td class="d">B61-12 (0.3-50 кт), ~100 в Европе</td><td class="d">НАТО: базы в Бельгии, Германии, Италии, Нидерландах, Турции; F-35A сертифицирован в 2024; Германия покупает 35 F-35A под B61</td></tr>
+          <tr><td>Rafale B / Rafale M</td><td class="d">ASMP-A (TNA 300 кт, 500 км, 3 М) → ASN4G (гиперзвук, ~2035)</td><td class="d">Франция; воздушное плечо - ~50 ракет; «Шарль де Голль» - единственный авианосец с ядерным оружием кроме США (у США - нет с 1992)</td></tr>
+          <tr><td>H-6N / H-20</td><td class="d">аэробаллистическая (CJ-100/KD-21?) / стелс</td><td class="d">Китай возродил воздушное плечо триады с 2019</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s61">
+  <div class="content">
+    <div class="kicker">Триада · тактическое</div>
+    <h2>Тактическое ядерное оружие: от 0.3 до 300 кт на поле боя</h2>
+    <div class="part rev">
+      <div>
+        <table class="pt t">
+          <tr><th>Изделие</th><th>Мощность · носитель</th><th>Статус</th></tr>
+          <tr><td>B61-12</td><td class="d">0.3 / 1.5 / 10 / 50 кт · F-35A, F-16, F-15E, B-2, B-21</td><td class="d">США, серия 2022-26, ~480 шт., $28 млн каждая; ИНС-хвост даёт КВО 30 м - точность вместо мощности</td></tr>
+          <tr><td>B61-13</td><td class="d">360 кт · B-2, B-21</td><td class="d">объявлена окт. 2023, первая выпущена май 2025; «против крупных площадных и заглублённых целей»</td></tr>
+          <tr><td>B83-1</td><td class="d">1.2 Мт · B-2</td><td class="d">США, последняя мегатонная бомба; снятие переносится, решение 2025-26</td></tr>
+          <tr><td>W76-2 / SLCM-N</td><td class="d">5-7 кт на Trident / ядерная КР для ПЛА и эсминцев (W80-4A)</td><td class="d">США, 2019 / возобновлена 2024-25, ~2034</td></tr>
+          <tr><td>«Искандер-М» 9М723</td><td class="d">ядерная БЧ (оценки 10-50 кт) · 500 км</td><td class="d">РФ; часть ТЯО ~1550 единиц (FAS); в Беларуси с 2023, учения по ТЯО май-июнь 2024</td></tr>
+          <tr><td>«Кинжал» / «Калибр» / Х-32 / Х-59 / ФАБ</td><td class="d">ядерные варианты существуют для всех классов</td><td class="d">РФ; плюс торпеды, глубинные бомбы и ракеты ПВО (С-400 и А-135 с ядерными БЧ)</td></tr>
+          <tr><td>ASMP-A / DF-26 / Nasr (Hatf-IX)</td><td class="d">300 кт / двойного назначения 4000 км / 60 км, «противотанковое»</td><td class="d">Франция / Китай / Пакистан - самый короткий ядерный «поводок» в мире</td></tr>
+        </table>
+      </div>
+      <div class="pimg">
+        <img src="assets/b61.png" alt="">
+        <div class="pcap">Корректируемая ядерная бомба с хвостовым блоком на тележке под крылом. 3.6 м, 375 кг, четыре ступени мощности. В Европе они лежат в подземных хранилищах WS3 прямо под самолётными укрытиями на пяти базах и ждут «разрешения двух ключей» - американского и национального.</div>
+      </div>
+    </div>
+    <div class="note warn" style="margin-top:8px"><b>Доктрина.</b> «Основы госполитики» РФ (ред. ноябрь 2024) допускают ядерный ответ на массированный неядерный удар и на агрессию неядерной страны «при поддержке ядерной». Обзор ядерной политики США (2022) отказался от «единственной цели». Китай - единственный из пятёрки с официальным «неприменением первыми». Разница между «тактическим» и «стратегическим» - в дальности носителя, а не в мощности: 50-кт B61 и 100-кт W76-1 почти одинаковы.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s62">
+  <div class="content">
+    <div class="kicker">Триада · новое</div>
+    <h2>Новинки 2019-2026: ядерный двигатель, глайдеры и торпеда</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/novel.png" alt="">
+        <div class="pcap">Слева - подводный дрон с ядерной силовой установкой длиной с автобус (20 м, ~100 т), справа - крылатая ракета с ядерным реактором вместо турбины. Оба - ответ на американскую ПРО: «если вы поставите щит, мы обойдём его снизу и по кругу».</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Система</th><th>Что это</th><th>Статус · открытые данные</th></tr>
+          <tr><td>9М730 «Буревестник»</td><td class="d">КР с ядерной силовой установкой, дозвуковая, «неограниченная дальность»</td><td class="d">авария в Нёноксе 2019 (5 погибших); испытание 21.10.2025: 14 000 км за 15 ч; строится база Вологда-20; ядерная БЧ</td></tr>
+          <tr><td>2М39 «Посейдон»</td><td class="d">ядерная торпеда-дрон, 10 000 км, глубина 1000 м, 100+ км/ч</td><td class="d">испытание с ядерной ЭУ 28.10.2025; носители «Белгород» и «Хабаровск» (6 каждый); мощность - «100 Мт» в СМИ, ~2 Мт по оценкам аналитиков</td></tr>
+          <tr><td>«Авангард» 15Ю71</td><td class="d">гиперзвуковой планирующий блок на УР-100Н УТТХ, 27 М, манёвр</td><td class="d">на дежурстве с дек. 2019, 2 полка к 2027; 0.8-2 Мт по оценкам; «Сармат» - штатный носитель, когда полетит</td></tr>
+          <tr><td>«Орешник»</td><td class="d">БРСД на базе РС-26 «Рубеж», 6 ББ × 6 суббоеприпасов, 5500 км, 10 М</td><td class="d">удар 21.11.2024 (инертный); серия 2025, размещение в Беларуси - «до конца 2025»; ядерный вариант заявлен</td></tr>
+          <tr><td>Sentinel / Columbia / B-21 / LRSO / W93</td><td class="d">полное обновление триады США</td><td class="d">все программы идут, все дороже плана; W93 - первая новая боеголовка с 1990-х, для Trident, 2030-е</td></tr>
+          <tr><td>Китай: DF-41, DF-27, DF-61, JL-3, H-20, FOBS</td><td class="d">от ~350 (2020) к 600 (2025) и 1000 (2030)</td><td class="d">июль 2021 - испытание орбитального планера (FOBS+ГПБ); отказ от «минимального» арсенала</td></tr>
+          <tr><td>Европа</td><td class="d">Франция - «зонтик» и ASN4G; Британия - F-35A под B61 и до 260 ББ; Германия - 35 F-35A; Польша просит B61</td><td class="d">2025: первый за 30 лет рост ядерной роли Европы</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 10: СЦЕНАРИИ ============ -->
+<section class="slide chapter" id="s63">
+  <div class="bgimg"><img src="assets/ch_scenario.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 10</div>
+    <h1>Сценарии: что происходит на самом деле</h1>
+    <p class="lead">Один заряд над мегаполисом по секундам, ЭМИ над континентом и климатическая арифметика обмена ударами. Не для страха, а чтобы цифры из таблиц стали расстояниями на знакомой карте.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s64">
+  <div class="content">
+    <div class="kicker">Сценарий · один заряд</div>
+    <h2>800 кт над центром мегаполиса: хронометраж</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/city_blast.png" alt="">
+        <div class="pcap">Кольца от эпицентра при воздушном подрыве 800 кт на 2 км: расплавленный центр (0.9 км), железобетон в крошку (2.2 км), кварталы в завалах (6 км), пожары и ожоги (10 км), стёкла и ранения (15-20 км). Площадь «5 psi» - 113 км², как Париж внутри кольцевой.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Время</th><th>Что происходит</th></tr>
+          <tr><td>0 с</td><td class="d">вспышка: в радиусе 10 км всё горючее вспыхивает, кто смотрел - ослеп на минуты (ночью - на 100 км); сетчатка сгорает на 30 км</td></tr>
+          <tr><td>1 с</td><td class="d">огненный шар 1.8 км в диаметре; проникающая радиация 5+ Зв в радиусе 2.5 км - но там уже никого</td></tr>
+          <tr><td>3 с</td><td class="d">ударная волна на 1 км: 50+ psi, метро на малой глубине раздавлено</td></tr>
+          <tr><td>7 с</td><td class="d">волна на 2.2 км: 20 psi, ветер 750 км/ч, монолитные здания разрушены</td></tr>
+          <tr><td>18 с</td><td class="d">волна на 6 км: 5 psi, панельные и кирпичные дома обрушены, внутри погибает большинство</td></tr>
+          <tr><td>30-45 с</td><td class="d">10-15 км: 1-2 psi, стёкла и двери внутрь, деревья повалены; ожоги 3-й степени у всех на открытом до 10 км</td></tr>
+          <tr><td>10-30 мин</td><td class="d">сливающиеся пожары в зоне 5-10 км, огненный шторм с ветром к центру (Хиросима, Дрезден)</td></tr>
+          <tr><td>часы</td><td class="d">при воздушном подрыве выпадений почти нет; при наземном - полоса 30×300 км по ветру с дозой в сотни мЗв/ч в первые часы</td></tr>
+        </table>
+        <div class="note warn" style="margin-top:8px"><b>Оценка NUKEMAP</b> для 800 кт-1 Мт над центром Москвы, Лондона или Нью-Йорка - порядка 1-2 млн погибших и 3-4 млн раненых при дневной плотности. Медицина: в стране единовременно 1-2 тысячи ожоговых коек. Единственная защита - расстояние, подвал и 48 часов не выходить.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s65">
+  <div class="content">
+    <div class="kicker">Сценарий · ЭМИ и климат</div>
+    <h2>Побочные эффекты: континент без электричества и лето без лета</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Высотный ЭМИ.</b> Подрыв на 400 км над центром континента накрывает импульсом всё в пределах прямой видимости - круг радиусом ~2200 км. Компонента E1 (десятки кВ/м за наносекунды) выжигает микроэлектронику, не защищённую специально; E3 (минуты) наводит токи в ЛЭП и сжигает трансформаторы, которых на замену - единицы, а срок изготовления - год. Starfish Prime 1962 (1.4 Мт, 400 км): за 1400 км на Гавайях погасли фонари и сгорела телефония; советское испытание №184 (300 кт, Казахстан) подожгло ЛЭП на 570 км. Военная техника ядерных держав экранирована по нормативам, гражданская - нет.</li>
+          <li><b>Ядерная зима - не миф, а вопрос масштаба.</b> Модели Robock и Toon (2007-2019): региональный обмен 100 × 15 кт (Индия-Пакистан) поднимает в стратосферу ~5 Тг сажи от городских пожаров, средняя температура падает на 1-1.5°C на 5-10 лет, урожаи - на 10-20%. Полный обмен РФ-США (150 Тг): -8°C, лето на широте Москвы с заморозками, гибель 90% урожая; работа Xia et al. (Nature Food, 2022) - до 5 млрд погибших от голода за два года. Критика (Los Alamos, 2018): сажи поднимется в разы меньше, эффект - слабее, но не нулевой.</li>
+          <li><b>«Ограниченный» обмен - оксюморон.</b> Симуляция Принстона «Plan A» (2019): тактический удар в Европе за 5 часов эскалирует до стратегического, 34 млн погибших и 57 млн раненых в первые часы, без учёта выпадений и климата. Все военные учения обеих сторон с ТЯО заканчиваются одинаково: ни одна модель не нашла ступеньку, на которой можно остановиться.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/emp.png" alt="">
+        <div class="pcap">Высотный взрыв из космоса: искусственное полярное сияние над половиной континента и гаснущие города под ним. Заряд для такого удара - самый обычный, 300 кт - 1 Мт; нужна только ракета, способная поднять его на 300-500 км, то есть любая БРСД.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ИТОГИ ============ -->
+<section class="slide" id="s66">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Весь арсенал на одном слайде</h2>
+    <table class="t" style="font-size:13px">
+      <tr><th>Класс</th><th>Флагманы 2025</th><th>Ключевые числа</th><th>Что меняется</th></tr>
+      <tr><td>Баллистика</td><td class="d">-</td><td class="d">3000 атм в стволе · 1 м падения на 500 м · 10 кал/см² = ожог 3 ст.</td><td class="d">вычислитель в каждом прицеле, РЭБ против спутниковой коррекции</td></tr>
+      <tr><td>Стрелковое</td><td class="d">АК-12, M4/XM7, HK416, ПКП, XM250, СВЧ, TAC-50</td><td class="d">500 Дж - 17 кДж · рекорд 3540-3800 м · плита 3 кг = Бр5</td><td class="d">6.8×51, глушитель и тепловизор штатно, дробовик против FPV</td></tr>
+      <tr><td>Холодное</td><td class="d">6Х9, OKC-3S, кукри, МПЛ-50</td><td class="d">лопатка 1869 г. · штыковые бои 2004/2009/2011</td><td class="d">инструмент и церемониал, но из устава не ушло</td></tr>
+      <tr><td>Броня и артиллерия</td><td class="d">Т-90М, Abrams SEPv3, Leopard 2A8, K2; Коалиция, PzH 2000, K9; HIMARS, Торнадо-С</td><td class="d">БОПС 1700 м/с, 650-770 мм · 155/52 = 40-70 км · PrSM 500 км</td><td class="d">КАЗ Trophy массово, «мангалы», 130/140 мм на подходе</td></tr>
+      <tr><td>Дроны и мины</td><td class="d">FPV, Ланцет, Герань-2, Switchblade, MQ-9; ТМ-62, Земледелие, Volcano</td><td class="d">$500 против $4 млн · 2 млн дронов в год · 70-80% потерь техники</td><td class="d">оптоволокно против РЭБ, дроны-перехватчики, выход стран из Оттавы</td></tr>
+      <tr><td>Авиация</td><td class="d">F-35, F-22, Су-57, J-20; Су-34, F-15EX, Rafale; B-2, B-21, Ту-160М</td><td class="d">Р-37М 300 км · Meteor NEZ 60 км · УМПК 70 км · MOP 13.6 т</td><td class="d">6-е поколение с дронами-ведомыми, JATM/PL-17 на 400 км</td></tr>
+      <tr><td>Крылатые и гиперзвук</td><td class="d">Х-101, Калибр, Tomahawk V, JASSM-ER, Storm Shadow; Кинжал, Циркон, Авангард, DF-17, Dark Eagle</td><td class="d">1500-5500 км · 5-27 М · Орешник 6×6 на 5500 км</td><td class="d">все три державы имеют боевой гиперзвук, ПРО против ГПБ - 2030-е</td></tr>
+      <tr><td>ПВО/ПРО</td><td class="d">С-400/500, Patriot PAC-3, THAAD, SM-3, Arrow 3; Бук, Тор, Панцирь, NASAMS, IRIS-T; Iron Beam</td><td class="d">$4 млн ракета против $30 тыс. дрона · лазер $10 за выстрел</td><td class="d">лазеры в серии с 2025, СВЧ против роёв, Golden Dome</td></tr>
+      <tr><td>Флот</td><td class="d">Ford, Fujian; Burke III, Type 055, 22350; Virginia, Ясень-М, Борей, Columbia; Циркон, LRASM, DF-21D; Magura, Sea Baby</td><td class="d">11 / 3 / 1 авианосца · 16 БРПЛ на лодке · 320 кг ВВ на катере за $250 тыс.</td><td class="d">безэкипажные катера и подводные дроны у всех, ПКБР в бою с 2023</td></tr>
+      <tr><td>ЯО: физика</td><td class="d">B61-12 (0.3-50 кт), W76-1 (90), W87 (300), W88 (475), ББ Сармата (~800 кт), B83 (1.2 Мт)</td><td class="d">50/35/5/10 · 15 кт: 5 psi 1.6 км · 800 кт: 6 км, 113 км² · Царь: 24 км</td><td class="d">точность вместо мощности, «маломощные» W76-2 и B61-12</td></tr>
+      <tr><td>ЯО: триада</td><td class="d">Ярс, Сармат, Авангард, Булава, Борей, Ту-160М; Minuteman III, Sentinel, Trident II, Ohio, Columbia, B-52J, B-21; DF-41, JL-3</td><td class="d">~12 200 ББ · РФ 5460, США 5180, КНР 600 → 1000 · 25-30 мин полёта</td><td class="d">ДСНВ истёк 5.02.2026, Буревестник и Посейдон испытаны, Китай удваивается</td></tr>
+    </table>
+    <div class="note">Сквозная мысль деки: <b>деньги и физика идут в разные стороны.</b> Самое дорогое оружие (авианосцы, F-35, Sentinel) становится уязвимее самого дешёвого (FPV, катер, Shahed), а единственный класс, где формулы не поменялись с 1961 года - ядерный: те же 50/35/5/10, те же корни кубические из мощности и те же 30 минут на решение.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s67">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <div class="kicker amber">Финал</div>
+    <h1>Арсенал, который никто не хочет использовать целиком</h1>
+    <p class="lead">Всё, что перечислено на 60+ слайдах, куплено за ~2.7 триллиона долларов в год - столько мир тратит на оборону в 2025-м, впервые с холодной войны. Большая часть этого железа никогда не выстрелит по цели, и в этом его главная функция: быть настолько убедительным, чтобы не понадобиться.</p>
+    <p class="lead" style="margin-top:14px">А верхний этаж лестницы - 12 тысяч боезарядов - работает только пока цифры из главы 8 остаются таблицей, а не расстоянием от твоего дома до эпицентра. Знать эти цифры - не пессимизм. Это единственный способ понимать, о чём на самом деле спорят люди в новостях, и что именно стоит на кону, когда кто-то говорит «ограниченное применение».</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- SLIDES_END -->
+
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>

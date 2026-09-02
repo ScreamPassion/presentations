@@ -1,0 +1,1957 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Базы данных: от страницы на диске до триграмм</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #3ddc97; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Databases deep dive · Гвендолин-ночные-лекции</div>
+    <h1>Базы данных: от страницы на диске до триграмм</h1>
+    <p class="lead">Как СУБД превращает SQL в чтение байтов, почему B-tree живёт 50 лет, чем MVCC Postgres отличается от undo-лога InnoDB, как ClickHouse жмёт данные в 10 раз и читает миллиард строк в секунду, почему Elasticsearch - не база данных, и что за магия в трёх буквах <code>pg_trgm</code>. Ноль воды, максимум кишок.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 1: ЧТО ТАКОЕ БД ============ -->
+<section class="slide chapter" id="s2">
+  <div class="bgimg"><img src="assets/ch_intro.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1</div>
+    <h1>Что такое база данных и зачем она вообще</h1>
+    <p class="lead">Файл на диске - тоже хранилище. Разница в четырёх буквах ACID, в 55 годах теории Кодда и в том, что база переживает выдёргивание шнура из розетки на середине записи.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">Что такое БД · мотивация</div>
+    <h2>Почему не просто файл</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Конкурентность.</b> Два процесса пишут в один файл - получаешь каша-байты. СУБД даёт транзакции: 1000 клиентов одновременно, каждый видит консистентный мир.</li>
+          <li><b>Долговечность.</b> Выключили питание на середине записи 4 КБ - в файле половина старого, половина нового. Базы пишут сначала в журнал (WAL), потом в данные: восстановление после краша - это проигрывание журнала.</li>
+          <li><b>Поиск.</b> Найти одну строку в файле на 100 ГБ - прочитать 100 ГБ. B-tree индекс - 3-4 чтения по 8 КБ. Разница в 10<sup>6</sup> раз.</li>
+          <li><b>Декларативность.</b> SQL говорит <i>что</i> хочешь, а не <i>как</i>. Планировщик сам выберет индекс, порядок соединений, алгоритм. Тот же запрос на 1000 строк и на 1 млрд строк исполняется по-разному - код не меняется.</li>
+          <li><b>Схема и целостность.</b> NOT NULL, FOREIGN KEY, CHECK, UNIQUE - мусор не попадёт в данные, даже если приложение с багом.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">ACID - четыре обещания</h3>
+        <table class="t">
+          <tr><td><b>A</b>tomicity</td><td class="d">транзакция либо целиком, либо никак. Перевод денег: списали и зачислили, или ничего</td></tr>
+          <tr><td><b>C</b>onsistency</td><td class="d">после транзакции все ограничения (constraints) выполнены. Баланс не отрицательный, FK указывает на существующую строку</td></tr>
+          <tr><td><b>I</b>solation</td><td class="d">параллельные транзакции не видят промежуточных состояний друг друга (с оговорками - уровни изоляции, дальше)</td></tr>
+          <tr><td><b>D</b>urability</td><td class="d">COMMIT вернулся - данные на диске переживут краш. Цена: fsync, 0.1-10 мс на коммит</td></tr>
+        </table>
+        <div class="note gold" style="margin-top:14px">Durability - самое дорогое обещание. <b>fsync</b> на NVMe ~50-100 мкс, на HDD 5-10 мс. Поэтому базы группируют коммиты (group commit) и поэтому <code>synchronous_commit=off</code> ускоряет Postgres в 5-10 раз ценой потери последних ~200 мс при краше.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s4">
+  <div class="content">
+    <div class="kicker">Что такое БД · история</div>
+    <h2>55 лет: от статьи Кодда до векторных баз</h2>
+    <div class="dg" style="margin-bottom:16px">
+      <div class="row" style="align-items:stretch">
+        <div class="bx am"><b>1970</b><span>Эдгар Кодд, IBM: «A Relational Model of Data». Таблицы, ключи, реляционная алгебра. Начальство IBM статью проигнорировало - у них был IMS</span></div>
+        <div class="bx am"><b>1974-79</b><span>IBM System R (SQL - изначально SEQUEL), Ingres в Беркли (Стоунбрейкер). 1979 - первый коммерческий Oracle v2 (v1 не было - маркетинг)</span></div>
+        <div class="bx cy"><b>1986</b><span>POSTGRES (post-Ingres) Стоунбрейкера; SQL стандарт ANSI. 1989 - MS SQL Server (на коде Sybase)</span></div>
+        <div class="bx cy"><b>1995-96</b><span>MySQL (Монти Видениус, Финляндия), PostgreSQL 6.0 с SQL. 2000 - SQLite (Хипп, для эсминца ВМС США)</span></div>
+        <div class="bx"><b>2004-09</b><span>Google BigTable (2006), Amazon Dynamo (2007): CAP, eventual consistency. Cassandra (2008), MongoDB (2009), Redis (2009). Хайп «NoSQL»</span></div>
+        <div class="bx"><b>2012</b><span>Google Spanner - распределённый SQL с атомными часами. NewSQL: CockroachDB, TiDB, YDB</span></div>
+        <div class="bx gr"><b>2016</b><span>Yandex открывает ClickHouse - колоночная OLAP для Метрики, 20 трлн строк. 2019 - DuckDB</span></div>
+        <div class="bx gr"><b>2023+</b><span>pgvector, векторные БД (Pinecone, Qdrant, Milvus) под LLM. «Postgres for everything» как мейнстрим</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <ul class="pts">
+        <li><b>Реляционная модель победила</b> не потому что быстрее (иерархические IMS были быстрее), а потому что независима от физики: можно менять индексы и хранение, не трогая запросы. NoSQL 2009-го во многом откатил это назад - и к 2020 почти все NoSQL добавили SQL-подобные языки и транзакции.</li>
+        <li><b>Postgres</b> - единственная из топ-5 СУБД, у которой нет владельца-корпорации: комьюнити, лицензия BSD-подобная, релиз каждый год в сентябре-октябре. MySQL принадлежит Oracle (через Sun, 2010) - отсюда MariaDB как форк Монти.</li>
+      </ul>
+      <div class="card">
+        <h3>Рынок 2025 (DB-Engines / Stack Overflow)</h3>
+        <table class="t" style="font-size:14px">
+          <tr><td>Самая популярная у разработчиков</td><td class="d">PostgreSQL ~49% (SO survey), обошла MySQL в 2023</td></tr>
+          <tr><td>Самая распространённая в мире</td><td class="d">SQLite - в каждом телефоне, браузере, ТВ. >1 трлн инстансов</td></tr>
+          <tr><td>Самая дорогая</td><td class="d">Oracle: $47.5k за ядро Enterprise + 22% в год поддержка</td></tr>
+          <tr><td>Самая быстрая OLAP на строку</td><td class="d">ClickHouse: >1 млрд строк/с на ядро при сканировании</td></tr>
+          <tr><td>Рынок СУБД</td><td class="d">~$100 млрд в год, из них >50% облачные (RDS, Aurora, Cloud SQL)</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="content">
+    <div class="kicker">Что такое БД · классификация</div>
+    <h2>Зоопарк: восемь семейств и что у них внутри</h2>
+    <table class="t" style="font-size:14px">
+      <tr><th>Семейство</th><th>Модель</th><th>Хранение</th><th>Сильно в</th><th>Слабо в</th><th>Примеры</th></tr>
+      <tr><td><b>Реляционные OLTP</b></td><td class="d">таблицы, SQL, ACID</td><td class="d">строки, B-tree, WAL</td><td class="d">точечные чтения/записи, транзакции, целостность</td><td class="d">аналитика по млрд строк, горизонтальный масштаб</td><td class="d">PostgreSQL, MySQL, Oracle, MSSQL, SQLite</td></tr>
+      <tr><td><b>Колоночные OLAP</b></td><td class="d">таблицы, SQL, без транзакций</td><td class="d">колонки, сжатие, sparse index</td><td class="d">агрегации, сканы, GROUP BY по млрд строк</td><td class="d">точечные UPDATE/DELETE, много мелких вставок</td><td class="d">ClickHouse, BigQuery, Snowflake, Redshift, DuckDB</td></tr>
+      <tr><td><b>Key-Value</b></td><td class="d">ключ → байты/структура</td><td class="d">хэш в RAM / LSM</td><td class="d">латентность 0.1 мс, кэш, счётчики, очереди</td><td class="d">поиск по значению, связи</td><td class="d">Redis, Valkey, Memcached, RocksDB, DynamoDB</td></tr>
+      <tr><td><b>Документные</b></td><td class="d">JSON-документы, гибкая схема</td><td class="d">B-tree/LSM, документ целиком</td><td class="d">быстрый старт, вложенные данные, шардирование</td><td class="d">джоины, целостность, аналитика</td><td class="d">MongoDB, Couchbase, Firestore</td></tr>
+      <tr><td><b>Wide-column</b></td><td class="d">partition key + sorted columns</td><td class="d">LSM-tree, SSTable</td><td class="d">запись миллионы/с, линейный масштаб, гео-репликация</td><td class="d">ad-hoc запросы, джоины, транзакции</td><td class="d">Cassandra, ScyllaDB, HBase, Bigtable</td></tr>
+      <tr><td><b>Графовые</b></td><td class="d">узлы, рёбра, свойства</td><td class="d">adjacency lists</td><td class="d">обход связей глубины 5+, рекомендации, fraud</td><td class="d">агрегации, массовые сканы</td><td class="d">Neo4j, ArangoDB, Neptune, Memgraph</td></tr>
+      <tr><td><b>Time-series</b></td><td class="d">метка времени + метрики + теги</td><td class="d">колонки по времени, downsampling</td><td class="d">метрики, IoT, retention, окна</td><td class="d">всё, что не по времени</td><td class="d">TimescaleDB, InfluxDB, VictoriaMetrics, Prometheus</td></tr>
+      <tr><td><b>Поисковые</b></td><td class="d">документы + инвертированный индекс</td><td class="d">Lucene-сегменты, immutable</td><td class="d">полнотекст, релевантность, фасеты, опечатки</td><td class="d">транзакции, консистентность, источник правды</td><td class="d">Elasticsearch, OpenSearch, Solr, Manticore, Meilisearch</td></tr>
+    </table>
+    <div class="note">Границы размылись: Postgres умеет JSON (jsonb), полнотекст, графы (Apache AGE), время (Timescale), векторы (pgvector). MongoDB умеет транзакции и джоины ($lookup). ClickHouse умеет ключ-значение (Dictionary). Но <b>физика хранения не размывается</b>: строки против колонок, B-tree против LSM, и оттуда вытекает всё остальное.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2: КАК УСТРОЕНА СУБД ============ -->
+<section class="slide chapter" id="s6">
+  <div class="bgimg"><img src="assets/ch_internals.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2</div>
+    <h1>Как СУБД устроена внутри</h1>
+    <p class="lead">Парсер, планировщик, исполнитель, буферный пул, журнал. Что происходит за 200 микросекунд между <code>SELECT</code> и первой строкой ответа - и почему одна и та же строка может существовать в пяти версиях одновременно.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s7">
+  <div class="content">
+    <div class="kicker">Внутри · путь запроса</div>
+    <h2>Жизнь одного SELECT</h2>
+    <div class="flow">
+      <div class="step"><b>1. Сеть</b><span>TCP, протокол (libpq / MySQL wire). Postgres: процесс на соединение (fork), MySQL: поток. Отсюда pgbouncer</span></div>
+      <div class="step"><b>2. Parser</b><span>SQL → дерево разбора. Синтаксис, имена таблиц, права. ~10-50 мкс</span></div>
+      <div class="step"><b>3. Rewriter</b><span>раскрытие VIEW, правил, RLS-политик. CTE inline (PG12+)</span></div>
+      <div class="step"><b>4. Planner</b><span>перебор планов: какой индекс, порядок джоинов, алгоритм. Оценка стоимости по статистике. Самая умная и капризная часть</span></div>
+      <div class="step"><b>5. Executor</b><span>дерево операторов (Volcano-модель: каждый узел отдаёт строку по запросу next()). Seq Scan, Index Scan, Hash Join, Sort, Aggregate</span></div>
+      <div class="step"><b>6. Storage</b><span>буферный пул → страницы 8 КБ (PG) / 16 КБ (InnoDB) → диск. Промах в кэше = 100 мкс NVMe вместо 100 нс RAM</span></div>
+    </div>
+    <div class="cols">
+      <ul class="pts">
+        <li><b>Prepared statements</b> пропускают шаги 2-4: план кэшируется. На простых запросах даёт 20-40%. Но generic plan может быть хуже custom (PG после 5 выполнений решает сам - <code>plan_cache_mode</code>).</li>
+        <li><b>Планировщик оценивает, а не знает.</b> Он считает стоимость в абстрактных единицах (<code>seq_page_cost=1</code>, <code>random_page_cost=4</code> - настройка из эпохи HDD, на NVMe ставь 1.1) на основе статистики (<code>ANALYZE</code>: гистограммы, самые частые значения, доля NULL, корреляция). Устарела статистика - план мусор.</li>
+        <li><b>Volcano/iterator модель</b> - каждый оператор pull-ит строки у ребёнка. Просто, гибко, но виртуальный вызов на каждую строку. ClickHouse и DuckDB делают <b>векторное исполнение</b>: передают блоки по 8-65 тыс. строк, в 10-100 раз меньше накладных расходов.</li>
+      </ul>
+      <div class="card">
+        <h3 class="am">Сколько это стоит по времени (PG, тёплый кэш)</h3>
+        <table class="t" style="font-size:14px">
+          <tr><td>Round-trip по сети в ДЦ</td><td class="d">50-200 мкс</td></tr>
+          <tr><td>Parse + plan простого запроса</td><td class="d">30-100 мкс</td></tr>
+          <tr><td>Index Scan по PK, 1 строка</td><td class="d">10-30 мкс (3-4 страницы из RAM)</td></tr>
+          <tr><td>Промах буфера, чтение с NVMe</td><td class="d">~100 мкс на страницу</td></tr>
+          <tr><td>COMMIT с fsync</td><td class="d">0.1-1 мс NVMe, 5-10 мс HDD</td></tr>
+          <tr><td>Итого простой SELECT по PK</td><td class="d">~0.2-0.5 мс end-to-end; 5-20 тыс. QPS на соединение</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s8">
+  <div class="content">
+    <div class="kicker">Внутри · хранение</div>
+    <h2>Страницы, буферный пул, WAL</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_pages.png" alt=""><div class="pcap">Диск читается страницами по 8/16 КБ. Буферный пул держит горячие; грязные (изменённые) страницы сбрасываются фоновым writer'ом и на checkpoint. WAL пишется раньше данных - всегда.</div></div>
+      <table class="t pt">
+        <tr><th>Элемент</th><th>Что это</th><th>Грабли</th></tr>
+        <tr><td><b>Страница (page/block)</b></td><td class="d">единица I/O: 8 КБ PG, 16 КБ InnoDB, 4 КБ SQLite. Заголовок + указатели на строки (line pointers) + сами строки (tuples) с конца. Строка не влезает в страницу → PG режет в TOAST (>2 КБ), InnoDB выносит в overflow pages</td><td class="d">широкие строки = мало строк на странице = много I/O. Колонка TEXT в 1 МБ рядом с id убивает Seq Scan</td></tr>
+        <tr><td><b>Буферный пул</b></td><td class="d">кэш страниц в RAM. PG: <code>shared_buffers</code> (обычно 25% RAM) + кэш ОС сверху (двойное кэширование). InnoDB: <code>buffer_pool_size</code> 70-80% RAM, O_DIRECT, мимо ОС. Вытеснение: clock-sweep (PG), LRU с midpoint (InnoDB)</td><td class="d">рабочий набор не влезает в RAM → всё упирается в диск. Hit ratio &lt;99% на OLTP - повод думать</td></tr>
+        <tr><td><b>WAL / redo log</b></td><td class="d">журнал: перед изменением страницы записать «что меняю» в лог последовательно. Последовательная запись быстрее случайной в 100 раз даже на SSD. Краш → проиграть WAL с последнего checkpoint. Тот же WAL = репликация</td><td class="d">WAL на том же диске, что данные → конкуренция. <code>full_page_writes</code> удваивает WAL после checkpoint. Реплика отвалилась и слот держит WAL → диск кончился</td></tr>
+        <tr><td><b>Checkpoint</b></td><td class="d">сброс всех грязных страниц на диск, точка, с которой можно восстанавливаться. PG каждые <code>checkpoint_timeout</code> (5 мин) или по объёму WAL (<code>max_wal_size</code>)</td><td class="d">резкий checkpoint = I/O-шторм и латентность ×10. Лечится <code>checkpoint_completion_target=0.9</code> и большим <code>max_wal_size</code></td></tr>
+        <tr><td><b>Doublewrite / full page</b></td><td class="d">защита от torn page: ОС пишет по 4 КБ, страница 16 КБ, свет мигнул - половина записана. InnoDB пишет сначала в doublewrite buffer, PG - полную страницу в WAL при первом изменении после checkpoint</td><td class="d">на ZFS/файловых системах с CoW можно отключить, на ext4 - нельзя</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s9">
+  <div class="content">
+    <div class="kicker">Внутри · MVCC</div>
+    <h2>MVCC: почему читатели не ждут писателей</h2>
+    <div class="part rev">
+      <div>
+        <p class="dim" style="font-size:15px;margin-bottom:12px">Multi-Version Concurrency Control: UPDATE не переписывает строку, а создаёт новую версию. Каждая транзакция видит «снимок» - версии, закоммиченные до её старта. Читатели никогда не блокируют писателей и наоборот. Цена - мусор из старых версий, который кто-то должен убирать.</p>
+        <table class="t pt">
+          <tr><th></th><th>PostgreSQL</th><th>MySQL InnoDB</th><th>Oracle</th></tr>
+          <tr><td>Где лежат старые версии</td><td class="d"><b>в самой таблице (heap)</b>: новая версия рядом, у каждой xmin/xmax - id транзакций создания/удаления</td><td class="d">в <b>undo log</b> (отдельное пространство): в таблице всегда последняя версия, старые восстанавливаются по цепочке undo</td><td class="d">undo segments (rollback segments), как InnoDB - InnoDB списан с Oracle</td></tr>
+          <tr><td>UPDATE стоит</td><td class="d">INSERT новой + пометка старой + обновление <b>всех индексов</b> (если не HOT-update в той же странице)</td><td class="d">запись undo + правка на месте; вторичные индексы трогаются только если изменились их колонки</td><td class="d">как InnoDB</td></tr>
+          <tr><td>Кто убирает мусор</td><td class="d"><b>VACUUM</b> (autovacuum): проходит по таблице, помечает мёртвые версии свободными. Не успевает → bloat</td><td class="d">purge thread чистит undo, когда нет читателей старых версий. Долгая транзакция → undo растёт (history list length)</td><td class="d">автоматически; <code>ORA-01555 snapshot too old</code>, если undo переиспользован</td></tr>
+          <tr><td>Долгая транзакция</td><td class="d">держит все версии → таблицы и индексы пухнут, xid wraparound</td><td class="d">undo растёт, ibdata не сжимается (до 8.0 - навсегда)</td><td class="d">ORA-01555</td></tr>
+          <tr><td>Rollback</td><td class="d">мгновенный: просто пометить транзакцию abort</td><td class="d">пропорционален объёму: откатить по undo</td><td class="d">как InnoDB</td></tr>
+        </table>
+      </div>
+      <div class="pimg"><img src="assets/p_mvcc.png" alt=""><div class="pcap">Одна логическая строка, пять физических версий. Транзакция с id 105 видит ту, у которой xmin ≤ 105 закоммичен и xmax пуст или &gt; 105. Остальные - мусор для vacuum.</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s10">
+  <div class="content">
+    <div class="kicker">Внутри · изоляция</div>
+    <h2>Уровни изоляции и аномалии, которые они пропускают</h2>
+    <table class="t" style="font-size:14px">
+      <tr><th>Уровень</th><th>Dirty read</th><th>Non-repeatable read</th><th>Phantom read</th><th>Lost update</th><th>Write skew</th><th>По умолчанию в</th></tr>
+      <tr><td><b>Read Uncommitted</b></td><td class="rd">да</td><td class="rd">да</td><td class="rd">да</td><td class="rd">да</td><td class="rd">да</td><td class="d">никто (PG его не реализует - работает как RC)</td></tr>
+      <tr><td><b>Read Committed</b></td><td class="gr">нет</td><td class="rd">да</td><td class="rd">да</td><td class="rd">да</td><td class="rd">да</td><td class="d"><b>PostgreSQL</b>, Oracle, MSSQL. Снимок на каждый statement</td></tr>
+      <tr><td><b>Repeatable Read</b></td><td class="gr">нет</td><td class="gr">нет</td><td class="am">SQL-стандарт: да; PG/InnoDB: нет</td><td class="am">PG: ошибка serialization failure; InnoDB: да!</td><td class="rd">да</td><td class="d"><b>MySQL InnoDB</b>. Снимок на всю транзакцию</td></tr>
+      <tr><td><b>Serializable</b></td><td class="gr">нет</td><td class="gr">нет</td><td class="gr">нет</td><td class="gr">нет</td><td class="gr">нет</td><td class="d">PG: SSI, отслеживает зависимости, ошибка 40001 - повторяй транзакцию. InnoDB: все SELECT становятся <code>LOCK IN SHARE MODE</code></td></tr>
+    </table>
+    <div class="cols" style="margin-top:14px">
+      <ul class="pts">
+        <li><b>Non-repeatable read:</b> прочитал баланс = 100, коллега закоммитил 50, прочитал ещё раз = 50. В RC - норма.</li>
+        <li><b>Lost update:</b> оба прочитали 100, оба написали +10 → 110 вместо 120. Лечение: <code>UPDATE ... SET x = x + 10</code> (атомарно), <code>SELECT ... FOR UPDATE</code>, или optimistic lock по version.</li>
+        <li><b>Write skew:</b> два врача одновременно проверяют «дежурных ≥ 2» и оба снимаются с дежурства. Каждый по отдельности прав, вместе - ноль дежурных. Ловится только Serializable.</li>
+      </ul>
+      <div class="card">
+        <h3 class="am">Практика</h3>
+        <p>Read Committed + явные <code>FOR UPDATE</code> в критических местах - стандарт для 95% приложений. Serializable в PG дёшев (5-15% оверхед), но приложение обязано <b>ретраить 40001</b>. В InnoDB Repeatable Read + gap locks на пишущих запросах = дедлоки на вставках в соседние диапазоны - классика, лечится <code>READ COMMITTED</code> и <code>binlog_format=ROW</code>.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s11">
+  <div class="content">
+    <div class="kicker">Внутри · блокировки</div>
+    <h2>Локи: что блокирует что и как они друг друга убивают</h2>
+    <div class="cols">
+      <div>
+        <table class="t" style="font-size:14px">
+          <tr><th>Лок</th><th>PostgreSQL</th><th>InnoDB</th></tr>
+          <tr><td>Строчный</td><td class="d">хранится <b>в самой строке</b> (xmax + флаги), не в памяти → миллионы локов бесплатно. FOR UPDATE / FOR SHARE / FOR NO KEY UPDATE</td><td class="d">в памяти (lock manager), по записи индекса. Record lock, <b>gap lock</b> (диапазон между ключами), next-key lock = оба</td></tr>
+          <tr><td>Табличный</td><td class="d">8 режимов от ACCESS SHARE до ACCESS EXCLUSIVE. <code>ALTER TABLE</code> берёт эксклюзив - и <b>встаёт в очередь за долгим SELECT, а за ним встают все</b></td><td class="d">metadata lock (MDL): та же беда - DDL ждёт открытую транзакцию, остальные ждут DDL</td></tr>
+          <tr><td>Advisory</td><td class="d"><code>pg_advisory_lock(key)</code> - произвольный лок по числу, для распределённых мьютексов</td><td class="d"><code>GET_LOCK('name', timeout)</code></td></tr>
+          <tr><td>Дедлок</td><td class="d">детектор раз в <code>deadlock_timeout</code> (1 с), убивает одну транзакцию</td><td class="d">детектор wait-for graph мгновенно, откатывает транзакцию с меньшим числом изменений</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Классический дедлок</h3>
+          <div class="dg">
+            <div class="row"><div class="bx cy"><b>T1</b><span>UPDATE acc SET .. WHERE id=1</span></div><div class="arr">→</div><div class="bx cy"><b>T1</b><span>UPDATE acc SET .. WHERE id=2 (ждёт T2)</span></div></div>
+            <div class="row"><div class="bx am"><b>T2</b><span>UPDATE acc SET .. WHERE id=2</span></div><div class="arr am">→</div><div class="bx am"><b>T2</b><span>UPDATE acc SET .. WHERE id=1 (ждёт T1)</span></div></div>
+          </div>
+          <p style="margin-top:10px">Лечение: <b>всегда брать строки в одном порядке</b> (ORDER BY id в FOR UPDATE), короткие транзакции, не делать сетевых вызовов внутри транзакции.</p>
+        </div>
+        <div class="note warn" style="margin-top:12px"><b>Грабли PG:</b> FK без индекса на дочерней стороне → каждый DELETE родителя сканирует ребёнка и держит лок. <b>Грабли InnoDB:</b> UPDATE по неиндексированной колонке блокирует <b>всю таблицу</b> (все просканированные строки + gaps). <b>Общие:</b> <code>lock_timeout</code> на DDL и <code>idle_in_transaction_session_timeout</code> - ставить всегда.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 3: ИНДЕКСЫ ============ -->
+<section class="slide chapter" id="s12">
+  <div class="bgimg"><img src="assets/ch_indexes.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3</div>
+    <h1>Индексы: структуры, которые делают базу базой</h1>
+    <p class="lead">B-tree с 1970 года не имеет конкурентов для точечного поиска и диапазонов. Но у Postgres ещё пять типов индексов, и каждый решает задачу, на которой B-tree бессилен: JSON, геометрия, полнотекст, «содержит подстроку», таблица на 10 ТБ по времени.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s13">
+  <div class="content">
+    <div class="kicker">Индексы · B-tree</div>
+    <h2>B-tree: три чтения на миллиард строк</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_btree.png" alt=""><div class="pcap">Корень → внутренние узлы → листья. Каждый узел = одна страница 8 КБ с сотнями ключей. Листья связаны в двусвязный список - отсюда дешёвые диапазоны и ORDER BY по индексу.</div></div>
+      <div>
+        <table class="t pt">
+          <tr><th>Свойство</th><th>Что означает на практике</th></tr>
+          <tr><td><b>Fan-out ~300-500</b></td><td class="d">в страницу 8 КБ влезает ~400 ключей int8 + указателей. Глубина: 1 млн строк - 3 уровня, 1 млрд - 4 уровня. Корень и второй уровень всегда в кэше → поиск = 1-2 реальных чтения с диска</td></tr>
+          <tr><td><b>Сбалансированность</b></td><td class="d">все листья на одной глубине, всегда. При переполнении лист делится пополам (page split), при необходимости деление уходит вверх до корня. Дерево растёт «от корня», а не от листьев</td></tr>
+          <tr><td><b>Упорядоченность</b></td><td class="d">поддерживает =, &lt;, &gt;, BETWEEN, LIKE 'abc%' (префикс!), ORDER BY, MIN/MAX, DISTINCT, merge join без сортировки</td></tr>
+          <tr><td><b>Не поддерживает</b></td><td class="d">LIKE '%abc', LIKE '%abc%', функции над колонкой (<code>WHERE lower(email) = ..</code> без функционального индекса), <code>!=</code>, поиск внутри JSON/массива, регэкспы</td></tr>
+          <tr><td><b>Случайные ключи</b></td><td class="d">UUIDv4 как PK: вставки бьют в случайные листья → page split везде, кэш не помогает, индекс в 2 раза жирнее. Лечение: bigserial, UUIDv7 (время в старших битах), ULID</td></tr>
+          <tr><td><b>Deduplication (PG13+)</b></td><td class="d">одинаковые ключи хранятся один раз со списком TID → индекс по колонке с низкой кардинальностью (status) в 3-5 раз меньше</td></tr>
+        </table>
+        <div class="note" style="margin-top:10px;font-size:13.5px"><b>B+-tree</b> (данные только в листьях) - то, что реально везде; «B-tree» - просторечие. В InnoDB <b>сама таблица - это B+-tree по PK</b> (clustered index), в Postgres таблица - куча (heap), а все индексы - отдельно и указывают на (page, offset).</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s14">
+  <div class="content">
+    <div class="kicker">Индексы · типы в PostgreSQL</div>
+    <h2>Шесть типов индексов: когда B-tree не подходит</h2>
+    <table class="t" style="font-size:13.5px">
+      <tr><th>Тип</th><th>Структура</th><th>Операторы</th><th>Для чего</th><th>Размер / скорость записи</th></tr>
+      <tr><td><b>B-tree</b></td><td class="d">сбалансированное дерево</td><td class="d">= &lt; &gt; BETWEEN, LIKE 'x%', IS NULL</td><td class="d">99% случаев: PK, FK, диапазоны, сортировка</td><td class="d">~ размер колонки + 30%; запись дешёвая</td></tr>
+      <tr><td><b>Hash</b></td><td class="d">хэш-таблица на страницах</td><td class="d">только =</td><td class="d">длинные строки/URL, где нужно только равенство. С PG10 crash-safe. Редко оправдан</td><td class="d">меньше B-tree на длинных ключах</td></tr>
+      <tr><td><b>GIN</b> (Generalized Inverted)</td><td class="d">инвертированный индекс: элемент → список строк</td><td class="d">@&gt; &lt;@ ? ?| ?&amp; @@ % (trgm)</td><td class="d"><b>jsonb</b>, массивы, полнотекст (tsvector), <b>pg_trgm</b> для LIKE '%x%'</td><td class="d">большой; вставка медленная (много ключей на строку). fastupdate буферизует</td></tr>
+      <tr><td><b>GiST</b> (Generalized Search Tree)</td><td class="d">R-tree-подобное дерево с «ограничивающими» ключами</td><td class="d">&amp;&amp; @&gt; &lt;&lt;-&gt;&gt; (расстояние)</td><td class="d">геометрия (PostGIS), диапазоны (tsrange), <b>EXCLUDE constraints</b> (нет пересекающихся бронирований), KNN «ближайшие 10»</td><td class="d">средний; быстрее GIN на запись, медленнее на чтение</td></tr>
+      <tr><td><b>SP-GiST</b></td><td class="d">пространственно-разбитые деревья (quad-tree, k-d, radix)</td><td class="d">как GiST для несбалансированных данных</td><td class="d">точки, IP-адреса (inet), телефонные префиксы, текст с общими префиксами</td><td class="d">компактный на подходящих данных</td></tr>
+      <tr><td><b>BRIN</b> (Block Range)</td><td class="d">min/max на каждые 128 страниц</td><td class="d">= &lt; &gt; на физически упорядоченных данных</td><td class="d">огромные append-only таблицы по времени/serial: логи, события. 10 ТБ таблица - индекс 10 МБ</td><td class="d">крошечный; бесполезен, если данные перемешаны (UPDATE, случайные вставки)</td></tr>
+    </table>
+    <div class="cols" style="margin-top:12px">
+      <div class="note"><b>MySQL/InnoDB</b>: только B+-tree (clustered + secondary), FULLTEXT (инвертированный, слабый), SPATIAL (R-tree), адаптивный hash поверх B-tree в памяти. Нет GIN → индексировать JSON можно только через generated column + B-tree по ней или multi-valued index (8.0.17+) на массив. <b>Нет partial и expression индексов напрямую</b> - опять через generated columns.</div>
+      <div class="note gold"><b>Выбор:</b> равенство/диапазон → B-tree. «Содержит элемент / подстроку / слово» → GIN. «Пересекается / рядом / внутри» → GiST. Таблица на терабайты, растёт по времени, не обновляется → BRIN. Векторы (pgvector) → HNSW или IVFFlat - отдельная история в главе про Postgres.</div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s15">
+  <div class="content">
+    <div class="kicker">Индексы · составные и покрывающие</div>
+    <h2>Порядок колонок решает всё</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Составной индекс (a, b, c)</b> - это B-tree по конкатенации. Работает для <code>WHERE a=..</code>, <code>WHERE a=.. AND b=..</code>, <code>WHERE a=.. AND b=.. AND c=..</code>. Для <code>WHERE b=..</code> - почти бесполезен (только полный скан индекса). Правило <b>leftmost prefix</b>.</li>
+          <li><b>Равенство слева, диапазон справа.</b> <code>WHERE user_id = 5 AND created_at &gt; ..</code> → индекс (user_id, created_at). Наоборот - после диапазона по created_at равенство по user_id уже не сузит поиск в дереве.</li>
+          <li><b>Селективные колонки не обязательно первые.</b> Первой ставь ту, по которой чаще ищут равенством, и ту, что нужна для ORDER BY: (user_id, created_at DESC) закрывает «последние 20 заказов юзера» одним диапазонным сканом без Sort.</li>
+          <li><b>Covering / index-only scan.</b> Если все нужные колонки есть в индексе, в таблицу можно не ходить. PG11+: <code>INCLUDE (col)</code> - колонка в листьях без участия в порядке. В InnoDB любой secondary индекс неявно включает PK. Но в PG index-only требует свежей <b>visibility map</b> - после массовых UPDATE без VACUUM он деградирует в обычный.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Один индекс вместо трёх</h3>
+          <table class="t" style="font-size:14px">
+            <tr><th>Запрос</th><th>Индекс (user_id, status, created_at)</th></tr>
+            <tr><td><code>WHERE user_id=?</code></td><td class="gr">да, префикс</td></tr>
+            <tr><td><code>WHERE user_id=? AND status=?</code></td><td class="gr">да</td></tr>
+            <tr><td><code>WHERE user_id=? AND status=? ORDER BY created_at</code></td><td class="gr">да, без Sort</td></tr>
+            <tr><td><code>WHERE user_id=? ORDER BY created_at</code></td><td class="am">поиск да, сортировка нет - status между ними ломает порядок</td></tr>
+            <tr><td><code>WHERE status=?</code></td><td class="rd">нет (PG может сделать skip scan только с PG18)</td></tr>
+            <tr><td><code>WHERE created_at &gt; ?</code></td><td class="rd">нет</td></tr>
+          </table>
+        </div>
+        <div class="note warn" style="margin-top:12px">Каждый индекс - это <b>+1 запись на каждый INSERT/UPDATE</b> и +размер в кэше. Таблица с 12 индексами пишет в 13 мест. Неиспользуемые ищутся через <code>pg_stat_user_indexes.idx_scan = 0</code> / <code>sys.schema_unused_indexes</code>. Дубликаты (a) при существующем (a, b) - удалять.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s16">
+  <div class="content">
+    <div class="kicker">Индексы · планировщик</div>
+    <h2>Почему индекс есть, а планировщик его не берёт</h2>
+    <table class="t" style="font-size:13.5px">
+          <tr><th>Причина</th><th>Что происходит</th><th>Лечение</th></tr>
+          <tr><td>Низкая селективность</td><td class="d">условие возвращает &gt;5-10% таблицы → Seq Scan дешевле: читать подряд быстрее, чем прыгать по индексу и потом в heap за каждой строкой</td><td class="d">это правильно; partial index, если ищешь редкое значение</td></tr>
+          <tr><td>Устаревшая статистика</td><td class="d">планировщик думает, что строк 100, а их 10 млн (или наоборот)</td><td class="d"><code>ANALYZE</code>; autovacuum_analyze_scale_factor меньше для больших таблиц; <code>default_statistics_target</code> 100 → 500</td></tr>
+          <tr><td>Несовпадение типа</td><td class="d"><code>WHERE id = '5'</code> при int - ок, но <code>WHERE varchar_col = 5</code> → неявный cast колонки → индекс не применим. В MySQL <code>WHERE phone = 89001234567</code> при VARCHAR - сканирует всю таблицу и <b>тихо матчит '8900123456789'</b></td><td class="d">типы в приложении = типы в базе</td></tr>
+          <tr><td>Функция над колонкой</td><td class="d"><code>WHERE date(created_at) = '2025-01-01'</code>, <code>lower(email)</code>, <code>col + 1 &gt; 10</code></td><td class="d">переписать условие (<code>created_at &gt;= .. AND &lt; ..</code>) или expression index <code>ON (lower(email))</code></td></tr>
+          <tr><td>Коррелированные колонки</td><td class="d">city='Москва' AND country='RU' - планировщик умножает вероятности и недооценивает в 100 раз</td><td class="d"><code>CREATE STATISTICS (dependencies) ON city, country</code> (PG10+)</td></tr>
+          <tr><td>OR по разным колонкам</td><td class="d">часто Seq Scan вместо двух индексов</td><td class="d">BitmapOr сработает сам, если индексы есть на обе; иначе UNION</td></tr>
+          <tr><td>LIMIT-ловушка</td><td class="d">ORDER BY created_at LIMIT 10 с фильтром по редкому user_id: планировщик идёт по индексу даты, ожидая быстро найти 10, а сканирует всё</td><td class="d">составной (user_id, created_at); в тяжёлых случаях - <code>+0</code> к ORDER BY, чтобы отключить индекс</td></tr>
+    </table>
+    <div class="note" style="margin-top:12px;font-size:13.5px"><b>Индекс - это не «ускорить», а «прочитать меньше страниц».</b> Если через индекс страниц выйдет больше (случайный доступ + heap на каждую строку), планировщик прав, что берёт Seq Scan. <b>Bitmap Index Scan</b> - компромисс на средней селективности (1-10%): собрать TID в битмап, прочитать heap последовательно. Спорить с планировщиком - через статистику, а не через <code>enable_seqscan=off</code>.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s17">
+  <div class="content">
+    <div class="kicker">Индексы · EXPLAIN</div>
+    <h2>Читаем EXPLAIN (ANALYZE, BUFFERS)</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="am">Типичный проблемный план</h3>
+          <p style="font-family:Consolas,monospace;font-size:12.5px;line-height:1.5;color:var(--text)">
+Nested Loop (cost=0.86..1250 rows=10 width=64)<br>
+&nbsp;&nbsp;(actual time=0.05..<b class="rd">2400</b> rows=<b class="rd">180000</b> loops=1)<br>
+&nbsp;&nbsp;Buffers: shared hit=1200 <b class="am">read=45000</b><br>
+&nbsp;&nbsp;-&gt; Index Scan using orders_user on orders<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(rows=<b class="am">10</b>) (actual rows=<b class="rd">180000</b>)</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Что читать в первую очередь</h3>
+          <ul>
+            <li><b>rows= vs actual rows</b> - расхождение в 100+ раз = плохая статистика, корень всех бед</li>
+            <li><b>Buffers read</b> - реальные чтения с диска; hit - из кэша</li>
+            <li><b>loops</b> - вложенный узел выполнился N раз: время умножать</li>
+            <li><b>Sort Method: external merge Disk</b> - не хватило <code>work_mem</code></li>
+            <li><b>Rows Removed by Filter</b> - индекс дал строки, которые потом выбросили: индекс не тот</li>
+            <li><b>Heap Fetches</b> в Index Only Scan - visibility map устарела, нужен VACUUM</li>
+            <li><b>Hash Batches &gt; 1</b> - хэш-таблица не влезла в work_mem, ушла на диск</li>
+            <li><b>Planning Time</b> - если сравнимо с Execution, спасают prepared statements</li>
+          </ul>
+        </div>
+        <p class="dim" style="font-size:13.5px;margin-top:12px">Инструменты: explain.depesz.com, explain.dalibo.com, <code>auto_explain</code> для медленных запросов в лог. MySQL: <code>EXPLAIN ANALYZE</code> (8.0.18+), <code>EXPLAIN FORMAT=TREE</code>.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s18">
+  <div class="content">
+    <div class="kicker">Индексы · специальные</div>
+    <h2>Partial, expression, unique с нюансами</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>Partial (частичный)</h3>
+        <p><code>CREATE INDEX ON orders (created_at) WHERE status = 'pending'</code></p>
+        <p style="margin-top:8px">Индексирует только 0.1% строк, которые реально ищут. В 1000 раз меньше, в кэше целиком, запись почти бесплатна для остальных строк. Планировщик применит, только если условие запроса <b>логически влечёт</b> условие индекса.</p>
+        <p style="margin-top:8px"><b>Кейсы:</b> очереди задач (WHERE processed = false), soft delete (WHERE deleted_at IS NULL), уникальность среди активных: <code>UNIQUE (email) WHERE deleted_at IS NULL</code>.</p>
+        <p style="margin-top:8px" class="rd">MySQL: нет. Обходной путь - generated column NULL для ненужных строк + индекс по ней.</p>
+      </div>
+      <div class="card">
+        <h3>Expression (функциональный)</h3>
+        <p><code>CREATE INDEX ON users (lower(email))</code><br><code>CREATE INDEX ON events ((data-&gt;&gt;'type'))</code><br><code>CREATE INDEX ON t (date_trunc('day', ts))</code></p>
+        <p style="margin-top:8px">Индекс по результату выражения. Запрос обязан использовать <b>то же выражение буква в букву</b>. Функция должна быть IMMUTABLE - <code>now()</code> и <code>to_char с локалью</code> нельзя.</p>
+        <p style="margin-top:8px">Для jsonb: индекс по <code>(data-&gt;&gt;'user_id')</code> B-tree в 10 раз меньше GIN по всему документу, если ищешь одно поле.</p>
+        <p style="margin-top:8px" class="am">MySQL 8.0.13+: functional index через <code>((lower(email)))</code> - двойные скобки, под капотом hidden generated column.</p>
+      </div>
+      <div class="card">
+        <h3>Unique и его сюрпризы</h3>
+        <p><b>NULL ≠ NULL</b>: UNIQUE (a, b) пропустит сколько угодно (1, NULL). PG15: <code>NULLS NOT DISTINCT</code>.</p>
+        <p style="margin-top:8px"><b>Проверка в момент записи</b>, не в конце транзакции (если не <code>DEFERRABLE INITIALLY DEFERRED</code>) → swap двух значений в UNIQUE колонке падает без deferrable.</p>
+        <p style="margin-top:8px"><b>Concurrent build:</b> <code>CREATE INDEX CONCURRENTLY</code> не блокирует запись, но 2-3 прохода, дольше, и при ошибке оставляет INVALID индекс - проверять <code>pg_index.indisvalid</code>. MySQL: <code>ALTER ... ALGORITHM=INPLACE, LOCK=NONE</code>.</p>
+        <p style="margin-top:8px"><b>Upsert</b>: <code>INSERT .. ON CONFLICT (col) DO UPDATE</code> требует именно unique-индекс по col. MySQL <code>ON DUPLICATE KEY UPDATE</code> - по любому unique, что сработает первым.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s19">
+  <div class="content">
+    <div class="kicker">Индексы · подводные камни</div>
+    <h2>Семь способов сделать индексы бесполезными</h2>
+    <div class="cols">
+      <ul class="pts">
+        <li><b>Write amplification.</b> В PG любой UPDATE не-HOT создаёт запись во <b>всех</b> индексах таблицы, даже если менялась одна колонка без индекса. HOT (heap-only tuple) срабатывает, если новая версия влезла в ту же страницу и индексируемые колонки не менялись → <code>fillfactor</code> 70-90 на часто обновляемых таблицах (чем горячее, тем ниже; 90 - для умеренного апдейта).</li>
+        <li><b>Bloat.</b> Удалённые ключи в B-tree освобождаются vacuum'ом, но полупустые страницы не сливаются. Индекс после года UPDATE в 3-5 раз больше нужного. <code>REINDEX CONCURRENTLY</code> (PG12+) или pg_repack. Мониторить через pgstattuple / pg_bloat_check.</li>
+        <li><b>Индекс на boolean / status с 3 значениями.</b> При равномерном распределении (33%) бесполезен. Исключение - сильный перекос: 50 строк <code>true</code> из 10 млн планировщик по статистике (MCV) отловит и индекс возьмёт. Но partial index на редкое значение - в 1000 раз меньше и надёжнее.</li>
+        <li><b>Индекс на колонку с одинаковым префиксом.</b> URL, начинающиеся с https://www. - первые 12 байт бесполезны для сравнения. Хэш или индекс по reverse(url).</li>
+      </ul>
+      <ul class="pts">
+        <li><b>ORDER BY random() / LIMIT с OFFSET 100000.</b> OFFSET читает и выбрасывает 100 тыс. строк по индексу. Keyset pagination: <code>WHERE (created_at, id) &lt; (?, ?) ORDER BY created_at DESC, id DESC LIMIT 20</code>.</li>
+        <li><b>Foreign key без индекса.</b> PG не создаёт индекс на FK-колонку автоматически (InnoDB - создаёт). DELETE родителя = Seq Scan ребёнка под локом. Скрипт поиска FK без индекса - обязательная часть аудита.</li>
+        <li><b>Слишком много индексов.</b> Insert-heavy таблица с 10 индексами: каждая вставка = 11 случайных записей + WAL. Bulk load: сначала данные, потом индексы (в 5-10 раз быстрее).</li>
+      </ul>
+    </div>
+    <div class="note gold">Универсальный рецепт: смотреть <code>pg_stat_statements</code> (top по total_time), для топ-10 запросов EXPLAIN ANALYZE, для каждого - ровно тот составной индекс, что закрывает WHERE + ORDER BY. Потом удалить всё с idx_scan=0 старше месяца. 80% проблем производительности решаются на этом слайде.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 4: JOIN ============ -->
+<section class="slide chapter" id="s20">
+  <div class="bgimg"><img src="assets/ch_joins.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4</div>
+    <h1>Стратегии соединений</h1>
+    <p class="lead">Три алгоритма на всю индустрию: Nested Loop, Hash Join, Merge Join. Планировщик выбирает между ними по статистике, и ошибка в оценке в 100 раз превращает 2 мс в 2 минуты. MySQL 20 лет жил с одним из трёх.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s21">
+  <div class="content">
+    <div class="kicker">Join · алгоритмы</div>
+    <h2>Три алгоритма соединения</h2>
+    <div class="part rev" style="grid-template-columns:2.8fr 0.9fr">
+      <table class="t pt">
+        <tr><th>Алгоритм</th><th>Как работает</th><th>Сложность</th><th>Когда хорош</th><th>Когда катастрофа</th></tr>
+        <tr><td><b>Nested Loop</b></td><td class="d">для каждой строки внешней таблицы ищем совпадения во внутренней. Без индекса - полный скан внутренней на каждую внешнюю строку. С индексом (Index Nested Loop) - поиск по B-tree на каждую строку</td><td class="d">O(N×M) без индекса; O(N log M) с индексом</td><td class="d">внешняя маленькая (1-1000 строк), внутренняя с индексом по ключу. Единственный вариант для неравенств (&lt;, LIKE, BETWEEN) и коррелированных подзапросов</td><td class="d">планировщик думал, что внешних строк 10, а их 100 тыс. → 100 тыс. index lookups × 3 страницы = 300 тыс. случайных чтений</td></tr>
+        <tr><td><b>Hash Join</b></td><td class="d">меньшую таблицу (build) целиком в хэш-таблицу в памяти по ключу; большую (probe) сканируем один раз, для каждой строки - lookup в хэш O(1)</td><td class="d">O(N+M); память O(меньшей)</td><td class="d">обе таблицы большие, условие - равенство, нет подходящих индексов. Стандарт для аналитики и отчётов</td><td class="d">build не влезла в <code>work_mem</code> → batches на диск (Hash Batches: 64 в EXPLAIN): на NVMe 1.5-3× медленнее, не катастрофа. Неравенство - не применим</td></tr>
+        <tr><td><b>Merge Join</b></td><td class="d">обе таблицы отсортированы по ключу (индексом или Sort) → идём двумя указателями синхронно, как слияние в mergesort</td><td class="d">O(N+M) если уже отсортированы; O(N log N) с сортировкой. при массе дубликатов с обеих сторон - rescan, деградирует к O(N×M)</td><td class="d">обе стороны большие и уже упорядочены (B-tree по ключу с обеих сторон); результат нужен отсортированным; много дубликатов ключей</td><td class="d">одну сторону приходится сортировать целиком на диске</td></tr>
+      </table>
+      <div class="pimg"><img src="assets/p_join.png" alt=""><div class="pcap">Nested Loop: цикл в цикле. Hash: построить таблицу, пройти второй раз. Merge: две отсортированные ленты застёгиваются как молния.</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s22">
+  <div class="content">
+    <div class="kicker">Join · выбор планировщика</div>
+    <h2>Как планировщик выбирает и где ошибается</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Порядок соединений важнее алгоритма.</b> Для 5 таблиц - 120 порядков, для 12 - 479 млн. PG перебирает полностью до <code>join_collapse_limit=8</code> таблиц, дальше - генетический оптимизатор GEQO (случайный поиск). MySQL - greedy search с отсечением.</li>
+          <li><b>Оценка кардинальности</b> - корень всего. Планировщик оценивает, сколько строк выйдет из каждого узла: селективность WHERE × число строк, для join - N×M / max(distinct). Ошибка на первом уровне умножается на каждом следующем. После 3 джоинов оценка расходится с реальностью на порядки - это фундаментальная проблема, не баг.</li>
+          <li><b>Join elimination, subquery flattening, predicate pushdown</b> - планировщик переписывает запрос: IN (SELECT) → semi join, EXISTS → semi join, NOT IN → anti join (но NOT IN с NULL - ловушка: возвращает пусто), протаскивает WHERE внутрь подзапросов и VIEW.</li>
+          <li><b>CTE</b> (<code>WITH x AS (...)</code>) до PG12 был optimization fence - материализовался всегда. Теперь inline, если используется один раз; <code>AS MATERIALIZED</code> - принудительно старое поведение.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Ручки управления</h3>
+          <table class="t" style="font-size:14px">
+            <tr><td><code>work_mem</code></td><td class="d">память на одну операцию (sort/hash) на один узел. 4 МБ по умолчанию - мало; 64-256 МБ для OLAP, но умножается на число узлов × соединений</td></tr>
+            <tr><td><code>enable_nestloop=off</code></td><td class="d">отладочный молоток: посмотреть, что будет без NL. В прод не ставить</td></tr>
+            <tr><td><code>random_page_cost</code></td><td class="d">4 → 1.1 на SSD: планировщик охотнее берёт индексы и NL</td></tr>
+            <tr><td><code>pg_hint_plan</code></td><td class="d">расширение: хинты <code>/*+ HashJoin(a b) */</code> как в Oracle. Для случаев, когда статистика не спасает</td></tr>
+            <tr><td>MySQL хинты</td><td class="d"><code>STRAIGHT_JOIN</code>, <code>/*+ NO_HASH_JOIN */</code>, <code>FORCE INDEX</code>, <code>optimizer_switch</code></td></tr>
+          </table>
+        </div>
+        <div class="note warn" style="margin-top:12px"><b>Классика ошибки:</b> Nested Loop с оценкой rows=1 внешней стороны, реально 50 тыс. Симптом: запрос 2 мс на тесте, 3 минуты на проде. Причина: статистика по колонке с перекошенным распределением (один клиент = 40% строк). Лечение: ANALYZE, <code>statistics_target</code>, extended statistics, а иногда - переписать запрос так, чтобы первым шёл более предсказуемый фильтр.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s23">
+  <div class="content">
+    <div class="kicker">Join · MySQL vs PostgreSQL</div>
+    <h2>MySQL 20 лет с одним алгоритмом</h2>
+    <div class="cols">
+      <div>
+        <table class="t" style="font-size:14px">
+          <tr><th></th><th>PostgreSQL</th><th>MySQL</th></tr>
+          <tr><td>Nested Loop</td><td class="gr">да</td><td class="gr">да, единственный до 8.0.18 (2019)</td></tr>
+          <tr><td>Block Nested Loop</td><td class="d">не нужен</td><td class="d">буферизует строки внешней таблицы в join_buffer, чтобы сканировать внутреннюю реже. Костыль вместо hash join. Убран в 8.0.20</td></tr>
+          <tr><td>Batched Key Access</td><td class="d">не нужен</td><td class="d">собирает ключи в батч и читает внутреннюю таблицу через MRR (сортировка по PK → последовательные чтения). Помогало на HDD</td></tr>
+          <tr><td>Hash Join</td><td class="gr">да, с батчами на диск</td><td class="am">8.0.18+; с 8.0.20 и для неравенств/outer/anti. До 8.0.18 - JOIN двух больших таблиц без индекса = смерть</td></tr>
+          <tr><td>Merge Join</td><td class="gr">да</td><td class="rd">нет</td></tr>
+          <tr><td>Parallel query</td><td class="gr">да (PG9.6+): Parallel Seq Scan, Hash Join, Aggregate</td><td class="rd">нет (только parallel index build и count(*) в InnoDB 8.0.14+)</td></tr>
+          <tr><td>Semi/anti join</td><td class="gr">да, IN/EXISTS/NOT EXISTS → semi/anti</td><td class="am">5.6+ semi join; NOT IN/NOT EXISTS - anti join только с 8.0.17</td></tr>
+          <tr><td>Derived table / subquery в FROM</td><td class="gr">inline или materialize по стоимости</td><td class="am">materialize с автоиндексом (5.6+), merge с 5.7</td></tr>
+        </table>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Почему MySQL так долго жил без hash join:</b> его ниша - OLTP-веб: 1-3 таблицы, всё по PK и индексам, NL с индексом идеален. Аналитику на MySQL никто в здравом уме не строил. Когда Oracle взялась за 8.0 - догнала за пару релизов.</li>
+          <li><b>Оптимизатор MySQL проще</b> и предсказуемее: меньше «магии», меньше сюрпризов при смене плана, но и меньше потолок. Postgres умнее, но капризнее: один ANALYZE может перевернуть план в другую сторону.</li>
+          <li><b>Практическое следствие:</b> запрос с 6 джоинами и агрегацией по 10 млн строк в PG сработает за секунды через Hash Join + Parallel. В MySQL 5.7 - минуты или таймаут; в 8.0 - уже сносно, но без параллелизма.</li>
+          <li><b>MySQL сильнее в одном:</b> clustered index. Запрос по PK читает данные сразу из листа B-tree, без похода в heap. Range по PK - последовательное чтение диска. У PG - индекс + heap, две структуры.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s24">
+  <div class="content">
+    <div class="kicker">Join · практика</div>
+    <h2>Джоины, которые тормозят, и как их лечить</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>N+1 из ORM</h3>
+        <p>Загрузить 100 заказов, потом в цикле <code>order.user</code> → 101 запрос. Каждый 0.3 мс, round-trip 0.2 мс → 50 мс вместо 1 мс. При 1000 - полсекунды.</p>
+        <p style="margin-top:8px"><b>Лечение:</b> eager loading (<code>JOIN FETCH</code>, <code>.Include()</code>, <code>select_related</code>), или один запрос <code>WHERE user_id IN (...)</code>. Детекция: логи запросов на тесте, <code>pg_stat_statements.calls</code> в топе.</p>
+      </div>
+      <div class="card">
+        <h3>JOIN + GROUP BY «пухнет»</h3>
+        <p>Заказы × позиции × платежи → декартово раздутие: 1 заказ, 5 позиций, 3 платежа = 15 строк, SUM(amount) втрое больше реального.</p>
+        <p style="margin-top:8px"><b>Лечение:</b> агрегировать каждую ветку в подзапросе / CTE до соединения, потом джоинить агрегаты 1:1. Или <code>LATERAL</code> подзапрос.</p>
+      </div>
+      <div class="card">
+        <h3>LATERAL - «for each»</h3>
+        <p><code>SELECT u.*, o.* FROM users u, LATERAL (SELECT * FROM orders WHERE user_id = u.id ORDER BY created_at DESC LIMIT 3) o</code></p>
+        <p style="margin-top:8px">«Последние 3 заказа каждого юзера» одним запросом, без window functions. Исполняется как NL с индексом - идеально, когда юзеров мало. MySQL 8.0.14+ тоже умеет.</p>
+      </div>
+    </div>
+    <div class="cols" style="margin-top:14px">
+      <div class="note"><b>Anti-join правильно:</b> <code>NOT EXISTS (SELECT 1 FROM b WHERE b.a_id = a.id)</code> или <code>LEFT JOIN b ... WHERE b.id IS NULL</code>. <b>Никогда</b> <code>NOT IN (SELECT a_id FROM b)</code> - если в b.a_id есть хоть один NULL, результат пустой по правилам трёхзначной логики SQL. И планировщик хуже его оптимизирует.</div>
+      <div class="note gold"><b>Джоин по разным типам</b> (int = varchar, uuid = text) → неявный cast, индекс не работает, hash join невозможен. <b>Джоин по выражению</b> (<code>ON lower(a.email) = lower(b.email)</code>) - только hash/NL без индекса. <b>Join на 8+ таблиц</b> - думай о денормализации или materialized view; планировщик уже гадает.</div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 5: POSTGRESQL ============ -->
+<section class="slide chapter" id="s25">
+  <div class="bgimg"><img src="assets/ch_postgres.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5</div>
+    <h1>PostgreSQL: слон, который умеет всё</h1>
+    <p class="lead">Самая расширяемая СУБД в истории: типы, операторы, индексы и даже планировщик подменяются расширениями. Отсюда PostGIS, TimescaleDB, pgvector, Citus - и pg_trgm, три буквы, ради которых половина проектов не ставит Elasticsearch.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s26">
+  <div class="content">
+    <div class="kicker">PostgreSQL · архитектура</div>
+    <h2>Процессы, память, диск</h2>
+    <div class="cols">
+      <div>
+        <div class="dg">
+          <div class="row"><div class="bx am"><b>postmaster</b><span>главный процесс, слушает порт, fork на каждое соединение</span></div><div class="arr">→</div><div class="bx cy"><b>backend × N</b><span>процесс на клиента, ~5-10 МБ каждый. 500 соединений = 5 ГБ и context-switch ад</span></div></div>
+          <div class="row"><div class="bx"><b>background writer</b><span>сбрасывает грязные страницы понемногу</span></div><div class="bx"><b>checkpointer</b><span>checkpoint по таймеру/объёму WAL</span></div><div class="bx"><b>WAL writer</b><span>пишет WAL-буфер на диск</span></div><div class="bx"><b>autovacuum launcher + workers</b><span>чистка мёртвых версий, ANALYZE</span></div><div class="bx"><b>WAL sender/receiver</b><span>репликация</span></div><div class="bx"><b>archiver</b><span>уносит закрытые WAL-сегменты в архив/S3 (archive_command) - основа PITR</span></div></div>
+          <div class="row"><div class="bx gr"><b>shared_buffers</b><span>общий кэш страниц. Дефолтная методичка 25% RAM (двойное кэширование с ОС); на машинах с 0.5-1 ТБ RAM, где база влезает целиком, спокойно 50-60%</span></div><div class="bx gr"><b>work_mem</b><span>на операцию сортировки/хэша в каждом backend</span></div><div class="bx gr"><b>maintenance_work_mem</b><span>для VACUUM, CREATE INDEX: 1-2 ГБ</span></div><div class="bx gr"><b>wal_buffers</b><span>буфер WAL до записи на диск, ~16 МБ (1/32 shared_buffers), реальная память</span></div><div class="bx dk"><b>effective_cache_size</b><span>НЕ память: число-подсказка планировщику, сколько кэша ОС+PG ждать (50-75% RAM)</span></div></div>
+        </div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Процесс на соединение</b> - главное архитектурное отличие от MySQL (поток) и главная боль. Выше ~300-500 активных соединений производительность падает. Решение - <b>пулер</b>: pgbouncer (transaction mode, 1000 клиентов → 50 реальных соединений), PgCat, Odyssey. Встроенного пулера в ядре нет ни в PG17, ни в PG18 - только внешний.</li>
+          <li><b>Файлы на диске:</b> каждая таблица и индекс - файл(ы) по 1 ГБ в <code>base/&lt;dboid&gt;/&lt;relfilenode&gt;</code>, плюс <code>_fsm</code> (free space map), <code>_vm</code> (visibility map) и отдельная TOAST-таблица со своими файлами для длинных значений. Tablespace = просто другая директория.</li>
+          <li><b>Расширяемость на уровне ядра:</b> hooks в планировщике и исполнителе (так живут pg_hint_plan, Citus, Timescale), пользовательские типы с операторами и классами операторов для индексов, фоновые воркеры (pg_cron), foreign data wrappers (postgres_fdw, mysql_fdw, файлы, S3).</li>
+          <li><b>Релизный цикл:</b> major раз в год (PG17 - сен 2024, PG18 - сен 2025), поддержка 5 лет, minor раз в квартал. Major upgrade - pg_upgrade (минуты) или логическая репликация (без даунтайма).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s27">
+  <div class="content">
+    <div class="kicker">PostgreSQL · VACUUM</div>
+    <h2>VACUUM: цена MVCC, которую платишь постоянно</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Что делает:</b> находит мёртвые версии строк (xmax закоммичен и старше всех снимков), помечает место свободным в FSM, чистит индексные записи, обновляет visibility map (для index-only scan), <b>замораживает</b> старые xid.</li>
+          <li><b>Не делает:</b> не отдаёт место ОС (файл не уменьшается, только <code>VACUUM FULL</code> с полным локом или pg_repack). Не сливает полупустые страницы индексов (полностью пустые - возвращает в free list, но не более).</li>
+          <li><b>Autovacuum</b> запускается на таблице, когда мёртвых строк &gt; <code>threshold + scale_factor × rows</code> = 50 + 20%. Для таблицы в 100 млн строк это 20 млн мёртвых - слишком поздно. Ставить <code>autovacuum_vacuum_scale_factor = 0.01</code> для больших таблиц (per-table). PG18 добавил потолок <code>autovacuum_vacuum_max_threshold</code> (100 млн по умолчанию) - формула больше не улетает в бесконечность на гигантских таблицах.</li>
+          <li><b>Троттлинг:</b> <code>autovacuum_vacuum_cost_delay</code> 2 мс (было 20 до PG12) и cost_limit 200 - vacuum спит бóльшую часть времени. На NVMe поднимать cost_limit до 2000-10000 или вовсе <code>cost_delay = 0</code>, если CPU позволяет.</li>
+          <li><b>Долгая транзакция = vacuum бессилен:</b> он не может убрать версии, которые она теоретически видит. Одна забытая <code>idle in transaction</code> сессия на неделю = таблицы вдвое больше. <code>idle_in_transaction_session_timeout</code>, мониторинг <code>pg_stat_activity.xact_start</code>.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">XID wraparound - тот самый апокалипсис</h3>
+          <p>id транзакции - 32 бита, 4 млрд. Сравнение xid - по кругу: половина «в прошлом», половина «в будущем». Если за ~2 млрд транзакций старые строки не заморозить (frozen = «видна всем, навсегда»), они внезапно окажутся «в будущем» и <b>исчезнут для всех запросов</b>.</p>
+          <p style="margin-top:8px">PG за 3 млн транзакций до предела (в старых версиях - 1 млн) <b>останавливает запись</b> целиком: «database is not accepting commands to avoid wraparound data loss». Sentry (2015), Mailchimp (2019), Notion - все проходили. Мониторить <code>age(datfrozenxid)</code>, алерт на 500 млн. PG14+ vacuum замораживает агрессивнее, но 32 бита остались.</p>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Bloat</b> - таблица/индекс в N раз больше живых данных. Симптомы: Seq Scan медленнее, кэш забит воздухом, бэкап растёт. Оценить: pgstattuple, запрос с check_postgres. Лечить: агрессивный autovacuum, pg_repack (без лока), для индексов REINDEX CONCURRENTLY. Партиционирование по времени + DROP PARTITION вместо DELETE - и vacuum не нужен вовсе.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s28">
+  <div class="content">
+    <div class="kicker">PostgreSQL · типы</div>
+    <h2>Типы данных, которых нет у других</h2>
+    <table class="t" style="font-size:13.5px">
+      <tr><th>Тип</th><th>Что это</th><th>Индекс</th><th>Зачем</th><th>Грабли</th></tr>
+      <tr><td><b>jsonb</b></td><td class="d">бинарный JSON, разобранный, с дедупликацией ключей. Операторы <code>-&gt;</code> <code>-&gt;&gt;</code> <code>@&gt;</code> <code>?</code> <code>#&gt;</code>, jsonpath (PG12), <code>JSON_TABLE</code> (PG17)</td><td class="d">GIN (jsonb_ops / jsonb_path_ops - второй компактнее, только @&gt;), B-tree по выражению</td><td class="d">гибкие атрибуты, настройки, события. «MongoDB внутри Postgres» - честно работает</td><td class="d">UPDATE одного поля переписывает весь документ (+TOAST при &gt;2 КБ). Не заменяет колонки для того, что фильтруешь всегда. json (без b) - просто текст, не использовать</td></tr>
+      <tr><td><b>Массивы</b></td><td class="d"><code>int[]</code>, <code>text[]</code>, многомерные. <code>ANY</code>, <code>@&gt;</code>, <code>&amp;&amp;</code>, unnest</td><td class="d">GIN</td><td class="d">теги, списки id вместо таблицы-связки для мелких случаев</td><td class="d">нет FK на элементы; большие массивы в TOAST медленные</td></tr>
+      <tr><td><b>Диапазоны</b></td><td class="d"><code>tstzrange</code>, <code>int4range</code>, <code>daterange</code>; multirange PG14. Операторы <code>&amp;&amp;</code> <code>@&gt;</code> <code>-|-</code></td><td class="d">GiST</td><td class="d">бронирования, тарифы по периодам. <code>EXCLUDE USING gist (room WITH =, period WITH &amp;&amp;)</code> - база сама не даст пересечься</td><td class="d">границы [ ) включ./исключ. - путаются</td></tr>
+      <tr><td><b>uuid</b></td><td class="d">16 байт нативно (не 36 символов). <code>gen_random_uuid()</code> встроен с PG13; uuidv7() в PG18</td><td class="d">B-tree</td><td class="d">распределённые id, не палить count через serial</td><td class="d">UUIDv4 как PK → случайные вставки в B-tree (см. индексы). UUIDv7 решает</td></tr>
+      <tr><td><b>inet / cidr / macaddr</b></td><td class="d">IP-адреса и сети с операторами включения <code>&lt;&lt;</code>, <code>&gt;&gt;=</code></td><td class="d">GiST, SP-GiST</td><td class="d">гео-IP, ACL, «какой подсети принадлежит адрес»</td><td class="d">-</td></tr>
+      <tr><td><b>Геометрия / PostGIS</b></td><td class="d">point, polygon встроенные; PostGIS: geometry/geography, 300+ функций, стандарт OGC</td><td class="d">GiST, SP-GiST, BRIN</td><td class="d">все карты, доставки, «рядом со мной». PostGIS - причина №1 выбрать PG в 2010-х</td><td class="d">geometry (плоскость) vs geography (сфера, медленнее, точнее)</td></tr>
+      <tr><td><b>hstore, ltree, citext, enum, композитные, domain</b></td><td class="d">key-value (предок jsonb), иерархические пути (<code>'top.science.astro'</code>), case-insensitive text, перечисления, свои структуры, тип с CHECK</td><td class="d">GIN/GiST для ltree</td><td class="d">ltree - деревья категорий без рекурсии; domain - <code>email</code> тип с регэкспом на все таблицы</td><td class="d">enum: добавить значение можно, удалить/переставить - нет</td></tr>
+      <tr><td><b>Кастомные</b></td><td class="d"><code>CREATE TYPE</code> + функции ввода/вывода на C или SQL, операторы, opclass для индексов</td><td class="d">любой</td><td class="d">так сделаны PostGIS, pgvector, pg_trgm, timescaledb</td><td class="d">-</td></tr>
+    </table>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s29">
+  <div class="content">
+    <div class="kicker">PostgreSQL · расширения</div>
+    <h2>Расширения: одна база вместо пяти сервисов</h2>
+    <table class="t" style="font-size:13.5px">
+      <tr><th>Расширение</th><th>Что даёт</th><th>Заменяет</th><th>Зрелость / нюансы</th></tr>
+      <tr><td><b>pg_stat_statements</b></td><td class="d">статистика по всем запросам: calls, total/mean time, rows, buffers. Ставить <b>всегда, первым</b></td><td class="d">APM для запросов</td><td class="d">в contrib, 1-2% оверхед. <code>pg_stat_kcache</code> добавляет CPU/IO</td></tr>
+      <tr><td><b>pg_trgm</b></td><td class="d">триграммы: LIKE '%abc%' и ILIKE по индексу, similarity(), fuzzy-поиск с опечатками</td><td class="d">Elasticsearch для 80% «поиск по названию»</td><td class="d">contrib, стабильно с 2010. Детали на следующих слайдах</td></tr>
+      <tr><td><b>PostGIS</b></td><td class="d">полноценная ГИС: геометрия, проекции, растры, маршрутизация (pgRouting)</td><td class="d">ArcGIS-сервер, Oracle Spatial ($$$)</td><td class="d">золотой стандарт индустрии с 2001; OSM, Uber, Foursquare</td></tr>
+      <tr><td><b>TimescaleDB</b></td><td class="d">hypertables: автопартиционирование по времени, сжатие 10-20×, continuous aggregates, retention</td><td class="d">InfluxDB, частично ClickHouse для метрик</td><td class="d">лицензия TSL для сжатия (не Apache). Уступает ClickHouse на аналитике &gt;1 млрд строк, но это ещё SQL Postgres с джоинами</td></tr>
+      <tr><td><b>pgvector</b></td><td class="d">тип vector(n), расстояния L2/cosine/inner, индексы IVFFlat и HNSW</td><td class="d">Pinecone, Qdrant, Milvus для &lt;10-50 млн векторов</td><td class="d">HNSW recall ~95-99%, build долгий и памятеёмкий; pgvectorscale (Timescale) добавляет StreamingDiskANN</td></tr>
+      <tr><td><b>Citus</b></td><td class="d">шардирование по distribution column, распределённые запросы, columnar storage</td><td class="d">Vitess, CockroachDB для «PG на 10 нод»</td><td class="d">куплен Microsoft (2019), open source. Хорош для multi-tenant SaaS (tenant_id как ключ шарда)</td></tr>
+      <tr><td><b>pg_partman, pg_cron</b></td><td class="d">автосоздание партиций по времени; cron внутри базы</td><td class="d">скрипты и crontab снаружи</td><td class="d">стандарт; в RDS/Cloud SQL доступны</td></tr>
+      <tr><td><b>pg_repack</b></td><td class="d">убрать bloat таблицы/индекса без долгого лока (VACUUM FULL online)</td><td class="d">даунтайм</td><td class="d">нужно ×2 места на время; работает через триггеры</td></tr>
+      <tr><td><b>postgres_fdw, pg_hint_plan, pgaudit, pgcrypto, pg_bigm, hypopg, pglogical, pgroonga, plv8/plpython</b></td><td class="d">внешние таблицы; хинты; аудит; шифрование; биграммы для CJK; «а если бы индекс был»; логическая репликация до PG10; японский полнотекст; JS/Python в процедурах</td><td class="d">-</td><td class="d">hypopg - недооценённая штука: проверить пользу индекса без его создания</td></tr>
+    </table>
+    <div class="note gold" style="margin-top:10px">Идея «<b>Postgres for everything</b>»: очередь (SKIP LOCKED), кэш (UNLOGGED), поиск (trgm+FTS), время (Timescale), векторы, гео, cron - в одной базе с одной транзакцией и одним бэкапом. До ~1-5 ТБ и 10-50 тыс. TPS это дешевле пяти сервисов, каждый со своим failover и синхронизацией.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s30">
+  <div class="content">
+    <div class="kicker">PostgreSQL · pg_trgm</div>
+    <h2>pg_trgm: магия трёх букв</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_trgm.png" alt=""><div class="pcap">«postgres» → {"  p"," po","pos","ost","stg","tgr","gre","res","es "}. Любая подстрока длиной ≥ 3 - это пересечение множеств триграмм. Опечатка меняет 3 триграммы из 9, остальные 6 совпали.</div></div>
+      <div>
+        <ul class="pts" style="font-size:15px">
+          <li><b>Триграмма</b> - три подряд идущих символа. Слово дополняется двумя пробелами спереди и одним сзади, чтобы начало и конец слова весили больше. Регистр и не-буквы игнорируются (по умолчанию).</li>
+          <li><b>Индекс GIN по триграммам:</b> для каждой триграммы - список строк, где она встречается. <code>WHERE name LIKE '%грес%'</code> → триграммы {"гре","рес"} → пересечение двух списков → recheck кандидатов по реальному LIKE. <b>LIKE '%x%' по индексу</b> - то, что не умеет ни один B-tree в мире.</li>
+          <li><b>Похожесть:</b> <code>similarity('postgres', 'postgress')</code> = общие триграммы / все = 0.8. <code>word_similarity</code> - похожесть на подстроку. Оператор <code>%</code> с порогом <code>pg_trgm.similarity_threshold</code> (0.3) работает по GIN/GiST.</li>
+          <li><b>KNN по опечаткам:</b> <code>ORDER BY name &lt;-&gt; 'постргес' LIMIT 10</code> по <b>GiST</b> индексу - «10 самых похожих» без сканирования. Автодополнение с опечатками из коробки.</li>
+          <li><b>Регэкспы по индексу:</b> <code>WHERE name ~ 'pos.*gres'</code> - trgm разбирает регэксп на обязательные триграммы и использует GIN. Единственная СУБД с индексируемыми регэкспами.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s31">
+  <div class="content">
+    <div class="kicker">PostgreSQL · pg_trgm на практике</div>
+    <h2>Триграммы: цифры, лимиты, рецепты</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="am">Рецепт</h3>
+          <p style="font-family:Consolas,monospace;font-size:13px;line-height:1.6;color:var(--text)">CREATE EXTENSION pg_trgm;<br>
+CREATE INDEX products_name_trgm<br>&nbsp;&nbsp;ON products USING gin (name gin_trgm_ops);<br><br>
+-- подстрока, регистронезависимо, по индексу<br>
+SELECT * FROM products WHERE name ILIKE '%самсу%';<br><br>
+-- с опечатками, топ-10 похожих<br>
+SELECT name, similarity(name, 'самснуг') s<br>FROM products WHERE name % 'самснуг'<br>ORDER BY s DESC LIMIT 10;<br><br>
+-- по нескольким полям: индекс по выражению<br>
+CREATE INDEX ON products USING gin<br>&nbsp;&nbsp;((name || ' ' || brand || ' ' || sku) gin_trgm_ops);</p>
+        </div>
+      </div>
+      <div>
+        <table class="t" style="font-size:14px">
+          <tr><th>Параметр</th><th>Значение</th></tr>
+          <tr><td>Размер GIN trgm индекса</td><td class="d">~2-4× размера колонки (у B-tree ~1×). 10 млн названий по 40 байт = 400 МБ данных, 1-1.5 ГБ индекс</td></tr>
+          <tr><td>Скорость LIKE '%abc%'</td><td class="d">1-10 мс на 10 млн строк вместо 2-5 с Seq Scan. Чем длиннее паттерн, тем меньше кандидатов и быстрее</td></tr>
+          <tr><td>Паттерн короче 3 символов</td><td class="d">'%ab%' - ни одной полной триграммы → Seq Scan. Лимит по определению</td></tr>
+          <tr><td>Частые триграммы</td><td class="d">'%ста%' в русском - половина таблицы → recheck дорогой. Планировщик может предпочесть Seq Scan - и правильно</td></tr>
+          <tr><td>Запись</td><td class="d">каждая строка = ~N триграмм = N записей в GIN. INSERT в 3-5 раз медленнее, чем с B-tree. <code>fastupdate</code> буферизует в pending list, потом сливает</td></tr>
+          <tr><td>GIN vs GiST для trgm</td><td class="d">GIN: быстрее поиск, больше, медленнее запись, нет KNN. GiST: <code>&lt;-&gt;</code> ORDER BY (KNN), быстрее запись, медленнее поиск. Для автодополнения - GiST, для фильтра - GIN</td></tr>
+          <tr><td>Языки</td><td class="d">любой Unicode: русский, кириллица, но CJK (иероглифы) - слова по 1-2 символа, триграмм нет → pg_bigm или pgroonga</td></tr>
+        </table>
+        <div class="note" style="margin-top:10px;font-size:13.5px">Где trgm проигрывает Elastic: релевантность (BM25), морфология («телефоны» → «телефон»), синонимы, фасеты по 10 полям с агрегациями, &gt;100 млн документов. Где выигрывает: транзакционная консистентность (нашёл = существует), ноль синхронизации, одна инфраструктура, точный LIKE.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s32">
+  <div class="content">
+    <div class="kicker">PostgreSQL · полнотекст</div>
+    <h2>Встроенный Full Text Search: tsvector и tsquery</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>tsvector</b> - документ, разобранный на лексемы с позициями: <code>to_tsvector('russian', 'Быстрые коты бегали')</code> → <code>'бегал':3 'быстр':1 'кот':2</code>. Стемминг (snowball), стоп-слова, словари (ispell, hunspell, синонимы, тезаурус) - настраиваются через text search configuration.</li>
+          <li><b>tsquery</b> - запрос с операторами: <code>&amp;</code> <code>|</code> <code>!</code> <code>&lt;-&gt;</code> (followed by), <code>&lt;N&gt;</code> (на расстоянии N). <code>websearch_to_tsquery('кот -собака "быстрый бег"')</code> - синтаксис как в гугле.</li>
+          <li><b>Ранжирование:</b> <code>ts_rank</code>, <code>ts_rank_cd</code> (cover density) с весами A/B/C/D по полям (заголовок важнее тела). Не BM25 - нет нормализации по частоте в коллекции (IDF); есть расширения (pg_search / ParadeDB на Tantivy - там BM25 настоящий).</li>
+          <li><b>Хранение:</b> generated column <code>tsv tsvector GENERATED ALWAYS AS (to_tsvector('russian', coalesce(title,'') || ' ' || coalesce(body,''))) STORED</code> + GIN индекс. Ничего не надо синхронизировать - колонка сама.</li>
+          <li><b>Подсветка:</b> <code>ts_headline</code> - фрагменты с &lt;b&gt;.</li>
+        </ul>
+      </div>
+      <div>
+        <table class="t" style="font-size:14px">
+          <tr><th></th><th>PG FTS</th><th>pg_trgm</th><th>Elasticsearch</th></tr>
+          <tr><td>Что ищет</td><td class="d">слова (лексемы)</td><td class="d">подстроки и похожие строки</td><td class="d">токены с анализаторами</td></tr>
+          <tr><td>Морфология</td><td class="gr">да (snowball, hunspell)</td><td class="rd">нет, но опечатки терпит</td><td class="gr">да, лучше (много анализаторов)</td></tr>
+          <tr><td>Опечатки</td><td class="rd">нет (только prefix :*)</td><td class="gr">да, similarity</td><td class="gr">fuzzy (Левенштейн ≤2)</td></tr>
+          <tr><td>Релевантность</td><td class="am">ts_rank, без IDF</td><td class="am">similarity</td><td class="gr">BM25, function score, boosting</td></tr>
+          <tr><td>Фасеты/агрегации</td><td class="am">GROUP BY, ок до млн</td><td class="am">GROUP BY</td><td class="gr">aggregations - основная фича</td></tr>
+          <tr><td>Объём</td><td class="d">до 10-50 млн документов комфортно</td><td class="d">до 10-50 млн строк</td><td class="d">миллиарды, шардируется</td></tr>
+          <tr><td>Консистентность</td><td class="gr">транзакционная</td><td class="gr">транзакционная</td><td class="rd">eventual, refresh 1 с</td></tr>
+        </table>
+        <div class="note gold" style="margin-top:10px;font-size:13.5px">Комбо на практике: FTS для «найти документы со словами» + trgm для «название товара / имя клиента / артикул с опечаткой» + <code>ORDER BY ts_rank .. + similarity ..</code>. Закрывает поиск в 90% B2B/админок/каталогов до миллионов записей.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s33">
+  <div class="content">
+    <div class="kicker">PostgreSQL · pgvector</div>
+    <h2>pgvector: векторный поиск там же, где данные</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Зачем:</b> эмбеддинги из LLM (768-3072 float) - «семантическая близость». RAG, рекомендации, поиск похожих картинок. Задача - k ближайших соседей по cosine/L2 среди миллионов векторов.</li>
+          <li><b>Точный поиск</b> - <code>ORDER BY embedding &lt;=&gt; $1 LIMIT 10</code> без индекса = Seq Scan с вычислением 1 млн расстояний по 1536 измерений = ~100-300 мс. До 100 тыс. векторов индекс не нужен.</li>
+          <li><b>IVFFlat:</b> кластеризация k-means на N списков, при поиске смотрим только <code>probes</code> ближайших кластеров. Быстро строится, recall 80-95%, деградирует при вставках новых данных (центроиды не двигаются).</li>
+          <li><b>HNSW</b> (Hierarchical Navigable Small World): многослойный граф соседей, поиск - жадный спуск по слоям. Recall 95-99%, поиск 1-5 мс на 1 млн векторов, но build - часы и много RAM (<code>maintenance_work_mem</code>), индекс ≈ размер данных. Параметры m=16, ef_construction=64 по умолчанию; <code>hnsw.ef_search</code> - точность vs скорость.</li>
+          <li><b>Гибрид:</b> <code>WHERE category = 'x' ORDER BY embedding &lt;=&gt; $1</code> - фильтр + вектор. Индекс HNSW не знает про фильтр → ищет 10 соседей, фильтр их выбрасывает → 0 результатов. PG17 + pgvector 0.8: iterative scan решает. Или partial HNSW по категории.</li>
+        </ul>
+      </div>
+      <div>
+        <table class="t" style="font-size:14px">
+          <tr><th></th><th>pgvector (HNSW)</th><th>Qdrant / Milvus / Pinecone</th></tr>
+          <tr><td>Объём комфортный</td><td class="d">до 10-50 млн векторов на ноду</td><td class="d">миллиарды, шардирование из коробки</td></tr>
+          <tr><td>Латентность p99</td><td class="d">5-20 мс на 1-10 млн</td><td class="d">2-10 мс, SIMD, квантизация</td></tr>
+          <tr><td>Фильтры + вектор</td><td class="am">был слабым местом, PG17 лечит</td><td class="gr">filterable HNSW - основная фича</td></tr>
+          <tr><td>Квантизация</td><td class="am">halfvec (fp16), bit, sparsevec с 0.7</td><td class="gr">scalar, product, binary</td></tr>
+          <tr><td>Транзакции с остальными данными</td><td class="gr">да, один JOIN</td><td class="rd">нет, синхронизировать</td></tr>
+          <tr><td>Стоимость</td><td class="gr">ноль поверх PG</td><td class="d">отдельный кластер / SaaS $70+/мес за 1 млн</td></tr>
+        </table>
+        <div class="note" style="margin-top:12px">Правило: <b>до 10 млн векторов - pgvector</b>, если Postgres уже есть. Дальше - смотреть pgvectorscale (DiskANN, 28× дешевле Pinecone по их бенчмарку) или выделенную векторную. Главная экономия не в скорости, а в отсутствии второй базы, которую надо синхронизировать с первой.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s34">
+  <div class="content">
+    <div class="kicker">PostgreSQL · репликация</div>
+    <h2>Репликация и отказоустойчивость</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_replication.png" alt=""><div class="pcap">Primary шлёт WAL репликам по мере записи. Синхронная реплика подтверждает до COMMIT, асинхронная - когда успеет. Отставшая реплика с активным слотом заставляет primary хранить WAL для неё - до переполнения диска.</div></div>
+      <table class="t pt">
+        <tr><th>Механизм</th><th>Как</th><th>Нюансы</th></tr>
+        <tr><td><b>Streaming (физическая)</b></td><td class="d">байт-в-байт копия WAL. Реплика - точный клон, read-only. Задержка мс. Основа всех HA-схем</td><td class="d">только вся база целиком, только та же major-версия и архитектура. Запросы на реплике конфликтуют с vacuum на мастере → <code>hot_standby_feedback</code> (и тогда bloat на мастере от долгих запросов реплики)</td></tr>
+        <tr><td><b>Synchronous</b></td><td class="d"><code>synchronous_standby_names</code>: COMMIT ждёт подтверждения реплики. RPO = 0</td><td class="d">+1-2 мс латентности на коммит; реплика упала = мастер встал (если одна). Ставят ANY 1 (r1, r2)</td></tr>
+        <tr><td><b>Logical</b></td><td class="d">декодирование WAL в логические изменения (INSERT/UPDATE/DELETE по строкам). Publication/subscription по таблицам. Между версиями, в другую схему, в Kafka (Debezium через pgoutput/wal2json)</td><td class="d">не реплицирует DDL, sequence, большие объекты. Требует REPLICA IDENTITY (PK). Начальная синхронизация большой таблицы - долго. Слот забыли удалить - диск кончился</td></tr>
+        <tr><td><b>Failover</b></td><td class="d">своего нет. <b>Patroni</b> (etcd/Consul для консенсуса, стандарт), repmgr, pg_auto_failover, Stolon. Облака: RDS Multi-AZ, Aurora</td><td class="d">split brain при сетевом разделении без консенсуса; после failover старый мастер надо <code>pg_rewind</code>, а не просто подключить. Клиенты переключать через VIP/HAProxy/pgbouncer или multi-host в libpq (<code>target_session_attrs=read-write</code>)</td></tr>
+        <tr><td><b>Бэкап</b></td><td class="d">pg_basebackup + архив WAL = <b>PITR</b> (восстановление на любую секунду). Инструменты: pgBackRest, WAL-G, Barman. pg_dump - логический, для миграций/маленьких баз</td><td class="d">pg_dump на 1 ТБ = часы, restore = сутки (индексы). Бэкап, который не восстанавливали - не бэкап: тестовый restore раз в месяц</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s35">
+  <div class="content">
+    <div class="kicker">PostgreSQL · подводные камни</div>
+    <h2>Грабли Postgres, на которые наступают все</h2>
+    <div class="cols">
+      <ul class="pts">
+        <li><b>count(*) медленный.</b> MVCC: надо проверить видимость каждой строки, нет счётчика. 10 млн строк = 0.5-2 с. Лечение: <code>reltuples</code> из pg_class для приблизительного, счётчик в отдельной таблице, или EXPLAIN-оценка.</li>
+        <li><b>Соединения дорогие.</b> 1000 клиентов напрямую = 1000 процессов = 10 ГБ и падение throughput. Пулер обязателен от ~100 клиентов.</li>
+        <li><b>Долгая транзакция.</b> Держит vacuum, раздувает всё, блокирует DDL. Одна <code>idle in transaction</code> из ORM с открытым коннектом - и через неделю база в 3 раза больше.</li>
+        <li><b>ALTER TABLE в очереди за SELECT.</b> ACCESS EXCLUSIVE ждёт долгий запрос, за ним встают все новые запросы → простой сервиса. Всегда <code>SET lock_timeout = '3s'</code> перед DDL и ретрай.</li>
+        <li><b>ADD COLUMN с DEFAULT</b> до PG11 переписывал таблицу. Сейчас - мгновенно, кроме volatile default (now(), random()).</li>
+        <li><b>Смена типа колонки</b> - полная перезапись таблицы под эксклюзивным локом. varchar(50) → varchar(100) - мгновенно; int → bigint - переписать. Поэтому <b>id bigint с самого начала</b>: 2.1 млрд int закончились у Basecamp, Notion, Sentry.</li>
+      </ul>
+      <ul class="pts">
+        <li><b>work_mem × параллелизм.</b> 256 МБ × 8 узлов сортировки × 100 соединений = 200 ГБ теоретически. OOM killer убивает postmaster → рестарт всего. Ставить консервативно, поднимать per-session для отчётов.</li>
+        <li><b>TOAST и большие значения.</b> jsonb на 100 КБ хранится сжатым кусками в отдельной таблице. Чтение одного ключа = разжать всё. Часто читаемое - в колонки.</li>
+        <li><b>Sequence не откатывается.</b> Дыры в id после rollback - норма, не баг. Кто рассчитывает на непрерывность - страдает.</li>
+        <li><b>Case-sensitive идентификаторы.</b> <code>CREATE TABLE "Users"</code> → потом только с кавычками. Никогда не кавычить, всё snake_case.</li>
+        <li><b>Кодировка и collation.</b> Обновление glibc меняет порядок сортировки → индексы по text битые (PG15 предупреждает). ICU collation или <code>C</code> для служебных колонок.</li>
+        <li><b>Триггеры и FK на партициях</b>, <code>SELECT ... FOR UPDATE</code> без ORDER BY - дедлоки, NOT IN с NULL, <code>timestamp</code> без <code>tz</code> - каждый второй проект.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 6: MYSQL ============ -->
+<section class="slide chapter" id="s36">
+  <div class="bgimg"><img src="assets/ch_mysql.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6</div>
+    <h1>MySQL: дельфин, на котором стоит веб</h1>
+    <p class="lead">Facebook, YouTube, Wikipedia, Booking, Uber - все начинали и многие остались на MySQL. Простой, быстрый по PK, с репликацией, которая настраивалась за 5 минут в 2005-м. И с набором тихих сюрпризов, из-за которых половина индустрии перешла на Postgres.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s37">
+  <div class="content">
+    <div class="kicker">MySQL · архитектура</div>
+    <h2>Два слоя: сервер и storage engine</h2>
+    <div class="cols">
+      <div>
+        <div class="dg">
+          <div class="row"><div class="bx am"><b>Сервер (SQL layer)</b><span>соединения (поток на клиента, thread cache), парсер, оптимизатор, кэши, binlog, репликация</span></div></div>
+          <div class="row"><div class="arr" style="transform:rotate(90deg)">→</div><div class="lbl">Handler API - плагинный интерфейс движков</div></div>
+          <div class="row" style="align-items:stretch">
+            <div class="bx cy"><b>InnoDB</b><span>ACID, MVCC, row locks, clustered PK, redo/undo, buffer pool, doublewrite. Единственный серьёзный с 2010. Куплен Oracle в 2005 (за 3 года до самой MySQL)</span></div>
+            <div class="bx dk"><b>MyISAM</b><span>без транзакций, табличные локи, быстрый count(*). Мёртв, но живёт в легаси и в system tables до 8.0</span></div>
+            <div class="bx"><b>MyRocks</b><span>RocksDB (LSM) от Facebook: сжатие в 2× лучше InnoDB, для write-heavy</span></div>
+            <div class="bx"><b>Memory, CSV, Archive, NDB</b><span>таблицы в RAM; текстовые; сжатые append-only; MySQL Cluster (телеком, in-memory, shared-nothing)</span></div>
+          </div>
+        </div>
+        <ul class="pts" style="margin-top:10px;font-size:15px">
+          <li><b>Поток на соединение</b> - дешевле процессов PG: 5000 соединений держит спокойно (thread stack ~256 КБ). Пулер не обязателен, но thread pool в Percona/Enterprise помогает при тысячах активных.</li>
+          <li><b>Оптимизатор сравнительно простой:</b> статистика - только кардинальность индексов (гистограммы с 8.0, но их надо создавать вручную <code>ANALYZE TABLE ... UPDATE HISTOGRAM</code>). Планы предсказуемее и тупее.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Ключевые параметры InnoDB</h3>
+          <table class="t" style="font-size:14px">
+            <tr><td><code>innodb_buffer_pool_size</code></td><td class="d">70-80% RAM на выделенном сервере. Главная ручка. O_DIRECT - мимо кэша ОС, двойного кэширования нет</td></tr>
+            <tr><td><code>innodb_log_file_size</code> / <code>redo_log_capacity</code></td><td class="d">redo log: 1-4 ГБ. Мало = частые checkpoints и стоп-запись при переполнении</td></tr>
+            <tr><td><code>innodb_flush_log_at_trx_commit</code></td><td class="d">1 = fsync на каждый commit (ACID). 2 = в ОС, fsync раз в секунду (потеря ≤1 с при крахе ОС, не MySQL). 0 - не надо</td></tr>
+            <tr><td><code>sync_binlog</code></td><td class="d">1 = binlog fsync на коммит (для корректной репликации). Вместе с trx_commit=1 - «двойная запись», group commit спасает</td></tr>
+            <tr><td><code>innodb_flush_method</code></td><td class="d">O_DIRECT на Linux всегда</td></tr>
+            <tr><td><code>innodb_io_capacity</code></td><td class="d">200 по умолчанию (HDD!). На NVMe 2000-10000, иначе фоновая запись не поспевает</td></tr>
+            <tr><td><code>sql_mode</code></td><td class="d">STRICT_TRANS_TABLES + ONLY_FULL_GROUP_BY - по умолчанию с 5.7. Без strict MySQL молча обрезает данные</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s38">
+  <div class="content">
+    <div class="kicker">MySQL · clustered index</div>
+    <h2>Таблица = B+-tree по первичному ключу</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>В InnoDB нет heap.</b> Строки лежат в листьях B+-tree, упорядоченного по PK. Поиск по PK = спуск по дереву прямо к данным, одна структура. Range по PK = последовательное чтение листьев. Это <b>быстрее Postgres</b> на точечных и диапазонных чтениях по PK.</li>
+          <li><b>Нет PK → InnoDB возьмёт первый UNIQUE NOT NULL, нет и его → скрытый 6-байтный row_id</b> с глобальным мьютексом на инкремент. Таблица без PK в MySQL - ошибка проектирования и тормоз репликации (ROW-формат ищет строку полным сканом).</li>
+          <li><b>Вторичный индекс хранит не указатель на строку, а значение PK.</b> Поиск по secondary = два спуска: по вторичному дереву найти PK, потом по clustered найти строку. Зато при page split и реорганизации таблицы вторичные индексы не трогаются (в PG - TID меняется, все индексы обновлять).</li>
+          <li><b>Следствие 1:</b> длинный PK (UUID 36 символов, составной из трёх varchar) дублируется <b>в каждом вторичном индексе</b>. 10 индексов = PK хранится 11 раз. <code>bigint</code> 8 байт - правильный PK.</li>
+          <li><b>Следствие 2:</b> случайный PK (UUIDv4) = вставки в случайные листья <b>самой таблицы</b>, не только индекса. Page split, фрагментация, кэш не работает. В InnoDB это больнее, чем в PG, в разы. UUIDv7 / <code>UUID_TO_BIN(uuid, 1)</code> с swap времени вперёд.</li>
+          <li><b>Следствие 3:</b> covering index бесплатный для PK: любой secondary неявно «INCLUDE (pk)». <code>SELECT id FROM t WHERE email = ?</code> - не ходит в таблицу.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Хранение: PG heap vs InnoDB clustered</h3>
+          <table class="t" style="font-size:14px">
+            <tr><th></th><th>PostgreSQL</th><th>InnoDB</th></tr>
+            <tr><td>Таблица</td><td class="d">куча страниц, строки в порядке вставки/vacuum</td><td class="d">B+-tree по PK</td></tr>
+            <tr><td>Индекс указывает на</td><td class="d">(page, offset) - TID</td><td class="d">значение PK</td></tr>
+            <tr><td>Чтение по PK</td><td class="d">индекс (3-4 стр.) + heap (1 стр.)</td><td class="d">только дерево (3-4 стр.)</td></tr>
+            <tr><td>Чтение по secondary</td><td class="d">индекс + heap</td><td class="d">secondary + clustered (два дерева)</td></tr>
+            <tr><td>UPDATE неиндексной колонки</td><td class="d">новая версия; HOT если влезла, иначе все индексы</td><td class="d">на месте (undo сохраняет старую); индексы не трогаются</td></tr>
+            <tr><td>Старые версии</td><td class="d">в heap, vacuum</td><td class="d">в undo log, purge</td></tr>
+            <tr><td>Размер строки / null</td><td class="d">23 байта заголовок + null bitmap</td><td class="d">5-7 байт заголовок + 6 DB_TRX_ID + 7 DB_ROLL_PTR</td></tr>
+            <tr><td>Сжатие страниц</td><td class="d">только TOAST (pglz/lz4) для больших значений</td><td class="d">page compression (zlib/lz4), обычно 2×; MyRocks - 3-4×</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s39">
+  <div class="content">
+    <div class="kicker">MySQL · репликация</div>
+    <h2>Репликация: binlog, GTID, Group Replication</h2>
+    <div class="cols">
+      <div>
+        <table class="t" style="font-size:13px">
+          <tr><th>Механизм</th><th>Как работает</th><th>Нюансы</th></tr>
+          <tr><td><b>Binlog</b></td><td class="d">отдельный от redo лог логических изменений: STATEMENT (SQL-текст), ROW (образы строк - стандарт), MIXED. Реплика читает binlog (IO thread) и применяет (SQL thread)</td><td class="d">STATEMENT недетерминирован (NOW(), RAND(), LIMIT без ORDER BY) → расхождение реплик. ROW без PK на таблице = полный скан на каждую строку</td></tr>
+          <tr><td><b>Async</b></td><td class="d">по умолчанию. COMMIT не ждёт реплику</td><td class="d">потеря последних транзакций при падении мастера. Лаг: <code>Seconds_Behind_Master</code> врёт, смотреть по GTID/heartbeat</td></tr>
+          <tr><td><b>Semi-sync</b></td><td class="d">COMMIT ждёт, пока хотя бы одна реплика <b>получила</b> (не применила) событие</td><td class="d">таймаут → откат в async молча. AFTER_SYNC (lossless) с 5.7</td></tr>
+          <tr><td><b>GTID</b></td><td class="d">глобальный id транзакции <code>server_uuid:N</code> вместо file:position. Реплика знает, что уже применила; смена мастера - <code>CHANGE MASTER TO ... MASTER_AUTO_POSITION=1</code></td><td class="d">включать с первого дня; конвертация online с 5.7.6. Дырки в GTID set после ручных правок - головная боль</td></tr>
+          <tr><td><b>Параллельное применение</b></td><td class="d">LOGICAL_CLOCK (по group commit) или WRITESET (8.0): реплика применяет транзакции параллельно, если не пересекаются</td><td class="d">без него реплика однопоточная и отстаёт от мастера с 32 ядрами навсегда</td></tr>
+          <tr><td><b>Group Replication / InnoDB Cluster</b></td><td class="d">Paxos-подобный консенсус (XCom), single-primary или multi-primary, автоматический failover. MySQL Router для клиентов</td><td class="d">3-9 нод, чувствителен к сети; multi-primary с конфликтами - не надо. Альтернатива - Galera (Percona XtraDB Cluster, MariaDB): synchronous, certification-based</td></tr>
+        </table>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Почему MySQL захватил веб:</b> в 2005 настроить master-slave репликацию можно было за 10 минут по инструкции с форума. У Postgres встроенная streaming-репликация появилась в 9.0 (2010), а вменяемый failover - ещё позже. Пять лет форы = LAMP-стек.</li>
+          <li><b>Failover-инструменты:</b> Orchestrator (GitHub), ProxySQL для маршрутизации чтений/записей, Vitess (шардирование + HA, теперь PlanetScale).</li>
+          <li><b>Read replicas</b> - главный способ масштабировать чтение в MySQL-мире. С ними приходит <b>replication lag</b>: пользователь создал запись, F5 - её нет (читали с реплики). Лечение: читать с мастера после записи (sticky) или ждать GTID (<code>WAIT_FOR_EXECUTED_GTID_SET</code>).</li>
+          
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s40">
+  <div class="content">
+    <div class="kicker">MySQL · подводные камни</div>
+    <h2>Тихие сюрпризы MySQL</h2>
+    <div class="cols">
+      <ul class="pts">
+        <li><b>utf8 ≠ UTF-8.</b> <code>utf8</code> в MySQL - это utf8mb3, 3 байта, без эмодзи и редких иероглифов. Вставка 😀 → ошибка или «????». Нужен <code>utf8mb4</code> (по умолчанию только с 8.0). Collation: <code>utf8mb4_0900_ai_ci</code> - accent/case insensitive: <code>'Резюме' = 'резюме' = 'резюмё'</code>. Для точного сравнения - <code>_bin</code> или <code>_as_cs</code>.</li>
+        <li><b>Silent truncation и приведение типов</b> без strict mode: <code>'abc' → 0</code>, <code>'12abc' → 12</code>, varchar(10) обрезается, дата <code>'2025-02-30'</code> → <code>'0000-00-00'</code>. Strict включён по умолчанию с 5.7, но старые конфиги живут.</li>
+        <li><b>ONLY_FULL_GROUP_BY.</b> До 5.7 <code>SELECT name, COUNT(*) FROM t GROUP BY dept</code> работал, возвращая <b>случайное</b> name из группы. Теперь ошибка - и правильно.</li>
+        <li><b>DDL блокирует.</b> <code>ALTER TABLE</code> на 100 млн строк: INPLACE для многих операций с 5.6, INSTANT (только метаданные) для ADD COLUMN с 8.0.12. Но смена типа / порядок колонок / изменение PK = копия таблицы под MDL. <b>gh-ost</b> (GitHub) / <b>pt-online-schema-change</b> - копируют через триггеры/binlog без блокировки.</li>
+        <li><b>Metadata lock.</b> Открытая транзакция с SELECT из таблицы держит MDL → ALTER ждёт → все запросы к таблице ждут ALTER. Тот же паттерн, что в PG, лечится <code>lock_wait_timeout</code>.</li>
+      </ul>
+      <ul class="pts">
+        <li><b>Gap locks в Repeatable Read.</b> <code>INSERT</code> в диапазон, который другой транзакцией прочитан с <code>FOR UPDATE</code> или обновлён по не-unique индексу, ждёт. Дедлоки на параллельных вставках «из ниоткуда». Лечение: <code>READ COMMITTED</code> + <code>binlog_format=ROW</code>.</li>
+        <li><b>Транзакционный DDL отсутствует.</b> <code>ALTER</code> внутри транзакции делает implicit commit. Миграция из 5 шагов упала на 3-м - откатывать руками. С 8.0 - атомарный DDL по одному statement, но не транзакция.</li>
+        <li><b>Auto-increment дырки и сброс.</b> До 8.0 счётчик жил в памяти: после рестарта <code>MAX(id)+1</code> - удалённые id переиспользуются. Bulk insert резервирует с запасом.</li>
+        <li><b>Query cache</b> - выглядел как фича, работал как тормоз (глобальный мьютекс, инвалидация всей таблицы). Удалён в 8.0.</li>
+        <li><b>Оптимизатор и подзапросы:</b> до 5.6 <code>WHERE id IN (SELECT ...)</code> выполнялся как dependent subquery на каждую строку. Легенды «в MySQL подзапросы нельзя» - оттуда.</li>
+        <li><b>TIMESTAMP до 2038, DATETIME без зоны</b>, <code>0000-00-00</code> как валидная дата, <code>FLOAT</code> для денег, <code>TEXT</code> нельзя в PK без длины префикса, <code>innodb_file_per_table</code> и невозвращаемое место в ibdata1 - классика.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s41">
+  <div class="content">
+    <div class="kicker">MySQL vs PostgreSQL</div>
+    <h2>Честное сравнение</h2>
+    <table class="t" style="font-size:13.5px">
+      <tr><th>Критерий</th><th>PostgreSQL</th><th>MySQL 8</th><th>Кто</th></tr>
+      <tr><td>Точечные чтения/записи по PK</td><td class="d">быстро</td><td class="d">быстрее (clustered, поток на соединение)</td><td class="am">MySQL, на 10-30%</td></tr>
+      <tr><td>Сложные запросы, аналитика, джоины 5+</td><td class="d">merge/hash/parallel, CTE, window, LATERAL</td><td class="d">hash с 8.0.18, без параллелизма, без merge</td><td class="cy">PG, кратно</td></tr>
+      <tr><td>Соответствие SQL-стандарту</td><td class="d">почти полное; строгие типы</td><td class="d">много диалекта; неявные касты</td><td class="cy">PG</td></tr>
+      <tr><td>Типы данных</td><td class="d">jsonb, массивы, диапазоны, гео, свои</td><td class="d">JSON (хуже индексируется), spatial</td><td class="cy">PG</td></tr>
+      <tr><td>Индексы</td><td class="d">6 типов, partial, expression, INCLUDE</td><td class="d">B+-tree, FULLTEXT, spatial; functional через generated</td><td class="cy">PG</td></tr>
+      <tr><td>Расширяемость</td><td class="d">расширения меняют всё</td><td class="d">плагины движков и auth</td><td class="cy">PG, несравнимо</td></tr>
+      <tr><td>Репликация и failover «из коробки»</td><td class="d">streaming + Patroni/облако</td><td class="d">binlog + GTID + Group Replication / Orchestrator</td><td class="am">MySQL, проще</td></tr>
+      <tr><td>Соединения</td><td class="d">процессы, нужен пулер</td><td class="d">потоки, 5000 ок</td><td class="am">MySQL</td></tr>
+      <tr><td>UPDATE-heavy нагрузка</td><td class="d">bloat, vacuum, write amplification индексов</td><td class="d">undo log, индексы не трогаются</td><td class="am">MySQL</td></tr>
+      <tr><td>Транзакционный DDL</td><td class="d">да, полностью</td><td class="d">нет</td><td class="cy">PG</td></tr>
+      <tr><td>Online DDL</td><td class="d">большинство мгновенно; CONCURRENTLY для индексов</td><td class="d">INSTANT/INPLACE для части; gh-ost</td><td class="cy">PG</td></tr>
+      <tr><td>Сжатие</td><td class="d">только TOAST</td><td class="d">page compression, MyRocks</td><td class="am">MySQL</td></tr>
+      <tr><td>Лицензия и владелец</td><td class="d">PostgreSQL License (BSD), комьюнити</td><td class="d">GPL + коммерческая, Oracle</td><td class="cy">PG</td></tr>
+      <tr><td>Экосистема облаков</td><td class="d">RDS, Aurora, Cloud SQL, Neon, Supabase, Crunchy</td><td class="d">RDS, Aurora, Cloud SQL, PlanetScale</td><td class="d">паритет</td></tr>
+      <tr><td>Найм DBA</td><td class="d">дефицит, дорого</td><td class="d">много опытных, легаси-веб</td><td class="am">MySQL</td></tr>
+    </table>
+    <div class="note gold" style="margin-top:10px">Итог: новый проект в 2025 - <b>PostgreSQL</b>, если нет специфической причины. Причины для MySQL: команда его знает; нагрузка чисто OLTP по PK с тоннами UPDATE; шардирование через Vitess/PlanetScale; WordPress/legacy. Причина <b>не</b> выбирать: «MySQL быстрее» - это правда только на бенчмарке из одной таблицы.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s42">
+  <div class="content">
+    <div class="kicker">MySQL · семейство</div>
+    <h2>Форки и надстройки: MariaDB, Percona, Vitess, TiDB</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>MariaDB</h3>
+        <p>Форк Монти Видениуса (2009) после покупки Sun Oracle'ом. Расходится с MySQL всё сильнее: свой оптимизатор, движки (Aria, ColumnStore, Spider), системные версионные таблицы, Galera встроена. Совместимость с драйверами MySQL сохранена, с 8.0 - уже не drop-in.</p>
+        <p style="margin-top:8px" class="dim">По умолчанию в Debian/RHEL вместо MySQL. Отставание по InnoDB-оптимизациям 8.0 (hash join есть с 10.x, но другой). Для нового проекта - нет причин, кроме Galera и лицензии.</p>
+      </div>
+      <div class="card">
+        <h3>Percona Server / XtraDB</h3>
+        <p>MySQL с патчами Percona: thread pool, расширенная диагностика, audit, MyRocks, PAM. Плюс инструменты, которыми пользуются все: <b>XtraBackup</b> (горячий физический бэкап InnoDB), <b>pt-online-schema-change</b>, pt-query-digest, PMM (мониторинг).</p>
+        <p style="margin-top:8px" class="dim">Percona XtraDB Cluster = Galera. Percona - де-факто консалтинг №1 по MySQL и делает то же для Postgres и Mongo.</p>
+      </div>
+      <div class="card">
+        <h3>Vitess / TiDB / PlanetScale</h3>
+        <p><b>Vitess</b> (YouTube, 2011, CNCF): шардирование MySQL - VTGate роутит запросы, VTTablet у каждого шарда, автоматический resharding, connection pooling. Slack, GitHub, Shopify. <b>PlanetScale</b> - Vitess как сервис + бранчи схемы.</p>
+        <p style="margin-top:8px"><b>TiDB</b> (PingCAP): MySQL-протокол поверх распределённого KV (TiKV на RocksDB + Raft) + TiFlash колоночный. HTAP: транзакции и аналитика в одном. Не MySQL внутри, только совместимость.</p>
+      </div>
+    </div>
+    <div class="note" style="margin-top:14px">Отдельная ветка - <b>Amazon Aurora</b> (MySQL и PG): вычисления отделены от storage, 6 копий в 3 AZ, лаг реплик ~20 мс, до 128 ТБ. Плюс: HA без Patroni/Orchestrator. Минус: ×2 цена, специфичные лимиты, не запустить локально. И <b>Google AlloyDB</b> / <b>Neon</b> (serverless PG с copy-on-write бранчами) - тот же тренд разделения compute/storage.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 7: CLICKHOUSE ============ -->
+<section class="slide chapter" id="s43">
+  <div class="bgimg"><img src="assets/ch_clickhouse.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 7</div>
+    <h1>ClickHouse: миллиард строк в секунду</h1>
+    <p class="lead">Яндекс.Метрика в 2016 открыла движок, который делает <code>GROUP BY</code> по 20 триллионам строк. Секрет - колонки вместо строк, сжатие в 10 раз, векторное исполнение и полный отказ от всего, что мешает: транзакций, точечных UPDATE, честных JOIN.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s44">
+  <div class="content">
+    <div class="kicker">ClickHouse · колонки</div>
+    <h2>Почему колонки в 100 раз быстрее для аналитики</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_columnar.png" alt=""><div class="pcap">Строковое хранение: одна строка = один кусок, читаешь все колонки, даже если нужна одна. Колоночное: каждая колонка - отдельный файл, читаешь только нужные, соседние значения похожи и жмутся в 5-20×.</div></div>
+      <div>
+        <ul class="pts" style="font-size:15px">
+          <li><b>Читаешь только нужное.</b> <code>SELECT avg(price) FROM events</code> на таблице из 50 колонок: строковая база читает 100% данных, колоночная - 2%. Сразу ×50.</li>
+          <li><b>Сжатие.</b> Колонка <code>country</code>: тысячи одинаковых подряд значений → LZ4 сжимает в 10-50×. Колонка <code>timestamp</code> монотонная → <b>Delta + DoubleDelta</b> кодек, потом LZ4/ZSTD → 100×. Типичное общее сжатие 5-15× против 1-2× у InnoDB. Меньше байт с диска = быстрее.</li>
+          <li><b>Векторное исполнение.</b> Операции над блоками по 65 536 значений одного типа, а не над строками по одной. CPU работает по SIMD, кэш процессора не промахивается, нет виртуальных вызовов на строку. 1-3 ГБ/с на ядро при агрегации.</li>
+          <li><b>Параллелизм тотальный.</b> Каждый запрос использует все ядра, каждый шард - все ноды. Один <code>GROUP BY</code> на 64 ядрах.</li>
+          <li><b>Не подходит для:</b> <code>SELECT * WHERE id = 5</code> - надо собрать строку из 50 файлов (в 10-100 раз медленнее PG). UPDATE одной строки - переписать целый кусок колонки. Много мелких INSERT - каждый создаёт part на диске.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s45">
+  <div class="content">
+    <div class="kicker">ClickHouse · MergeTree</div>
+    <h2>MergeTree: parts, гранулы, разреженный индекс</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>INSERT создаёт part</b> - директорию с файлами колонок, отсортированную по <code>ORDER BY</code>. Фоновые мерджи сливают мелкие parts в крупные (как LSM-tree compaction). Отсюда <b>«Merge»Tree</b>. Вставлять батчами по 10-100 тыс. строк раз в секунду, не по строке: иначе <code>Too many parts</code> и остановка вставок.</li>
+          <li><b>Primary key - разреженный.</b> Не на каждую строку, а на каждую <b>гранулу</b> (8192 строк): в индексе хранится первое значение ключа гранулы. Индекс на 1 млрд строк = 122 тыс. записей, влезает в RAM целиком. Поиск: найти диапазон гранул по ключу, прочитать их целиком. Промах в 8192 строки - ничто для сканирования.</li>
+          <li><b>ORDER BY = физический порядок = индекс.</b> Самое важное решение при создании таблицы: <code>ORDER BY (site_id, toDate(ts), user_id)</code> - от низкой кардинальности к высокой, по частым фильтрам. Изменить нельзя, только пересоздать.</li>
+          <li><b>PARTITION BY</b> - обычно по месяцу. Партиции независимы: DROP PARTITION мгновенный, запросы по дате пропускают лишние. Не делать партиций по дням на годы (тысячи партиций = тысячи parts).</li>
+          <li><b>Data skipping indexes:</b> minmax, set, bloom_filter, ngrambf/tokenbf - для колонок не из ORDER BY. Не «найти», а «пропустить гранулы, где точно нет».</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Семейство движков MergeTree</h3>
+          <table class="t" style="font-size:13.5px">
+            <tr><td><b>MergeTree</b></td><td class="d">базовый: сортировка, merge, ничего не дедуплицирует</td></tr>
+            <tr><td><b>ReplacingMergeTree</b></td><td class="d">при merge оставляет последнюю строку по ORDER BY (версии). Дедупликация «eventually» - до merge дубли есть → <code>FINAL</code> в запросе (дорого) или argMax</td></tr>
+            <tr><td><b>SummingMergeTree</b></td><td class="d">при merge суммирует числовые колонки с одинаковым ключом. Предагрегация счётчиков</td></tr>
+            <tr><td><b>AggregatingMergeTree</b></td><td class="d">хранит состояния агрегатов (uniqState, quantileState) и сливает их. Основа materialized views с агрегатами</td></tr>
+            <tr><td><b>CollapsingMergeTree / VersionedCollapsing</b></td><td class="d">строки с sign +1/-1 взаимно уничтожаются: имитация UPDATE/DELETE через вставку</td></tr>
+            <tr><td><b>Replicated*MergeTree</b></td><td class="d">то же + репликация через ZooKeeper/ClickHouse Keeper; multi-master, eventual</td></tr>
+            <tr><td><b>Distributed</b></td><td class="d">не хранит: роутит запросы по шардам и собирает. Поверх любого движка</td></tr>
+            <tr><td><b>Materialized View</b></td><td class="d">триггер на INSERT: пишет преобразованные строки в другую таблицу. Не пересчитывает историю, не обновляется при merge источника</td></tr>
+            <tr><td>Прочие</td><td class="d">Log (мелкие таблицы), Memory, Dictionary (key-value справочники в RAM), Kafka/RabbitMQ/S3/PostgreSQL/MySQL (внешние источники), Buffer</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s46">
+  <div class="content">
+    <div class="kicker">ClickHouse · подводные камни</div>
+    <h2>Чего ClickHouse не умеет и как с этим жить</h2>
+    <div class="cols">
+      <ul class="pts">
+        <li><b>UPDATE / DELETE - мутации.</b> <code>ALTER TABLE ... UPDATE/DELETE WHERE</code> - асинхронно переписывает все затронутые parts целиком. Минуты-часы, нагружает диск, не транзакционно. Lightweight DELETE (22.8+) помечает строки маской - быстрее, но чтение медленнее до merge. Правило: <b>данные в CH append-only</b>; исправления - через ReplacingMergeTree + версия.</li>
+        <li><b>Нет транзакций.</b> INSERT одного батча в одну партицию атомарен, между таблицами - нет. Ретрай вставки после сетевой ошибки = дубли (лечится: идемпотентные вставки одинаковых батчей дедуплицируются по хэшу в Replicated-таблицах; <code>insert_deduplication_token</code>).</li>
+        <li><b>JOIN держит правую таблицу в RAM.</b> Hash join: правая сторона целиком в память. JOIN двух таблиц по миллиарду строк = OOM. Правило: справа - справочник, слева - факты. Или <code>Dictionary</code> для справочников, или grace hash / partial merge join (медленнее), или денормализовать при вставке.</li>
+        <li><b>Мелкие INSERT убивают.</b> Каждый INSERT = part = файлы + merge. 1000 вставок в секунду по строке = «Too many parts (300)». <b>Async inserts</b> (21.11+) буферизуют на сервере, Buffer-движок, или Kafka → CH батчами.</li>
+        <li><b>Нет точечных чтений.</b> <code>WHERE user_id = 123</code> без user_id в ORDER BY = full scan. Он быстрый (ГБ/с), но не миллисекунды. Для key-value - Dictionary или другая база.</li>
+      </ul>
+      <ul class="pts">
+        <li><b>Nullable медленнее.</b> Отдельный файл-маска на колонку. Использовать дефолты (0, '') вместо NULL, где семантика позволяет.</li>
+        <li><b>Строки - LowCardinality.</b> <code>LowCardinality(String)</code> для колонок с &lt;10 тыс. уникальных значений (страна, браузер, статус) = словарное кодирование, 3-10× быстрее и меньше. Не для user_id.</li>
+        <li><b>FINAL дорогой.</b> <code>SELECT ... FROM t FINAL</code> сливает версии на лету - в 2-10 раз медленнее. Для отчётов лучше argMax/GROUP BY по ключу или дождаться merge (<code>OPTIMIZE TABLE ... FINAL</code> - руками, тяжело).</li>
+        <li><b>Репликация eventual, ZooKeeper/Keeper - точка отказа.</b> Метаданные и очередь репликации в Keeper; упал Keeper → таблицы read-only. Keeper на 3 ноды отдельно от CH.</li>
+        <li><b>Память.</b> GROUP BY по высококардинальному ключу (user_id на 100 млн) = хэш-таблица в RAM. <code>max_memory_usage</code>, <code>max_bytes_before_external_group_by</code> для спилла на диск. По умолчанию запрос падает, а не тормозит - это осознанно.</li>
+        <li><b>SQL-диалект свой:</b> тысяча функций (uniqHM, quantileTDigest, arrayJoin, -If/-Array комбинаторы), но подзапросы и WITH иногда ведут себя не как в PG; <code>JOIN ... USING</code> vs <code>ON</code> нюансы, <code>ANY/ALL</code> join строгость. Читать доку, не полагаться на интуицию.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s47">
+  <div class="content">
+    <div class="kicker">ClickHouse · где он и где Postgres</div>
+    <h2>Когда ClickHouse, когда Postgres, когда оба</h2>
+    <div class="cols">
+      <div>
+        <table class="t" style="font-size:14px">
+          <tr><th>Задача</th><th>PostgreSQL</th><th>ClickHouse</th></tr>
+          <tr><td>Заказы, пользователи, платежи (OLTP)</td><td class="gr">да</td><td class="rd">нет</td></tr>
+          <tr><td>Логи, события, клики, метрики: млрд строк</td><td class="rd">нет (после ~100 млн больно)</td><td class="gr">да, создан для этого</td></tr>
+          <tr><td>Дашборды: GROUP BY по 30 дням по 1 млрд событий</td><td class="am">минуты; или предагрегаты</td><td class="gr">0.1-2 с</td></tr>
+          <tr><td>Точечный SELECT по id</td><td class="gr">0.1 мс</td><td class="am">10-500 мс</td></tr>
+          <tr><td>UPDATE строки</td><td class="gr">да</td><td class="rd">мутация</td></tr>
+          <tr><td>Транзакция между таблицами</td><td class="gr">да</td><td class="rd">нет</td></tr>
+          <tr><td>Джоин фактов с фактами</td><td class="gr">hash/merge с диском</td><td class="am">в RAM или денормализация</td></tr>
+          <tr><td>Time-series до 100 млн точек</td><td class="am">Timescale норм</td><td class="gr">да</td></tr>
+          <tr><td>Хранение 10 ТБ сырых событий</td><td class="rd">10 ТБ на диске</td><td class="gr">~1 ТБ после сжатия</td></tr>
+          <tr><td>Стоимость железа на аналитику</td><td class="d">×5-20 против CH</td><td class="d">эталон</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Типовая архитектура</h3>
+          <div class="dg">
+            <div class="row"><div class="bx cy"><b>PostgreSQL</b><span>источник правды: сущности, транзакции</span></div><div class="arr">→</div><div class="bx"><b>CDC / Kafka / batch</b><span>Debezium, или приложение пишет события напрямую батчами</span></div><div class="arr">→</div><div class="bx am"><b>ClickHouse</b><span>события, агрегаты, дашборды, отчёты за годы</span></div></div>
+          </div>
+          <p style="margin-top:12px">Справочники из PG в CH - через <code>PostgreSQL</code>-движок или Dictionary с автообновлением: JOIN событий со справочником юзеров без копирования вручную. Обратно почти никогда не нужно.</p>
+        </div>
+        <ul class="pts" style="margin-top:8px;font-size:15px">
+          <li><b>Конкуренты CH:</b> Snowflake/BigQuery/Redshift - облачные, дороже в 5-10 раз на тот же объём, зато ноль администрирования и разделение storage/compute (CH Cloud тоже так умеет). <b>Druid/Pinot</b> - real-time OLAP с суб-секундной задержкой, сложнее. <b>DuckDB</b> - «ClickHouse в процессе», один файл, для локальной аналитики и до сотен ГБ. <b>StarRocks/Doris</b> - лучше в JOIN.</li>
+          <li>ClickHouse Inc. (2021, $2 млрд+): CH Cloud, поддержка. Open-source остался Apache 2.0 полностью.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 8: ORACLE И ОСТАЛЬНЫЕ ============ -->
+<section class="slide chapter" id="s48">
+  <div class="bgimg"><img src="assets/ch_oracle.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 8</div>
+    <h1>Oracle, MSSQL, SQLite, DuckDB</h1>
+    <p class="lead">Oracle - $50 тысяч за ядро и лучший оптимизатор на планете. SQLite - бесплатно и в каждом телефоне. Между ними MSSQL для корпоративной Windows и DuckDB, который делает аналитику на ноутбуке.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s49">
+  <div class="content">
+    <div class="kicker">Oracle</div>
+    <h2>Oracle Database: за что платят $47 500 за ядро</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Cost-based optimizer</b> - эталон 30 лет: adaptive plans (меняет NL на hash <b>во время исполнения</b>, если оценка не сошлась), SQL plan baselines (план зафиксирован, регрессий после апгрейда нет), automatic SQL tuning, гистограммы по всему. PG приблизился, но не догнал по стабильности планов.</li>
+          <li><b>RAC (Real Application Clusters)</b> - несколько инстансов на общем storage, active-active, Cache Fusion передаёт блоки между нодами по Infiniband. Единственная зрелая shared-disk кластеризация в реляционном мире. Отказ ноды - секунды, приложение не заметило.</li>
+          <li><b>Flashback:</b> <code>SELECT ... AS OF TIMESTAMP</code>, <code>FLASHBACK TABLE TO BEFORE DROP</code>, flashback database - «отменить последний час» без бэкапа. Undo используется как машина времени.</li>
+          <li><b>PL/SQL</b> - зрелый процедурный язык с пакетами, компиляцией в native, bulk collect. Половина банковской логики мира написана на нём. Exadata - железо+софт: smart scan фильтрует на уровне storage.</li>
+          <li><b>Партиционирование, компрессия, In-Memory column store, Data Guard, RMAN, ASM</b> - каждое опция за деньги, каждое отточено.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Цена и кому это надо</h3>
+          <table class="t" style="font-size:14px">
+            <tr><td>Enterprise Edition</td><td class="d">$47 500 за процессорное ядро (×0.5 для Intel по core factor) + 22%/год поддержка</td></tr>
+            <tr><td>Опции</td><td class="d">RAC +$23k, Partitioning +$11.5k, Advanced Compression +$11.5k, Diagnostics Pack +$7.5k за ядро</td></tr>
+            <tr><td>Сервер 32 ядра, EE+RAC+Partitioning</td><td class="d">~$1.3 млн лицензии + $290k/год. Плюс аудит лицензий Oracle LMS как бизнес-модель</td></tr>
+            <tr><td>Standard Edition 2</td><td class="d">$17.5k за сокет, до 2 сокетов, 16 потоков - для маленьких</td></tr>
+            <tr><td>Free</td><td class="d">Oracle XE / 23ai Free: 2 ядра, 2 ГБ RAM, 12 ГБ данных. Для обучения</td></tr>
+          </table>
+        </div>
+        <div class="note" style="margin-top:12px">Кому оправдано: банки и телеком с 20-летним легаси на PL/SQL, SAP-ландшафты, те, кому нужен RAC и вендор с SLA и кого никто не уволит за выбор Oracle. Кто уходит: Amazon (7500 баз Oracle → Aurora/DynamoDB к 2019), большинство новых проектов. Миграция Oracle → PG: ora2pg, AWS SCT; PL/SQL → PL/pgSQL похож на 80%, остальные 20% - месяцы.</div>
+        <p class="dim" style="font-size:13.5px;margin-top:10px">Чему PG у Oracle научился: MVCC-идея, hint bits, партиционирование, параллельные запросы. Чему не научился: shared-disk кластер, стабильность планов, инструменты диагностики уровня AWR/ASH.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s50">
+  <div class="content">
+    <div class="kicker">MSSQL · SQLite · DuckDB</div>
+    <h2>Ещё три, которые нельзя не знать</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>Microsoft SQL Server</h3>
+        <p>Корни в Sybase (1989), с 2017 на Linux. Оптимизатор второй после Oracle; <b>columnstore indexes</b> (аналитика внутри OLTP), In-Memory OLTP (Hekaton), Always On Availability Groups (репликация + failover, удобнее PG), Query Store (история планов), T-SQL с процедурами.</p>
+        <p style="margin-top:8px"><b>Особенности:</b> по умолчанию <b>блокировочная</b> изоляция (читатели ждут писателей!) - включать <code>READ_COMMITTED_SNAPSHOT</code>; clustered index как InnoDB; <code>NOLOCK</code> как народный костыль; identifier <code>[brackets]</code>.</p>
+        <p style="margin-top:8px" class="dim">Цена: Enterprise ~$15k за 2 ядра; Standard $4k; Express бесплатно до 10 ГБ. Ниша: корпоративная Windows-разработка, .NET, BI-стек (SSIS/SSRS/SSAS), Azure SQL.</p>
+      </div>
+      <div class="card">
+        <h3>SQLite</h3>
+        <p>Библиотека, не сервер: база = один файл, встраивается в процесс. <b>&gt;1 триллиона</b> инстансов: каждый Android/iOS, Chrome, Firefox, macOS, Windows 10, самолёты Airbus. Public domain. Тесты: 100% branch coverage, 590 строк тестов на строку кода - авиационный стандарт DO-178B.</p>
+        <p style="margin-top:8px"><b>Как работает:</b> B-tree страницы 4 КБ, WAL-режим (читатели не блокируют писателя), <b>один писатель</b> в момент времени, типизация «динамическая» (STRICT tables с 3.37). До ~100 ГБ и тысяч записей/с - честная замена серверной базе для одного приложения.</p>
+        <p style="margin-top:8px" class="dim">Тренд 2023+: SQLite на сервере (Litestream - стриминг WAL в S3, LiteFS, Turso/libSQL - реплики на edge, Cloudflare D1). Для read-heavy сайтов - нулевая латентность, ноль сети.</p>
+      </div>
+      <div class="card">
+        <h3>DuckDB</h3>
+        <p>«SQLite для аналитики» (2019, CWI Амстердам, те же люди, что MonetDB). Встраиваемая <b>колоночная</b> векторная СУБД, один файл или in-memory. Читает Parquet/CSV/JSON напрямую с диска и S3: <code>SELECT ... FROM 'data/*.parquet'</code>.</p>
+        <p style="margin-top:8px"><b>Скорость:</b> на ноутбуке агрегирует 100 млн-1 млрд строк за секунды, часто быстрее pandas в 10-100 раз и на уровне ClickHouse на одной ноде. Богатый SQL (PG-диалект + сахар: <code>SELECT * EXCLUDE (col)</code>, <code>GROUP BY ALL</code>, лямбды, ASOF JOIN). Расширения: spatial, httpfs, postgres_scanner (запросы к PG-таблицам напрямую).</p>
+        <p style="margin-top:8px" class="dim">Ниша: data science локально, ETL без Spark, аналитика в приложении, замена pandas. Не сервер: один процесс-писатель. MotherDuck - облачная версия.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 9: NOSQL ============ -->
+<section class="slide chapter" id="s51">
+  <div class="bgimg"><img src="assets/ch_nosql.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 9</div>
+    <h1>NoSQL: когда таблицы не подходят</h1>
+    <p class="lead">Redis отвечает за 100 микросекунд, Cassandra принимает миллион записей в секунду на 100 нодах, MongoDB хранит документ как есть. Каждая из них отказалась от чего-то, что реляционные базы считают священным - и именно поэтому решает свою задачу.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s52">
+  <div class="content">
+    <div class="kicker">NoSQL · теория</div>
+    <h2>CAP, PACELC и что реально выбирают</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>CAP (Брюер, 2000):</b> при <b>сетевом разделении</b> (P) распределённая система выбирает: <b>Consistency</b> (все видят одни данные, часть нод отказывает в обслуживании) или <b>Availability</b> (все отвечают, но данные могут расходиться). P не выбирается - сеть рвётся всегда. Значит, реальный выбор - CP или AP <b>в момент разделения</b>.</li>
+          <li><b>PACELC (Абади, 2010)</b> - честнее: при разделении (P) - A или C; иначе (E, else) - Latency или Consistency. Cassandra/Dynamo: PA/EL. Spanner/CockroachDB: PC/EC. PG с sync-репликой: PC/EC; с async: PC/EL-ish.</li>
+          <li><b>Eventual consistency</b> - реплики сойдутся «когда-нибудь» (мс-секунды). Читаешь после записи - можешь увидеть старое. Для лайков и просмотров - ок. Для баланса - нет.</li>
+          <li><b>Tunable consistency</b> (Cassandra): на каждый запрос - сколько реплик должны ответить: ONE, QUORUM, ALL. W + R &gt; N = strong consistency. QUORUM/QUORUM на RF=3 - стандарт.</li>
+          <li><b>Консенсус</b> (Paxos, Raft): как ноды договариваются о лидере и порядке записей. Raft (2014) - в etcd, CockroachDB, TiKV, YDB, ClickHouse Keeper, Redis Raft. Без него - split brain.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Jepsen: кто врал про консистентность</h3>
+          <p>Кайл Кингсбери с 2013 ломает базы сетевыми разделениями и проверяет гарантии. Результаты изменили индустрию:</p>
+          <table class="t" style="font-size:13.5px">
+            <tr><td>MongoDB (2013-2020)</td><td class="d">терял подтверждённые записи при default write concern; read concern «majority» нарушал snapshot isolation. Дефолты исправлены в 5.0</td></tr>
+            <tr><td>Elasticsearch (2014-2015)</td><td class="d">потеря документов при разделении; «not a database» - вывод самого Jepsen. Улучшено в 7.x с новым кластерным алгоритмом</td></tr>
+            <tr><td>Redis Sentinel/Cluster</td><td class="d">потеря записей при failover (async), WAIT не гарантирует</td></tr>
+            <tr><td>Cassandra (2013)</td><td class="d">lightweight transactions нарушали linearizability; починили</td></tr>
+            <tr><td>PostgreSQL 12 (2020)</td><td class="d">нашли нарушение Serializable (G2-item) - редкий баг, починен в 12.3. Единственный серьёзный за все годы</td></tr>
+            <tr><td>CockroachDB, YugabyteDB, TiDB, etcd</td><td class="d">проходили, находили мелочи, чинили. Стандарт де-факто перед релизом</td></tr>
+          </table>
+        </div>
+        <div class="note" style="margin-top:10px;font-size:13.5px">Мораль: «база гарантирует X» проверяй на jepsen.io, а не в маркетинге. И читай дефолты: half the battle - write concern / consistency level по умолчанию.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s53">
+  <div class="content">
+    <div class="kicker">NoSQL · Redis</div>
+    <h2>Redis: структуры данных по сети за 100 микросекунд</h2>
+    <div class="cols">
+      <div>
+        <table class="t" style="font-size:13.5px">
+          <tr><th>Структура</th><th>Операции</th><th>Кейс</th></tr>
+          <tr><td>String</td><td class="d">GET/SET/INCR/SETEX, битовые операции</td><td class="d">кэш, счётчики, rate limit, флаги, distributed lock (SET NX PX)</td></tr>
+          <tr><td>Hash</td><td class="d">HSET/HGET/HINCRBY по полям</td><td class="d">объект с полями, сессии, профили</td></tr>
+          <tr><td>List</td><td class="d">LPUSH/RPOP/BLPOP (блокирующий)</td><td class="d">простые очереди, последние N событий</td></tr>
+          <tr><td>Set / Sorted Set</td><td class="d">SADD/SINTER; ZADD/ZRANGE/ZRANK по score</td><td class="d">уникальные посетители; <b>лидерборды</b>, приоритетные очереди, отложенные задачи по времени</td></tr>
+          <tr><td>Stream</td><td class="d">XADD/XREADGROUP, consumer groups, ack</td><td class="d">лог событий, лёгкая Kafka</td></tr>
+          <tr><td>HyperLogLog / Bloom / Bitmap</td><td class="d">PFADD/PFCOUNT (12 КБ на ~1% ошибки); BF.ADD</td><td class="d">уникальные за день без хранения id; «видел ли уже»</td></tr>
+          <tr><td>Geo, JSON, Search, TimeSeries</td><td class="d">GEORADIUS; модули RedisJSON, RediSearch</td><td class="d">«рядом со мной»; вторичные индексы по JSON</td></tr>
+          <tr><td>Pub/Sub, Lua, Functions</td><td class="d">PUBLISH/SUBSCRIBE; EVAL атомарный скрипт</td><td class="d">оповещения (без гарантии доставки); атомарная логика на сервере</td></tr>
+        </table>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Однопоточный</b> (команды; I/O с 6.0 многопоточный). Все операции атомарны без локов. 100-200 тыс. оп/с на ядро, латентность 0.1-0.3 мс. Долгая команда (KEYS *, SMEMBERS на 10 млн) блокирует всех - <code>SCAN</code> вместо KEYS.</li>
+          <li><b>Память - потолок.</b> Всё в RAM. <code>maxmemory</code> + политика вытеснения (allkeys-lru, volatile-ttl). Без maxmemory → своп → смерть.</li>
+          <li><b>Персистентность:</b> RDB (снапшот раз в N минут, fork процесса - RAM ×2 на пике) и AOF (лог команд, fsync everysec - потеря ≤1 с). Redis - <b>не источник правды</b>: при рестарте потеря последних секунд нормальна.</li>
+          <li><b>Репликация async</b>, Sentinel для failover (потери записей при переключении - Jepsen), Redis Cluster - шардирование по 16384 слотам, multi-key команды только в одном слоте (<code>{hash_tag}</code>).</li>
+          <li><b>Лицензия:</b> в 2024 Redis ушёл с BSD на SSPL/RSAL → форк <b>Valkey</b> (Linux Foundation, AWS, Google); в 2025 Redis вернул AGPL. Valkey - безопасный выбор. Альтернативы: Dragonfly (многопоточный, ×25 throughput), KeyDB.</li>
+          <li><b>Не делай:</b> Redis как основная база; ключи без TTL (утечка навсегда); большие значения (&gt;100 КБ) - блокируют; один Redis на всё (кэш + очередь + сессии: eviction кэша выкинет очередь).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s54">
+  <div class="content">
+    <div class="kicker">NoSQL · MongoDB</div>
+    <h2>MongoDB: документы, WiredTiger и долгий путь к ACID</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Модель:</b> коллекции BSON-документов (JSON + типы: дата, ObjectId, Decimal128, бинарь) до 16 МБ. Схема необязательна (JSON Schema validation - опционально). Вложенные массивы и объекты - «всё, что нужно для экрана, в одном документе» - чтение без джоинов.</li>
+          <li><b>WiredTiger</b> (движок с 3.2, 2015): B-tree, MVCC, сжатие snappy/zstd, document-level locking. До него MMAPv1 с блокировкой на всю базу, потом на коллекцию - отсюда репутация «медленно и теряет».</li>
+          <li><b>Транзакции:</b> одиночный документ атомарен всегда; multi-document ACID с 4.0 (2018) на replica set, с 4.2 на шардах. Работают, но дороже и с лимитами (60 с, 1000 документов рекомендовано). Философия: моделируй так, чтобы транзакции не были нужны.</li>
+          <li><b>Индексы:</b> B-tree, составные, multikey (по элементам массива), text, 2dsphere, TTL, partial, wildcard (по всем полям вложенного объекта). Тот же set проблем, что у PG: порядок в составном, селективность, лимит 64 на коллекцию.</li>
+          <li><b>Aggregation pipeline:</b> <code>$match → $group → $lookup → $project</code> - SQL в виде цепочки стадий. Мощный, читаемый хуже SQL. <code>$lookup</code> = LEFT JOIN, но только NL без hash - на больших объёмах медленно.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Шардирование и репликация</h3>
+          <p><b>Replica set:</b> 3+ нод, Raft-подобные выборы primary, oplog как репликация. Write concern <code>majority</code> + read concern <code>majority</code> - иначе можно потерять подтверждённое (Jepsen). Дефолт majority только с 5.0.</p>
+          <p style="margin-top:8px"><b>Sharded cluster:</b> mongos (роутер) + config servers + шарды (каждый - replica set). Shard key выбирается один раз: hashed (равномерно, диапазоны не работают) или ranged (hot spot на монотонном ключе). Плохой shard key = jumbo chunks и балансировщик, который не спит.</p>
+        </div>
+        <div class="note warn" style="margin-top:12px"><b>Грабли:</b> документ растёт (массив комментариев в посте) → 16 МБ лимит и переписывание при каждом UPDATE; дубли данных между документами расходятся (нет FK); агрегация по 100 млн документов - не её жанр; лицензия SSPL с 2018 (не open source по OSI) - облака делают DocumentDB/Cosmos с совместимым API, но другим движком.</div>
+        <p class="dim" style="font-size:13.5px;margin-top:10px">Когда честно хороша: каталоги с разнородными атрибутами, контент/CMS, события с вложенной структурой, быстрый MVP, гео. Когда jsonb в PG лучше: если рядом есть хоть одна сущность, требующая транзакции с документом.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s55">
+  <div class="content">
+    <div class="kicker">NoSQL · LSM-tree</div>
+    <h2>LSM-tree против B-tree: две философии записи</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_lsm.png" alt=""><div class="pcap">Запись падает в memtable (RAM) + WAL. Заполнилась - сбрасывается как immutable SSTable на диск. Фоновый compaction сливает уровни. Чтение - memtable, потом уровни сверху вниз, bloom-фильтры отсекают лишние файлы.</div></div>
+      <div>
+        <table class="t pt">
+          <tr><th></th><th>B-tree (PG, InnoDB, SQLite)</th><th>LSM-tree (RocksDB, Cassandra, ScyllaDB, HBase, LevelDB, MyRocks, ClickHouse-подобный)</th></tr>
+          <tr><td>Запись</td><td class="d">найти страницу, изменить на месте (случайный I/O), WAL</td><td class="d">append в memtable + WAL - <b>последовательно</b>. В 5-10 раз выше throughput записи</td></tr>
+          <tr><td>Чтение точечное</td><td class="d">log(N) страниц, предсказуемо</td><td class="d">несколько уровней; bloom-фильтры спасают; хуже на 20-50%</td></tr>
+          <tr><td>Диапазон</td><td class="d">отличный (листья связаны)</td><td class="d">merge из нескольких SSTable, медленнее</td></tr>
+          <tr><td>Место</td><td class="d">фрагментация, полупустые страницы (~70%)</td><td class="d">плотно + сжатие блоками; но до compaction - дубли версий</td></tr>
+          <tr><td>Write amplification</td><td class="d">полная страница на изменение байта + WAL + full page writes</td><td class="d">compaction переписывает данные многократно (×10-30 leveled), но последовательно</td></tr>
+          <tr><td>Фоновая работа</td><td class="d">vacuum/purge, checkpoint</td><td class="d"><b>compaction</b> - жрёт I/O и CPU, стоп → чтения деградируют, диск растёт</td></tr>
+          <tr><td>Удаление</td><td class="d">пометить, vacuum</td><td class="d"><b>tombstone</b> - запись «удалено», живёт до compaction (gc_grace 10 дней в Cassandra). Массовые DELETE = чтение через тысячи tombstones = смерть</td></tr>
+          <tr><td>Идеален для</td><td class="d">OLTP чтение+запись, диапазоны, транзакции</td><td class="d">write-heavy: логи, метрики, события, очереди, time-series; SSD (случайная запись всё равно дорогая для контроллера)</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s56">
+  <div class="content">
+    <div class="kicker">NoSQL · Cassandra и ScyllaDB</div>
+    <h2>Cassandra / ScyllaDB: миллион записей в секунду, ноль лидеров</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Архитектура Dynamo:</b> все ноды равны, consistent hashing по кольцу токенов, replication factor 3, gossip для членства. Нет мастера → нет failover: упала нода, остальные приняли. Линейный масштаб: 100 нод = 100× throughput. Netflix, Apple (160 тыс. инстансов), Discord (потом ушёл на Scylla).</li>
+          <li><b>Модель wide-column:</b> таблица = partition key (какая нода) + clustering columns (порядок внутри партиции) + значения. Одна партиция - до 100 МБ / 100 тыс. строк разумно. <b>Схема проектируется от запросов</b>: одна таблица на один паттерн чтения, данные дублируются в 3-5 таблиц. Нет JOIN, нет GROUP BY (почти), нет ad-hoc WHERE не по ключу (ALLOW FILTERING = full scan).</li>
+          <li><b>CQL</b> - похож на SQL, но это обман: <code>WHERE</code> только по partition key (+ диапазон по clustering), <code>ORDER BY</code> только по clustering columns. Secondary indexes - локальные на ноду, медленные, почти не используют.</li>
+          <li><b>Lightweight transactions</b> (IF NOT EXISTS) - Paxos, в 4 раза медленнее. Counters - отдельный тип с приколами. Materialized views - были experimental годами.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">ScyllaDB - Cassandra на C++</h3>
+          <p>Переписана с Java на C++ с фреймворком Seastar: shard-per-core (поток на ядро, без локов, свой планировщик I/O), без GC-пауз, без JVM-тюнинга. Совместима по CQL и драйверам. В 5-10 раз выше throughput на ноду, p99 стабильный. Discord: с 177 нод Cassandra на 72 Scylla при трилионе сообщений. Есть DynamoDB-совместимый API (Alternator).</p>
+        </div>
+        <div class="note warn" style="margin-top:12px"><b>Грабли:</b> tombstones от DELETE и от записи NULL (!) - чтение сканирует их все; горячие партиции (все события одного дня в одной партиции); repair надо гонять регулярно (anti-entropy), иначе реплики расходятся; compaction strategy выбирать под нагрузку (STCS/LCS/TWCS для time-series); JVM heap Cassandra - искусство; изменение схемы данных = переливка всех таблиц.</div>
+        <p class="dim" style="font-size:13.5px;margin-top:10px">Родственники: HBase (поверх HDFS, для Hadoop-мира, есть мастер), Google Bigtable (оригинал, 2006), DynamoDB (Amazon, serverless, платишь за RCU/WCU, single-digit ms, нет опса вообще - но привязка к AWS и дорого на скане).</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s57">
+  <div class="content">
+    <div class="kicker">NoSQL · остальные</div>
+    <h2>Графовые, time-series, NewSQL</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>Графовые</h3>
+        <p><b>Neo4j</b> (2007): узлы и рёбра со свойствами, язык Cypher (<code>MATCH (a)-[:FRIEND*1..3]-&gt;(b)</code>), index-free adjacency - переход по ребру O(1), а не JOIN по индексу. Обход 5 уровней друзей за мс, где SQL с 5 self-join умирает.</p>
+        <p style="margin-top:8px">Кейсы: рекомендации, fraud (кольца транзакций), knowledge graph, права доступа, зависимости. Слабое: агрегации по всему графу, шардирование (граф плохо режется).</p>
+        <p style="margin-top:8px" class="dim">Ещё: ArangoDB (мульти-модель), Neptune (AWS), Memgraph (in-memory), Apache AGE (Cypher внутри Postgres), стандарт GQL (2024). Для 90% «графовых» задач хватает рекурсивного CTE в PG.</p>
+      </div>
+      <div class="card">
+        <h3>Time-series</h3>
+        <p>Метки времени + метрики + теги; запись append-only миллионы точек/с, запросы - окна и downsampling, retention автоматом. <b>Prometheus</b> (pull-модель, PromQL, локальный TSDB, для мониторинга), <b>VictoriaMetrics</b> (совместим, в 10× экономнее по RAM/диску, кластер), <b>InfluxDB</b> (1.x популярен, 2.x Flux провалился, 3.x на Rust/Arrow), <b>TimescaleDB</b> (Postgres), <b>QuestDB</b>, ClickHouse как универсал.</p>
+        <p style="margin-top:8px" class="dim">Правило: метрики инфраструктуры - Prometheus/VM; бизнес-события - ClickHouse; IoT с джоинами на метаданные - Timescale.</p>
+      </div>
+      <div class="card">
+        <h3>NewSQL / Distributed SQL</h3>
+        <p>SQL + ACID + горизонтальный масштаб + автоfailover: то, чего не было ни у RDBMS, ни у NoSQL. <b>Google Spanner</b> (2012, TrueTime - атомные часы + GPS для глобального порядка), <b>CockroachDB</b> (PG-протокол, Raft на диапазонах ключей, гео-партиции), <b>YugabyteDB</b> (PG-код запросов поверх DocDB/RocksDB), <b>TiDB</b> (MySQL-протокол), <b>YDB</b> (Яндекс, open source 2022, Paxos-подобный, serverless).</p>
+        <p style="margin-top:8px" class="dim">Цена: латентность записи 5-20 мс (консенсус через сеть), сложные запросы медленнее PG, свои грабли (hot ranges, распределённые транзакции с retry). Оправдано от нескольких ТБ и/или multi-region. До этого - один жирный Postgres с репликами дешевле и проще.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 10: ПОИСК ≠ БД ============ -->
+<section class="slide chapter" id="s58">
+  <div class="bgimg"><img src="assets/ch_search.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 10</div>
+    <h1>Почему Elasticsearch - не база данных</h1>
+    <p class="lead">Инвертированный индекс ищет слово среди миллиарда документов за миллисекунды - и не умеет ничего из того, ради чего существуют базы: транзакций, консистентности, целостности. Elastic, Sphinx, Solr, Manticore - это индексы <i>поверх</i> базы, а не вместо неё.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s59">
+  <div class="content">
+    <div class="kicker">Поиск · инвертированный индекс</div>
+    <h2>Инвертированный индекс: от слова к документам</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_inverted.png" alt=""><div class="pcap">Прямой индекс: документ → слова. Инвертированный: слово → отсортированный список документов (posting list) с позициями и частотой. Запрос из двух слов = пересечение двух отсортированных списков за O(n+m).</div></div>
+      <div>
+        <ul class="pts" style="font-size:15px">
+          <li><b>Анализатор:</b> текст → токены. Tokenizer (по пробелам/юникоду/n-граммам) → фильтры: lowercase, стоп-слова, <b>стемминг</b> (бегали → бега) или лемматизация (→ бегать), синонимы, транслит, ASCII-folding. Один и тот же анализатор на индексации и на запросе - иначе ничего не найдётся.</li>
+          <li><b>Posting list</b> хранит doc_id + term frequency + позиции (для фраз и подсветки). Сжат (delta + variable byte / PForDelta / Roaring bitmap). Пропуск через skip lists. Терм-словарь - FST (finite state transducer) в Lucene: префиксы, fuzzy, регэкспы по нему.</li>
+          <li><b>Релевантность BM25:</b> score = Σ по словам IDF(слово) × tf×(k+1) / (tf + k×(1 - b + b×len/avglen)). Редкие слова важнее (IDF), частота в документе с насыщением (k=1.2), короткие документы выигрывают (b=0.75). Плюс boosting по полям, function score (свежесть, популярность), rescoring.</li>
+          <li><b>Сегменты immutable:</b> Lucene пишет индекс сегментами, которые никогда не меняются. Обновление = удалить (пометить) + вставить новый. Фоновые merge сегментов. Новый документ виден только после <b>refresh</b> (1 с по умолчанию) - отсюда «near real-time» и eventual по определению.</li>
+          <li><b>Doc values</b> - колоночное хранение полей рядом с индексом: для сортировки, агрегаций, фасетов. По сути, маленький ClickHouse внутри.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s60">
+  <div class="content">
+    <div class="kicker">Поиск · Elasticsearch</div>
+    <h2>Elasticsearch / OpenSearch: как устроен кластер</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Индекс = N primary шардов × (1 + реплики).</b> Каждый шард - отдельный Lucene-индекс. Число primary шардов фиксируется при создании (reindex, чтобы поменять). Документ роутится по hash(_id) % shards. Запрос - scatter к всем шардам, gather топ-K (query-then-fetch).</li>
+          <li><b>Ноды по ролям:</b> master (метаданные кластера, 3 dedicated), data (hot/warm/cold tiers), ingest (пайплайны), coordinating. Кворум мастеров - раньше <code>minimum_master_nodes</code> руками (забыли → split brain и потеря данных), с 7.0 - автоматически (Zen2 на основе Raft-идей).</li>
+          <li><b>Mapping</b> - схема полей: text (анализируется) vs keyword (как есть, для фильтров и агрегаций), числа, даты, geo_point, nested (массив объектов как отдельные документы), dense_vector (kNN с 8.0). <b>Dynamic mapping</b> угадывает тип по первому документу - и ошибается навсегда.</li>
+          <li><b>Aggregations</b> - главное после поиска: terms (фасеты), histogram, date_histogram, percentiles, cardinality (HyperLogLog), nested/composite. На doc values. Это то, что делает Kibana дашбордами.</li>
+          <li><b>ELK/Elastic Stack:</b> Logstash/Beats/Fluentd → Elastic → Kibana. 60% инсталляций Elastic - логи, не поиск. Тут он конкурирует уже с ClickHouse и Loki, и проигрывает по стоимости хранения в 5-10×.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Цифры и лимиты</h3>
+          <table class="t" style="font-size:14px">
+            <tr><td>Размер шарда</td><td class="d">10-50 ГБ оптимум; &gt;100 ГБ - долгие recovery и merge</td></tr>
+            <tr><td>Шардов на ноду</td><td class="d">≤20 на ГБ heap; 1000 шардов на 30 ГБ heap - потолок. Oversharding - болезнь №1</td></tr>
+            <tr><td>Heap</td><td class="d">≤ 31 ГБ (compressed oops), 50% RAM; остальное - page cache для Lucene</td></tr>
+            <tr><td>Refresh interval</td><td class="d">1 с; для bulk-загрузки ставить 30 с или -1</td></tr>
+            <tr><td>Fielddata на text</td><td class="d">агрегация по text-полю грузит все термы в heap → OOM. Только keyword</td></tr>
+            <tr><td>Deep pagination</td><td class="d">from+size ≤ 10 000; дальше search_after / PIT / scroll</td></tr>
+            <tr><td>Mapping explosion</td><td class="d">лимит 1000 полей; динамические ключи (user_123: ...) как поля - классический взрыв</td></tr>
+            <tr><td>Стоимость</td><td class="d">данные ×1.5-3 после индексации против исходника (сжатие + индекс + doc values + реплика); в 5-10× дороже ClickHouse на ТБ логов</td></tr>
+          </table>
+        </div>
+        <p class="dim" style="font-size:13.5px;margin-top:10px"><b>OpenSearch</b> - форк AWS (2021) после смены лицензии Elastic на SSPL; в 2024 Elastic вернул AGPL. Функционально близки, расходятся. Managed: Elastic Cloud, AWS OpenSearch Service. Оба - Java, оба любят RAM.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s61">
+  <div class="content">
+    <div class="kicker">Поиск · почему не база</div>
+    <h2>Семь причин, почему Elastic - не источник правды</h2>
+    <div class="cols">
+      <ul class="pts">
+        <li><b>Нет транзакций.</b> Один документ - атомарно. Два документа, документ + счётчик, «перевести и списать» - нет. Bulk API частично успешен: половина записалась, половина нет, разбирайся по ответу.</li>
+        <li><b>Eventual consistency по конструкции.</b> Записал - прочитал через 1 с (refresh). Реплика отстаёт от primary; чтение с реплики может вернуть старое. <code>?refresh=wait_for</code> лечит одиночный кейс ценой производительности.</li>
+        <li><b>Терял данные.</b> Jepsen 2014-2015: при сетевом разделении и смене мастера - потеря подтверждённых записей, dirty reads, split brain. С 7.x (2019) кластерная координация переписана, потери при разделении убраны, но «мы не заявляем ACID» - официальная позиция Elastic.</li>
+        <li><b>Нет схемы в смысле целостности.</b> Нет FK, UNIQUE (кроме _id), CHECK, NOT NULL. Mapping говорит, как индексировать, не что валидно. Мусор влетает молча.</li>
+        <li><b>Обновление = переиндексация документа.</b> Изменить одно поле - Lucene удаляет и пишет весь документ заново; частичные update внутри - те же операции. 1000 update/с на документ - убивает. Счётчики, статусы, «last_seen» - не сюда.</li>
+        <li><b>Восстановление долгое.</b> Перебалансировка шардов при падении ноды - часы на ТБ; restore из снапшота тоже часы.</li>
+        <li><b>Mapping нельзя менять.</b> Поле было integer, стало string - reindex всего индекса через alias.</li>
+      </ul>
+      <div>
+        <div class="card">
+          <h3 class="am">А что он умеет лучше всех</h3>
+          <ul>
+            <li>Полнотекст с релевантностью, морфологией, синонимами, опечатками, подсветкой на 100+ языках</li>
+            <li>Фасеты и агрегации по десяткам полей одним запросом за мс</li>
+            <li>Гео + текст + фильтры в одном запросе с score</li>
+            <li>Горизонтальный масштаб до сотен нод и десятков ТБ индекса</li>
+            <li>Autocomplete (completion suggester, FST), «did you mean»</li>
+            <li>Kibana для логов и дашбордов без кода</li>
+            <li>Гибридный поиск: BM25 + kNN по векторам (RRF)</li>
+          </ul>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Правило архитектуры:</b> данные живут в БД. Elastic - <b>производный, восстановимый индекс</b>: если он сгорел, его переливают из базы за N часов, и никто ничего не потерял. Если после потери Elastic данные не восстановить - архитектура сломана.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s62">
+  <div class="content">
+    <div class="kicker">Поиск · Sphinx, Solr, новые</div>
+    <h2>Sphinx / Manticore, Solr, Meilisearch, Typesense, Tantivy</h2>
+    <table class="t" style="font-size:13.5px">
+      <tr><th>Движок</th><th>Что это</th><th>Сильное</th><th>Слабое</th><th>Когда брать</th></tr>
+      <tr><td><b>Sphinx</b> (2001, Андрей Аксёнов)</td><td class="d">C++, индексирует прямо из MySQL/PG по SQL-запросу (indexer), SphinxQL - MySQL-протокол. Стоял за половиной рунета 2005-2015 (Avito, Habr, Craigslist)</td><td class="d">скорость и экономность: ГБ индексов на 1 ядре; простота</td><td class="d">развитие остановилось (3.x закрытый), пересборка индекса целиком (RT-индексы позже), нет кластера</td><td class="d">легаси; для нового - Manticore</td></tr>
+      <tr><td><b>Manticore Search</b> (2017)</td><td class="d">открытый форк Sphinx 2.3, активно развивается: RT-индексы, репликация (Galera), JSON, вектора, columnar storage, SQL и HTTP JSON API</td><td class="d">в 5-20× меньше RAM чем Elastic на тех же данных, быстрые фасеты, MySQL-совместимый протокол</td><td class="d">экосистема мала, нет Kibana-аналога, меньше анализаторов языков</td><td class="d">поиск по каталогу/сайту с ограниченным железом; замена Sphinx</td></tr>
+      <tr><td><b>Apache Solr</b> (2004)</td><td class="d">старший брат Elastic на том же Lucene (Solr появился раньше). SolrCloud с ZooKeeper, XML/JSON конфиги, schema.xml</td><td class="d">зрелость, гибкость конфигурации, сильный фасетный поиск, e-commerce (Lucidworks)</td><td class="d">неуклюжий API, меньше сообщество, ZooKeeper, менее удобная аналитика</td><td class="d">enterprise-поиск, где уже есть; Hadoop-мир</td></tr>
+      <tr><td><b>Meilisearch</b> (2018, Rust)</td><td class="d">поиск «как у Algolia»: typo-tolerance из коробки, instant search по мере набора, простой REST</td><td class="d">запуск за 5 минут, отличный UX-поиск, ранжирование правилами</td><td class="d">один процесс (без шардов), до ~10-100 млн документов, слабая аналитика</td><td class="d">поиск на сайте/в приложении, замена Algolia</td></tr>
+      <tr><td><b>Typesense</b> (2015, C++)</td><td class="d">то же семейство: in-memory индекс, typo-tolerant, фасеты, вектора, кластер через Raft</td><td class="d">латентность &lt;50 мс, простота, HA</td><td class="d">всё в RAM (дорого на объёме)</td><td class="d">то же, что Meili, если нужен кластер</td></tr>
+      <tr><td><b>Tantivy / Quickwit / ParadeDB</b></td><td class="d">Tantivy - Lucene на Rust; Quickwit - поиск по логам на S3; ParadeDB (pg_search) - BM25-поиск как расширение Postgres на Tantivy</td><td class="d">скорость Rust, S3 как хранилище, BM25 внутри PG</td><td class="d">молодые</td><td class="d">логи в объектном хранилище; «Elastic внутри Postgres» для средних объёмов</td></tr>
+    </table>
+    <div class="note" style="margin-top:10px;font-size:13.5px">Общее для всех: индексы, а не базы. Ни один не заявляет ACID между документами. Все - производное хранилище с переливкой из источника. Разница - в весе (Elastic самый тяжёлый), удобстве (Meili/Typesense), и объёме (Elastic/Solr/Quickwit до петабайт).</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s63">
+  <div class="content">
+    <div class="kicker">Поиск · где что</div>
+    <h2>Где база, а где поисковый движок: матрица решения</h2>
+    <table class="t" style="font-size:13.5px">
+      <tr><th>Задача</th><th>PG (B-tree/FTS/trgm)</th><th>ClickHouse</th><th>Elastic / Manticore</th><th>Вердикт</th></tr>
+      <tr><td>Найти клиента по фамилии/телефону/email с опечаткой, 1 млн записей</td><td class="gr">pg_trgm, 5 мс</td><td class="rd">нет</td><td class="am">можно, но лишний сервис</td><td class="d"><b>PG</b></td></tr>
+      <tr><td>Поиск товара по названию в каталоге на 500 тыс. SKU, фасеты по 5 атрибутам</td><td class="am">trgm + GROUP BY, 20-100 мс, релевантность слабая</td><td class="rd">нет</td><td class="gr">10 мс, фасеты, релевантность, синонимы</td><td class="d"><b>Elastic/Manticore/Meili</b>, если UX важен; PG, если «и так сойдёт»</td></tr>
+      <tr><td>Полнотекст по статьям/тикетам, 5 млн документов, ранжирование</td><td class="am">FTS ок, ранжирование без IDF</td><td class="rd">нет</td><td class="gr">BM25, подсветка, морфология</td><td class="d"><b>Elastic</b> или ParadeDB внутри PG</td></tr>
+      <tr><td>Поиск по логам: 1 ТБ/день, «найти строки с error и request_id»</td><td class="rd">нет</td><td class="gr">tokenbf-индекс + full scan ГБ/с, ×5-10 дешевле</td><td class="am">классика ELK, дорого по диску и RAM</td><td class="d"><b>ClickHouse</b> (или Loki/Quickwit); Elastic - если нужна Kibana и деньги есть</td></tr>
+      <tr><td>Аналитика: воронка по 1 млрд событий за квартал</td><td class="rd">нет</td><td class="gr">секунды</td><td class="am">агрегации есть, но медленнее и дороже в 10×</td><td class="d"><b>ClickHouse</b></td></tr>
+      <tr><td>Автодополнение в строке поиска, опечатки, 100 тыс. терминов</td><td class="gr">trgm GiST KNN</td><td class="rd">нет</td><td class="gr">completion suggester</td><td class="d">любой; PG, если он уже есть</td></tr>
+      <tr><td>Семантический поиск по 1 млн текстов (эмбеддинги)</td><td class="gr">pgvector HNSW</td><td class="am">есть ANN-индексы, экспериментально</td><td class="gr">dense_vector kNN + гибрид с BM25</td><td class="d"><b>PG</b> до 10 млн; Elastic, если нужен гибрид BM25+вектор; Qdrant при 100 млн+</td></tr>
+      <tr><td>Транзакции: заказ + склад + платёж</td><td class="gr">да</td><td class="rd">нет</td><td class="rd">нет</td><td class="d"><b>PG/MySQL</b>, без вариантов</td></tr>
+      <tr><td>Гео: «рестораны в 2 км с рейтингом и словом пицца»</td><td class="gr">PostGIS + FTS</td><td class="am">гео-функции есть, текст слабый</td><td class="gr">geo_distance + match + score</td><td class="d">PG до млн точек; Elastic на масштабе</td></tr>
+    </table>
+    <div class="note gold" style="margin-top:10px;font-size:13.5px">Эвристика: <b>если запрос можно выразить как WHERE + ORDER BY по индексу - это база</b>. Если он про «похожесть», «релевантность», «фасеты по всему сразу» на объёмах, где PG задыхается - это поисковый движок. Если про «сколько/сумма/среднее по миллиардам» - колоночная. И почти всегда порог, где PG перестаёт справляться, выше, чем кажется.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s64">
+  <div class="content">
+    <div class="kicker">Поиск · синхронизация</div>
+    <h2>Как держать индекс в согласии с базой</h2>
+    <div class="cols">
+      <div>
+        <table class="t" style="font-size:14px">
+          <tr><th>Способ</th><th>Как</th><th>Плюсы / минусы</th></tr>
+          <tr><td><b>Dual write</b></td><td class="d">приложение пишет в БД и сразу в Elastic</td><td class="d">просто. Но: БД закоммитила, Elastic упал → расхождение навсегда. Порядок событий из двух инстансов приложения перемешан. <b>Не делать</b></td></tr>
+          <tr><td><b>Периодическая переливка</b></td><td class="d">cron: <code>SELECT ... WHERE updated_at &gt; last_run</code> → bulk index</td><td class="d">надёжно, просто, идемпотентно. Лаг минуты. Удаления не видны (нужен soft delete или полная пересборка). Для 80% проектов достаточно</td></tr>
+          <tr><td><b>Transactional outbox</b></td><td class="d">в той же транзакции с данными - строка в таблицу outbox; отдельный воркер читает outbox и пишет в Elastic/Kafka, потом удаляет</td><td class="d">атомарно с данными, порядок сохранён, at-least-once (индексация идемпотентна по _id - ок). Стандарт для сервисов</td></tr>
+          <tr><td><b>CDC (Change Data Capture)</b></td><td class="d"><b>Debezium</b> читает WAL (PG logical replication / MySQL binlog) → Kafka → consumer в Elastic/ClickHouse. Ноль кода в приложении</td><td class="d">все изменения, включая ручные UPDATE в базе; порядок; ~сотни мс лаг. Минусы: Kafka + Connect + слоты репликации, которые надо мониторить; схема меняется - ломается пайплайн</td></tr>
+          <tr><td><b>Триггеры + очередь в БД</b></td><td class="d">триггер на таблице пишет id в очередь (таблица / LISTEN-NOTIFY / pgq)</td><td class="d">без внешних систем; нагрузка на БД; NOTIFY теряется при отключении слушателя</td></tr>
+          <tr><td><b>Полная пересборка</b></td><td class="d">новый индекс с версией → залить всё → переключить alias → удалить старый</td><td class="d">обязательна в любом случае: смена mapping, восстановление после потери. Blue-green через alias без даунтайма</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Схема, которая работает</h3>
+          <div class="dg">
+            <div class="row"><div class="bx cy"><b>Приложение</b><span>INSERT данные + INSERT outbox в одной транзакции</span></div><div class="arr">→</div><div class="bx"><b>PostgreSQL</b><span>источник правды</span></div></div>
+            <div class="row"><div class="bx"><b>Debezium / воркер</b><span>читает WAL или outbox</span></div><div class="arr">→</div><div class="bx"><b>Kafka</b><span>порядок по ключу, ретраи, replay</span></div><div class="arr">→</div><div class="bx am"><b>Elastic + ClickHouse</b><span>идемпотентный upsert по id</span></div></div>
+          </div>
+          <p style="margin-top:10px">Плюс еженощная сверка: count и checksum по updated_at между базой и индексом; расхождение → пересобрать диапазон.</p>
+        </div>
+        <ul class="pts" style="margin-top:8px;font-size:15px">
+          <li><b>Денормализация при индексации:</b> в Elastic летит не строка orders, а документ с именем клиента, названиями товаров, категорией. Изменилось имя клиента - переиндексировать все его заказы. Это цена поиска.</li>
+          <li><b>Удаления:</b> hard DELETE в базе CDC поймает, cron - нет. Soft delete (<code>deleted_at</code>) решает оба случая и даёт «восстановить».</li>
+          <li><b>Zero-downtime reindex:</b> алиас <code>products</code> → <code>products_v7</code>; строим v8 параллельно, переключаем алиас атомарно.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 11: ПРАКТИКА ============ -->
+<section class="slide chapter" id="s65">
+  <div class="bgimg"><img src="assets/ch_practice.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 11</div>
+    <h1>Практика: схема, масштаб, бэкапы, мониторинг</h1>
+    <p class="lead">Вещи, которые не пишут в документации, но которые определяют, спишь ты ночью или нет: нормализация без фанатизма, пагинация без OFFSET, партиции вместо DELETE, бэкап, который реально восстанавливается, и пять метрик, на которые надо смотреть.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s66">
+  <div class="content">
+    <div class="kicker">Практика · схема</div>
+    <h2>Нормализация и денормализация без религии</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>3НФ по умолчанию:</b> каждый факт хранится один раз. Имя клиента - в customers, не в каждом заказе. Обновил в одном месте - везде верно. Нарушение = аномалии обновления и расхождения, которые находят через год.</li>
+          <li><b>Денормализация - осознанная и задокументированная:</b> счётчик <code>posts.comments_count</code> вместо COUNT на каждый рендер; <code>orders.total</code> вместо SUM позиций; snapshot цены и названия товара <b>в момент заказа</b> (это не денормализация, это история - товар потом переименуют). Каждая - с механизмом поддержки (триггер, транзакция, пересчёт).</li>
+          <li><b>Materialized view</b> - денормализация с кнопкой пересчёта: <code>REFRESH MATERIALIZED VIEW CONCURRENTLY</code>. Для отчётов и агрегатов, которые можно отставать на минуты. Инкрементальные MV: pg_ivm, Timescale continuous aggregates, ClickHouse MV.</li>
+          <li><b>EAV (entity-attribute-value)</b> - таблица (entity_id, attr, value): «гибкая схема» 2005 года. Запрос с 10 атрибутами = 10 self-join, типы потеряны, индексы бесполезны. В 2025 вместо EAV - <b>jsonb с GIN</b> или нормальные колонки.</li>
+          <li><b>Типы:</b> деньги - <code>numeric(19,4)</code> или integer в копейках, никогда float; время - <code>timestamptz</code>; id - bigint; статусы - enum или text с CHECK, не int с магией; булевы - boolean, не char(1).</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Ключи и связи</h3>
+          <table class="t" style="font-size:14px">
+            <tr><td>Суррогатный PK</td><td class="d">bigint identity / bigserial - всегда. Естественный (email, ИНН) - UNIQUE, но не PK: он меняется</td></tr>
+            <tr><td>UUID</td><td class="d">когда id генерируется клиентом или нельзя палить порядок. v7, не v4. 16 байт против 8 - ощутимо в индексах</td></tr>
+            <tr><td>FK</td><td class="d">ставить. «FK тормозит» - на 5-10%, а ловит баги на 100%. Индекс на FK-колонку в PG - руками. ON DELETE: RESTRICT по умолчанию, CASCADE осознанно</td></tr>
+            <tr><td>Many-to-many</td><td class="d">таблица связи с составным PK (a_id, b_id) + индекс (b_id, a_id) для обратного направления</td></tr>
+            <tr><td>Иерархии</td><td class="d">parent_id + recursive CTE (до 5-6 уровней), ltree / materialized path (глубокие, часто читаемые), closure table (много запросов «все потомки»)</td></tr>
+            <tr><td>Soft delete</td><td class="d"><code>deleted_at timestamptz</code> + partial unique index <code>WHERE deleted_at IS NULL</code>. Или таблица-архив, если удалённых много</td></tr>
+            <tr><td>Аудит</td><td class="d">created_at / updated_at на всём (триггер); history-таблица через триггер или temporal tables (MariaDB, MSSQL; PG - расширение)</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s67">
+  <div class="content">
+    <div class="kicker">Практика · запросы</div>
+    <h2>Пагинация, батчи, блокировки очередей</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>Пагинация</h3>
+        <p><code>OFFSET 100000 LIMIT 20</code> читает и выбрасывает 100 000 строк. Страница 5000 = 5000× медленнее первой. Плюс дубли/пропуски при вставках между страницами.</p>
+        <p style="margin-top:8px"><b>Keyset (seek):</b> <code>WHERE (created_at, id) &lt; ($last_ts, $last_id) ORDER BY created_at DESC, id DESC LIMIT 20</code> + индекс (created_at, id). Любая страница за 1 мс. Минус: нет «перейти на страницу 57» - и это нормально, никто туда не ходит.</p>
+        <p style="margin-top:8px" class="dim">Общее число страниц: не COUNT(*) на каждый запрос, а оценка или кэш; или «показать ещё» без числа.</p>
+      </div>
+      <div class="card">
+        <h3>Массовые операции</h3>
+        <p><b>Bulk insert:</b> <code>COPY</code> (PG) / <code>LOAD DATA</code> (MySQL) в 10-50× быстрее INSERT по строке; multi-row INSERT VALUES (...),(...) по 1000 - в 10×. Индексы и FK - после загрузки. <code>UNLOGGED</code> таблица для staging.</p>
+        <p style="margin-top:8px"><b>Массовый UPDATE/DELETE:</b> не одним statement на 50 млн строк (лок, WAL, реплика отстаёт на час, vacuum). Батчами по 5-50 тыс. с паузой: <code>DELETE WHERE id IN (SELECT id ... LIMIT 10000)</code> в цикле. Ещё лучше - партиция и DROP.</p>
+        <p style="margin-top:8px"><b>Upsert:</b> <code>INSERT ... ON CONFLICT DO UPDATE</code> / <code>ON DUPLICATE KEY</code> вместо SELECT-then-INSERT (race condition).</p>
+      </div>
+      <div class="card">
+        <h3>Очередь в базе</h3>
+        <p><code>SELECT id FROM jobs WHERE status='new' ORDER BY id LIMIT 10 FOR UPDATE SKIP LOCKED</code> - N воркеров берут разные задачи без конфликтов и без Redis/RabbitMQ. Транзакционно с данными: задача создана вместе с заказом или никак.</p>
+        <p style="margin-top:8px">До ~1-5 тыс. задач/с - честно работает (PG: pgq, Que, Oban, Graphile Worker, River; MySQL - то же). Дальше - Kafka/NATS. Грабли: таблица jobs пухнет (bloat от UPDATE status) - partial index <code>WHERE status='new'</code> и агрессивный autovacuum, или удалять выполненные.</p>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:14px"><b>SELECT * запрещён в коде.</b> Тянет TOAST-колонки, ломается при ADD COLUMN, мешает index-only scan. <b>Транзакция короткая:</b> открыл - сделал - закрыл, без HTTP-вызовов внутри. <b>Таймауты везде:</b> <code>statement_timeout</code> 30 с для веба, <code>lock_timeout</code> 3 с, <code>idle_in_transaction_session_timeout</code> 60 с. <b>Prepared statements</b> через драйвер - защита от инъекций и +20% скорости.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s68">
+  <div class="content">
+    <div class="kicker">Практика · масштаб</div>
+    <h2>Партиционирование и шардирование</h2>
+    <div class="part rev">
+      <div>
+        <table class="t pt">
+          <tr><th></th><th>Партиционирование</th><th>Шардирование</th></tr>
+          <tr><td>Что</td><td class="d">одна логическая таблица = много физических внутри <b>одного</b> сервера. По диапазону (дата), списку (регион), хэшу</td><td class="d">данные разложены по <b>разным серверам</b>. Ключ шарда (tenant_id, user_id) определяет, куда идти</td></tr>
+          <tr><td>Зачем</td><td class="d">DROP PARTITION вместо DELETE миллионов строк; запросы по дате читают одну партицию (partition pruning); vacuum и индексы меньше; старое - на медленный диск</td><td class="d">одна машина кончилась: 10 ТБ, 100 тыс. TPS, RAM не вмещает рабочий набор. Единственный способ масштабировать запись</td></tr>
+          <tr><td>Цена</td><td class="d">PK должен включать ключ партиции; FK на партиционированную - с PG12; тысячи партиций замедляют планирование; global index нет (PG)</td><td class="d">кросс-шардовые JOIN и транзакции - нет или дорого; уникальность глобальная - нет; resharding - боль; отчёты «по всем» - через ClickHouse</td></tr>
+          <tr><td>Когда</td><td class="d">таблица &gt; 50-100 млн строк с временной природой (события, логи, заказы). Почти всегда полезно</td><td class="d">когда вертикаль исчерпана: 96 ядер, 1 ТБ RAM, NVMe RAID - это очень много. 95% проектов до этого не доходят</td></tr>
+          <tr><td>Инструменты</td><td class="d">PG declarative partitioning (10+), pg_partman; MySQL PARTITION BY; Timescale автоматом</td><td class="d">Citus (PG), Vitess (MySQL), приложение сам роутит (Instagram: 4096 логических шардов), CockroachDB/YDB/Spanner (автоматически)</td></tr>
+        </table>
+        <div class="note" style="margin-top:10px;font-size:13.5px"><b>Перед шардированием:</b> read replicas для чтения; кэш; вынести события в ClickHouse (обычно это 80% объёма); партиционировать; апгрейд железа. Шардирование - последнее, потому что необратимое.</div>
+      </div>
+      <div class="pimg"><img src="assets/p_sharding.png" alt=""><div class="pcap">Роутер знает: user_id 12345 → шард 3. Запрос по одному юзеру - одна нода, быстро. Запрос «все юзеры с балансом &gt; 1000» - все ноды, медленно, и агрегировать снаружи.</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s69">
+  <div class="content">
+    <div class="kicker">Практика · бэкапы</div>
+    <h2>Бэкапы: три вида и одно правило</h2>
+    <div class="cols">
+      <div>
+        <table class="t" style="font-size:13px">
+          <tr><th>Вид</th><th>PG</th><th>MySQL</th><th>ClickHouse</th><th>Свойства</th></tr>
+          <tr><td><b>Логический</b></td><td class="d">pg_dump / pg_dumpall (custom format -Fc, параллельный -j)</td><td class="d">mysqldump, mysqlpump, mydumper (параллельный)</td><td class="d">SELECT ... INTO OUTFILE / Native format</td><td class="d">переносим между версиями и ОС, можно одну таблицу. Медленный: 1 ТБ дамп - часы, restore - сутки (индексы). Не PITR</td></tr>
+          <tr><td><b>Физический</b></td><td class="d">pg_basebackup; <b>pgBackRest, WAL-G, Barman</b> (инкрементальные, в S3, параллельные)</td><td class="d"><b>XtraBackup</b> (горячий, инкрементальный), снапшоты LVM/EBS; MySQL Enterprise Backup</td><td class="d">BACKUP TABLE ... TO S3 (22.x+), clickhouse-backup; снапшоты parts (файлы immutable - легко)</td><td class="d">быстро (скорость диска), restore = копия файлов. Только та же major-версия и архитектура</td></tr>
+          <tr><td><b>PITR</b></td><td class="d">basebackup + непрерывный архив WAL (<code>archive_command</code> / pgBackRest) → восстановить на любую секунду</td><td class="d">XtraBackup + binlog → до нужной позиции/времени</td><td class="d">нет в классическом виде; реплика с задержкой</td><td class="d">единственная защита от «DROP TABLE в проде в 14:03»: восстановиться на 14:02</td></tr>
+          <tr><td><b>Реплика</b></td><td class="d">не бэкап! DROP TABLE реплицируется за 10 мс</td><td class="d">delayed replica (<code>MASTER_DELAY=3600</code>) - час на «ой»</td><td class="d">то же</td><td class="d">защита от отказа железа, не от людей и багов</td></tr>
+        </table>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>3-2-1:</b> три копии, два носителя, одна вне площадки (другой регион / провайдер). Бэкап на том же сервере - не бэкап. Бэкап в том же облачном аккаунте - половина бэкапа (удалённый аккаунт = всё).</li>
+          <li><b>Restore test</b> - единственная проверка. Автоматически: раз в неделю поднять из бэкапа на отдельной машине, прогнать проверки (count по ключевым таблицам, целостность), записать время. <b>RTO</b> измеряется, а не предполагается. GitLab 2017: 5 механизмов бэкапа, ни один не работал, потеряли 6 часов данных.</li>
+          <li><b>Retention:</b> ежедневные 2 недели, недельные 2 месяца, месячные год - и юридические требования. Инкрементальные (pgBackRest, XtraBackup) экономят место, но цепочка зависит от полного.</li>
+          <li><b>Шифрование и доступ:</b> бэкап = вся база в открытом виде. Шифровать, immutable bucket от ransomware. И алерт, если последний успешный старше 26 часов.</li>
+          
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s70">
+  <div class="content">
+    <div class="kicker">Практика · мониторинг</div>
+    <h2>На что смотреть, пока не упало</h2>
+    <div class="cols">
+      <div>
+        <table class="t" style="font-size:13.5px">
+          <tr><th>Метрика</th><th>Где</th><th>Порог тревоги</th></tr>
+          <tr><td><b>Топ запросов по total_time</b></td><td class="d">pg_stat_statements / performance_schema, sys.statement_analysis / system.query_log</td><td class="d">один запрос &gt; 20% всего времени; mean_time вырос ×2 после деплоя</td></tr>
+          <tr><td><b>Активные соединения / ожидания</b></td><td class="d">pg_stat_activity (state, wait_event) / SHOW PROCESSLIST, sys.innodb_lock_waits</td><td class="d">active &gt; число ядер ×2; idle in transaction &gt; 1 мин; lock waits &gt; 5 с</td></tr>
+          <tr><td><b>Replication lag</b></td><td class="d">pg_stat_replication (replay_lsn diff) / SHOW REPLICA STATUS + heartbeat / system.replication_queue</td><td class="d">&gt; 10 с; слот с inactive и растущим WAL</td></tr>
+          <tr><td><b>Cache hit ratio</b></td><td class="d">pg_stat_database blks_hit/(hit+read) / innodb_buffer_pool_read_requests vs reads</td><td class="d">&lt; 99% на OLTP</td></tr>
+          <tr><td><b>Dead tuples, bloat, vacuum age</b></td><td class="d">pg_stat_user_tables n_dead_tup, last_autovacuum; age(datfrozenxid) / history list length</td><td class="d">dead &gt; 10% живых; xid age &gt; 500 млн; HLL &gt; 1 млн</td></tr>
+          <tr><td><b>Диск</b></td><td class="d">размер данных, WAL/binlog, темп роста, IOPS/latency</td><td class="d">&lt; 20% свободно; WAL растёт без реплики-потребителя; fsync latency &gt; 10 мс</td></tr>
+          <tr><td><b>Ошибки и медленные</b></td><td class="d">log_min_duration_statement=500ms; slow_query_log; deadlocks; connection refused</td><td class="d">рост дедлоков; любые serialization failures без retry</td></tr>
+          <tr><td><b>Checkpoint / merge</b></td><td class="d">pg_stat_bgwriter checkpoints_req vs timed / system.merges, parts count</td><td class="d">checkpoints по requested чаще timed; parts &gt; 300 на партицию</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Инструменты</h3>
+          <ul>
+            <li><b>Метрики:</b> postgres_exporter / mysqld_exporter / CH встроенный Prometheus endpoint → Grafana (готовые дашборды 9628, 7362); PMM от Percona (всё в одном для MySQL/PG/Mongo)</li>
+            <li><b>Запросы:</b> pg_stat_statements + pgBadger (анализ логов), pganalyze, Datadog DBM; MySQL: pt-query-digest, sys schema</li>
+            <li><b>Здоровье:</b> check_postgres / pgwatch2; pghero (простой веб); pg_stat_kcache; для MySQL - pt-summary, mysqltuner (с осторожностью)</li>
+            <li><b>Explain:</b> auto_explain с log_analyze для запросов &gt; 1 с; explain.dalibo.com</li>
+            <li><b>Алерты:</b> Alertmanager правила на пороги слева; <b>не алертить на всё</b> - 5 метрик, которые реально предвещают инцидент: connections, lag, disk, lock waits, xid age</li>
+          </ul>
+        </div>
+        <div class="note" style="margin-top:12px;font-size:13.5px">Ритуал раз в неделю: топ-10 pg_stat_statements → есть ли новые → EXPLAIN → индекс или переписать. Раз в месяц: неиспользуемые индексы, bloat, размер таблиц, restore-тест. Раз в квартал: минорный апгрейд. Это 2 часа в месяц и ноль ночных звонков.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s71">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Все базы на одном слайде</h2>
+    <table class="t" style="font-size:13.5px">
+      <tr><th>Система</th><th>Хранение</th><th>Сильнейшая сторона</th><th>Главная слабость</th><th>Брать для</th></tr>
+      <tr><td><b>PostgreSQL</b></td><td class="d">heap + B-tree/GIN/GiST/BRIN, MVCC в таблице, WAL</td><td class="d">расширяемость: trgm, PostGIS, pgvector, Timescale; умный планировщик; строгий SQL</td><td class="d">vacuum/bloat, процесс на соединение, count(*), UPDATE-heavy</td><td class="d">всего по умолчанию до нескольких ТБ</td></tr>
+      <tr><td><b>MySQL / InnoDB</b></td><td class="d">clustered B+-tree по PK, undo log, redo + binlog</td><td class="d">точечные чтения по PK, UPDATE без bloat, репликация и failover проще, потоки</td><td class="d">оптимизатор слабее, диалект, DDL, тихие касты, Oracle</td><td class="d">классический веб-OLTP, легаси, Vitess-шардирование</td></tr>
+      <tr><td><b>ClickHouse</b></td><td class="d">колонки, MergeTree, sparse index, LZ4/ZSTD</td><td class="d">агрегации по миллиардам за секунды, сжатие 10×, дёшево</td><td class="d">нет транзакций, UPDATE/DELETE мутации, JOIN в RAM, мелкие INSERT</td><td class="d">события, логи, метрики, аналитика, дашборды</td></tr>
+      <tr><td><b>Oracle</b></td><td class="d">как InnoDB + всё остальное</td><td class="d">оптимизатор, RAC, flashback, PL/SQL, вендор</td><td class="d">цена ×100, лицензионный аудит, vendor lock</td><td class="d">банки, легаси, где деньги не вопрос</td></tr>
+      <tr><td><b>SQLite / DuckDB</b></td><td class="d">файл; B-tree / колонки</td><td class="d">ноль инфраструктуры; DuckDB - аналитика на ноутбуке</td><td class="d">один писатель, не сервер</td><td class="d">embedded, мобильные, локальная аналитика, edge</td></tr>
+      <tr><td><b>Redis / Valkey</b></td><td class="d">RAM, структуры данных</td><td class="d">100 мкс, атомарные структуры, TTL</td><td class="d">RAM = потолок, персистентность с потерями</td><td class="d">кэш, сессии, счётчики, лидерборды, локи</td></tr>
+      <tr><td><b>MongoDB</b></td><td class="d">BSON-документы, WiredTiger B-tree</td><td class="d">гибкая схема, вложенность, шардирование из коробки</td><td class="d">джоины, целостность, история потерь, SSPL</td><td class="d">каталоги, контент, MVP, гетерогенные данные</td></tr>
+      <tr><td><b>Cassandra / Scylla</b></td><td class="d">LSM, wide-column, кольцо без мастера</td><td class="d">запись миллионы/с, линейный масштаб, нет SPOF</td><td class="d">схема от запросов, нет ad-hoc, tombstones, repair</td><td class="d">события/сообщения на сотнях нод, multi-DC</td></tr>
+      <tr><td><b>Elastic / Manticore / Solr</b></td><td class="d">инвертированный индекс, immutable сегменты</td><td class="d">полнотекст, релевантность, фасеты, масштаб</td><td class="d">не ACID, eventual, дорого, mapping</td><td class="d">поиск и логи как <b>производный</b> индекс поверх базы</td></tr>
+      <tr><td><b>NewSQL</b> (Cockroach, YDB, Spanner)</td><td class="d">Raft/Paxos на диапазонах, RocksDB</td><td class="d">SQL + ACID + масштаб + auto-failover + гео</td><td class="d">латентность записи, сложные запросы медленнее, молодость</td><td class="d">multi-region, десятки ТБ с транзакциями</td></tr>
+    </table>
+    <div class="note" style="margin-top:8px;font-size:13.5px">Три идеи под всей лекцией: <b>физика хранения определяет всё</b> (строки/колонки, B-tree/LSM, heap/clustered); <b>планировщик оценивает, а не знает</b> - статистика важнее индексов; <b>поисковые движки и аналитика - производные от базы</b>, источник правды один.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s72">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <div class="kicker amber">Финал</div>
+    <h1>Одна страница 8 килобайт</h1>
+    <p class="lead">Всё, что было выше, сводится к одному вопросу: сколько страниц по 8 КБ нужно прочитать, чтобы ответить на запрос. B-tree - чтобы их было три. Колонки - чтобы они были плотные. MVCC - чтобы читать их, не ожидая никого. WAL - чтобы после выключения света они остались. Планировщик - чтобы угадать, каких страниц меньше. Триграммы - чтобы страницы нашлись даже по обрывку слова.</p>
+    <p class="lead" style="margin-top:14px">Postgres, MySQL, ClickHouse, Cassandra, Elastic - это пять разных ответов на вопрос, какие страницы читать первыми и какими жертвовать. Знаешь физику - выберешь правильно. Не знаешь - выберет за тебя очередь на диске в три часа ночи.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- SLIDES_END -->
+
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>

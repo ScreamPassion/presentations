@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Изобретаем хаос</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #5ee6c8; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Свет по звону · выпуск 2 · Гвендолин-ночные-лекции</div>
+    <h1>Изобретаем хаос</h1>
+    <p class="lead">Мир как пакман, бесконечное множество измерений, Вселенная сама в себе, хаос без начала и конца, процесс против состояния, граница мира и бесконечность, которая превращает любой шанс в единицу. Выпуск не про ответы. Он про вопросы, доведённые до конца.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s2">
+  <div class="content">
+    <div class="kicker">Правила выпуска</div>
+    <h2>Здесь нет ответов. Есть вопросы, у которых видно дно</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/ch_rules.png" alt="">
+        <div class="pcap">Вопрос из частиц над пропастью и маленький фонарь. Фонарь - это физика: она в углу каждого слайда, мелким шрифтом, чтобы не заблудиться. Всё остальное - мы.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Мы не объясняем, мы придумываем.</b> В первом выпуске каждый феномен получал механизм. Здесь механизмов нет: есть вброс, следствие, «а что если нет» и следующий вопрос.</li>
+          <li><b>Единственный запрет - противоречить себе.</b> Там, где true === false, спрашивать уже нечего. Это не правило хорошего тона, это граница, за которой кончается любой разговор. Что там - отдельная глава.</li>
+          <li><b>Физика присутствует, но не командует.</b> Плашка «что говорит физика» внизу слайда: что измерено, что исключено, где дверь открыта. Фантазия, которая противоречит измерению, снимается. Фантазия, которую измерить нельзя, остаётся и помечается.</li>
+          <li><b>Доля фактов - 20%.</b> Это сознательно. Лекции про факты у нас уже 18 штук.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">Инструмент выпуска</div>
+    <h2>Бесконечность как усилитель: что она делает с «может быть»</h2>
+    <div class="dg">
+      <div class="row">
+        <div class="bx"><b>Конечный мир</b><span>шанс 10⁻⁹ = «практически нет»</span></div>
+        <div class="bx cy"><b>Очень большой мир</b><span>шанс 10⁻⁹ × 10¹² попыток = случилось тысячу раз</span></div>
+        <div class="bx am"><b>Бесконечный мир</b><span>любой шанс &gt; 0 = случилось бесконечно много раз</span></div>
+        <div class="bx rd"><b>Но</b><span>шанс = 0 остаётся нулём. Бесконечность не делает невозможное возможным</span></div>
+      </div>
+    </div>
+    <div class="cols" style="margin-top:18px">
+      <div class="card">
+        <h3>Как мы будем пользоваться</h3>
+        <p>Каждую фантазию выпуска прогоняем через один вопрос: <b>совместима ли она с законами, то есть шанс больше нуля?</b> Если да, в бесконечной Вселенной она не «может быть», а есть. Вопрос только, здесь ли. Если нет, никакая бесконечность не спасёт. Это единственный тест выпуска, и он строже, чем кажется: пройдут не все.</p>
+      </div>
+      <div class="card">
+        <h3 class="am">Что говорит физика</h3>
+        <p>Наблюдаемая Вселенная конечна: 46 млрд световых лет радиуса. Вся Вселенная - неизвестно: кривизна по данным Planck равна нулю в пределах ошибки, а плоская Вселенная либо бесконечна, либо замкнута хитрее, чем сфера (глава 1). Инфляция даёт «вечную инфляцию» с бесконечным числом областей. То есть усилитель, возможно, включён. Это не доказано, но и не исключено, и весь выпуск живёт в этом «возможно».</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 1: ПАКМАН ============ -->
+<section class="slide chapter" id="s4">
+  <div class="bgimg"><img src="assets/ch_pacman.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1</div>
+    <h1>Мир как пакман</h1>
+    <p class="lead">Уходишь вправо - появляешься слева. Без края и без бесконечности одновременно. Самая простая из сумасшедших идей, и единственная, которую уже искали телескопом.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="content">
+    <div class="kicker">Пакман · топология</div>
+    <h2>Без края и без бесконечности: как это вообще возможно</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Экран пакмана - это тор.</b> Склей правый край с левым, верхний с нижним: получишь бублик. Он конечен, у него нет края, и в любую сторону можно идти вечно. В трёх измерениях то же самое: 3-тор, комната, где выходишь через стену и входишь через противоположную.</li>
+          <li><b>Вариантов больше, чем один.</b> Бутылка Клейна (при переходе через край ты отражаешься зеркально: вернёшься с сердцем справа). Додекаэдр Пуанкаре: 12 пятиугольных граней, склеенных с поворотом на 36°, Люмине предлагал его для нашей Вселенной в 2003 году. Всего таких «плоских замкнутых» пространств - 18 штук, и ни одно из них не требует ни края, ни бесконечности.</li>
+          <li><b>Вброс:</b> Вселенная не обязана выбирать между «бесконечная» и «с краем». Третий вариант - «замкнутая на себя» - выглядит самым экономным: ничего лишнего, ничего снаружи. Бритва Оккама за пакман.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Сфера</b><span>конечна, замкнута, кривизна &gt; 0</span></div>
+            <div class="bx cy"><b>Тор</b><span>конечен, замкнут, кривизна = 0</span></div>
+            <div class="bx am"><b>Плоскость</b><span>бесконечна, кривизна = 0</span></div>
+            <div class="bx"><b>Седло</b><span>бесконечна, кривизна &lt; 0</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что говорит физика</h3>
+          <p>Кривизна измерена: Ω = 1.000 ± 0.002 (Planck 2018). Плоско. Значит, сфера почти исключена, и остаются два кандидата: бесконечная плоскость и конечный тор (или один из его 17 родственников). Между ними геометрия не различает. Различает только топология, а её надо искать глазами.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="content">
+    <div class="kicker">Пакман · вид изнутри</div>
+    <h2>Увидеть свой затылок: как выглядит тор изнутри</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/torus_inside.png" alt="">
+        <div class="pcap">Одна и та же галактика во всех направлениях, решёткой до горизонта. Свет, ушедший вправо, вернулся слева: ты видишь не соседей, а себя же на разных расстояниях и в разном возрасте. Если тор мал, самое далёкое изображение Млечного Пути - это он сам миллиард лет назад.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Как искали.</b> Реликтовое излучение - самая далёкая «стена», которую мы видим. В торе эта стена пересекает сама себя, и на небе должны быть пары кругов с одинаковой картинкой температуры («круги на небе», Корниш и Спергел, 1998). Их искали в данных WMAP и Planck.</li>
+          <li><b>Что нашли:</b> ничего. Совпадающих кругов нет. Вывод: если Вселенная - тор, его размер больше наблюдаемой Вселенной, минимум ~78 млрд световых лет по диаметру (для додекаэдра Пуанкаре - тоже мимо: предсказанный им «холодный след» не подтвердился).</li>
+          <li><b>Вброс:</b> «не нашли» - не «нет». Пакман просто больше экрана. Мы, возможно, живём на торе, который никогда не сможем обойти, потому что свет не успеет вернуться до тепловой смерти. Замкнутый мир, неотличимый от бесконечного изнутри. Есть ли тогда разница? Для физики - есть (конечный объём, конечная информация). Для нас - никакой.</li>
+        </ul>
+        <div class="note gold" style="margin-top:8px"><b>Что говорит физика:</b> топология не исключена, ограничена снизу по размеру. Аномалии реликтового излучения (ось зла, холодное пятно) до сих пор не объяснены, и часть космологов держит замкнутые топологии как кандидатов. Дверь открыта, за ней темно.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s7">
+  <div class="content">
+    <div class="kicker">Пакман · во времени</div>
+    <h2>Пакман во времени: конец, который является началом</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Если пространство замкнуто, почему не время?</b> Циклическая Вселенная: Большой взрыв - Большое сжатие - Большой взрыв. Вариант XX века умер, потому что расширение ускоряется и сжатия не будет. Но появились два новых.</li>
+          <li><b>Пенроуз, конформная циклическая космология.</b> В далёком будущем остаются только фотоны и, возможно, ничего с массой. А фотону всё равно, большая Вселенная или маленькая: у него нет часов и линейки. Бесконечно расширившаяся пустая Вселенная математически неотличима от бесконечно малой горячей точки. Конец одного эона = Большой взрыв следующего. Пенроуз утверждает, что видит «кольца Хокинга» от чёрных дыр прошлого эона в реликтовом излучении. Большинство коллег - не видит.</li>
+          <li><b>Экпиротическая модель (Стейнхардт, Турок):</b> два трёхмерных мира-мембраны в пятимерном пространстве сталкиваются раз в триллион лет. Каждый удар - наш Большой взрыв. Пакман, где экран - это время, а стены - другие Вселенные.</li>
+          <li><b>Вброс:</b> в пакмане во времени нет вопроса «что было до Большого взрыва». Был предыдущий уровень. И был всегда. Начало - это артефакт того, что мы видим только один экран.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/cyclic.png" alt="">
+        <div class="pcap">Кольцо галактик, где конец времени втекает в новый Большой взрыв. У Пенроуза это не метафора, а конформное преобразование: пустое бесконечное и плотное нулевое - одна и та же геометрия, если убрать масштаб.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s8">
+  <div class="content">
+    <div class="kicker">Пакман · что ломается</div>
+    <h2>Если мир - пакман: три вещи, которые перестают существовать</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>1. «Снаружи»</h3>
+        <p>У тора нет внешней стороны, в которую он вложен, если не настаивать. Математически 3-тор существует сам по себе, без четвёртого измерения вокруг. Значит, вопрос «а что за краем Вселенной» не имеет ответа не потому, что мы не знаем, а потому что нет «за». Вопрос снимается вместе с краем.</p>
+      </div>
+      <div class="card">
+        <h3 class="am">2. «До»</h3>
+        <p>В циклическом пакмане «до Большого взрыва» = «в конце прошлого цикла». Но тогда нет первого цикла, и цепочка уходит в бесконечность назад. Мы получили обратно ту бесконечность, от которой ушли в пространстве: убрали её из «где», она вылезла в «когда». Пакман не убивает бесконечность, он её перекладывает.</p>
+      </div>
+      <div class="card">
+        <h3 class="gr">3. Энтропия</h3>
+        <p>Главный удар. Каждый цикл увеличивает энтропию (второе начало). Через сотню циклов Вселенная - тёплый суп без структуры, и новых звёзд не будет. Чтобы пакман работал вечно, кто-то должен обнулять счётчик. У Пенроуза это делает исчезновение массы (нет массы - нет масштаба - нет «беспорядка»). Красиво, и никем не подтверждено.</p>
+      </div>
+    </div>
+    <div class="note" style="margin-top:16px"><b>Итог главы:</b> пакман проходит тест выпуска (шанс &gt; 0, физика не исключает). В бесконечной Вселенной торы точно есть. Но он не решает, а переносит: «снаружи» исчезает, «до» уходит в бесконечность, энтропия требует кнопки reset. Каждая следующая глава - попытка найти эту кнопку.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2: ИЗМЕРЕНИЯ ============ -->
+<section class="slide chapter" id="s9">
+  <div class="bgimg"><img src="assets/ch_dimensions.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2</div>
+    <h1>Бесконечное множество измерений</h1>
+    <p class="lead">Почему три? Кто считал? И что, если их бесконечно много, а мы уже в них живём, просто смотрим на проекцию.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s10">
+  <div class="content">
+    <div class="kicker">Измерения · почему три</div>
+    <h2>Три - не аксиома, а единственное число, в котором мы могли появиться</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Эренфест, 1917.</b> Посчитал, что будет с орбитами и атомами в N измерениях. В четырёх и выше гравитация и электростатика падают быстрее (1/r³ вместо 1/r²), и устойчивых орбит нет: планета либо падает на звезду, либо улетает. Атомы тоже разваливаются. В двух измерениях орбиты есть, но нет гравитационных волн, сложных нервных систем (провод не может пересечь провод) и, видимо, пищеварения: труба насквозь разрезает плоское существо пополам.</li>
+          <li><b>Время тоже одно не случайно.</b> При двух временных измерениях уравнения физики теряют предсказуемость: из начальных данных не следует будущее. Тегмарк (1997) нарисовал таблицу «пространство × время» и в ней жизнеспособна одна клетка: 3+1.</li>
+          <li><b>Вброс:</b> три - не свойство мира, а свойство наблюдателя. В бесконечной Вселенной есть области с другим числом крупных измерений, в них просто некому спросить «почему». Мы в трёх по той же причине, по какой рыба в воде. Антропный принцип в чистом виде, и первый ответ выпуска, который скучный и, вероятно, правильный.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Таблица Тегмарка (упрощённо)</h3>
+          <table class="t">
+            <tr><th>Пространство</th><th>Время 1</th><th>Время 2+</th></tr>
+            <tr><td>1-2</td><td class="d">слишком просто: нет сложных структур</td><td class="d">непредсказуемо</td></tr>
+            <tr><td>3</td><td class="d gr">мы здесь</td><td class="d">непредсказуемо</td></tr>
+            <tr><td>4+</td><td class="d">неустойчивы атомы и орбиты</td><td class="d">непредсказуемо</td></tr>
+          </table>
+          <p class="dim" style="margin-top:8px">«Непредсказуемо» - не «хаос», а хуже: уравнения не имеют единственного решения. Мир, где физика не может сказать, что будет, даже в принципе.</p>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Что говорит физика:</b> крупных измерений три, проверено до масштабов 10⁻¹⁹ м (LHC) и гравитацией до 50 мкм. Дальше - только теория.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s11">
+  <div class="content">
+    <div class="kicker">Измерения · бесконечность уже здесь</div>
+    <h2>Гильбертово пространство: мы уже живём в бесконечномерном мире</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Квантовая механика не работает в трёх измерениях.</b> Состояние одного электрона - вектор в пространстве с бесконечным числом измерений (гильбертовом). Состояние двух электронов - в пространстве ещё больше. Состояние Вселенной - один вектор в пространстве размерности, которую нельзя записать. Три измерения - это то, что остаётся, когда мы спрашиваем «где», а не «что».</li>
+          <li><b>Вброс 1:</b> измерение - это не направление, в котором можно идти, а направление, в котором можно различать. Вверх-вниз - одно измерение. Красный-синий - другое. Спин вверх-вниз - третье. Мы ходим только по трём, а различаем по бесконечности. Может, «измерений» столько, сколько вопросов можно задать.</li>
+          <li><b>Вброс 2:</b> тогда бесконечномерный мир - не экзотика, а буквальное описание того, где мы находимся. Три пространственных - это те измерения, по которым можно переместить тело. Остальные - по которым можно переместить только внимание. Сознание как движение в измерениях, недоступных ногам.</li>
+          <li><b>А что если нет:</b> гильбертово пространство - математический инструмент, а не место. Так говорит инструментализм. Но тот же аргумент был про атомы в 1890-м и про поля в 1850-м. Инструменты имеют привычку оказываться вещами.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Ходить</b><span>3 измерения</span></div>
+            <div class="bx cy"><b>Различать</b><span>цвет, спин, заряд, вкус кварка...</span></div>
+            <div class="bx am"><b>Квантовое состояние</b><span>вектор в ∞ измерений</span></div>
+            <div class="bx rd"><b>Вселенная</b><span>один вектор. Один</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что говорит физика</h3>
+          <p>Гильбертово пространство - стандарт, а не гипотеза. Спор идёт о статусе: описывает ли вектор состояния реальность (Эверетт, «многомировая») или наше знание (копенгаген, кубизм). Теорема PBR (2012) закрыла часть «только знание»-интерпретаций: волновая функция ведёт себя как нечто реальное. Не доказательство, но сдвиг.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s12">
+  <div class="content">
+    <div class="kicker">Измерения · свёрнутые и второе время</div>
+    <h2>Измерение размером 10⁻³⁵ и измерение, по которому идёт только внимание</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/calabi.png" alt="">
+        <div class="pcap">Многообразие Калаби-Яу: так, по теории струн, выглядят шесть свёрнутых измерений в каждой точке пространства. Слишком малы, чтобы в них двигаться, достаточно велики, чтобы задавать, какие бывают частицы. Форма этой штуки = таблица Менделеева.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Калуца и Клейн, 1921-26.</b> Добавь пятое измерение, сверни его в трубочку размером 10⁻³⁵ м, и из чистой геометрии вывалится электромагнетизм. Эйнштейн был в восторге. Струны довели идею до 10-11 измерений, из которых 6-7 свёрнуты. Вброс встроен в теорию: измерения есть, просто маленькие.</li>
+          <li><b>Второе время.</b> Бэрс (Itzhak Bars, с 1995) строит физику с двумя временными измерениями: наш мир - тень 4+2-мерного, и разные проекции дают разные, но эквивалентные 3+1-физики. Работает математически, предсказаний, отличимых от обычной, пока не даёт. Одно из немногих мест, где «второе время» - не фантастика, а статьи в Physical Review.</li>
+          <li><b>Вброс:</b> что если некоторые измерения не свёрнуты, а закрыты для тела и открыты для чего-то другого? Память движется по времени назад, не двигая тело. Воображение движется по «возможному». Сон - по «непроисходившему». Каждое из них ведёт себя как измерение: есть направление, есть расстояние («далёкое воспоминание»), нельзя двигаться ногами. Мы бы не заметили измерение, по которому идёт только внимание, потому что искали бы его ногами.</li>
+        </ul>
+        <div class="note gold" style="margin-top:8px"><b>Что говорит физика:</b> свёрнутые измерения не найдены, но и не исключены до 10⁻¹⁹ м. Второе время - непротиворечиво, проверить нечем.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s13">
+  <div class="content">
+    <div class="kicker">Измерения · обратный вброс</div>
+    <h2>Измерений меньше, чем кажется: мы - двумерная запись</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Голографический принцип.</b> Максимум информации в объёме определяется не объёмом, а площадью границы: 1 бит на 4 планковских площади. Это следует из энтропии чёрных дыр (Бекенштейн, Хокинг) и означает странное: трёхмерный мир содержит не больше информации, чем его двумерная оболочка. Как будто объём - развёртка поверхности.</li>
+          <li><b>Малдасена, 1997.</b> Строго показал для одного класса вселенных (AdS): гравитация в объёме полностью эквивалентна квантовой теории без гравитации на границе. Две разные физики, один мир. Самая цитируемая работа в истории физики высоких энергий.</li>
+          <li><b>Вброс:</b> тогда вопрос «сколько измерений» не имеет ответа. Три и два - одинаково правильные описания одного и того же. Измерение - не свойство мира, а свойство языка, на котором о нём говорят. Бесконечномерный, трёхмерный, двумерный - три словаря, одна книга.</li>
+          <li><b>А что если нет:</b> наша Вселенная не AdS, а de Sitter, и для неё голографии пока нет. Может, принцип - артефакт удобной математики. Но энтропия чёрных дыр никуда не денется, а она - площадь.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/hologram.png" alt="">
+        <div class="pcap">Плоская проекция на стене отбрасывает объёмную тень в комнату. Голографический принцип говорит, что это не иллюстрация, а описание: всё, что в комнате, записано на стене, и потерь нет.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 3: РЕКУРСИЯ ============ -->
+<section class="slide chapter" id="s14">
+  <div class="bgimg"><img src="assets/ch_recursion.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3</div>
+    <h1>Рекурсия: мир сам в себе</h1>
+    <p class="lead">Вселенная внутри чёрной дыры внутри Вселенной. Симуляция в симуляции. Фрактал, который содержит себя. И теорема, которая говорит, что такой мир не сможет себя понять.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s15">
+  <div class="content">
+    <div class="kicker">Рекурсия · чёрные дыры</div>
+    <h2>Вселенная в чёрной дыре: естественный отбор миров</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Совпадение, которое смущает.</b> Внутри чёрной дыры - сингулярность, точка бесконечной плотности, из которой ничего не выходит. В начале Вселенной - сингулярность, точка бесконечной плотности, из которой вышло всё. Уравнения одни и те же, только время развёрнуто. Что если это одна и та же точка с двух сторон?</li>
+          <li><b>Смолин, 1992.</b> Каждая чёрная дыра рождает новую Вселенную с чуть изменёнными константами. Вселенные, где чёрных дыр много, оставляют больше «потомков». Через много поколений типичная Вселенная - та, где константы настроены на максимум чёрных дыр. А для чёрных дыр нужны звёзды, углерод, долгая жизнь. Всё, что нужно и нам. Тонкая настройка объясняется без Бога и без антропного принципа: отбором.</li>
+          <li><b>Вброс:</b> тогда мы внутри чёрной дыры родительской Вселенной. Её горизонт - наш Большой взрыв. Наши чёрные дыры - чужие Большие взрывы. Рекурсия без дна и без вершины: цепочка вселенных, у каждой родитель и дети, и ни у кого нет «первой». Пакман из главы 1, только по оси вложенности.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Родитель</b><span>Вселенная с чёрной дырой</span></div>
+            <div class="bx cy"><b>Горизонт</b><span>= наш Большой взрыв</span></div>
+            <div class="bx cy"><b>Мы</b><span>внутри</span></div>
+            <div class="bx am"><b>Наши чёрные дыры</b><span>= дети</span></div>
+            <div class="bx rd"><b>Отбор</b><span>константы → максимум потомков</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что говорит физика</h3>
+          <p>Гипотеза Смолина проверяема в одном месте: если константы оптимальны для чёрных дыр, малые изменения должны уменьшать их число. Проверка по массе нейтронных звёзд (Смолин предсказал верхний предел ~2 солнечных) пока держится с натяжкой: найдены звёзды в 2.1-2.3 массы. Идея жива, но дышит тяжело. «Что за горизонтом» - не знает никто, и в этом дверь.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s16">
+  <div class="content">
+    <div class="kicker">Рекурсия · стек симуляций</div>
+    <h2>Симуляция в симуляции: почему уровень не важен</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/sim_stack.png" alt="">
+        <div class="pcap">Стопка стеклянных миров, каждый крутится на том, что под ним. Бостром (2003): если хоть одна цивилизация запускает симуляции предков, симулированных сознаний становится больше настоящих, и статистически ты - в симуляции. Аргумент не про технологии, а про подсчёт.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Трилемма Бострома:</b> либо цивилизации вымирают до симуляций, либо не хотят их запускать, либо мы почти наверняка внутри. Третий вариант не требует ничего, кроме того, что кто-то где-то один раз это сделал.</li>
+          <li><b>Вброс 1: стек.</b> Если мы симуляция, то те, кто нас запустил, по тому же аргументу тоже симуляция. Глубина N. Но каждый уровень может симулировать только мир проще себя (нельзя эмулировать компьютер на нём же без потерь). Значит, вверх по стеку физика богаче, вниз беднее. Наша квантовая механика с её «не смотрят - не вычисляем» подозрительно похожа на ленивую отрисовку.</li>
+          <li><b>Вброс 2: уровень не важен.</b> Если мир на уровне 7 неотличим изнутри от мира на уровне 0, то вопрос «настоящий ли он» не имеет содержания. Реальность - это то, что консистентно, а не то, что «внизу». Стек глубиной в бесконечность и стек глубиной ноль дают одинаковый опыт.</li>
+          <li><b>А что если нет:</b> симуляция должна где-то храниться, и у базового уровня тоже есть граница Бекенштейна. Бесконечный стек требует бесконечной ёмкости на дне. Значит, дно есть, и оно не симуляция. Или дна нет, и тогда нет и ёмкости, и физика внизу совсем не наша.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s17">
+  <div class="content">
+    <div class="kicker">Рекурсия · фрактал и Гёдель</div>
+    <h2>Мир, который содержит себя, не может себя описать</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+      <div>
+        <div class="pimg">
+          <img src="assets/mandelbrot.png" alt="" style="width:100%;height:230px;object-fit:cover;border-radius:12px;border:1px solid var(--line);display:block">
+          <div class="pcap"><b>Множество Мандельброта.</b> Одна формула z → z² + c. На любой глубине увеличения - копии целого, не точные, но узнаваемые. Бесконечная сложность из одной строки, и сложность не убывает с масштабом. Если Вселенная устроена так, у неё нет «фундаментального уровня»: под кварками ещё что-то, и под ним тоже.</div>
+        </div>
+      </div>
+      <div>
+        <div class="pimg">
+          <img src="assets/godel.png" alt="" style="width:100%;height:230px;object-fit:cover;border-radius:12px;border:1px solid var(--line);display:block">
+          <div class="pcap"><b>Гёдель, 1931.</b> Любая система, достаточно богатая, чтобы описать саму себя, содержит истины, которые не может доказать. Вброс: мир, содержащий своё описание (нас), обязан иметь недоказуемые истины. Может, «законы природы» - это и есть они: верно, но почему - не выводимо изнутри. Физика упирается не в сложность, а в теорему.</div>
+        </div>
+      </div>
+    </div>
+    <div class="cols" style="margin-top:12px">
+      <div class="card">
+        <h3>Вброс: масштабная рекурсия</h3>
+        <p>Атом похож на Солнечную систему, галактика на атом, нейронная сеть мозга на паутину галактик (сходство измерено: Вацца и Фелетти, 2020, структурно они действительно похожи). Совпадение? Или Вселенная - фрактал, где на каждом масштабе одна и та же форма, и «мы внутри атома другой Вселенной» - не метафора. Проверка: у фрактала нет выделенного масштаба, а у нас есть - планковская длина и размер Вселенной. Два конца. Фрактал с двумя концами - не фрактал, а конечная лестница. Но 60 порядков между концами - это очень длинная лестница.</p>
+      </div>
+      <div class="card">
+        <h3 class="am">Что говорит физика</h3>
+        <p>Планковский масштаб 10⁻³⁵ м - предел, ниже которого понятия «расстояние» нет. Это против бесконечной рекурсии вниз. Гёдель к физике применим, если физика формализуема как арифметика: Хокинг в 2002 году («Гёдель и конец физики») склонялся к тому, что теории всего не будет именно поэтому. Это не консенсус, а честная позиция одного из лучших.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s18">
+  <div class="content">
+    <div class="kicker">Рекурсия · что ломается</div>
+    <h2>У рекурсии должно быть дно. Или не должно быть объёма</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Аргумент Бекенштейна.</b> В конечном объёме конечная информация: не больше 10⁶⁹ бит на квадратный метр границы. Рекурсия без дна означает бесконечную информацию в каждой точке (уровень 1 + уровень 2 + ... до бесконечности). Конечный объём этого не вмещает. Значит, одно из двух.</li>
+          <li><b>Либо дно есть.</b> Есть уровень, ниже которого ничего: планковская сетка, «пиксели» пространства, петлевая гравитация. Рекурсия конечна, у Вселенной есть «базовый код». Тогда вопрос «а что под ним» снимается так же, как «что за краем» в пакмане: там нет «под».</li>
+          <li><b>Либо объём не конечен.</b> И тогда бесконечная информация помещается, но Вселенная бесконечна, включается усилитель из вступления, и все фантазии этого выпуска реализованы где-то. Рекурсия без дна требует бесконечного мира. Бесконечный мир требует, чтобы всё возможное случилось. Круг замкнулся.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Рекурсия без дна</b><span>∞ информации в точке</span></div>
+            <div class="bx am"><b>Бекенштейн</b><span>конечный объём = конечная информация</span></div>
+            <div class="bx cy"><b>Выход 1</b><span>дно есть: планковские пиксели</span></div>
+            <div class="bx rd"><b>Выход 2</b><span>объём бесконечен: усилитель включён</span></div>
+          </div>
+        </div>
+        <div class="note gold" style="margin-top:14px"><b>Итог главы:</b> «мир сам в себе» проходит тест только в двух формах: конечная рекурсия с дном (Смолин, планковская сетка) или бесконечная в бесконечном мире. Бесконечная рекурсия в конечном мире - не проходит. Это первая фантазия выпуска, которую бесконечность не спасает: она её требует.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 4: ДВА ХАОСА ============ -->
+<section class="slide chapter" id="s19">
+  <div class="bgimg"><img src="assets/ch_twochaos.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4</div>
+    <h1>Два хаоса</h1>
+    <p class="lead">Один - до первого различия, где всё равно всему. Второй - после последнего, где различий так много, что их нельзя удержать. Снаружи они выглядят одинаково. Между ними - всё, что мы называем миром.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s20">
+  <div class="content">
+    <div class="kicker">Два хаоса · первый</div>
+    <h2>Мир, где === вернуло true для всего</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/unmarked.png" alt="">
+        <div class="pcap">Поле без свойств и одна черта. До черты нет «внутри» и «снаружи», нет вопроса, нет ответа. Спенсер-Браун назвал это unmarked state и вывел из одной операции «проведи различие» всю логику. Вброс выпуска: хаос - это состояние до черты.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Вброс:</b> хаос - это множество, где true === false === undefined === null === 0, и каждый элемент равен себе и всем остальным. Не беспорядок. Полная неразличимость.</li>
+          <li><b>Логика говорит: это тривиальная система.</b> Если хоть одно утверждение и истинно, и ложно, то из него следует что угодно (ex falso quodlibet). Всё доказуемо, значит, ничего не различимо. В алгебре кольцо, где 0 = 1, состоит из одного элемента. Множество, где всё === всему, - это точка. Или ничто. Там они тоже равны.</li>
+          <li><b>Физика говорит: это максимальная симметрия.</b> Симметрия - когда нельзя различить. Начало Вселенной по стандартной картине: все силы едины, частицы неотличимы, нет «здесь» и «там». Потом нарушение симметрии: первое различие, из него остальные. Конец Вселенной - тепловая смерть: всё снова равно всему, только на максимуме энтропии. <b>Начало и конец неразличимы. Первый хаос - это оба.</b></li>
+          <li><b>Про `===`:</b> в JS `null == undefined` уже true, `0 == false` тоже. Нестрогое равенство - это «мягкий хаос», где типы стёрлись. Строгое держит. Первый хаос - мир, где сломалось даже строгое.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s21">
+  <div class="content">
+    <div class="kicker">Два хаоса · первое различие</div>
+    <h2>Проведи различие: как из ничего выводится всё</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>«Законы формы», 1969.</b> Джордж Спенсер-Браун начинает не с аксиом, а с приказа: <i>проведи различие</i>. Появляются «внутри» и «снаружи», знак и его отсутствие. Из двух правил (повторный знак = знак; знак внутри знака = пусто) он выводит булеву алгебру, потом арифметику. Логика оказывается не первичной, а следствием того, что кто-то что-то от чего-то отличил.</li>
+          <li><b>Физика делает то же.</b> Нарушение симметрии в первые 10⁻¹² секунды: поле Хиггса выбирает значение, и частицы получают массу, то есть становятся различимыми по тому, как трудно их разогнать. До этого «электрон» и «нейтрино» - одно и то же. Различие не было, оно произошло.</li>
+          <li><b>Вброс:</b> тогда информация - это не то, что хранится в мире, а то, что мир сделал, отличив одно от другого. Бит - это черта. Вселенная - не «содержит» 10¹²² бит, а «провела» 10¹²² различий. И каждое можно стереть обратно, вернувшись в первый хаос. Тепловая смерть - не конец, а стирание доски.</li>
+          <li><b>А что если нет:</b> кто проводит первое различие? У Спенсера-Брауна - «наблюдатель», и он честно говорит, что это внешнее допущение. У физики - «спонтанное» нарушение, то есть без причины. Оба ответа означают одно: первая черта не выводится из ничего. Она либо есть, либо нет. Аксиома выпуска.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx rd"><b>Unmarked</b><span>нет различий · всё === всё</span></div>
+            <div class="bx am"><b>Первая черта</b><span>внутри / снаружи</span></div>
+            <div class="bx cy"><b>Логика</b><span>да / нет</span></div>
+            <div class="bx cy"><b>Арифметика</b><span>1, 2, 3...</span></div>
+            <div class="bx gr"><b>Мир</b><span>10¹²² различий</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что говорит физика</h3>
+          <p>Нарушение симметрии - измеренный факт (бозон Хиггса, 2012). Космологическая версия «до нарушения всё едино» - Великое объединение, не подтверждено, но ожидается всеми. Ландауэр: провести различие (записать бит) бесплатно, стереть - стоит kT·ln2. Асимметрия: мир легко различает и дорого забывает. Отсюда стрела времени. Отсюда и память из первого выпуска.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s22">
+  <div class="content">
+    <div class="kicker">Два хаоса · второй</div>
+    <h2>Хаос Лоренца: взрыв различий</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+      <div>
+        <div class="pimg">
+          <img src="assets/lorenz.png" alt="" style="width:100%;height:250px;object-fit:cover;border-radius:12px;border:1px solid var(--line);display:block">
+          <div class="pcap"><b>Аттрактор Лоренца, 1963.</b> Три уравнения, ноль случайности. Две точки, отличавшиеся на 10⁻¹⁵, через несколько витков в разных крыльях бабочки. Траектория не уходит в бесконечность и никогда не повторяется: бесконечная линия в конечном объёме, размерность 2.06.</div>
+        </div>
+      </div>
+      <div>
+        <div class="pimg">
+          <img src="assets/lyapunov.png" alt="" style="width:100%;height:250px;object-fit:contain;background:#0b0f16;border-radius:12px;border:1px solid var(--line);display:block">
+          <div class="pcap"><b>Логистическая карта x → 3.9·x(1−x).</b> Две точки с разницей 10⁻¹⁰. Внизу - разница на логарифмической шкале: прямая линия, значит, рост экспоненциальный. За 40 шагов из 10⁻¹⁰ получилась единица. Это и есть показатель Ляпунова: скорость, с которой различия взрываются.</div>
+        </div>
+      </div>
+    </div>
+    <div class="cols" style="margin-top:12px">
+      <div class="card">
+        <h3>Второй хаос - противоположность первого</h3>
+        <p>Первый хаос: различий ноль. Второй: различий бесконечно много, и каждое растёт. Но результат один - <b>информацию нельзя использовать.</b> В первом её нет. Во втором она есть, но размазана быстрее, чем её можно прочитать. Снаружи оба выглядят как шум. Изнутри один - тишина до первой черты, другой - крик после последней.</p>
+      </div>
+      <div class="card">
+        <h3 class="am">Что говорит физика</h3>
+        <p>Хаос детерминирован полностью: демон Лапласа прав, будущее записано. Но записано с точностью, которую нельзя измерить: погода - 2 недели горизонта, Солнечная система - 5 млн лет (Ласкар), бильярд - несколько десятков соударений, и на шар влияет электрон на краю Галактики (Берри). А на точности 10⁻³⁵ вмешивается квантовая неопределённость, и хаос за ляпуновское время поднимает её до макромира. Хаос - усилитель квантовой случайности. Будущее определено и непредсказуемо одновременно, и это не парадокс, а теорема.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s23">
+  <div class="content">
+    <div class="kicker">Два хаоса · руками</div>
+    <h2>Хаос руками: четыре картинки, посчитанные для этой деки</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px">
+      <div class="pimg">
+        <img src="assets/bifurcation.png" alt="" style="width:100%;height:190px;object-fit:contain;background:#0b0f16;border-radius:12px;border:1px solid var(--line);display:block">
+        <div class="pcap"><b>Бифуркации.</b> x → r·x(1−x). Одна строка кода. До r=3 - одна точка, потом 2, 4, 8, при 3.5699 - хаос, а внутри хаоса «окна» порядка. Константа Фейгенбаума 4.669 - отношение соседних ступеней, одинаковое для капающего крана и популяции кроликов.</div>
+      </div>
+      <div class="pimg">
+        <img src="assets/pendulum.png" alt="" style="width:100%;height:190px;object-fit:contain;background:#0b0f16;border-radius:12px;border:1px solid var(--line);display:block">
+        <div class="pcap"><b>Двойной маятник.</b> Две траектории, стартовый угол отличается на одну миллионную радиана. Первые секунды совпадают, потом - разные жизни. Уравнения детерминированы полностью, предсказать нельзя. Второй хаос на двух стержнях.</div>
+      </div>
+      <div class="pimg">
+        <img src="assets/rule30.png" alt="" style="width:100%;height:190px;object-fit:contain;background:#0b0f16;border-radius:12px;border:1px solid var(--line);display:block">
+        <div class="pcap"><b>Правило 30.</b> Клеточный автомат Вольфрама: одна клетка, три соседа, восемь правил «да/нет». Из одной точки - узор, который проходит тесты на случайность (Mathematica им генерировала случайные числа). Первая черта, из которой вышло всё.</div>
+      </div>
+      <div class="pimg">
+        <img src="assets/fern.png" alt="" style="width:100%;height:190px;object-fit:contain;background:#0b0f16;border-radius:12px;border:1px solid var(--line);display:block">
+        <div class="pcap"><b>Папоротник Барнсли.</b> Игра «Хаос»: кубик выбирает одно из четырёх преобразований, точка прыгает. 120 000 случайных прыжков рисуют папоротник. Порядок из случайности: аттрактор не зависит от того, какие числа выпали, только от правил.</div>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:12px"><b>Зачем это здесь:</b> все четыре - не иллюстрации, а расчёт (matplotlib, скрипт в _tools/chaos_plots.py). Каждый можно воспроизвести за минуту. Хаос - единственная глава выпуска, где фантазию можно потрогать: вот уравнение, вот картинка, никакой веры не нужно.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s24">
+  <div class="content">
+    <div class="kicker">Два хаоса · время как побочный продукт</div>
+    <h2>Процесс без начала: аттрактор не помнит, откуда пришёл</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/time_rovelli.png" alt="">
+        <div class="pcap">Часы, растворяющиеся в сети связей. Ровелли: времени нет, есть изменения относительно других изменений. Часы - это корреляция между двумя процессами. Убери все процессы, и спросить «сколько времени» будет не у кого и не о чем.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Аттрактор без начала.</b> Куда бы ни поставить точку, через сотню шагов она на бабочке, и по ней нельзя сказать, откуда стартовала. Аттрактор - процесс, у которого нет первого шага: любое прошлое ведёт сюда, и здесь оно неразличимо. Информация о старте не уничтожена (детерминизм), но бесполезна (хаос). Это машина, стирающая смысл без стирания бит.</li>
+          <li><b>Вброс: время - побочный продукт различий.</b> Если мир - процесс, у которого нет состояния (глава 5), то «момент» - это срез, который делает наблюдатель. Время появляется вместе с наблюдателем и вместе с ним исчезает. Ровелли и Барбур говорят это всерьёз: в уравнении Уилера-ДеВитта для Вселенной целиком времени нет. Оно возникает только при разделении на «часы» и «остальное».</li>
+          <li><b>Вброс: данные ничего не значат.</b> В перемешивающей системе любое начальное состояние приводит к тому же аттрактору. Значит, во втором хаосе информация о прошлом есть, но она не отличает одно прошлое от другого. Данные без различающей силы - это не данные. Второй хаос возвращает нас в первый через заднюю дверь.</li>
+        </ul>
+        <div class="note gold" style="margin-top:8px"><b>Что говорит физика:</b> «отсутствие времени» в квантовой гравитации - реальная проблема (problem of time), а не поэзия. Реляционное время - один из главных кандидатов на решение, экспериментально не различим.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s25">
+  <div class="content">
+    <div class="kicker">Два хаоса · вечность и Больцман</div>
+    <h2>Вечный хаос: мы - редкий порядок в бесконечном шуме?</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Больцман, 1895.</b> Если Вселенная вечна и в равновесии (первый хаос), то по чистой статистике в ней случаются флуктуации: где-то случайно собирается немного порядка. Огромная флуктуация - целая Вселенная с галактиками. Мы внутри такой. Не нужен Большой взрыв, не нужно начало: вечный шум и редкие всплески.</li>
+          <li><b>Больцмановский мозг - удар по этой идее.</b> Маленькие флуктуации во много раз вероятнее больших. Один мозг с ложными воспоминаниями о Вселенной случайно собирается из шума несравнимо чаще, чем настоящая Вселенная. Значит, если Больцман прав, ты - скорее всего такой мозг, возникший секунду назад, и всё это - шум. Аргумент самоубийственный: если ты ему веришь, то не можешь верить ничему, включая его.</li>
+          <li><b>Вброс:</b> мы принимаем, что процесс без начала возможен (глава 1, циклы; глава 3, рекурсия). Но тогда почему сейчас не тепловая смерть, ведь у вечного процесса было бесконечно много времени прийти в равновесие? Ответы: Пенроуз (гипотеза Вейля: начало было особенным, с нулевой гравитационной энтропией, и это аксиома), инфляция (каждый пузырь начинается «с чистого листа»), или мы в той флуктуации, где можно об этом спросить. Три ответа, ни один не измерен.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/boltzmann.png" alt="">
+        <div class="pcap">Мозг, собирающийся из космического шума. Космологи всерьёз отбраковывают модели Вселенной по критерию «в ней должно быть больше обычных наблюдателей, чем больцмановских мозгов». Модели, где мозгов больше, считаются неверными, потому что в них нельзя доверять собственным рассуждениям.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 5: ПРОЦЕСС !== СОСТОЯНИЕ ============ -->
+<section class="slide chapter" id="s26">
+  <div class="bgimg"><img src="assets/ch_process.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5 · центральная</div>
+    <h1>Процесс !== состояние</h1>
+    <p class="lead">Может ли быть состояние без процесса? Процесс без состояния? Что их объединяет, и что, если это так не работает. Лента и головка Тьюринга как модель Вселенной, и вопрос, кто из них первичен.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s27">
+  <div class="content">
+    <div class="kicker">Процесс · состояние без процесса</div>
+    <h2>Блок-Вселенная: всё уже есть, ничего не происходит</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/block_universe.png" alt="">
+        <div class="pcap">Кристалл, в котором заморожены все моменты, и фигура, идущая между ними. В теории относительности будущее так же реально, как прошлое: «сейчас» зависит от скорости наблюдателя, значит, объективного «сейчас» нет, значит, все моменты равноправны и существуют. Эйнштейн: «Различие между прошлым, настоящим и будущим - стойкая иллюзия».</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Состояние без процесса</b> - это блок-Вселенная. Четырёхмерная глыба, в которой каждое событие имеет координаты и ничто не «происходит»: происходить - значит меняться, а глыба неизменна. Течение времени - свойство наблюдателя, ползущего по своей мировой линии, а не мира.</li>
+          <li><b>Барбур, «Конец времени» (1999).</b> Радикальнее: нет даже глыбы, есть куча отдельных мгновений («Платония»), не упорядоченных. Каждое мгновение содержит «записи» о других (воспоминания), и это создаёт иллюзию последовательности. Как кадры фильма, рассыпанные по полу: порядок есть только в содержании кадров.</li>
+          <li><b>Вброс:</b> если состояние может быть без процесса, то Вселенная - библиотека Борхеса. Все страницы написаны, читатель ходит между полками и думает, что пишет. Тогда «процесс» - это не то, что делает мир, а то, что делает читатель. И вопрос главы сводится к другому: <b>что такое читатель, если он тоже страница?</b></li>
+          <li><b>А что если нет:</b> блок-Вселенная не объясняет, почему мы переживаем «сейчас» как особенное. Физика говорит «иллюзия», но иллюзия - это тоже процесс, и он должен где-то идти. В глыбе идти негде.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s28">
+  <div class="content">
+    <div class="kicker">Процесс · процесс без состояния</div>
+    <h2>Гераклит и квантовое поле: есть переход, нет того, что переходит</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Процесс без состояния</b> - река без берегов и без воды: только течение. Гераклит: «всё течёт», Уайтхед (1929): реальность состоит из «событий-актов», а вещи - это то, что мы выделяем из потока для удобства. Не «камень существует и меняется», а «происходит камнение».</li>
+          <li><b>Физика неожиданно на этой стороне.</b> У квантовой частицы между измерениями нет «состояния» в бытовом смысле: нет положения, нет траектории. Есть амплитуды переходов из одного измерения в другое. Волновая функция - не описание того, что есть, а инструкция, как считать, что будет, если спросить. Фейнмановские интегралы по путям: частица «идёт всеми путями сразу», то есть не идёт ни одним. Только переход, никакого «где».</li>
+          <li><b>Вброс:</b> если процесс может быть без состояния, то нет ничего, что можно запомнить. Память - это состояние. Первый выпуск («мир помнит всё») рассыпается: помнить нечему и некому, есть только течение. Но тогда откуда взялась эта дека? Она - состояние. Значит, процесс без состояния хотя бы иногда состояние производит. Как?</li>
+          <li><b>А что если нет:</b> «чистый процесс» невозможно даже описать: любое описание - состояние (текст, формула). Может, процесс без состояния - это не вариант мира, а предел языка. Мы не можем сказать «только течение», не остановив течение словом.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/heraclitus.png" alt="">
+        <div class="pcap">Река из света без берегов и истока, и рука, которая её трогает. Рука - это измерение. До касания реки «нет где», после касания есть точка. Квантовая механика в одной картинке, и она же - Гераклит.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s29">
+  <div class="content">
+    <div class="kicker">Процесс · что объединяет</div>
+    <h2>Лента и головка: что первично</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Машина Тьюринга, 1936.</b> Бесконечная лента с символами и головка, которая читает, пишет и сдвигается. Лента - состояние. Головка - процесс. Ни одна не работает без другой: лента без головки - мёртвая запись, головка без ленты - движение в никуда. Всё вычислимое сводится к этой паре. Вброс: Вселенная тоже.</li>
+          <li><b>Кандидат на объединение - информация.</b> Состояние - это записанная информация. Процесс - её преобразование. Уилер, «it from bit»: и то и другое вторично, первичен бит. Тогда спор «что первично» снимается: первично различие (глава 4), а лента и головка - два способа его хранить: в пространстве и во времени.</li>
+          <li><b>Вброс: лента и головка - одно и то же.</b> Головка Тьюринга сама имеет состояние (в каком она режиме). Ленту можно прочитать как программу для другой головки (универсальная машина). Код - это данные, данные - это код (фон Нейман, 1945; любой компилятор). Нет ленты и головки, есть одна сущность, которая с одной стороны выглядит как состояние, с другой - как процесс. Разница - в том, кто смотрит.</li>
+          <li><b>Вброс: первичен ни тот, ни другой, а их различие.</b> Как у Спенсера-Брауна. Проведи различие «это - лента, это - головка», и получишь вычисление. Не проводи - получишь первый хаос.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx cy"><b>Лента</b><span>состояние · память · «что»</span></div>
+            <div class="bx am"><b>Головка</b><span>процесс · время · «как»</span></div>
+            <div class="bx"><b>Бит</b><span>различие · и то и другое</span></div>
+          </div>
+          <div class="row">
+            <div class="bx gr"><b>Универсальная машина</b><span>лента = программа = головка</span></div>
+            <div class="bx rd"><b>Первый хаос</b><span>ленты и головки не различить</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что говорит физика</h3>
+          <p>Вычислимость Вселенной - открытый вопрос. Дойч (1985): квантовый компьютер может симулировать любую физическую систему, значит, Вселенная - как минимум квантово-вычислима. Ллойд (2006): Вселенная выполнила ~10¹²⁰ операций с Большого взрыва. Вольфрам с 2020 года строит физику из перезаписи гиперграфов: лента и головка буквально. Ничего не доказано, всё считается.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s30">
+  <div class="content">
+    <div class="kicker">Процесс · реляционный вариант</div>
+    <h2>Состояние есть только относительно другого процесса</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Реляционная квантовая механика (Ровелли, 1996).</b> У системы нет состояния «вообще». Есть состояние относительно другой системы, которая с ней взаимодействовала. Кот Шрёдингера жив-и-мёртв относительно того, кто не открыл коробку, и однозначно жив относительно того, кто открыл. Оба правы. Противоречия нет, потому что «состояние» - не свойство кота, а свойство пары «кот-наблюдатель».</li>
+          <li><b>Тогда объединяет не информация, а взаимодействие.</b> Состояние = след процесса в другом процессе. Нет второго процесса - нет состояния, есть только течение (Гераклит). Есть второй - появляется «что» (лента). Лента - это то, что один процесс оставил в другом.</li>
+          <li><b>Вброс:</b> в таком мире одинокая Вселенная не имеет состояния. Она приобретает его только внутри себя, когда одна часть смотрит на другую. Вселенная целиком - чистый процесс. Любая её часть - состояние для другой части. Мы - место, где Вселенная смотрит на себя, и именно поэтому у нас есть «сейчас», «здесь» и память.</li>
+          <li><b>А что если нет:</b> «относительно наблюдателя» звучит как солипсизм с оговорками. Ровелли отвечает: наблюдатель - не сознание, а любая система, хоть камень. Но тогда «взаимодействие» становится первичным понятием, и мы просто переименовали проблему.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Что говорит физика: друг Вигнера, 2019</h3>
+          <p>Прокшка и др. (Вена) и Бонг и др. (Брисбен) поставили эксперимент «друг Вигнера» на фотонах: наблюдатель внутри лаборатории измеряет, наблюдатель снаружи измеряет лабораторию. Результат: нельзя одновременно считать, что (а) факты наблюдений объективны, (б) наблюдатели свободны в выборе, (в) нет сверхсветовых влияний. Что-то из трёх ложно. Реляционная КМ отказывается от (а): факты относительны. Это не доказательство Ровелли, но первое измерение, где «состояние относительно кого» перестало быть философией.</p>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Связь с главой 4:</b> состояние появляется, когда процесс оставляет черту в другом процессе. Первая черта Спенсера-Брауна - это первое взаимодействие. Различие = след = лента.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s31">
+  <div class="content">
+    <div class="kicker">Процесс · оба тупика</div>
+    <h2>Что если это так не работает: два тупика честно</h2>
+    <div class="cols">
+      <div class="card">
+        <h3>Тупик 1: состояние без процесса</h3>
+        <ul>
+          <li>Вселенная - библиотека. Все страницы написаны, ничего не происходит.</li>
+          <li>Тогда «происходить» не может ничего, включая чтение. Читатель - тоже страница. Кто листает?</li>
+          <li>Переживание «сейчас» объявляется иллюзией, но иллюзия - процесс, а процессов нет.</li>
+          <li>Память в такой Вселенной есть (страницы), но некому её иметь. Первый выпуск выживает, а мы - нет.</li>
+        </ul>
+        <p class="dim" style="margin-top:8px">Итог: непротиворечиво, но не объясняет единственное, что мы знаем точно, - что что-то происходит.</p>
+      </div>
+      <div class="card">
+        <h3 class="am">Тупик 2: процесс без состояния</h3>
+        <ul>
+          <li>Вселенная - река без берегов. Только течение, никакого «что».</li>
+          <li>Тогда нечему помнить и нечему описывать: описание - это состояние. Эта дека невозможна.</li>
+          <li>Первый выпуск («мир помнит всё») рассыпается: следов нет, есть только течение.</li>
+          <li>Даже сказать «только процесс» нельзя: слово останавливает поток.</li>
+        </ul>
+        <p class="dim" style="margin-top:8px">Итог: непротиворечиво, но невыразимо. То, что нельзя выразить, нельзя и обсуждать. Дверь закрыта изнутри.</p>
+      </div>
+    </div>
+    <div class="note" style="margin-top:16px"><b>Оба тупика говорят одно:</b> чистое состояние и чистый процесс по отдельности не производят наблюдателя. А наблюдатель есть (ты читаешь). Значит, реальность - не одно из двух, а то, что их различает и связывает. Следующий слайд - наша конструкция.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s32">
+  <div class="content">
+    <div class="kicker">Процесс · наша конструкция</div>
+    <h2>Состояние - это процесс, который смотрит на себя</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/self_look.png" alt="">
+        <div class="pcap">Глаз, смотрящий на себя через петлю зеркал. Не метафора сознания, а определение состояния: процесс, замкнутый на себя так, что часть его видит другую часть. В точке взгляда возникает «что». Вне взгляда - только «как».</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Конструкция выпуска.</b> Три положения:
+            <br>· <span class="cy">Состояние</span> = процесс, который смотрит на себя. Есть различие «я / то, на что смотрю», и в этом различии появляется «что».
+            <br>· <span class="am">Первый хаос</span> = процесс, которому не на что смотреть. Различий нет, unmarked state.
+            <br>· <span class="rd">Второй хаос</span> = процесс, который не успевает посмотреть. Различия меняются быстрее взгляда, ляпуновское время короче времени наблюдения.</li>
+          <li><b>Следствие 1: память живёт в щели.</b> Между «нечего различать» и «не успеваю различить» есть узкая полоса, где процесс достаточно медленный, чтобы оставить след, и достаточно разный, чтобы след что-то значил. Это и есть мир. Он хрупок с обеих сторон: остынет - первый хаос, разгонится - второй.</li>
+          <li><b>Следствие 2: наблюдатель - не сознание.</b> Любая петля, где часть процесса записывает другую: кристалл, ДНК, мозг. Разница в глубине петли. Сознание - петля, которая записывает и то, что записывает.</li>
+          <li><b>Следствие 3: у Вселенной целиком нет состояния.</b> Ей не на что смотреть снаружи. Состояние есть только у частей, и только относительно других частей (Ровелли). Вопрос «в каком состоянии Вселенная» - не имеет содержания, как «что за краем пакмана».</li>
+        </ul>
+        <div class="note gold" style="margin-top:8px"><b>Честно:</b> это не физика, это конструкция. Она не противоречит известному, объясняет, почему память хрупкая и почему время «идёт», и не даёт ни одного проверяемого предсказания. Помечаем как вброс и несём дальше.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 6: ГРАНИЦА МИРА ============ -->
+<section class="slide chapter" id="s33">
+  <div class="bgimg"><img src="assets/ch_boundary.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6</div>
+    <h1>Граница мира</h1>
+    <p class="lead">Где кончается Вселенная? Ответ зависит от того, что считать краем: стену, скорость света, ёмкость или самого спрашивающего.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s34">
+  <div class="content">
+    <div class="kicker">Граница · горизонт</div>
+    <h2>Край - это не стена, а скорость света</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Наблюдаемая Вселенная</b> - шар радиусом 46 млрд световых лет. Не потому, что дальше ничего нет, а потому что свет оттуда не успел дойти за 13.8 млрд лет (а пространство при этом растягивалось). Граница - горизонт частиц, и она отодвигается на световой год в год.</li>
+          <li><b>Горизонт событий Вселенной</b> - другая граница, ~16 млрд световых лет. Из-за ускоренного расширения свет от галактик дальше этого никогда не дойдёт, даже за бесконечное время. Они есть, они видны сейчас (старым светом), и они уходят за край навсегда. Каждый год за горизонт уходит ~20 000 звёзд. Вселенная не кончается, она ускользает.</li>
+          <li><b>Вброс:</b> граница мира - не место, а отношение между двумя точками: «успеет ли сигнал». Тогда у Вселенной нет края, но у каждой пары точек есть ответ «связаны / не связаны». Мир - не шар, а граф связности, и его «край» - это рёбра, которых нет.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Хаббловский радиус</b><span>14 млрд св. лет · где расширение = c</span></div>
+            <div class="bx cy"><b>Горизонт событий</b><span>16 млрд · дальше не долетит никогда</span></div>
+            <div class="bx am"><b>Горизонт частиц</b><span>46 млрд · всё, что мы видели</span></div>
+            <div class="bx rd"><b>Вся Вселенная</b><span>неизвестно; ≥ 250× наблюдаемой или ∞</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что говорит физика</h3>
+          <p>Все три горизонта - измеренные величины (постоянная Хаббла, тёмная энергия, возраст). Размер всей Вселенной - оценка снизу по кривизне: минимум в 250 раз больше наблюдаемой по объёму, верхнего предела нет. Через 100 млрд лет все галактики, кроме Местной группы, уйдут за горизонт, и астрономы будущего не смогут узнать, что Вселенная расширяется. Мы живём в окне, когда это ещё видно.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s35">
+  <div class="content">
+    <div class="kicker">Граница · свойство наблюдателя</div>
+    <h2>Границ столько, сколько наблюдателей</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>У каждой точки своя наблюдаемая Вселенная.</b> Шар радиусом 46 млрд световых лет с центром в тебе. Житель галактики в 30 млрд световых лет от нас видит половину нашего шара и половину того, чего мы не увидим никогда. Наши Вселенные пересекаются, но не совпадают. Границ - континуум.</li>
+          <li><b>Пакман, у которого край везде и нигде.</b> Экран пакмана без стен, но с ограниченным радиусом видимости: куда ни встань, вокруг круг, а за ним темнота. Двигаешься - круг едет с тобой. Край мира прикреплён к наблюдателю, как тень. Его нельзя достичь, потому что он - ты.</li>
+          <li><b>Вброс:</b> «Вселенная» в единственном числе - грамматическая иллюзия. Есть столько Вселенных, сколько точек, и каждая - шар вокруг своей точки. То, что мы называем «Вселенной», - это объединение всех шаров, которое никто не наблюдает и не может. Значит, оно не имеет состояния (глава 5). Существует не «Вселенная», а «Вселенная-относительно».</li>
+          <li><b>А что если нет:</b> пересечения шаров согласованы: то, что видим и мы, и они, одинаково. Значит, за шарами есть что-то общее, что не зависит от наблюдателя. Это «что-то» и есть то, что физика называет реальностью, и оно как раз не наблюдаемо целиком никем. Реальность = то, о чём согласны все горизонты.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Три «края» и кому они принадлежат</h3>
+          <table class="t">
+            <tr><th>Край</th><th>Чей</th><th>Можно ли достичь</th></tr>
+            <tr><td>Горизонт частиц</td><td class="d">наблюдателя</td><td class="d">нет: движется с тобой</td></tr>
+            <tr><td>Горизонт событий</td><td class="d">наблюдателя</td><td class="d">нет: убегает</td></tr>
+            <tr><td>Граница тора (если пакман)</td><td class="d">мира</td><td class="d">да, но окажешься с другой стороны</td></tr>
+            <tr><td>Граница Бекенштейна</td><td class="d">объёма</td><td class="d">следующий слайд</td></tr>
+            <tr><td>Граница «я / не-я»</td><td class="d">процесса, который смотрит</td><td class="d">через слайд</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s36">
+  <div class="content">
+    <div class="kicker">Граница · по информации</div>
+    <h2>Мир кончается там, где кончается ёмкость</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Граница Бекенштейна.</b> В шаре радиуса R с энергией E информации не больше 2πRE/ħc·ln2 бит. Для наблюдаемой Вселенной ~10¹²² бит. Это не «столько мы знаем», это «столько в принципе может быть различий». Мир не бесконечно подробен. У него есть разрешение.</li>
+          <li><b>Вброс:</b> тогда граница мира - не в пространстве, а в описании. Что за границей? Не «ничего» и не «пустота». За ней <b>неописуемо</b>: состояния, для которых нет бит. Разница между «ничего нет» и «нельзя описать» - вся разница между смертью и тишиной. Первый хаос из главы 4 - это ровно то, что за границей Бекенштейна: там нечем провести черту.</li>
+          <li><b>Вброс 2:</b> если Вселенная - тор конечного объёма (глава 1), у неё конечная ёмкость, и число возможных состояний конечно, хоть и огромно (10^10¹²²). Конечное число состояний + бесконечное время = повторение (Пуанкаре). Вселенная-пакман обязана повториться. Ты уже читал это. Не «где-то далеко» (Тегмарк), а здесь же, но «когда-то». Пакман в пространстве + Бекенштейн = пакман во времени, без всякого Пенроуза.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Ёмкость</b><span>~10¹²² бит</span></div>
+            <div class="bx cy"><b>Состояний</b><span>2^(10¹²²)</span></div>
+            <div class="bx am"><b>Время повторения</b><span>10^(10¹²²) лет (Пуанкаре)</span></div>
+            <div class="bx rd"><b>За границей</b><span>не «ничего», а «неописуемо»</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что говорит физика</h3>
+          <p>Граница Бекенштейна - строгое следствие термодинамики чёрных дыр, никем не оспаривается. Возврат Пуанкаре для конечной системы - теорема. Но для Вселенной с тёмной энергией и горизонтом «конечность» спорна (Дайсон, Клебан, Сасскинд 2002 обсуждали именно это: возвращается ли Вселенная де Ситтера). Время повторения настолько велико, что слово «время» к нему уже не применимо, и это честная оговорка.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s37">
+  <div class="content">
+    <div class="kicker">Граница · внутри нас</div>
+    <h2>Граница мира проходит через голову</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/brain_sphere.png" alt="">
+        <div class="pcap">Внутри головы - звёздная Вселенная, снаружи - неотрисованный серый фон. Не солипсизм: снаружи есть что-то. Но «описанное» кончается там, где кончается описывающий. Граница мира - последний нейрон, за которым мир не собран в картинку, потому что собирать некому.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Вброс:</b> если состояние - это процесс, который смотрит на себя (глава 5), то граница «состояния мира» проходит там, где кончается смотрящий. За ней - процесс без состояния, река без берегов. Она не пустая. Она не собрана.</li>
+          <li><b>Следствие:</b> каждый наблюдатель - край мира. Не потому, что мир существует только в голове, а потому, что «мир как что-то» (а не «как течение») существует только там, где есть петля. Границ столько, сколько петель. Вне петель - Гераклит.</li>
+          <li><b>Что ломается, если это так:</b> если границы «снаружи» нет (шар движется с тобой, ёмкость - свойство описания, край - свойство петли), то ничто не мешает Вселенной быть бесконечной. Усилитель из вступления включается на полную. Все фантазии, прошедшие тест, реализованы. Глава 7 становится обязательной.</li>
+          <li><b>А что если нет:</b> границы «снаружи» есть, и это тор конечного объёма. Тогда бесконечности нет, всё повторяется по Пуанкаре, а фантазии выпуска реализуются не «где-то», а «когда-то». Оба варианта дают одно: <b>всё, что возможно, есть.</b> Разница только в предлоге.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 7: БЕСКОНЕЧНОСТЬ ============ -->
+<section class="slide chapter" id="s38">
+  <div class="bgimg"><img src="assets/ch_infinity.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 7</div>
+    <h1>Бесконечность как усилитель</h1>
+    <p class="lead">Всё, что может случиться, случается бесконечно много раз. Всё, что не может, не случается ни разу. И самое важное: как отличить первое от второго, если единственный инструмент - мысль.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s39">
+  <div class="content">
+    <div class="kicker">Бесконечность · теорема</div>
+    <h2>Борель-Кантелли: любой шанс больше нуля - это единица</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Лемма Бореля-Кантелли (1909).</b> Если независимые события имеют вероятности, сумма которых бесконечна, то с вероятностью 1 бесконечно многие из них произойдут. Бесконечное число попыток с шансом p &gt; 0 каждая - и событие случится. Не «может», а «почти наверное» (это термин).</li>
+          <li><b>Бесконечные обезьяны</b> - то же самое: обезьяна с машинкой за бесконечное время напечатает Шекспира. За конечное - нет: вероятность «Гамлета» за одну попытку ~10⁻²⁰⁰⁰⁰⁰, и Вселенной на это не хватит. Разница между «очень много» и «бесконечно» - вся разница.</li>
+          <li><b>Космология принимает это всерьёз.</b> Если Вселенная бесконечна и однородна (а данные с этим совместимы), то каждая конечная конфигурация материи, разрешённая законами, встречается бесконечно много раз. Включая ту, что читает этот текст.</li>
+          <li><b>Вброс:</b> тогда «возможно» и «есть» - синонимы. Модальность схлопывается: нет разницы между «мир мог бы быть пакманом» и «мир где-то пакман». Единственный вопрос, который остаётся, - <b>здесь ли</b>. И это уже не философия, а адрес.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Что говорит физика</h3>
+          <table class="t">
+            <tr><th>Условие</th><th>Статус</th></tr>
+            <tr><td>Вселенная бесконечна</td><td class="d am">совместимо с данными, не доказано</td></tr>
+            <tr><td>Однородна на больших масштабах</td><td class="d gr">измерено (реликтовое излучение)</td></tr>
+            <tr><td>Конечное число состояний в конечном объёме</td><td class="d gr">Бекенштейн, строго</td></tr>
+            <tr><td>Вечная инфляция (бесконечно много пузырей)</td><td class="d am">следствие популярных моделей, не измерено</td></tr>
+          </table>
+          <p class="dim" style="margin-top:8px">Если первое верно, остальное делает вывод неизбежным. Если Вселенная конечна, усилитель выключен, но Пуанкаре включает его во времени.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s40">
+  <div class="content">
+    <div class="kicker">Бесконечность · адреса</div>
+    <h2>Тегмарк: расстояние до твоей копии</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/copies.png" alt="">
+        <div class="pcap">Одинаковые комнаты до горизонта, каждая чуть иная. Тегмарк (2003) посчитал: в бесконечной однородной Вселенной ближайшая точная копия наблюдаемой Вселенной, включая тебя, на расстоянии около 10^(10¹¹⁸) метров. Число, у которого показатель - тоже показатель.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Что</th><th>Где (по Тегмарку)</th><th>Почему</th></tr>
+          <tr><td>Твоя копия (точная, до атома)</td><td class="d">~10^(10²⁹) м</td><td class="d">состояний тела ~2^(10²⁹), все реализуются в объёме такого размера</td></tr>
+          <tr><td>Копия, где ты читаешь этот слайд завтра</td><td class="d">чуть ближе</td><td class="d">конфигураций «почти ты» больше, чем «точно ты»</td></tr>
+          <tr><td>Копия наблюдаемой Вселенной целиком</td><td class="d">~10^(10¹¹⁸) м</td><td class="d">состояний хаббловского объёма ~2^(10¹¹⁸)</td></tr>
+          <tr><td>Вселенная-пакман (тор)</td><td class="d">где-то в вечной инфляции, если пузыри различаются топологией</td><td class="d">шанс &gt; 0 → есть</td></tr>
+          <tr><td>Вселенная, где ты написал этот код</td><td class="d">там же, где ты его подумал, если не противоречит физике</td><td class="d">следующий слайд</td></tr>
+        </table>
+        <div class="note" style="margin-top:8px"><b>Вброс:</b> «где-то есть мир, в котором...» - не утешение и не ужас, а геодезия. У каждой возможности есть расстояние. Невозможное - это то, до чего расстояние не определено, а не то, до чего оно бесконечно.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s41">
+  <div class="content">
+    <div class="kicker">Бесконечность · что она не делает</div>
+    <h2>Мера ноль остаётся нулём: чего усилитель не усиливает</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Круглый квадрат не появится ни в одной из бесконечных Вселенных.</b> Бесконечность умножает вероятность, а не создаёт её. 0 × ∞ в теории меры - это 0, если событие невозможно, и неопределённость, если оно лишь «маловероятно до нуля» (как попасть иглой ровно в точку). Логическое противоречие - первый случай.</li>
+          <li><b>Не появится и мир с другой математикой.</b> Тегмарк идёт дальше всех: существует не только всё физически возможное, но все математические структуры (уровень IV мультиверса). Но и у него 2+2=5 не существует нигде: это не структура, а ошибка. Бесконечность не спасает ошибки.</li>
+          <li><b>Не появится и «то же самое, но по-другому».</b> Копия тебя, отличающаяся тем, что «на самом деле она - не ты», - не имеет физического содержания. Различие, которое ничего не различает, - не различие (глава 4). Бесконечность реализует состояния, а не ярлыки.</li>
+          <li><b>Вброс:</b> граница между «реализуется в бесконечности» и «не реализуется нигде» - это граница между непротиворечивым и противоречивым. Не между вероятным и невероятным. Значит, единственная сила, которая ограничивает бесконечный мир, - логика. Ни физика, ни размер, ни время. Только «нельзя одновременно да и нет».</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx gr"><b>p &gt; 0</b><span>пакман, копия, второе время</span></div>
+            <div class="bx gr"><b>× ∞ =</b><span>есть, вопрос где</span></div>
+          </div>
+          <div class="row">
+            <div class="bx rd"><b>p = 0 (противоречие)</b><span>круглый квадрат, 2+2=5, true === false</span></div>
+            <div class="bx rd"><b>× ∞ =</b><span>0. Нигде. Никогда</span></div>
+          </div>
+          <div class="row">
+            <div class="bx am"><b>p = 0 (мера)</b><span>точное значение непрерывной величины</span></div>
+            <div class="bx am"><b>× ∞ =</b><span>не определено: бесконечность здесь не работает</span></div>
+          </div>
+        </div>
+        <div class="note gold" style="margin-top:14px"><b>Что говорит математика:</b> теория меры, Колмогоров 1933. Всё выше - строго, включая третью строку, которую чаще всего путают со второй.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s42">
+  <div class="content">
+    <div class="kicker">Бесконечность · тест</div>
+    <h2>«Мы об этом подумали, значит p ≠ 0»: где это верно</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Вброс, с которого начался выпуск:</b> раз мы смогли подумать о мире-пакмане, вероятность его не ноль, а в бесконечном мире не ноль = единица. Значит, пакман есть.</li>
+          <li><b>Где это ломается:</b> мы можем подумать о круглом квадрате. Мысль не создаёт меру. «Подумать» - это составить слова, а слова составляются и для противоречий. Мысль о X доказывает только, что X выразим, а не что X возможен.</li>
+          <li><b>Где это работает:</b> если мысль о X - это не просто слова, а <b>непротиворечивая модель</b>, совместимая с известными законами, то X проходит тест. Пакман: есть уравнения, есть предсказания (круги на небе), нет противоречия. p &gt; 0. Второе время: есть уравнения (Бэрс). p &gt; 0. Рекурсия без дна в конечном мире: противоречит Бекенштейну. p = 0. Мир, где true === false: противоречие по определению. p = 0.</li>
+          <li><b>Исправленная теорема мыслимости:</b> не «подумали, значит есть», а «<b>построили непротиворечиво, значит есть</b>». Мысль - не доказательство существования. Модель - доказательство. Разница между ними - вся разница между фантазией и физикой, и именно её этот выпуск проверяет на каждом слайде.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Тест выпуска: кто прошёл</h3>
+          <table class="t">
+            <tr><th>Фантазия</th><th>Модель есть</th><th>Противоречие</th><th>Итог</th></tr>
+            <tr><td>Мир-пакман</td><td class="d">да</td><td class="d">нет</td><td class="d gr">есть где-то</td></tr>
+            <tr><td>Пакман во времени (Пенроуз)</td><td class="d">да</td><td class="d">спорно (энтропия)</td><td class="d am">возможно</td></tr>
+            <tr><td>Бесконечно измерений</td><td class="d">да (Гильберт)</td><td class="d">нет</td><td class="d gr">уже здесь</td></tr>
+            <tr><td>Второе время</td><td class="d">да (Бэрс)</td><td class="d">нет</td><td class="d gr">есть где-то</td></tr>
+            <tr><td>Рекурсия без дна, конечный мир</td><td class="d">нет</td><td class="d">Бекенштейн</td><td class="d rd">нигде</td></tr>
+            <tr><td>Мир, где всё === всё</td><td class="d">нет</td><td class="d">по определению</td><td class="d rd">нигде, и это его определение</td></tr>
+            <tr><td>Состояние без процесса</td><td class="d">да (блок)</td><td class="d">нет, но необъяснён наблюдатель</td><td class="d am">возможно</td></tr>
+            <tr><td>Процесс без состояния</td><td class="d">невыразима</td><td class="d">?</td><td class="d am">не проверить</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s43">
+  <div class="content">
+    <div class="kicker">Бесконечность · код</div>
+    <h2>Код уже написан: платонизм для программистов</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Вброс:</b> раз мы смогли подумать о том, чтобы написать этот код, он уже существует и всегда существовал. Мы его не пишем, а находим.</li>
+          <li><b>Математика согласна наполовину.</b> Любая программа - конечная строка, а множество всех строк существует как объект: «библиотека Бабеля», где есть все книги, включая завтрашнюю. Платонизм (Гёдель, Пенроуз, Тегмарк): математика не создаётся, а открывается. Шмидхубер (1997): «Великий программист» перебирает все программы, наша Вселенная - одна из них. Твой код был в библиотеке до тебя. Всегда.</li>
+          <li><b>Но строка и процесс - разное.</b> Строка на полке - состояние (лента). Выполняемый код - процесс (головка). Библиотека Бабеля содержит все программы и не выполняет ни одну. Код «существовал всегда» как возможность и появился как процесс в момент запуска. Написать код - перевести его с полки в головку.</li>
+          <li><b>Заметь: текст есть и на входе, и на выходе.</b> Задача - слова, код - тоже слова, и оба лежали в библиотеке до тебя. Ты переводишь одну строку в другую, и обе уже были. Код не пишется - он <b>проявляется</b>, как изображение на плёнке: оно там с момента съёмки, проявитель только делает его видимым. Программист - проявитель. Автор - тот, кто сделал снимок: провёл первое различие (глава 4).</li>
+          <li><b>Тогда «мы подумали» - операция поиска, а не доказательство.</b> Мысль - указатель в библиотеке: находит строку, если та непротиворечива, и ничего не создаёт. Создаёт запуск, а он не был всегда. У процесса есть начало, у состояния нет. Вброс верен для ленты и неверен для головки: самое точное, что можно сказать о слове «существует».</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx cy"><b>Строка</b><span>есть всегда · библиотека · лента</span></div>
+            <div class="bx am"><b>Мысль</b><span>указатель · поиск · проявитель</span></div>
+            <div class="bx rd"><b>Запуск</b><span>процесс · имеет начало · головка</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что говорит математика</h3>
+          <p>Платонизм - позиция большинства работающих математиков и меньшинства философов. Против (Филд): всё то же можно без допущения, что числа «есть». За (Куайн, Патнэм): физика без математики не работает, значит, её объекты реальны как электроны. Спор 2500 лет. Строка «этот код» в библиотеке есть при любой позиции, спорят о слове «есть». Практическое следствие: любой баг тоже уже написан и всегда существовал. Это не оправдание.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГРАНИЦА ВЫПУСКА ============ -->
+<section class="slide" id="s44">
+  <div class="content">
+    <div class="kicker">Граница выпуска · проверяемое</div>
+    <h2>Что из этого можно измерить, и кто измеряет</h2>
+    <div class="cols">
+      <div>
+        <table class="t">
+          <tr><th>Фантазия</th><th>Проверка</th><th>Статус</th></tr>
+          <tr><td>Мир-пакман</td><td class="d">круги на небе в реликтовом излучении (Planck, будущие LiteBIRD, CMB-S4)</td><td class="d am">не найдено, ограничено снизу</td></tr>
+          <tr><td>Циклы Пенроуза</td><td class="d">«кольца Хокинга» в реликтовом фоне</td><td class="d rd">заявлены, не подтверждены</td></tr>
+          <tr><td>Свёрнутые измерения</td><td class="d">отклонения от закона Ньютона на микронах; потеря энергии в LHC</td><td class="d am">не найдено до 50 мкм / 10⁻¹⁹ м</td></tr>
+          <tr><td>Голография</td><td class="d">«голографический шум» в интерферометрах (Holometer, Fermilab)</td><td class="d rd">не найден, 2016</td></tr>
+          <tr><td>Отбор Смолина</td><td class="d">предел массы нейтронных звёзд</td><td class="d am">натянуто, но жив</td></tr>
+          <tr><td>Реляционная КМ</td><td class="d">эксперименты «друг Вигнера»</td><td class="d gr">2019: объективность фактов под вопросом</td></tr>
+          <tr><td>Бесконечность Вселенной</td><td class="d">кривизна: чем ближе к нулю, тем больше нижняя граница размера</td><td class="d am">Ω = 1.000 ± 0.002</td></tr>
+          <tr><td>Вычислимость Вселенной</td><td class="d">поиск «пикселей» пространства в дисперсии гамма-всплесков</td><td class="d am">не найдено до планковского масштаба</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Что это значит</h3>
+          <p>Примерно половина фантазий выпуска имеет хотя бы один эксперимент, который мог бы их убить. Ни один пока не убил, и ни один не подтвердил. Это лучшее положение, в каком может быть фантазия: она стала гипотезой. Вторая половина (два хаоса, процесс и состояние, граница внутри нас, платонизм) - конструкции без предсказаний. Они не гипотезы, а рамки. Рамку нельзя проверить, можно только сменить.</p>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Поппер против Тегмарка:</b> Поппер - «что нельзя опровергнуть, то не наука». Тегмарк - «то, что следует из проверенной теории, наука, даже если само не проверяемо» (копии в бесконечной Вселенной следуют из инфляции). Оба правы про разное: Поппер - про метод, Тегмарк - про следствия. Этот выпуск живёт в зазоре между ними и не претендует ни на то, ни на другое.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s45">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Все вбросы выпуска на одном слайде</h2>
+    <table class="t" style="font-size:12.5px">
+      <tr><th>Глава</th><th>Вброс</th><th>Что говорит физика</th><th>Что ломается</th></tr>
+      <tr><td>Пакман</td><td class="d">мир замкнут на себя, без края и бесконечности</td><td class="d">плоско; тор не исключён, больше 78 млрд св. лет</td><td class="d">«снаружи» и «до» исчезают, энтропии нужен reset</td></tr>
+      <tr><td>Измерения</td><td class="d">их бесконечно много, и мы уже в них; ходим по трём, различаем по ∞</td><td class="d">три крупных, Гильберт бесконечномерен, струны 10-11</td><td class="d">измерение - свойство языка, а не мира</td></tr>
+      <tr><td>Рекурсия</td><td class="d">Вселенная в чёрной дыре в Вселенной; стек симуляций; Гёдель как физика</td><td class="d">планковское дно, Бекенштейн против бесконечной глубины</td><td class="d">без дна нужен бесконечный объём</td></tr>
+      <tr><td>Два хаоса</td><td class="d">первый: всё === всё; второй: различий больше, чем можно удержать</td><td class="d">симметрия, Лоренц, Ляпунов, Ландауэр</td><td class="d">первая черта не выводится ни из чего</td></tr>
+      <tr><td>Процесс !== состояние</td><td class="d">состояние = процесс, который смотрит на себя; память живёт в щели между хаосами</td><td class="d">блок-Вселенная, реляционная КМ, друг Вигнера 2019</td><td class="d">оба чистых варианта не производят наблюдателя</td></tr>
+      <tr><td>Граница</td><td class="d">край - свойство наблюдателя, ёмкости и петли; проходит через голову</td><td class="d">три горизонта измерены, Бекенштейн строг, Пуанкаре - теорема</td><td class="d">без внешней границы бесконечность обязательна</td></tr>
+      <tr><td>Бесконечность</td><td class="d">возможно = есть; вопрос только «где»; код уже написан</td><td class="d">Борель-Кантелли, Тегмарк, теория меры</td><td class="d">мысль ≠ мера; строка ≠ запуск; противоречие не спасти</td></tr>
+    </table>
+    <div class="note">Сквозная мысль выпуска: <b>всё, что мы придумали, упирается в одно и то же место - первое различие.</b> Пакман переносит его в «до», рекурсия в «под», бесконечность в «где», процесс в «кто смотрит». Физика зовёт его нарушением симметрии, логика - первой чертой, программисты - `===`. Мы его не объяснили. Мы обошли его семь раз и каждый раз оказывались там же. Это и есть карта.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s46">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <div class="kicker amber">Финал · свет по звону</div>
+    <h1>Мы не изобрели хаос. Мы изобрели черту</h1>
+    <p class="lead">Хаос был всегда, в двух видах: до первого различия и после последнего. Всё, что между ними, - память, время, код, эта дека и ты - существует, потому что процесс где-то замкнулся на себя и провёл черту. Мы прошли по этой черте семь глав, и она везде одна.</p>
+    <p class="lead" style="margin-top:14px">Дальше физика молчит, и это правильно. Но молчание не означает, что спрашивать нечего. Выпуск второй. Свет по звону, и звон на этот раз - наш собственный.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- SLIDES_END -->
+
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>

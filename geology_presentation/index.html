@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Земля в разрезе: геология как судьба</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #ff8c4a; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Earth deep dive · Гвендолин-ночные-лекции</div>
+    <h1>Земля в разрезе: геология как судьба</h1>
+    <p class="lead">Планета, на которой мы живём, — это раскалённая капля железа и камня с коркой тоньше яблочной кожуры. Эта корка дрейфует, трескается, взрывается — и попутно решает, где стоят заводы, кто владеет чипами, куда текут деньги и почему цивилизации возникали именно там, где возникали. Разбираем от ядра до Йеллоустона — со всеми мифами и рекордами.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 1: ПЛАНЕТА В РАЗРЕЗЕ ============ -->
+<section class="slide chapter" id="s2">
+  <div class="bgimg"><img src="assets/ch_core.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1</div>
+    <h1>Планета в разрезе</h1>
+    <p class="lead">До центра Земли — 6371 километр. Человечество процарапало 12 из них — 0.2% пути. Всё, что глубже, мы знаем не потрогав: планету нам просвечивают землетрясения.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">Разрез · слои</div>
+    <h2>Яблоко с кожурой: из чего состоит Земля</h2>
+    <div class="dg" style="margin-bottom:18px">
+      <div class="row" style="align-items:stretch">
+        <div class="bx cy"><b>Кора: 5–70 км</b><span>океаническая 5–10 км (базальт), континентальная 30–70 км (гранит). Меньше 1% массы планеты</span></div>
+        <div class="bx"><b>Мантия: до 2890 км</b><span>84% объёма. Твёрдый силикатный камень, который ТЕЧЁТ — сантиметры в год, как стекло за века</span></div>
+        <div class="bx am"><b>Внешнее ядро: до 5150 км</b><span>жидкое железо с никелем, ~4000–5000 °C. Его течения делают магнитное поле</span></div>
+        <div class="bx am"><b>Внутреннее ядро: до 6371 км</b><span>твёрдый железный шар размером с Плутон, ~5500 °C — как поверхность Солнца. Давление 3.6 млн атмосфер</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Если Земля — яблоко, кора тоньше кожуры.</b> Океаническая кора против радиуса планеты — это 0.1%: плёнка краски на глобусе. Вся жизнь, все горы, вся нефть и все войны за ресурсы — внутри этой плёнки.</li>
+          <li><b>Мантия твёрдая И течёт одновременно.</b> На секундах — камень (сейсмические волны проходят как через твёрдое), на миллионах лет — жидкость: конвекция со скоростью роста ногтей. Это не расплав — расплав только в отдельных очагах.</li>
+          <li><b>Внутреннее ядро растёт</b> — жидкое железо намерзает на него примерно по миллиметру в год. Кристаллизация выделяет тепло и перемешивает внешнее ядро — подпитывает магнитное поле. Через ~90 млрд лет ядро застыло бы целиком, но Солнце убьёт планету раньше.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Откуда внутри жар: 47 тераватт</h3>
+        <table class="t">
+          <tr><th>Источник</th><th>Доля</th><th>Что это</th></tr>
+          <tr><td>Радиоактивный распад</td><td class="d">~50%</td><td class="d">уран-238, торий-232, калий-40 в мантии и коре — ядерный реактор на медленном ходу</td></tr>
+          <tr><td>Первичное тепло</td><td class="d">~50%</td><td class="d">энергия сборки планеты 4.5 млрд лет назад: удары планетезималей + гравитационное сжатие + утонувшее в центр железо</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">47 ТВт — это ×2 всей энергетики человечества. Но на квадратный метр поверхности выходит всего 0.09 Вт — в 15 000 раз меньше, чем даёт Солнце. Поэтому греемся мы сверху, а вот вся тектоника, вулканы и магнитное поле работают на внутреннем жаре.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s4">
+  <div class="content">
+    <div class="kicker">Разрез · рекорд глубины</div>
+    <h2>Кольская сверхглубокая: 12 262 метра — и всё</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/kola.png" alt="">
+        <div class="pcap">Заполярный, Мурманская область. Буровая разобрана, скважина заварена стальной крышкой. Глубже человечество не забиралось никогда.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>1970–1992, СССР.</b> Цель — 15 км. Дошли до 12 262 м и упёрлись в физику: на дне оказалось <b>180 °C вместо расчётных 100</b>, порода стала пластичной — скважина «затекала» за буром, как воск. Инструмент размягчался. Проект закрыт, объект заброшен в 2008-м.</li>
+          <li><b>Что нашли:</b> на 6–7 км — микрофоссилии возрастом 2 млрд лет; свободную воду там, где её «не должно быть»; и НЕ нашли ожидаемый переход гранита в базальт — сейсмическая граница оказалась не сменой породы, а изменением её состояния. Половина учебниковых ожиданий не подтвердилась.</li>
+          <li><b>«Колодец в ад»</b> — легендарная городская страшилка: якобы микрофоны на 12 км записали крики грешников. Запись — монтаж из фильма ужасов, но легенда живее скважины: место до сих пор ищут сталкеры.</li>
+          <li><b>Масштаб позора</b>: 12 км из 6371 — мы проковыряли 0.2% радиуса. До мантии не добрался никто — даже океанический проект Мохол (где кора тоньше всего) США бросили в 1966-м. Всё, что глубже 12 км, — только по косвенным данным.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="content">
+    <div class="kicker">Разрез · как мы это узнали</div>
+    <h2>УЗИ планеты: откуда мы знаем, что там, куда не добраться</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Каждое землетрясение — это вспышка рентгена.</b> Волны проходят планету насквозь, и сотни станций ловят их с другой стороны. P-волны (сжатие) идут через всё, S-волны (сдвиг) <b>не проходят через жидкость</b>. В 1906-м Олдхэм заметил «тень» S-волн за ядром — так открыли, что внешнее ядро жидкое. В 1936-м Инге Леманн по слабым отражениям нашла внутри него твёрдый шар.</li>
+          <li><b>Сейсмотомография</b> — то же, что КТ в больнице: тысячи землетрясений × тысячи станций = 3D-карта скоростей волн. На ней видно холодные утонувшие плиты (быстрее) и горячие восходящие плюмы (медленнее) — вплоть до двух загадочных «капель» размером с континент на дне мантии под Африкой и Тихим океаном (LLSVP).</li>
+          <li><b>Прямые улики тоже есть:</b> железные метеориты — осколки ядер разбитых планетезималей, «образцы ядра» с доставкой на дом; ксенолиты — куски мантии со 150–200 км, которые вулканы выносят наверх; гео-нейтрино из распада урана и тория, которые ловит детектор KamLAND, — прямое измерение ядерного реактора внутри планеты.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Дедукция по школьной физике</h3>
+          <table class="t">
+            <tr><th>Факт</th><th>Вывод</th></tr>
+            <tr><td>Средняя плотность Земли 5.5 г/см³, а камни на поверхности — 2.7</td><td class="d">внутри что-то сильно тяжелее камня → железо</td></tr>
+            <tr><td>Момент инерции меньше, чем у однородного шара</td><td class="d">масса сконцентрирована к центру → плотное ядро</td></tr>
+            <tr><td>У планеты есть магнитное поле</td><td class="d">внутри течёт проводник → жидкий металл в движении</td></tr>
+            <tr><td>S-волны не проходят внешнее ядро</td><td class="d">оно жидкое</td></tr>
+            <tr><td>Тонкие эффекты волн в самом центре</td><td class="d">внутри жидкого — твёрдый шар</td></tr>
+          </table>
+          <p style="margin-top:8px" class="dim">Кавендиш взвесил Землю в 1798-м на крутильных весах в сарае. Дальше — цепочка выводов, каждый из которых можно проверить. Никто не видел ядро — но мы знаем о нём больше, чем о дне Марианской впадины.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2: ТЕКТОНИКА ============ -->
+<section class="slide chapter" id="s6">
+  <div class="bgimg"><img src="assets/ch_plates.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2</div>
+    <h1>Тектоника: континенты плывут</h1>
+    <p class="lead">Идею, что материки дрейфуют, полвека считали бредом. Автор умер во льдах Гренландии осмеянным — а потом океанское дно подтвердило каждое его слово.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s7">
+  <div class="content">
+    <div class="kicker">Тектоника · Вегенер</div>
+    <h2>Человек, которому не поверили: дрейф континентов</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>1912, Альфред Вегенер</b> — метеоролог (!) — замечает то, что видел каждый школьник: Африка и Южная Америка складываются как пазл. Но он идёт дальше и собирает улики: <b>одинаковые окаменелости</b> по обе стороны океана (пресноводный мезозавр не переплыл бы Атлантику), угольные пласты в Антарктиде, следы ледников в Сахаре, совпадающие горные пояса на разных континентах.</li>
+          <li><b>Его уничтожили.</b> Главный аргумент оппонентов был честным: «какая сила способна двигать континенты сквозь океанскую кору?» У Вегенера ответа не было — его механизмы (центробежная сила, приливы) действительно не работали. Геологический истеблишмент объявил теорию фантазией. В 1930-м Вегенер погиб в экспедиции в Гренландии — до реабилитации не дожил 30 лет.</li>
+          <li><b>Реабилитация пришла со дна океана.</b> 1950–60-е: картирование дна находит срединно-океанические хребты; Гарри Гесс предлагает спрединг — дно раздвигается от хребтов; 1963, Вайн и Мэтьюз: магнитные полосы-«зебра» симметрично по обе стороны хребта — застывшая лава записала инверсии магнитного поля, как магнитофонная лента. Дно РАСТЁТ. К 1968-му тектоника плит — мейнстрим.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Улика-нокаут: возраст дна</h3>
+        <table class="t">
+          <tr><th>Где</th><th>Возраст коры</th></tr>
+          <tr><td>Осевая долина срединного хребта</td><td class="d">0 — лава застывает сегодня</td></tr>
+          <tr><td>Склоны хребтов</td><td class="d">миллионы лет</td></tr>
+          <tr><td>Края океанов, у желобов</td><td class="d">до ~180 млн лет — и не старше НИГДЕ</td></tr>
+          <tr><td>Континенты</td><td class="d">до 4 млрд лет (Канадский щит, Австралия)</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Океанскому дну максимум 180 млн лет — 4% возраста планеты. Всё, что старше, уже съедено обратно в мантию через желоба. Океаны — расходник: рождаются, раскрываются и закрываются. Континенты — пенопласт, который слишком лёгок, чтобы утонуть, поэтому им миллиарды лет.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s8">
+  <div class="content">
+    <div class="kicker">Тектоника · механизм</div>
+    <h2>Что на самом деле двигает плиты</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Плита не «плывёт» — она падает.</b> Главная сила — slab pull: край плиты, нырнувший в мантию у желоба, холоднее и плотнее окружения, и он ТОНЕТ, утягивая за собой всю плиту, как скатерть со стола. Вторая сила — ridge push: молодая горячая кора у хребта стоит выше и «сползает» с этой горки. Мантийная конвекция — фон и смазка, а не мотор.</li>
+          <li><b>Скорости — как рост ногтей:</b> 2–10 см в год. Рекордсмен сегодня — плита Наска и Тихоокеанская, до 15–16 см/год на отдельных участках. GPS видит это движение напрямую: положение станций на разных плитах расходится на сантиметры каждый год — дрейф Вегенера теперь измеряется в реальном времени.</li>
+          <li><b>Литосфера ≠ кора.</b> Плита — это кора плюс верхушка мантии, жёсткий слой ~100 км, который едет по астеносфере — горячему, чуть размягчённому слою мантии (местами 1–2% расплава — как мокрый песок). Именно эта смазка делает тектонику возможной. У Венеры и Марса её нет — и плит нет: кора-монолит, тепло копится, у Венеры, судя по всему, планета «переплавляет» поверхность целиком раз в сотни млн лет.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Семь больших плит (+ десятки малых)</h3>
+        <table class="t">
+          <tr><th>Плита</th><th>Скорость</th><th>Куда</th></tr>
+          <tr><td>Тихоокеанская</td><td class="d">7–10 см/год</td><td class="d">на СЗ, ныряет под Азию и Америку</td></tr>
+          <tr><td>Наска</td><td class="d">до 15 см/год</td><td class="d">под Южную Америку → Анды</td></tr>
+          <tr><td>Индийская</td><td class="d">5 см/год</td><td class="d">таранит Евразию → Гималаи</td></tr>
+          <tr><td>Африканская</td><td class="d">2–3 см/год</td><td class="d">на север, закрывает Средиземное</td></tr>
+          <tr><td>Евразийская, С.-Американская</td><td class="d">2–3 см/год</td><td class="d">расходятся: Атлантика растёт</td></tr>
+          <tr><td>Антарктическая</td><td class="d">~1 см/год</td><td class="d">почти стоит — окружена хребтами</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">За человеческую жизнь Атлантика становится шире на ~2.5 метра. За время существования Рима — на ~60 метров. Колумбу сегодня плыть чуть дальше.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s9">
+  <div class="content">
+    <div class="kicker">Тектоника · цикл суперконтинентов</div>
+    <h2>Пангея — не первая и не последняя</h2>
+    <div class="dg" style="margin-bottom:18px">
+      <div class="row" style="align-items:stretch">
+        <div class="bx"><b>Кенорленд</b><span>~2.7 млрд лет назад</span></div>
+        <div class="bx"><b>Колумбия (Нуна)</b><span>~1.8 млрд</span></div>
+        <div class="bx"><b>Родиния</b><span>~1.1 млрд</span></div>
+        <div class="bx am"><b>Пангея</b><span>335–175 млн: все материки в один, вокруг — единый океан Панталасса</span></div>
+        <div class="bx cy"><b>сейчас</b><span>разлетаемся: середина цикла</span></div>
+        <div class="bx gr"><b>Пангея Ультима</b><span>через ~250 млн лет соберёмся снова</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Цикл Уилсона, ~400–600 млн лет на оборот:</b> суперконтинент собирается → под ним копится тепло (одеяло из континента мешает мантии остывать) → его разрывает рифтами → материки разлетаются, между ними раскрываются океаны → океаны стареют, начинают закрываться → всё сталкивается обратно. Земля дышит континентами.</li>
+          <li><b>Что уже расписано на будущее:</b> Африка закроет Средиземное море (Альпы получат продолжение — «Средиземные Гималаи»), Австралия въедет в Юго-Восточную Азию, Восточная Африка оторвётся по Рифтовой долине (новый океан уже заложен — Афарская впадина трещит сегодня), Атлантика, по большинству моделей, начнёт закрываться — у её краёв уже зарождаются зоны субдукции (Гибралтарская дуга).</li>
+          <li><b>Климат прилагается:</b> суперконтинент = злой континентальный климат, гигантские пустыни в центре, и, по одной из гипотез, Пангея Ультима будет малопригодна для млекопитающих: +30° к жаре в глубине материка. У геологии длинная воля: она уже решила, каким будет мир, до которого никто из нас не доживёт.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Как выглядела Пангея на практике</h3>
+        <ul class="pts" style="font-size:13.5px">
+          <li>Из центра Пангеи до океана — 3000+ км: сердце материка было суше Сахары.</li>
+          <li>Один океан на планету = вялые течения, застойные моря; на границе перми и триаса — величайшее вымирание (96% морских видов), которому суперконтинентальная география подыграла.</li>
+          <li>Динозавры начали на едином материке — поэтому их ранние виды похожи на всех континентах. А вот млекопитающие эволюционировали уже на осколках — поэтому Австралия получила кенгуру, а не оленей.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 3: ГРАНИЦЫ ПЛИТ ============ -->
+<section class="slide chapter" id="s10">
+  <div class="bgimg"><img src="assets/ch_boundaries.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3</div>
+    <h1>Границы плит: где планета живая</h1>
+    <p class="lead">95% землетрясений, почти все вулканы, самые глубокие впадины и самые высокие горы — всё это швы между плитами. Три типа швов — три разных характера.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s11">
+  <div class="content">
+    <div class="kicker">Границы · три типа</div>
+    <h2>Разошлись, столкнулись, притёрлись</h2>
+    <div class="dg" style="margin-bottom:18px">
+      <div class="row" style="align-items:stretch">
+        <div class="bx cy"><b>Дивергентные: расходятся</b><span>срединно-океанические хребты — лава заполняет щель, рождается новая кора. Исландия, Восточно-Африканский рифт</span></div>
+        <div class="bx am"><b>Конвергентные: сталкиваются</b><span>океанская плита ныряет под соседку (субдукция → желоба, вулканы) или два континента бодаются лбами (коллизия → Гималаи)</span></div>
+        <div class="bx"><b>Трансформные: скользят</b><span>плиты трутся боками — ни гор, ни вулканов, зато землетрясения. Сан-Андреас</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Срединно-океанический хребет — самая длинная горная система планеты:</b> 65 000 км непрерывной цепи через все океаны, как шов на теннисном мяче. Мы её почти не видим — 99% под водой. Каждый год она производит ~3 км³ новой коры: конвейер работает без остановки 4 миллиарда лет.</li>
+          <li><b>Огненное кольцо:</b> Тихий океан окружён зонами субдукции по периметру — 75% вулканов и 90% землетрясений планеты сидят на этом кольце. Япония, Камчатка, Чили, Индонезия, Калифорния — все живут на шве. И, как увидим дальше, — не случайно там же живёт мировая экономика.</li>
+          <li><b>Субдукция — это переработка:</b> плита уносит в мантию не только базальт, но и воду с осадками. Вода снижает температуру плавления мантии — над ныряющей плитой вспыхивает цепочка вулканов. Вулканы Камчатки и Анд — это, буквально, океан, выжатый из тонущей плиты обратно.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Каждому шву — свой рельеф</h3>
+        <table class="t">
+          <tr><th>Граница</th><th>Что строит</th><th>Пример</th></tr>
+          <tr><td>океан ← → океан</td><td class="d">хребет, рифтовая долина</td><td class="d">Срединно-Атлантический</td></tr>
+          <tr><td>океан → под океан</td><td class="d">желоб + островная дуга</td><td class="d">Марианы, Япония</td></tr>
+          <tr><td>океан → под континент</td><td class="d">желоб + горы с вулканами</td><td class="d">Анды</td></tr>
+          <tr><td>континент ↔ континент</td><td class="d">складчатые горы без вулканов</td><td class="d">Гималаи, Альпы, Урал</td></tr>
+          <tr><td>бок о бок</td><td class="d">разлом, смещённые русла рек</td><td class="d">Сан-Андреас, Анатолийский</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s12">
+  <div class="content">
+    <div class="kicker">Границы · дно</div>
+    <h2>Марианская впадина: 11 километров вниз</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/mariana.png" alt="">
+        <div class="pcap">Challenger Deep, 10 994 м. Людей здесь побывало меньше, чем на Луне ходило. Давление — 1086 атмосфер: тонна на каждый квадратный сантиметр.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Это субдукция в прямом эфире:</b> Тихоокеанская плита сгибается и ныряет под Марианскую. Рядом — самое старое океанское дно планеты, юрское, ~180 млн лет: дальше него всё уже съедено. Эверест, опрокинутый в впадину, не достанет до поверхности 2 км.</li>
+          <li><b>Люди на дне:</b> 1960 — Пикар и Уолш на батискафе «Триест»: 5 часов спуска, треснувшее стекло на 9 км — продолжили; 2012 — Джеймс Кэмерон, соло; с 2019 — Виктор Весково катает туда экспедиции почти как в тур. Итого на дне побывали ~пара десятков человек — на орбите бывало больше за один год.</li>
+          <li><b>Жизнь есть и там:</b> рыбы-липариды до ~8 км (глубже белки перестают сворачиваться правильно — рыбы физиологически не могут глубже), на самом дне — амфиподы, голотурии и одноклеточные ксенофиофоры размером с ладонь. В тканях амфипод со дна нашли микропластик, а рядом на дне — полиэтиленовый пакет. 11 км вниз — а мы уже там намусорили.</li>
+          <li><b>Впадина пьёт океан:</b> зоны субдукции утаскивают воду в мантию — по некоторым оценкам, за историю Земли туда ушло несколько объёмов современного океана. Часть возвращается вулканами, часть хранится в минералах мантии: внизу, растворённый в камне, возможно, плещется ещё один океан.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s13">
+  <div class="content">
+    <div class="kicker">Границы · коллизия</div>
+    <h2>Гималаи: на вершине Эвереста лежит морское дно</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Индия — гонщик среди континентов:</b> оторвавшись от Гондваны, она неслась на север до 18–20 см/год (рекорд для континентов — до сих пор спорят, почему так быстро; похоже, её тянули сразу две зоны субдукции). ~50 млн лет назад она врезалась в Евразию — и до сих пор давит: Эверест растёт примерно на 4 мм в год и уезжает на северо-восток.</li>
+          <li><b>Вершина Эвереста — известняк со дна океана Тетис.</b> В породе на 8848 м находят остатки морских лилий и раковин ордовика. Величайшая гора планеты сложена морским дном, выжатым между двумя континентами, как крем между коржами. Океана Тетис больше нет — от него остались Средиземное, Чёрное и Каспий.</li>
+          <li><b>Кора под Тибетом двойная</b> — 70–80 км вместо обычных 35: Индия поднырнула под Азию и приподняла её целиком. Тибетское плато — 2.5 млн км² на высоте 4.5 км — изменило климат планеты: оно включило муссоны, а его выветривание, по одной из гипотез, выжрало из атмосферы столько CO₂, что помогло запустить ледниковые периоды.</li>
+          <li><b>Горы смертны:</b> Урал — такая же коллизия, только 300 млн лет назад; от восьмитысячников остались горбы по 1.5 км. Аппалачи ещё старше. Через 100 млн лет и Гималаи станут холмами — эрозия всегда доедает то, что построила тектоника.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Цифры столкновения</h3>
+        <table class="t">
+          <tr><td>Скорость Индии тогда</td><td class="d">до 20 см/год</td></tr>
+          <tr><td>Скорость сейчас</td><td class="d">~5 см/год — всё ещё давит</td></tr>
+          <tr><td>Укорочение коры</td><td class="d">~2500 км сжато в складки и надвиги</td></tr>
+          <tr><td>Рост Эвереста</td><td class="d">~4 мм/год (GPS на вершине)</td></tr>
+          <tr><td>Толщина коры под Тибетом</td><td class="d">70–80 км — рекорд планеты</td></tr>
+          <tr><td>Возраст пород вершины</td><td class="d">~470 млн лет, морские</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Землетрясения в Непале (2015, 9000 жертв) — это платёж по счёту коллизии: Индия проседает под Азию рывками по несколько метров.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s14">
+  <div class="content">
+    <div class="kicker">Границы · рифт наружу</div>
+    <h2>Исландия: единственное место, где шов торчит из воды</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Исландия — это срединно-океанический хребет, вылезший на поверхность:</b> под островом сошлись рифт и горячая точка (мантийный плюм), поэтому лавы хватило построить сушу. Западная половина острова — Северо-Американская плита, восточная — Евразийская, между ними +2 см каждый год. Остров РАСТЁТ в ширину.</li>
+          <li><b>Разлом Сильфра</b> в озере Тингвадлаватн — щель между плитами, залитая ледниковой водой прозрачностью 100 м: единственное место, где можно нырнуть и коснуться двух континентов одновременно. Рядом — равнина Тингвеллир, где в 930 году основали альтинг, старейший парламент мира. Демократия буквально родилась в трещине между плитами.</li>
+          <li><b>Плата и награда:</b> извержение в среднем раз в 4–5 лет (в 2021–2024 — серия на Рейкьянесе, лава подошла к городу Гриндавик); зато геотермия даёт 25–30% электричества и ~90% отопления страны. Исландцы топят дома срединно-океаническим хребтом — самый честный обмен с геологией на планете.</li>
+          <li><b>Эйяфьядлайёкюдль, 2010</b> — напоминание, что даже маленький исландский вулкан умеет останавливать цивилизацию: облако пепла закрыло небо Европы на неделю, 100 000 отменённых рейсов, $1.7 млрд убытков авиакомпаний. Пепел в турбине плавится в стекло — самолёты такие облака облетают.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Восточная Африка: рифт репетирует океан</h3>
+        <ul class="pts" style="font-size:13.5px">
+          <li>Восточно-Африканский рифт — 6000 км трещины от Красного моря до Мозамбика: Сомалийская плита отрывается от Африки со скоростью ~6–7 мм/год.</li>
+          <li>В Афарской впадине (Эфиопия) в 2005-м за 10 дней раскрылась трещина 60 км длиной и 8 м шириной — океанский рифтинг на глазах.</li>
+          <li>Через 5–10 млн лет сюда зальётся океан, и Африканский Рог станет островом. Великие озёра (Танганьика — второе по глубине в мире) — это будущее море в черновике.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s15">
+  <div class="content">
+    <div class="kicker">Границы · трансформ</div>
+    <h2>Сан-Андреас: Лос-Анджелес едет в гости к Сан-Франциско</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>1300 км разлома</b> через всю Калифорнию: Тихоокеанская плита скользит на северо-запад вдоль Северо-Американской, ~5 см/год. ЛА стоит на одной, СФ — на другой: через ~12 млн лет города станут соседями. Русла рек, заборы и дороги, пересекающие разлом, за десятилетия сдвигаются на метры — смещение видно глазами.</li>
+          <li><b>1906, Сан-Франциско, M7.9:</b> разлом вспорол 470 км за минуту, смещение до 6 м; город добил не толчок, а пожар — 80% застройки, 3000 погибших. Именно после 1906-го родилась современная сейсмология разломов: теория упругой отдачи Рида написана по замерам этого разрыва.</li>
+          <li><b>«Big One» — не паника, а бухгалтерия:</b> южный участок разлома не разряжался с 1857 года, накоплено ~5–6 метров смещения. USGS оценивает ~60% вероятности M6.7+ в районе ЛА за 30 лет. Калифорния готовится строительными нормами, ранним предупреждением ShakeAlert и учениями на 10 млн человек — с землетрясением нельзя воевать, но можно не дать ему убивать.</li>
+          <li><b>Северный близнец-злодей — Анатолийский разлом</b> в Турции: та же механика, но землетрясения идут по нему «молнией» с запада на восток, приближаясь к Стамбулу. Февраль 2023-го (M7.8, 55 000+ погибших) — его южный сосед. Разница между Калифорнией и Турцией — не в геологии, а в бетоне: коррупция в строительстве убивает сильнее магнитуды.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Трансформные разломы мира</h3>
+        <table class="t">
+          <tr><th>Разлом</th><th>Скорость</th><th>Главный город на нём</th></tr>
+          <tr><td>Сан-Андреас (США)</td><td class="d">5 см/год</td><td class="d">Лос-Анджелес, Сан-Франциско</td></tr>
+          <tr><td>Северо-Анатолийский</td><td class="d">2.5 см/год</td><td class="d">Стамбул (16 млн человек)</td></tr>
+          <tr><td>Мёртвого моря</td><td class="d">0.5 см/год</td><td class="d">Иерусалим рядом</td></tr>
+          <tr><td>Альпийский (Н. Зеландия)</td><td class="d">4 см/год</td><td class="d">весь Южный остров</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Половина этих разломов «созрела»: копят напряжение дольше среднего интервала. Геология не торопится — но и не забывает.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 4: ЗЕМЛЕТРЯСЕНИЯ ============ -->
+<section class="slide chapter" id="s16">
+  <div class="bgimg"><img src="assets/ch_quake.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4</div>
+    <h1>Землетрясения: планета сбрасывает напряжение</h1>
+    <p class="lead">Плиты движутся плавно, а границы — рывками: десятилетиями копят упругую энергию и отдают её за секунды. Предсказать нельзя. Пережить — можно.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s17">
+  <div class="content">
+    <div class="kicker">Землетрясения · физика</div>
+    <h2>Пружина из камня: как это работает</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Упругая отдача:</b> края разлома сцеплены трением, а плиты продолжают ехать — порода вокруг изгибается, как натягиваемый лук, годами и веками. Когда напряжение превышает трение, разлом проскальзывает за секунды, и вся накопленная энергия вылетает сейсмическими волнами. Потом цикл начинается заново: stick — slip, залипли — сорвались.</li>
+          <li><b>Магнитуда — шкала логарифмическая,</b> и это главное, что о ней надо знать: +1 балл магнитуды = ×32 по энергии, +2 = ×1000. M9 — это не «на треть сильнее», чем M6, это тридцать две тысячи M6 разом. Старую шкалу Рихтера давно сменила моментная Mw — она честно меряет площадь разрыва × смещение × жёсткость породы.</li>
+          <li><b>Глубина решает не меньше магнитуды:</b> мелкий M7 под городом (Гаити) страшнее глубокого M8 под океаном. А самые глубокие толчки — до 700 км: это рвётся сама тонущая плита внутри мантии.</li>
+          <li><b>Рекорд всех времён — Чили, 1960, M9.5:</b> разорвалось ~1000 км разлома, смещение до 20+ м. Энергия — порядка четверти всей сейсмической энергии XX века в одном событии. Цунами дошло до Японии за 22 часа и убивало там людей, не слышавших ни о каком землетрясении.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Шкала на пальцах</h3>
+        <table class="t">
+          <tr><th>Mw</th><th>Энергия (тротил)</th><th>Что это</th></tr>
+          <tr><td>4</td><td class="d">~1 килотонна</td><td class="d">люстра качается, посуда звенит</td></tr>
+          <tr><td>6</td><td class="d">~1 мегатонна</td><td class="d">рушатся плохие дома</td></tr>
+          <tr><td>7</td><td class="d">~32 Мт</td><td class="d">Гаити-2010: 200 000+ погибших</td></tr>
+          <tr><td>8</td><td class="d">~1000 Мт</td><td class="d">Чили-2010, 500 жертв — нормы!</td></tr>
+          <tr><td>9</td><td class="d">~32 000 Мт</td><td class="d">Тохоку, Суматра: цунами-класс</td></tr>
+          <tr><td>9.5</td><td class="d">максимум наблюдений</td><td class="d">Чили-1960; сильнее — вряд ли: разломам не хватит длины</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Гаити M7.0 — 200 000+ погибших. Чили M8.8 (×500 энергии!) через полтора месяца — около 500. Убивает не магнитуда, а бетон без арматуры. Сейсмостойкие нормы — самое недооценённое изобретение человечества.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s18">
+  <div class="content">
+    <div class="kicker">Землетрясения · рекорды</div>
+    <h2>Тохоку-2011: день, когда сместилась ось</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>11 марта 2011, M9.1:</b> у побережья Японии сорвался участок мегаразлома 500 × 200 км, местами дно прыгнуло на 50 метров — рекорд измеренного смещения. <b>Хонсю целиком сдвинулся на 2.4 м к востоку</b>, побережье просело на метр, ось вращения Земли качнулась на ~17 см, сутки стали короче на 1.8 микросекунды. Одно событие — а поменялись константы в справочниках.</li>
+          <li><b>Цунами до 40 м</b> пришло через 20–30 минут: 18 500 погибших, и почти все — от воды, не от толчка. Дома выдержали M9 — нормы сработали; убила стена океана выше защитных дамб, рассчитанных «по историческому максимуму». Фукусима — та же ошибка: реакторы пережили толчок, но генераторы охлаждения залило волной, которую «не ждали». Геология не читает проектную документацию.</li>
+          <li><b>Суматра-2004, M9.2:</b> разрыв 1300 км — минуты(!) непрерывного разлома, цунами через весь Индийский океан, ~230 000 погибших в 14 странах — самая смертоносная волна в истории. После неё океан наконец обвесили буями DART: сегодня цунами через океан предсказывается за часы. Локальное — по-прежнему только ногами в гору: если у берега трясло минуту — беги, не жди сирену.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Мегаземлетрясения эпохи приборов</h3>
+        <table class="t">
+          <tr><th>Год</th><th>Где</th><th>Mw</th><th>Жертвы</th></tr>
+          <tr><td>1960</td><td class="d">Чили</td><td class="d">9.5</td><td class="d">~2000</td></tr>
+          <tr><td>1964</td><td class="d">Аляска</td><td class="d">9.2</td><td class="d">130</td></tr>
+          <tr><td>2004</td><td class="d">Суматра</td><td class="d">9.2</td><td class="d">~230 000</td></tr>
+          <tr><td>2011</td><td class="d">Тохоку</td><td class="d">9.1</td><td class="d">18 500</td></tr>
+          <tr><td>1952</td><td class="d">Камчатка</td><td class="d">9.0</td><td class="d">~2300</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Все пять — субдукция, все пять — Тихоокеанское кольцо плюс Индийский океан. Мегаземлетрясений вне зон субдукции не бывает: только там хватает площади разлома. И да — Камчатка в этом клубе.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s19">
+  <div class="content">
+    <div class="kicker">Землетрясения · предсказание</div>
+    <h2>Почему их нельзя предсказать (и что можно вместо)</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Предсказание — «где, когда и какой силы» — не работает,</b> и, похоже, принципиально: разлом — нелинейная система, где микроскопическая разница начальных условий решает, затухнет толчок форшоком M4 или разгонится в M8. Форшоки узнаются только задним числом; надёжного предвестника не нашли за 100 лет поисков. Пик позора — Паркфилд, США: участок, трясший «каждые ~22 года», обвесили приборами и ждали к 1993-му. Пришло в 2004-м — без единого предвестника.</li>
+          <li><b>Животные, жабы, «сейсмическая погода»</b> — фольклор: ни один заявленный случай не подтвердился статистикой. Единственное «предсказанное» землетрясение — Хайчэн-1975 (Китай, эвакуация по форшокам) — через год опровергла Таншаньская катастрофа: M7.6 без всяких форшоков, сотни тысяч погибших.</li>
+          <li><b>Что работает вместо пророчеств:</b> вероятностные карты («тряхнёт с вероятностью X за 30 лет» → строительные нормы, страховки, где не строить АЭС) и <b>раннее предупреждение</b>: P-волна бежит быстрее разрушительной S-волны, а радиосигнал — быстрее обеих. Япония и Мексика выигрывают 5–60 секунд: остановить поезда, открыть двери лифтов, заглушить газ, врачу — вынуть скальпель. Секунды, но они спасают.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Хронология одного предупреждения (Япония)</h3>
+        <table class="t">
+          <tr><td>0 сек</td><td class="d">разлом пошёл; P-волна стартует</td></tr>
+          <tr><td>+3–5 сек</td><td class="d">ближайшие станции ловят P, автоматика оценивает магнитуду</td></tr>
+          <tr><td>+5–8 сек</td><td class="d">тревога в каждом телефоне, ТВ, на заводах; синкансэны тормозят</td></tr>
+          <tr><td>+20–90 сек</td><td class="d">приходит S-волна — разрушительная</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">В Тохоку-2011 система дала Токио ~60 секунд. Ни один скоростной поезд не сошёл с рельсов — все успели затормозить. Это лучший результат сейсмологии за всю её историю: не предсказала — но предупредила.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s20">
+  <div class="content">
+    <div class="kicker">Землетрясения · миф vs порода</div>
+    <h2>Миф: «TSMC стоит на Тайване, потому что там геологически тихо»</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Слух ходит красивый:</b> мол, особое строение плит гасит микровибрации, брак минимален — потому чипы и делают на Тайване. Реальность ровно обратная: <b>Тайвань — одно из самых сейсмичных мест планеты.</b> Остров — продукт живой коллизии Филиппинской и Евразийской плит (потому и существует), ~100 ощутимых землетрясений в год, взносы плит — до 8 см/год.</li>
+          <li><b>Геология там не помогает производству, а бьёт по нему:</b> Чи-Чи 1999 (M7.6, 2400 погибших) остановил фабрики и встряхнул мировой рынок памяти; Хуалянь 2024 (M7.4) обошёлся TSMC в ~$60 млн и потерянные пластины — но фабрики встали на часы, не недели.</li>
+          <li><b>Как они выживают на разломе:</b> фабрики — это крепости виброзащиты: фундаменты на демпферах, степперы и EUV-литографы на активных антивибрационных платформах (гасят даже шаги), автоматический стоп по P-волне за секунды до прихода тряски, роботы паркуют пластины. Чистая инженерия против геологии — и инженерия пока выигрывает.</li>
+          <li><b>Почему Тайвань на самом деле:</b> Моррис Чанг, госпрограмма ITRI, ставка 1987 года на «только производство, без дизайна» и тридцать лет фанатичного исполнения. История и люди, не литосфера. <b>Вывод-мем:</b> половина мировых чипов стоит на живом разломе — это не геологический подарок, а осознанный риск, который весь мир молча принял.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Сейсмика против фабрик: счёт матча</h3>
+        <table class="t">
+          <tr><th>Событие</th><th>Удар</th><th>Итог</th></tr>
+          <tr><td>Чи-Чи 1999, M7.6</td><td class="d">блэкаут, стоп всех фаб</td><td class="d">цены на память ×2 за неделю; мир впервые заметил зависимость</td></tr>
+          <tr><td>Хуалянь 2024, M7.4</td><td class="d">эвакуации, лом пластин</td><td class="d">~$60 млн убытка, EUV целы, дни простоя</td></tr>
+          <tr><td>любой день</td><td class="d">микросейсмика, тайфуны</td><td class="d">гасится демпферами штатно</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Бонус для полноты картины: EUV-литограф ASML требует стабильности наноуровня — и работает на острове, который трясёт еженедельно. Возможно, это самый наглый инженерный трюк современности.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 5: ВУЛКАНЫ ============ -->
+<section class="slide chapter" id="s21">
+  <div class="bgimg"><img src="assets/ch_volcano.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5</div>
+    <h1>Вулканы и кальдеры</h1>
+    <p class="lead">Планета выдыхает: где-то тихой лавой, где-то взрывом в тысячи мегатонн. Разберём, как устроены вулканы, что на самом деле может Йеллоустон — и почему ядерной боеголовкой его не разбудить.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s22">
+  <div class="content">
+    <div class="kicker">Вулканы · типы</div>
+    <h2>Характер вулкана = вязкость магмы</h2>
+    <div class="dg" style="margin-bottom:18px">
+      <div class="row" style="align-items:stretch">
+        <div class="bx cy"><b>Щитовые: льют</b><span>жидкий базальт, газ выходит свободно. Гавайи, Исландия. Опасны кошельку, не жизни</span></div>
+        <div class="bx am"><b>Стратовулканы: стреляют</b><span>вязкая магма субдукции + запертый газ = взрыв. Везувий, Фудзи, Ключевская</span></div>
+        <div class="bx"><b>Кальдеры: проваливаются</b><span>очаг опустошается — крыша рушится внутрь, остаётся яма 10–100 км. Йеллоустон, Тоба, Санторин</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Вся разница — в том, выходит ли газ.</b> Базальт течёт как мёд — пузыри всплывают, лава просто льётся. Андезит и риолит (магмы над зонами субдукции, с водой и кремнезёмом) вязкие, как холодная замазка: газ заперт, давление растёт, потом пробку выносит. Один и тот же CO₂ с водяным паром — но или фонтан шампанского, или граната.</li>
+          <li><b>Убивает не лава</b> — от неё уходят пешком. Убивают пирокластические потоки: лавина раскалённого газа и пепла 300–700 °C со скоростью до 700 км/ч (Помпеи, Сент-Хеленс, Мартиника-1902 — 28 000 за минуты, выжило двое). И лахары — грязевые потоки из пепла с талым снегом (Армеро-1985: 23 000).</li>
+          <li><b>Мауна-Лоа и Мауна-Кеа</b> с подножия на дне океана — выше 10 км: самые высокие горы планеты, если мерить честно. Гавайская цепочка — конвейер горячей точки: плита едет над неподвижным плюмом, и вулканы выстраиваются в нитку возрастом до 80 млн лет — по этому пунктиру видно, куда и как быстро ехала плита.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">VEI: шкала взрывов (тоже логарифм)</h3>
+        <table class="t">
+          <tr><th>VEI</th><th>Объём выброса</th><th>Пример</th></tr>
+          <tr><td>3</td><td class="d">>0.01 км³</td><td class="d">Эйяфьядлайёкюдль-2010 — «всего лишь», а Европа встала</td></tr>
+          <tr><td>5</td><td class="d">>1 км³</td><td class="d">Везувий-79, Сент-Хеленс-1980</td></tr>
+          <tr><td>6</td><td class="d">>10 км³</td><td class="d">Кракатау-1883, Пинатубо-1991 (−0.5 °C миру на 2 года)</td></tr>
+          <tr><td>7</td><td class="d">>100 км³</td><td class="d">Тамбора-1815 → «год без лета»</td></tr>
+          <tr><td>8</td><td class="d">>1000 км³</td><td class="d">Тоба, Йеллоустон — раз в десятки тысяч лет на планету</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Каждая ступень — ×10 объёма. VEI-8 не видел ни один человек письменной эпохи: последний был 26 500 лет назад (Таупо, Новая Зеландия).</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s23">
+  <div class="content">
+    <div class="kicker">Вулканы · миф vs порода</div>
+    <h2>Йеллоустон честно: страшен, но не так и не тогда</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Факты без паники:</b> три суперизвержения — 2.1 млн, 1.3 млн и 640 тыс. лет назад. Под парком — очаг ~10 000 км³, НО это не бак лавы: расплава в нём 5–15%, остальное — кристаллическая каша, физически не готовая к извержению. USGS оценивает вероятность суперизвержения в <b>~1 : 730 000 в год</b> — сопоставимо с падением крупного астероида.</li>
+          <li><b>«Он просрочен» — миф из документалок:</b> интервалы 800 и 660 тыс. лет — это не период маятника, а два случайных числа; статистики «расписания» из двух интервалов не существует. Более того, очаг, по данным томографии, за последние сотни тысяч лет скорее остывает; самое вероятное будущее Йеллоустона — вообще никогда больше не бахнуть супер-классом, а тихо доживать гейзерами и редкими лавовыми выдавливаниями.</li>
+          <li><b>Если всё же VEI-8:</b> метровый слой пепла в радиусе ~500 км, сантиметры — по половине США; авиация и агросектор Северной Америки в нокауте, вулканическая зима −2…−4 °C на несколько лет, мировой продовольственный кризис. Чудовищно — но это <b>региональная катастрофа с глобальным похмельем</b>, не «конец США» и уж точно не конец человечества: Тоба был крупнее, и мы его пережили с каменными топорами.</li>
+          <li><b>«Расколет материк пополам» — физика запрещает:</b> кальдера — это провал ВНУТРЬ опустошённого очага, а не клин, разрывающий плиту. Континенты рвёт совсем другой механизм — рифтогенез, миллионы лет растяжения. Северную Америку однажды честно пытался расколоть Мидконтинентальный рифт (1.1 млрд лет назад, шрам от Верхнего озера до Канзаса — 3000 км) — и тот заглох. Одному вулкану такое не по чину.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Что Йеллоустон делает прямо сейчас</h3>
+        <table class="t">
+          <tr><td>Гейзеров и горячих источников</td><td class="d">~10 000 — половина мировых</td></tr>
+          <tr><td>Дыхание кальдеры</td><td class="d">почва ходит ±2–7 см/год — норма</td></tr>
+          <tr><td>Землетрясений в год</td><td class="d">1500–2500, почти все неощутимые</td></tr>
+          <tr><td>Тепловой поток</td><td class="d">×30–40 от среднего по континенту</td></tr>
+          <tr><td>Наблюдение</td><td class="d">YVO: GPS, сейсмографы, газы — 24/7; признаки подготовки увидели бы за месяцы-годы</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Реальный вулканический риск США сегодня — не Йеллоустон, а рядовые стратовулканы Каскадных гор: Рейнир навис лахарами над пригородами Сиэтла-Такомы, где живёт 90 000 человек.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s24">
+  <div class="content">
+    <div class="kicker">Вулканы · миф vs порода</div>
+    <h2>Слух: «Ким пригрозил ударить ядеркой по кальдере»</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Слух эпохи первого срока Трампа:</b> мол, КНДР пообещала в случае чего разбудить Йеллоустон боеголовкой, и Вашингтон дрогнул. Проверяем не политику, а физику — и физика ржёт.</li>
+          <li><b>Глубина:</b> кровля очага — 5–8 км, тело — до 15 км. Лучшие пенетраторы прогрызают до ~60 метров грунта; даже 50-мегатонная Царь-бомба, взорванная на поверхности, оставляет воронку в сотни метров. До магмы не достаёт <b>на два порядка</b> — всё равно что пытаться вскрыть сейф, царапая обои этажом выше.</li>
+          <li><b>Энергия:</b> суперизвержение — это ~10¹⁹–10²⁰ Дж; Царь-бомба — 2×10¹⁷. Бомба слабее нужного «спускового усилия» в сотни раз, и главное — очагу нечем отвечать: 85–95% кристаллической каши не взрываются от встряски, им не хватает расплава и газа. Землетрясения M7+ трясут регион сильнее любой бомбы — кальдера не реагирует.</li>
+          <li><b>Вишенка:</b> NASA всерьёз считало обратный проект — как Йеллоустон ОХЛАДИТЬ (скважины по периметру, отбор тепла, попутно гигаватты геотермии, ценник $3.5 млрд). Вывод тот же с другой стороны: даже целенаправленно добраться до очага — мегапроект на десятилетия, а не один боевой блок. Вердикт слуху: чистый Голливуд, Трамп мог спать спокойно.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Порядки величин, чтобы прочувствовать</h3>
+        <table class="t">
+          <tr><th>Событие</th><th>Энергия, Дж</th></tr>
+          <tr><td>Хиросима</td><td class="d">6×10¹³</td></tr>
+          <tr><td>Царь-бомба (50 Мт)</td><td class="d">2×10¹⁷</td></tr>
+          <tr><td>Тохоку M9.1</td><td class="d">~2×10¹⁸</td></tr>
+          <tr><td>Суперизвержение VEI-8</td><td class="d">10¹⁹–10²⁰</td></tr>
+          <tr><td>Астероид динозавров</td><td class="d">~4×10²³</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Между бомбой и суперизвержением — та же пропасть, что между бомбой и петардой. Человечество любит переоценивать свои кнопки: самое мощное на планете по-прежнему делает сама планета.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s25">
+  <div class="content">
+    <div class="kicker">Вулканы · история ударов</div>
+    <h2>Когда планета стреляла по-настоящему</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Тоба, Суматра, ~74 000 лет назад: VEI-8, 2800 км³</b> — крупнейшее извержение эпохи человека. Знаменитая гипотеза «бутылочного горлышка» (человечество якобы сжалось до нескольких тысяч) сегодня шатается: раскопки в Индии и Африке показывают, что люди жили под пеплом Тобы без перерыва. Планета выстрелила из главного калибра — а обезьяна с копьём даже не сбилась с шага. Это, если подумать, комплимент обезьяне.</li>
+          <li><b>Тамбора, 1815: VEI-7</b> — крупнейшее извержение письменной истории. Следующий, 1816-й, вошёл в учебники как «год без лета»: снег в июне в Новой Англии, неурожай по Европе, последний великий голод Запада. Культурные последствия включительно: компания на вилле у Женевского озера от беспросветной погоды сочиняла страшилки — так родился «Франкенштейн» Мэри Шелли; а неурожай овса так поднял цену лошадей, что фон Дрез собрал беговел — предка велосипеда.</li>
+          <li><b>Кракатау, 1883: VEI-6</b> — самый громкий звук в документированной истории: слышен за 4800 км, барометры мира зафиксировали волну, четырежды обошедшую планету. Цунами до 36 м — 36 000 погибших. Закаты весь следующий год стояли кроваво-багровые по всему миру — есть версия, что именно такой закат горит в «Крике» Мунка.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Вулкан против климата: механика</h3>
+        <ul class="pts" style="font-size:13.5px">
+          <li>Охлаждает не пепел (он выпадает за недели), а SO₂: в стратосфере превращается в капли серной кислоты — зеркальный экран на 1–3 года.</li>
+          <li>Пинатубо-1991: 20 Мт SO₂ = −0.5 °C всей планете на два года — лучший натурный эксперимент по геоинженерии.</li>
+          <li>Отсюда честный вывод: климат человечества всю историю болтало вулканами; голод, чума Юстиниана (за ней — извержение 536 года, «худший год в истории»), падения династий в Китае — регулярно имеют вулканическую подпись в ледяных кернах.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s26">
+  <div class="content">
+    <div class="kicker">Вулканы · зачем они нужны</div>
+    <h2>Без вулканов не было бы ни воздуха, ни тебя</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Атмосфера и океан — выдох планеты:</b> первичные газы Земля растеряла, всё нынешнее — CO₂, водяной пар, азот — надышали вулканы за миллиарды лет. Каждый твой вдох — переработанный вулканический выхлоп.</li>
+          <li><b>Гео-термостат:</b> CO₂ из вулканов греет планету; дожди и выветривание силикатов связывают CO₂ обратно в карбонаты и уносят на дно; субдукция затаскивает карбонаты в мантию, вулканы выдыхают снова. Цикл в сотни тысяч лет — но именно он 4 млрд лет удерживает Землю в жилом диапазоне температур, пока Венера (без тектоники!) сварилась в собственном CO₂ при +460 °C. Тектоника плит — возможно, обязательное условие обитаемости планет.</li>
+          <li><b>Плодородие:</b> вулканический пепел — готовое удобрение (калий, фосфор, микроэлементы). Поэтому человечество упрямо селится ПОД вулканами: Ява кормит 150 млн человек на пепле, соседний невулканический Борнео — впятеро меньше при вчетверо большей площади; склоны Везувия и Этны возделаны до последнего метра — три тысячи лет подряд, невзирая на Помпеи. Сделка стара как цивилизация: вулкан кормит сто лет, убивает один день.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Баланс вулкана</h3>
+        <table class="t">
+          <tr><th>Даёт</th><th>Берёт</th></tr>
+          <tr><td>атмосферу и океаны</td><td class="d">~500 активных вулканов риска</td></tr>
+          <tr><td>термостат планеты</td><td class="d">редкие VEI-7/8 с глобальной зимой</td></tr>
+          <tr><td>плодороднейшие почвы</td><td class="d">Помпеи, Армеро, Мартиника…</td></tr>
+          <tr><td>руды (медь, золото, сера)</td><td class="d">—</td></tr>
+          <tr><td>геотермию Исландии и Кении</td><td class="d">—</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">CO₂ от всех вулканов мира — ~0.3 гигатонны в год. Человечество — 37. Мы «извергаем» как сто Йеллоустонов на постоянной основе — вот вам и сравнение мощностей в углеродном зачёте.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 6: НЕДРА КАК СУДЬБА ============ -->
+<section class="slide chapter" id="s27">
+  <div class="bgimg"><img src="assets/ch_resources.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6</div>
+    <h1>Недра как судьба</h1>
+    <p class="lead">Где миллиард лет назад прошла магма — там сегодня граница, санкции и биржевые котировки. Самые наглые сюжеты геологии: природный ядерный реактор, шахта, на которой стоят все чипы мира, и новая гонка за камни.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s28">
+  <div class="content">
+    <div class="kicker">Недра · жемчужина</div>
+    <h2>Окло: ядерный реактор возрастом 1.7 миллиарда лет</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/oklo.png" alt="">
+        <div class="pcap">Урановое месторождение Окло, Габон. Шестнадцать зон, где сама природа собрала работающий ядерный реактор — за 1.7 млрд лет до Ферми.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>1972, Франция:</b> на обогатительном заводе замечают недостачу — в руде из Габона урана-235 не 0.720%, как везде во Вселенной, а 0.717%. Три тысячных процента! Разбирательство привело к открытию века: изотопы «выгорели» — руда уже <b>отработала в реакторе.</b></li>
+          <li><b>Почему это было возможно только тогда:</b> U-235 распадается быстрее U-238, и 1.7 млрд лет назад его в природном уране было ~3.1% — как в топливе современных АЭС. Оставалось добавить замедлитель — и им стали грунтовые воды, просочившиеся в богатую жилу.</li>
+          <li><b>Реактор ПУЛЬСИРОВАЛ:</b> вода замедляет нейтроны → цепная реакция → вода вскипает и уходит → реакция глохнет → порода остывает, вода возвращается → снова пуск. Цикл ~3 часа (полчаса работы), мощность ~100 кВт, и так — <b>сотни тысяч лет.</b> Естественная саморегуляция, тот самый отрицательный обратный коэффициент, который инженеры проектируют в АЭС.</li>
+          <li><b>Главный практический вывод:</b> продукты деления и плутоний за 1.7 МЛРД лет ушли из зоны реакции на считанные метры — глина удержала всё. Это сильнейший натурный аргумент за глубинное захоронение ядерных отходов: природа уже провела эксперимент длиной в треть возраста Земли, и он удался.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s29">
+  <div class="content">
+    <div class="kicker">Недра · как готовятся клады</div>
+    <h2>Каждое месторождение — авария планетарного масштаба</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Железо — труп катастрофы:</b> 90% железных руд (КМА, Австралия, Бразилия) — полосчатые формации BIF возрастом 2.5 млрд лет. Это океаны, «заржавевшие» во время кислородной катастрофы: цианобактерии выдохнули O₂, растворённое железо окислилось и осело слоями на дно. Каждый небоскрёб и каждый твой болт — из отравленного бактериями древнего моря.</li>
+          <li><b>Алмазы приезжают лифтом:</b> растут только на глубине 150–200 км (давление!), а наверх их выносят кимберлитовые взрывы — магма с CO₂ прошибает кору со сверхзвуковой скоростью, иначе алмаз по дороге сгорит в графит. Последний такой лифт приезжал десятки млн лет назад; все алмазные рудники мира — пробки этих древних выстрелов, и Якутия с Южной Африкой богаты просто потому, что там сохранились древнейшие «корни» континентов.</li>
+          <li><b>Медь и золото — пот субдукции:</b> вода из тонущей плиты выпаривает металлы и складывает их в жилы над зонами субдукции. Поэтому медный пояс планеты — Анды (Чили — треть мировой меди) и Индонезия-Папуа, точно по Огненному кольцу. Карта рудников = карта древних и живых субдукций.</li>
+          <li><b>Нефть — планктон в скороварке:</b> органика мелких морей, похороненная без кислорода, дозревает при 60–120 °C («нефтяное окно») миллионы лет. Персидский залив — бывшее мелководье океана Тетис с идеальной крышкой из солей: половина мировой нефти — наследство одного исчезнувшего океана. Карта ОПЕК нарисована Тетисом.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Рецепты кладов: срок готовности</h3>
+        <table class="t">
+          <tr><th>Ресурс</th><th>Рецепт</th><th>Готовилось</th></tr>
+          <tr><td>железо BIF</td><td class="d">океан + первый кислород</td><td class="d">2.5 млрд лет назад</td></tr>
+          <tr><td>алмазы</td><td class="d">мантия + кимберлитовый лифт</td><td class="d">1–3 млрд лет</td></tr>
+          <tr><td>уголь</td><td class="d">леса карбона до грибов-разрушителей</td><td class="d">300 млн лет</td></tr>
+          <tr><td>нефть Залива</td><td class="d">планктон Тетиса под солью</td><td class="d">150–50 млн лет</td></tr>
+          <tr><td>медь Анд</td><td class="d">субдукция выжимает металлы</td><td class="d">идёт прямо сейчас</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Ничто из этого не повторится по заказу: уголь, например, больше не образуется в тех масштабах — грибы научились есть древесину. Ископаемые — в буквальном смысле невозобновляемое наследство.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s30">
+  <div class="content">
+    <div class="kicker">Недра · тонкое место цивилизации</div>
+    <h2>Spruce Pine: все чипы мира растут из одной шахты</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Городок Спрус-Пайн, Северная Каролина, ~2200 жителей</b> — и практически монополия планеты на сверхчистый кварц (99.999%+). Из него делают тигли, в которых плавят и вытягивают монокристаллы кремния — те самые слитки, из которых режут пластины для ВСЕХ чипов. Без тигля нет слитка; без Спрус-Пайна — нет тиглей.</li>
+          <li><b>Почему именно там:</b> ~380 млн лет назад при сборке Пангеи два куска коры столкнулись, и на глубине ~15 км медленно, без воды (это ключ — вода несёт примеси), кристаллизовались пегматиты аномальной чистоты. Геологическая случайность, у которой пока не нашли полноценного дубля на планете.</li>
+          <li><b>Стресс-тест уже был:</b> сентябрь 2024, ураган Хелен затопил городок и остановил карьеры на недели. Полупроводниковая индустрия сглотнула и проверила запасы; аналитики от Bloomberg до TSMC пересчитали цепочки. Обошлось — но мир увидел: один паводок в Аппалачах способен дёрнуть за нитку всю цифровую цивилизацию.</li>
+          <li><b>Мораль главы в одном предмете:</b> в твоём кармане — кварц из одной шахты (тигель), кремний, литий из чилийского солончака, кобальт из Конго, редкоземы из Китая, медь из Анд. Смартфон — это геологическая карта мира, спрессованная в 200 грамм.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/spruce.png" alt="">
+        <div class="pcap">Сверхчистый кварц Спрус-Пайна. Проще списка: нет этого белого камня — нет кремниевых слитков — нет чипов. Ни у кого.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s31">
+  <div class="content">
+    <div class="kicker">Недра · новая гонка</div>
+    <h2>Литий, редкоземы, кобальт: геология пишет геополитику XXI века</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Литиевый треугольник:</b> Чили–Аргентина–Боливия, высохшие андские солончаки, — больше половины мировых запасов лития. Салар-де-Атакама — это рассол, который геология выпаривала тысячелетиями в самой сухой пустыне мира; каждый аккумулятор планеты чуть-чуть родом оттуда (плюс твёрдый сподумен Австралии).</li>
+          <li><b>Редкоземы — не редкие, а грязные:</b> их полно в коре, но концентрированных месторождений мало, а переработка ядовита (ториевые хвосты). Китай в 90-е согласился платить эту экологическую цену — и получил ~60% добычи и <b>~90% переработки</b>: неодим для магнитов каждого мотора EV и ветряка проходит через китайские заводы. Экспортные ограничения 2010 (Япония) и 2023–25 (США) показали: это оружие, и оно заряжено.</li>
+          <li><b>Кобальт: ~70% — Демократическая Республика Конго,</b> медно-кобальтовый пояс Катанги — ещё один геологический уникум. Дальше без иллюзий: артельная добыча, дети в шахтах, китайский капитал на большинстве рудников — батарейная революция стоит на самом тяжёлом сырьевом сюжете современности.</li>
+          <li><b>История повторяется:</b> уголь решил, где случится промышленная революция (Англия), нефть перекроила XX век (Залив, войны, ОПЕК), теперь батарейные металлы рисуют карту XXI-го. Меняются вещества — правило не меняется: <b>кто сидит на нужном камне, тот сидит за столом переговоров.</b></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Кто на чём сидит (доля рынка)</h3>
+        <table class="t">
+          <tr><th>Ресурс</th><th>Хозяин положения</th></tr>
+          <tr><td>кварц для тиглей</td><td class="d">США (Спрус-Пайн) ~80–90%</td></tr>
+          <tr><td>переработка редкозёмов</td><td class="d">Китай ~90%</td></tr>
+          <tr><td>кобальт</td><td class="d">ДР Конго ~70% добычи</td></tr>
+          <tr><td>литий</td><td class="d">Австралия + Чили ~75% добычи</td></tr>
+          <tr><td>медь</td><td class="d">Чили + Перу ~40%</td></tr>
+          <tr><td>палладий</td><td class="d">Россия (Норильск) ~40%</td></tr>
+          <tr><td>ниобий</td><td class="d">Бразилия ~88%</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Заметь: ни одна из этих монополий не выбрана людьми — все назначены магмой, солончаками и древними столкновениями плит. Политики только оформляют бумаги на готовое.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 7: ВОДА И ЛЁД ============ -->
+<section class="slide chapter" id="s32">
+  <div class="bgimg"><img src="assets/ch_water.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 7</div>
+    <h1>Вода и лёд: география — величина переменная</h1>
+    <p class="lead">Моря высыхают досуха и возвращаются водопадом высотой в километр. Океан гуляет на сотню метров вверх-вниз, открывая и закрывая мосты между континентами. Всё это — не фантастика, а буквально вчера по геологическим часам.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s33">
+  <div class="content">
+    <div class="kicker">Вода · мессинский кризис</div>
+    <h2>Когда Средиземное море высохло. Целиком</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>5.97 млн лет назад</b> Африка, наползая на Иберию, захлопнула Гибралтар. Средиземное море осталось один на один с испарением — а испаряет оно больше метра в глубину за год, реки не компенсируют. За считанные тысячи лет море <b>высохло почти досуха</b>: пустыня глубиной 3–5 км ниже уровня океана, рассольные лужи на дне, солёная жара под +50…60 °C — самое адское место в истории планеты после гадея.</li>
+          <li><b>Улики лежат под килем каждого парома:</b> под дном Средиземного — слой соли и гипса толщиной до 2–3 км, суммарно ~1 млн км³ — 6% всей соли мирового океана, выпаренной в одном тазу. Его нашли буровыми судами в 1970-м, и поверить смогли не сразу. Реки успели прорезать в осохших склонах каньоны: под Нилом у Асуана — ущелье глубже Гранд-Каньона, засыпанное осадками; под Роной — то же.</li>
+          <li><b>Занклинский потоп, 5.33 млн лет назад:</b> океан пробил Гибралтар обратно. По расчётам, финал был апокалиптически быстрым: не водопад даже, а пандус шириной в километры, по которому Атлантика ссыпалась внутрь с расходом до <b>ста Амазонок</b>, поднимая уровень моря на метры В ДЕНЬ. Всё Средиземное залилось, по разным оценкам, за срок от нескольких месяцев до пары лет. Представь этот звук.</li>
+          <li><b>Мораль:</b> «вечное» море может исчезнуть и вернуться за геологическое мгновение. Кстати, Гибралтар сегодня — 14 км и снова сужается: Африка прёт на север, и через несколько млн лет кран закроется опять. Средиземное — море со сроком годности.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Мессиний в цифрах</h3>
+        <table class="t">
+          <tr><td>Закрытие Гибралтара</td><td class="d">5.97 млн лет назад</td></tr>
+          <tr><td>Скорость испарения моря</td><td class="d">~1000 лет до дна</td></tr>
+          <tr><td>Глубина пустыни</td><td class="d">до −3…−5 км от уровня океана</td></tr>
+          <tr><td>Соли на дне сегодня</td><td class="d">до 3 км слоя, ~10⁶ км³</td></tr>
+          <tr><td>Длительность кризиса</td><td class="d">~640 000 лет</td></tr>
+          <tr><td>Обратное заполнение</td><td class="d">месяцы–годы, до 10 м подъёма в день в пике</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Уровень мирового океана на время кризиса поднялся на ~10 м — вода-то из Средиземного никуда не делась, разошлась по остальным океанам.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s34">
+  <div class="content">
+    <div class="kicker">Лёд · циклы</div>
+    <h2>Ледниковые качели: как орбита рисует карту мира</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Мы живём в ледниковый период</b> — просто в тёплой его паузе (межледниковье). Последние ~2.6 млн лет лёд приходит и уходит циклами Миланковича — орбитальными качелями: эксцентриситет орбиты (~100 тыс. лет), наклон оси (41 тыс.), прецессия (~23 тыс.). Копеечные изменения инсоляции, усиленные обратными связями (лёд отражает свет → холоднее → больше льда), раскачивают планету на ±5 °C.</li>
+          <li><b>20 000 лет назад — вчера! —</b> над Скандинавией и Канадой стояли щиты льда толщиной 3–4 км (выше любой горы Европы), а океан был на <b>120 метров ниже</b>: Берингия соединяла Сибирь с Аляской — по ней в Америку прошли люди и мамонты; Британия была полуостровом, а на месте Северного моря лежала страна Доггерленд — рыбацкие траулеры до сих пор поднимают со дна кости мамонтов и гарпуны мезолита. Карта мира из школьного атласа — это скриншот момента, не константа.</li>
+          <li><b>Земля до сих пор разгибается после льда:</b> Скандинавия, сбросив ледяной пресс, всплывает до 9 мм/год (изостазия — кора плавает на мантии, как плот). Дно Ботнического залива поднимется настолько, что через пару тысяч лет он станет озером; в Швеции есть порты викингов, которые теперь в километрах от берега. А Нидерланды и Лондон, сидевшие на «вспученном» крае той же плиты, наоборот, тонут — качели работают в обе стороны.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Океан ±120 м: что открывалось и закрывалось</h3>
+        <table class="t">
+          <tr><th>Мост/земля</th><th>Что по нему прошло</th></tr>
+          <tr><td>Берингия (Сибирь–Аляска)</td><td class="d">заселение Америки, ~20–15 тыс. лет назад</td></tr>
+          <tr><td>Доггерленд (Северное море)</td><td class="d">мезолитическая Атлантида Европы, утонула ~8 тыс. лет назад</td></tr>
+          <tr><td>Сунда и Сахул (Ю-В Азия)</td><td class="d">люди в Австралии 60+ тыс. лет назад (но 90 км моря всё же переплыли!)</td></tr>
+          <tr><td>Босфор</td><td class="d">прорыв ~7.5 тыс. лет назад поднял Чёрное море — кандидат в прототипы легенд о потопе</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Следующее оледенение по орбитальному расписанию — через ~50 тыс. лет. Впрочем, CO₂-выброс человечества, по расчётам, способен отменить его вовсе: мы уже двигаем циклы Миланковича.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 8: МАГНИТНОЕ ПОЛЕ ============ -->
+<section class="slide chapter" id="s35">
+  <div class="bgimg"><img src="assets/ch_magnet.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 8</div>
+    <h1>Магнитный щит</h1>
+    <p class="lead">Три тысячи километров под ногами крутится динамо-машина из жидкого железа. Она рисует полярные сияния, водит стрелку компаса — и время от времени переворачивается вверх ногами.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s36">
+  <div class="content">
+    <div class="kicker">Магнетизм · динамо и инверсии</div>
+    <h2>Геодинамо: поле, которое иногда кувыркается</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Как это работает:</b> конвекция жидкого железа во внешнем ядре + вращение планеты (сила Кориолиса) закручивают потоки проводника в спирали — самоподдерживающееся динамо. Мощность — порядка гигаватт, возраст — минимум 3.5 млрд лет. <b>Зачем нам:</b> поле отводит солнечный ветер, который иначе сдувает атмосферу. Марс потерял динамо — и остался без атмосферы: наглядное пособие.</li>
+          <li><b>Поле переворачивается.</b> В застывающей лаве и осадках записана вся история: сотни инверсий, хаотично, в среднем раз в 200–300 тыс. лет. Последняя полная — Брюнес–Матуяма, 780 тыс. лет назад; последняя «попытка» (экскурс Лашамп) — всего 41 тыс. лет назад, поле просело до ~5% и вернулось. Именно эти записи-«зебры» на океанском дне и доказали спрединг — инверсии подарили нам тектонику плит как науку.</li>
+          <li><b>Что будет при инверсии — честно:</b> поле НЕ выключается — слабеет до 10–25% и на несколько тысяч лет становится многополюсным. Сияния — до экватора, радиация подрастает умеренно (атмосфера экранирует и без поля), вымираний с инверсиями не коррелирует. Смерть всего живого — миф; а вот спутникам, энергосетям и навигации придётся тяжко — цивилизация электроники уязвимее мамонтов.</li>
+          <li><b>Прямо сейчас:</b> поле ослабло на ~9% за два века, северный магнитный полюс бежит из Канады в Сибирь (до 50 км/год в нулевые), а над Южной Атлантикой висит аномалия — провал поля, где МКС и спутники ловят сбои электроники на каждом витке. Инверсия ли это начинается или обычное дыхание динамо — науке честно неизвестно. В любом случае: процесс на тысячи лет, паника отменяется.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Магнитный щит в фактах</h3>
+        <table class="t">
+          <tr><td>Где родится поле</td><td class="d">внешнее ядро, 2900–5150 км</td></tr>
+          <tr><td>Скорость потоков железа</td><td class="d">~десятки км/год</td></tr>
+          <tr><td>Инверсий за 160 млн лет</td><td class="d">~300, без расписания</td></tr>
+          <tr><td>Длительность инверсии</td><td class="d">1000–10 000 лет</td></tr>
+          <tr><td>Последняя полная</td><td class="d">780 000 лет назад</td></tr>
+          <tr><td>Поле сейчас</td><td class="d">−9% за 180 лет, полюс мигрирует в Сибирь</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ИТОГИ ============ -->
+<section class="slide" id="s37">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Геология как судьба: вся дека на одном слайде</h2>
+    <table class="t" style="font-size:14px">
+      <tr><th>Геология сделала</th><th>Получилось</th><th>Кому судьба</th></tr>
+      <tr><td>тонкая кора на жидкой мантии</td><td class="d">тектоника плит, единственная во всей Солнечной системе</td><td class="d">термостат планеты: жизнь вообще</td></tr>
+      <tr><td>субдукция у Тихого океана</td><td class="d">Огненное кольцо: 90% землетрясений</td><td class="d">Япония, Чили, Камчатка, Индонезия — жизнь на шве</td></tr>
+      <tr><td>коллизия двух плит</td><td class="d">остров Тайвань + 100 землетрясений в год</td><td class="d">половина мировых чипов на живом разломе</td></tr>
+      <tr><td>пегматиты Пангеи, 380 млн лет</td><td class="d">сверхчистый кварц одного карьера</td><td class="d">Спрус-Пайн — игла всей цифровой цивилизации</td></tr>
+      <tr><td>богатая урановая жила + вода</td><td class="d">природный реактор Окло, 1.7 млрд лет</td><td class="d">доказательство: геозахоронение отходов работает</td></tr>
+      <tr><td>кальдера над горячей точкой</td><td class="d">Йеллоустон: 1 шанс на 730 000 в год</td><td class="d">страшилка США (реальный риск — Рейнир)</td></tr>
+      <tr><td>захлопнутый Гибралтар</td><td class="d">Средиземное море высохло досуха</td><td class="d">напоминание: моря смертны, география — переменная</td></tr>
+      <tr><td>ледниковые качели орбиты</td><td class="d">океан ±120 м, мосты между материками</td><td class="d">Америка и Австралия заселены пешком</td></tr>
+      <tr><td>планктон Тетиса под солью</td><td class="d">половина мировой нефти в одном заливе</td><td class="d">геополитика всего XX века</td></tr>
+      <tr><td>солончаки Анд, Катанга, Байюнь-Обо</td><td class="d">литий, кобальт, редкоземы</td><td class="d">геополитика XXI века — уже пишется</td></tr>
+      <tr><td>динамо в железном ядре</td><td class="d">магнитный щит от солнечного ветра</td><td class="d">атмосфера на месте (привет, Марс)</td></tr>
+    </table>
+    <div class="note">Одно правило на всю деку: <b>карта поверхности — тень карты недр.</b> Где встали горы, куда упал дождь, где легла руда и прошёл лёд — там потом «сами собой» появились города, границы, монополии и войны. Люди уверены, что решают сами. Магма улыбается.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s38">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <div class="kicker amber">Финал</div>
+    <h1>Архив под ногами</h1>
+    <p class="lead">На вершине Эвереста лежит морское дно с раковинами. В железе твоего ножа — океан, заржавевший от первого кислорода. В кремнии твоего телефона — пегматит, остывавший под Пангеей. Каждый твой вдох — выдох вулканов, а стрелку компаса водит железный шар размером с Плутон, крутящийся в трёх тысячах километров под креслом, в котором ты сидишь.</p>
+    <p class="lead" style="margin-top:14px">Мы процарапали в этой планете 12 километров из 6371 и прожили на ней одну двадцатитысячную её жизни. Мы не хозяева этого камня — мы его краткосрочные читатели. Но, чёрт возьми, читать научились: не потрогав ядро, мы знаем его температуру. Это и есть цивилизация: узнать судьбу, которую тебе пишет магма, — и построить на разломе завод.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- SLIDES_END -->
+
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>

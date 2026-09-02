@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ядро: сто тысяч раз меньше, миллион раз сильнее</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #5ec8a0; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Nuclear deep dive · Гвендолин-ночные-лекции</div>
+    <h1>Ядро: сто тысяч раз меньше, миллион раз сильнее</h1>
+    <p class="lead">Полная анатомия атомного ядра: что держит протоны вместе против отталкивания в сотни ньютонов, почему одни ядра живут дольше вселенной, а другие распадаются за микросекунды, как один нейтрон превращается в мегатонны — и почему Солнце горит десять миллиардов лет вместо того, чтобы взорваться.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 1: ОТКРЫТИЕ ============ -->
+<section class="slide chapter" id="s2">
+  <div class="bgimg"><img src="assets/ch_discovery.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1</div>
+    <h1>1911: пустота с точкой в центре</h1>
+    <p class="lead">Резерфорд стрелял альфа-частицами в золотую фольгу и ждал, что они пройдут насквозь. Одна из 8000 отскочила назад. «Как если бы ты выстрелил из пушки в лист бумаги, и снаряд вернулся».</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">Открытие · масштаб</div>
+    <h2>Ядро: 99.97% массы в 10⁻¹⁵ объёма</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Атом — 10⁻¹⁰ м. Ядро — 10⁻¹⁵–10⁻¹⁴ м. Отношение как у горошины к футбольному стадиону. Если бы атом был размером с Землю, ядро было бы стадионом. Всё остальное — электронное облако, почти пустота, в которой вся химия.</li>
+          <li>Плотность ядерной материи — 2.3·10¹⁷ кг/м³, одинаковая для всех ядер: <b>ядро — капля несжимаемой жидкости</b>. Чайная ложка — ~1 млрд тонн. Ровно такая плотность у нейтронной звезды: это одно гигантское ядро радиусом 10 км.</li>
+          <li><b>Состав</b>: протоны (заряд +1, масса 938.3 МэВ) и нейтроны (заряд 0, масса 939.6 МэВ, открыты Чедвиком в 1932). Число протонов Z — элемент. Число нейтронов N — изотоп. A = Z + N — массовое число. Радиус R ≈ 1.2·A<sup>1/3</sup> фм — объём пропорционален числу нуклонов, как у капли.</li>
+          <li><b>Изотопы</b>: у водорода 3 (H, D, T), у олова — 10 стабильных, у урана — ни одного стабильного (²³⁸U живёт 4.5 млрд лет, поэтому ещё есть). Всего известно ~3300 ядер, стабильных — 251. Остальные распадаются.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Единицы, в которых живёт ядро</h3>
+          <table class="t">
+            <tr><th>Величина</th><th>Единица</th><th>Смысл</th></tr>
+            <tr><td>Длина</td><td class="d">1 фм (ферми) = 10⁻¹⁵ м</td><td class="d">радиус протона ~0.84 фм</td></tr>
+            <tr><td>Энергия</td><td class="d">1 МэВ = 1.6·10⁻¹³ Дж</td><td class="d">химия — эВ, ядро — МэВ: в миллион раз больше</td></tr>
+            <tr><td>Масса</td><td class="d">МэВ/c² или а.е.м. (931.5 МэВ)</td><td class="d">масса = энергия, E = mc² — рабочая формула, не лозунг</td></tr>
+            <tr><td>Сечение</td><td class="d">1 барн = 10⁻²⁸ м²</td><td class="d">«размером с амбар» — вероятность реакции</td></tr>
+            <tr><td>Время</td><td class="d">10⁻²³ с</td><td class="d">свет пересекает ядро; масштаб сильных процессов</td></tr>
+          </table>
+          <p style="margin-top:10px">Почему МэВ: сжать волну де Бройля в 10⁻¹⁵ м — кинетическая энергия нуклона по неопределённости ~20 МэВ. Электрон в ядре имел бы ~100 МэВ и вылетел бы — потому в ядре нет электронов, хотя бета-распад их испускает (рождает, не выпускает).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s4">
+  <div class="content">
+    <div class="kicker">Открытие · карта</div>
+    <h2>Долина стабильности: где ядра живут, а где нет</h2>
+    <div class="cols">
+      <div>
+        <div class="svgbox">
+          <div class="dg">
+            <div class="lbl mono">Карта нуклидов: N (нейтроны) по горизонтали, Z (протоны) по вертикали</div>
+            <svg viewBox="0 0 420 260" style="max-width:100%">
+              <line x1="40" y1="230" x2="400" y2="230" stroke="#223041" stroke-width="2"/>
+              <line x1="40" y1="230" x2="40" y2="20" stroke="#223041" stroke-width="2"/>
+              <line x1="40" y1="230" x2="250" y2="20" stroke="#55606e" stroke-width="1" stroke-dasharray="4 4"/>
+              <text x="240" y="16" fill="#55606e" font-size="10" font-family="Consolas">N = Z</text>
+              <path d="M 42 228 C 100 170, 180 110, 260 80 C 300 65, 330 55, 360 45" fill="none" stroke="#6ee7a0" stroke-width="7" opacity=".9"/>
+              <path d="M 42 228 C 100 160, 190 90, 270 60 C 310 45, 340 35, 380 25" fill="none" stroke="#ffb347" stroke-width="16" opacity=".22"/>
+              <path d="M 42 228 C 100 185, 170 140, 250 110 C 290 95, 330 85, 370 75" fill="none" stroke="#4fd8c8" stroke-width="16" opacity=".22"/>
+              <circle cx="360" cy="45" r="5" fill="#ff6b7a"/><text x="368" y="42" fill="#ff6b7a" font-size="10" font-family="Consolas">Pb-208</text>
+              <circle cx="385" cy="35" r="4" fill="#ff6b7a" opacity=".6"/><text x="360" y="62" fill="#ff6b7a" font-size="10" font-family="Consolas">U</text>
+              <text x="120" y="120" fill="#ffb347" font-size="10" font-family="Consolas">избыток p → β⁺, захват e</text>
+              <text x="200" y="175" fill="#4fd8c8" font-size="10" font-family="Consolas">избыток n → β⁻</text>
+              <text x="140" y="250" fill="#8a97a8" font-size="11" font-family="Consolas">N →</text>
+              <text x="8" y="120" fill="#8a97a8" font-size="11" font-family="Consolas" transform="rotate(-90 12 120)">Z →</text>
+            </svg>
+            <div class="cap"><span style="color:var(--green)">━</span> стабильные ядра. У лёгких N ≈ Z; у тяжёлых нейтронов больше (Pb: 82 p, 126 n) — они разбавляют кулоновское отталкивание протонов. После Pb-208 стабильных нет вообще. Ядро вне долины скатывается в неё бета-распадом — за миллисекунды или миллиарды лет.</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li>Долина — узкая: у каждого Z стабильны 1–10 значений N. Шаг вправо (лишний нейтрон) — ядро превращает его в протон (β⁻). Шаг влево — протон в нейтрон (β⁺ или захват электрона). Ядро само ползёт к дну долины.</li>
+          <li><b>Магические числа</b> 2, 8, 20, 28, 50, 82, 126 — ядра с таким Z или N особо устойчивы: замкнутые оболочки, как инертные газы в химии. Свинец-208 — дважды магический (82, 126) — последнее стабильное ядро. Олово (Z=50) — 10 стабильных изотопов, рекорд.</li>
+          <li>Оболочечная модель (Гёпперт-Майер, Йенсен, Нобель 1963): нуклоны, как электроны, заполняют уровни в общей потенциальной яме. Работает, хотя «яму» создают сами нуклоны — самосогласованно.</li>
+          <li><b>Остров стабильности</b>: теория предсказывает следующие магические числа Z=114–126, N=184. Синтезированные элементы 114–118 живут миллисекунды–секунды вместо микросекунд — остров, похоже, есть, но до его центра (N=184) не дотянулись: не хватает нейтронов в снарядах.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2: СИЛА ============ -->
+<section class="slide chapter" id="s5">
+  <div class="bgimg"><img src="assets/ch_force.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2</div>
+    <h1>Что держит ядро</h1>
+    <p class="lead">Два протона на расстоянии 1 фм отталкиваются с силой 230 Н — вес 23 кг, приложенный к частице массой 10⁻²⁷ кг. И не разлетаются. Значит, есть что-то в сто раз сильнее.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="content">
+    <div class="kicker">Сила · сильное взаимодействие</div>
+    <h2>Кварки, глюоны и почему нуклон нельзя разобрать</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Протон и нейтрон — не элементарны. Внутри по три <b>кварка</b> (uud и udd), связанных <b>глюонами</b> — переносчиками <b>сильного взаимодействия</b>. Это КХД, квантовая хромодинамика: заряд называется «цветом» (три вида), а глюоны, в отличие от фотона, сами несут цвет и притягивают друг друга.</li>
+          <li>Отсюда странность: сила <b>не убывает с расстоянием</b>. Раздвигаешь кварки — глюонная «струна» между ними натягивается с постоянной силой ~10⁵ Н (16 тонн). Вложил энергию больше массы пары кварков — струна рвётся, и на концах рождаются новые кварки. Одиночный кварк получить нельзя — <b>конфайнмент</b>. На малых расстояниях — наоборот, почти свободны (асимптотическая свобода, Нобель 2004).</li>
+          <li>Масса протона 938 МэВ, а три кварка весят ~9 МэВ. <b>99% массы протона — энергия глюонного поля и движения кварков</b>. E = mc² буквально: ты весишь 70 кг почти целиком из энергии связи внутри нуклонов.</li>
+          <li>Между нуклонами действует <b>остаточная</b> сильная сила — как ван-дер-ваальсово притяжение между нейтральными атомами. Юкава (1935) описал её обменом пионами: радиус ~1.4 фм = ħ/m<sub>π</sub>c. Дальше 2–3 фм — ноль. Ближе 0.5 фм — жёсткое отталкивание (кор). Между — глубокая яма ~40 МэВ.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Четыре силы в ядре</h3>
+          <table class="t">
+            <tr><th>Сила</th><th>Относит. величина</th><th>Радиус</th><th>Роль в ядре</th></tr>
+            <tr><td>Сильная</td><td class="d">1</td><td class="d">~1 фм</td><td class="d">держит нуклоны вместе</td></tr>
+            <tr><td>Электромагнитная</td><td class="d">10⁻²</td><td class="d">∞</td><td class="d">расталкивает протоны; ограничивает размер ядер</td></tr>
+            <tr><td>Слабая</td><td class="d">10⁻⁶</td><td class="d">10⁻³ фм</td><td class="d">бета-распад: n ↔ p; горение Солнца</td></tr>
+            <tr><td>Гравитация</td><td class="d">10⁻³⁹</td><td class="d">∞</td><td class="d">никакой — до нейтронных звёзд</td></tr>
+          </table>
+          <p style="margin-top:10px">Ключевой конфликт: сильная — короткодействующая (нуклон чувствует только соседей, ~12 штук), кулоновская — дальнодействующая (каждый протон отталкивается от всех). Чем больше ядро, тем больше протонов на каждый, и в какой-то момент отталкивание побеждает. Это и есть предел таблицы Менделеева.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s7">
+  <div class="bgimg"><img src="assets/ch_binding.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Сила · энергия связи</div>
+    <h2>Дефект массы: ядро весит меньше своих частей</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Гелий-4: 2 протона + 2 нейтрона = 3755.7 МэВ по отдельности. Ядро гелия — 3727.4 МэВ. <b>Не хватает 28.3 МэВ</b> — 0.75% массы. Эта масса ушла в энергию связи при сборке: чтобы разобрать гелий, нужно вложить 28.3 МэВ обратно. Взвешивание = измерение энергии. Это первое прямое подтверждение E = mc² (Астон, 1920-е).</li>
+          <li><b>На нуклон</b>: у дейтерия 1.1 МэВ, у гелия 7.1, у железа-56 — <b>8.8 МэВ (максимум)</b>, у урана — 7.6. Кривая растёт (больше соседей у каждого нуклона), потом падает (кулон догоняет).</li>
+          <li>Следствие № 1: <b>лёгкие ядра выгодно сливать</b> — от водорода к железу энергия выделяется. Синтез, Солнце, водородная бомба.</li>
+          <li>Следствие № 2: <b>тяжёлые выгодно делить</b> — от урана к железу тоже выделяется. Деление, реактор, атомная бомба. Уран → два осколка по ~120: разница 0.9 МэВ/нуклон × 236 нуклонов ≈ <b>200 МэВ на акт</b>. Химия даёт 1–10 эВ на молекулу: в 10⁷ раз меньше.</li>
+          <li>Железо — дно. Из него энергию не вытащить никак. Поэтому ядра звёзд заканчиваются на железе и коллапсируют (глава 7).</li>
+        </ul>
+      </div>
+      <div>
+        <div class="svgbox">
+          <div class="dg">
+            <div class="lbl mono">Энергия связи на нуклон, МэВ, от массового числа A:</div>
+            <svg viewBox="0 0 420 210" style="max-width:100%">
+              <line x1="40" y1="180" x2="400" y2="180" stroke="#223041" stroke-width="2"/>
+              <line x1="40" y1="180" x2="40" y2="20" stroke="#223041" stroke-width="2"/>
+              <path d="M 45 165 L 52 120 L 58 140 L 64 60 L 70 95 L 76 80 L 84 50 L 100 42 L 120 36 L 150 33 L 200 38 L 260 46 L 320 55 L 385 62" fill="none" stroke="#ffb347" stroke-width="2.5"/>
+              <circle cx="150" cy="33" r="5" fill="#6ee7a0"/><text x="158" y="30" fill="#6ee7a0" font-size="11" font-family="Consolas">Fe-56: 8.8</text>
+              <circle cx="64" cy="60" r="4" fill="#4fd8c8"/><text x="70" y="60" fill="#4fd8c8" font-size="10" font-family="Consolas">He-4</text>
+              <circle cx="385" cy="62" r="4" fill="#ff6b7a"/><text x="352" y="80" fill="#ff6b7a" font-size="10" font-family="Consolas">U-238: 7.6</text>
+              <text x="60" y="196" fill="#4fd8c8" font-size="10" font-family="Consolas">← синтез выгоден</text>
+              <text x="270" y="196" fill="#ff6b7a" font-size="10" font-family="Consolas">деление выгодно →</text>
+              <text x="30" y="184" fill="#55606e" font-size="9" font-family="Consolas" text-anchor="end">0</text>
+              <text x="30" y="30" fill="#55606e" font-size="9" font-family="Consolas" text-anchor="end">9</text>
+            </svg>
+            <div class="cap">Зубцы слева — He-4, C-12, O-16: альфа-кластерные ядра особо прочны, поэтому их так много во вселенной. Плато 8–8.8 МэВ от A=30 до 200 — насыщение: нуклон видит только соседей. Медленный спад справа — кулон.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 3: РАДИОАКТИВНОСТЬ ============ -->
+<section class="slide chapter" id="s8">
+  <div class="bgimg"><img src="assets/ch_decay.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3</div>
+    <h1>Радиоактивность: ядро ищет покоя</h1>
+    <p class="lead">Беккерель в 1896 положил соль урана на фотопластинку в тёмный ящик — и она засветилась. Через два года Кюри выделили полоний и радий. Через двадцать — стало понятно: атом не вечен.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s9">
+  <div class="content">
+    <div class="kicker">Радиоактивность · три буквы</div>
+    <h2>α, β, γ: три способа сбросить лишнее</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3 class="am">α — выплюнуть гелий</h3>
+        <p>Тяжёлое ядро (Z &gt; 82) выбрасывает готовый кластер ²He⁴ — два протона и два нейтрона, самый прочный кусок. Z −2, A −4. Энергия 4–9 МэВ.</p>
+        <p style="margin-top:8px"><b>Механизм — туннелирование</b> (Гамов, 1928). Альфа заперта барьером ~25 МэВ, имеет 5. Бьётся о стенку 10²¹ раз/с, туннелирует с вероятностью 10⁻³⁸ — итого раз в миллиарды лет. Чем выше энергия — тем тоньше барьер: разница в 2 раза по энергии = 10²⁰ раз по периоду.</p>
+        <p style="margin-top:8px" class="dim">Пробег: 4 см в воздухе, лист бумаги, мёртвый слой кожи. Снаружи безвредна. Внутри (вдохнул, съел) — самое опасное: всю энергию сдаёт в 40 мкм ткани. Полоний-210 — 1 мкг летален.</p>
+      </div>
+      <div class="card">
+        <h3>β — переделать нуклон</h3>
+        <p><b>β⁻</b>: n → p + e⁻ + ν̄. Лишний нейтрон становится протоном, Z +1, A тот же. Электрон рождается в момент распада — в ядре его не было. <b>β⁺</b>: p → n + e⁺ + ν, Z −1 (только в ядре — свободный протон стабилен). <b>Захват электрона</b>: p + e⁻ → n + ν — ядро съедает свой же электрон с K-оболочки.</p>
+        <p style="margin-top:8px"><b>Слабое взаимодействие</b>: кварк u ↔ d через W-бозон массой 80 ГэВ — в 80 раз тяжелее нуклона, поэтому виртуальный, поэтому медленно: свободный нейтрон живёт 15 минут (для ядерных масштабов — вечность).</p>
+        <p style="margin-top:8px" class="dim">Нейтрино (Паули, 1930) придумано, чтобы спасти закон сохранения энергии: спектр электронов непрерывный — кто-то уносит остаток. Поймали в 1956.</p>
+      </div>
+      <div class="card">
+        <h3 class="gr">γ — сбросить возбуждение</h3>
+        <p>После α или β ядро часто остаётся возбуждённым — как атом на верхнем уровне. Падает вниз, испуская фотон, но с энергией не эВ, а <b>100 кэВ – 10 МэВ</b>. Состав ядра не меняется.</p>
+        <p style="margin-top:8px">Обычно за 10⁻¹² с. Но бывают <b>метастабильные</b> уровни: технеций-99m живёт 6 часов — идеально для медицины (глава 8). Тантал-180m — 10¹⁵ лет, единственный стабильный изомер.</p>
+        <p style="margin-top:8px" class="dim">Пробег — метры бетона, сантиметры свинца. Ослабляется экспоненциально, до нуля не доходит никогда. Снаружи — главная опасность, внутри — наименьшая (пролетает насквозь).</p>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:16px"><b>Ещё:</b> спонтанное деление (тяжёлые ядра, Cf-252 — источник нейтронов), протонная и нейтронная эмиссия (у экзотических ядер вдали от долины), кластерный распад (углерод-14 из радия-223). Но 99% радиоактивности вокруг тебя — α, β, γ.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s10">
+  <div class="content">
+    <div class="kicker">Радиоактивность · время</div>
+    <h2>Период полураспада: ядро не стареет</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Ядро урана, которому 4.5 млрд лет, имеет <b>ровно ту же</b> вероятность распасться в следующую секунду, что и только что родившееся. Нет усталости, нет износа. Распад — чисто квантовый случайный процесс: вероятность λ в единицу времени, всегда одна и та же.</li>
+          <li>Отсюда экспонента: N(t) = N₀·e<sup>−λt</sup>. <b>Период полураспада T½</b> = ln2/λ — за него уходит половина. Ещё за T½ — половина остатка. Через 10 T½ — 0.1%. Никогда не ноль.</li>
+          <li>Предсказать, <b>когда</b> распадётся конкретное ядро, — нельзя в принципе. Не «мы не знаем», а нет такой информации во вселенной (теорема Белла, глава про квантовую механику). Зато для 10²³ ядер статистика — идеально точная: радиоуглеродное датирование, атомные часы.</li>
+          <li><b>Активность</b> A = λN — распадов в секунду. Единица — беккерель (1 Бк = 1 распад/с). Твоё тело — ~8000 Бк (калий-40, углерод-14). Банан — 15 Бк. Грамм радия — 3.7·10¹⁰ Бк (это старая единица кюри).</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Периоды — 40 порядков величины</h3>
+          <table class="t">
+            <tr><th>Нуклид</th><th>T½</th><th>Что это значит</th></tr>
+            <tr><td>Be-8</td><td class="d">10⁻¹⁶ с</td><td class="d">поэтому во вселенной нет элемента между He и C — узкое место нуклеосинтеза</td></tr>
+            <tr><td>Po-214</td><td class="d">164 мкс</td><td class="d">в цепочке радона у тебя в лёгких</td></tr>
+            <tr><td>Tc-99m</td><td class="d">6 ч</td><td class="d">40 млн процедур в год: успел просканировать, ушёл</td></tr>
+            <tr><td>I-131</td><td class="d">8 дней</td><td class="d">Чернобыль: главный удар по щитовидке в первые недели</td></tr>
+            <tr><td>Cs-137 / Sr-90</td><td class="d">30 лет</td><td class="d">загрязнение на поколение: почвы Чернобыля, Фукусимы</td></tr>
+            <tr><td>C-14</td><td class="d">5730 лет</td><td class="d">датирование до 50 000 лет</td></tr>
+            <tr><td>Pu-239</td><td class="d">24 000 лет</td><td class="d">отходы: проблема на 10 T½ = 240 000 лет</td></tr>
+            <tr><td>U-235 / U-238</td><td class="d">0.7 / 4.5 млрд лет</td><td class="d">потому уран ещё есть, а Pu в природе нет</td></tr>
+            <tr><td>K-40</td><td class="d">1.25 млрд лет</td><td class="d">половина твоей радиоактивности; половина тепла Земли</td></tr>
+            <tr><td>Te-128</td><td class="d">2.2·10²⁴ лет</td><td class="d">в 10¹⁴ раз дольше возраста вселенной; измерено</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s11">
+  <div class="bgimg"><img src="assets/ch_radiation.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Радиоактивность · биология</div>
+    <h2>Как радиация убивает: ионизация, ДНК и три единицы</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Частица с МэВ пролетает через ткань, где связи — эВ. Каждые несколько нанометров выбивает электрон — <b>ионизирует</b>. Один альфа-трек — 100 000 ионизаций. Рвутся молекулы, вода превращается в радикалы OH•, радикалы рвут ДНК.</li>
+          <li><b>Одиночный разрыв</b> ДНК — чинится за минуты (их и так 10 000 в день от метаболизма). <b>Двойной разрыв</b> — плохо: клетка либо погибает, либо чинит с ошибкой → мутация → через 10–30 лет рак. Отсюда две категории эффектов.</li>
+          <li><b>Детерминированные</b> (большая доза, гибель клеток): &gt;0.5 Гр — падение лимфоцитов; 2–4 Гр — костный мозг, выпадение волос, 50% смертность без лечения; 6+ Гр — кишечник, почти 100%; 30+ Гр — ЦНС, часы. Быстро делящиеся ткани гибнут первыми — тот же принцип, что у химиотерапии.</li>
+          <li><b>Стохастические</b> (любая доза, мутации): рак и наследственные эффекты. Модель LNT: риск ∝ дозе, без порога, ~5% на зиверт для смертельного рака. При малых дозах (&lt;100 мЗв) эффект статистически невидим — спор «есть порог или нет» идёт 60 лет.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Три единицы</h3>
+          <table class="t">
+            <tr><th>Единица</th><th>Что меряет</th><th>Смысл</th></tr>
+            <tr><td><b>Беккерель</b> (Бк)</td><td class="d">активность источника</td><td class="d">сколько распадов в секунду — не говорит о вреде</td></tr>
+            <tr><td><b>Грей</b> (Гр)</td><td class="d">поглощённая доза, Дж/кг</td><td class="d">физика: сколько энергии село в ткань</td></tr>
+            <tr><td><b>Зиверт</b> (Зв)</td><td class="d">эквивалентная доза</td><td class="d">Гр × коэффициент вреда: γ/β ×1, нейтроны ×5–20, α ×20</td></tr>
+          </table>
+          <h3 style="margin-top:14px">Дозы для масштаба (мЗв)</h3>
+          <table class="t">
+            <tr><td>Банан</td><td class="d">0.0001</td><td>Рентген зуба</td><td class="d">0.005</td></tr>
+            <tr><td>Перелёт Москва–NY</td><td class="d">0.05</td><td>Флюорография</td><td class="d">0.1</td></tr>
+            <tr><td>Годовой фон (мир)</td><td class="d">2.4</td><td>КТ грудной клетки</td><td class="d">7</td></tr>
+            <tr><td>Предел для работников АЭС/год</td><td class="d">20</td><td>Первый видимый эффект в крови</td><td class="d">~100</td></tr>
+            <tr><td>Ликвидаторы Чернобыля (в среднем)</td><td class="d">120</td><td>ЛД₅₀ за раз, без лечения</td><td class="d">~4000</td></tr>
+          </table>
+          <p style="margin-top:8px" class="dim">Половина фона — радон из земли в подвалах. Жители Рамсара (Иран) получают 260 мЗв/год от природных источников — избытка рака у них не найдено.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 4: ДЕЛЕНИЕ ============ -->
+<section class="slide chapter" id="s12">
+  <div class="bgimg"><img src="assets/ch_fission.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4</div>
+    <h1>Деление: один нейтрон — 200 МэВ — два нейтрона</h1>
+    <p class="lead">Декабрь 1938, Берлин. Ган и Штрассман облучают уран нейтронами и находят барий — элемент вдвое легче. Лиза Мейтнер на прогулке в снегу считает на салфетке: капля разорвалась пополам, и E = mc² даёт ровно 200 МэВ.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s13">
+  <div class="content">
+    <div class="kicker">Деление · механизм</div>
+    <h2>Капля, которая рвётся: как это происходит</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Ядро урана-235 ловит нейтрон → уран-236 в возбуждённом состоянии (энергия связи нейтрона 6.5 МэВ ушла в раскачку). Капля колеблется, вытягивается в гантель. Кулон (дальний) толкает концы наружу, сильная сила (ближняя) держит только перемычку. Если перемычка перетянулась — <b>разрыв</b>. 10⁻²⁰ с.</li>
+          <li>Осколки — два ядра примерно 95 и 140 (несимметрично — из-за оболочечной структуры), разлетаются с 170 МэВ кинетической энергии: это <b>85% выхода</b>, и это просто тепло — они тормозятся в топливе за микроны. Плюс γ, плюс β осколков позже (осколки перегружены нейтронами и скатываются в долину неделями), плюс нейтрино (уносят 5% безвозвратно).</li>
+          <li><b>Главное: вылетают 2–3 нейтрона</b> (в среднем 2.43 для U-235). Осколкам нейтронов слишком много — они их стряхивают. Каждый может вызвать следующее деление. <b>Цепная реакция</b> — Сциллард понял это в 1933, ещё до открытия деления, стоя на светофоре в Лондоне.</li>
+          <li><b>Почему U-235, а не U-238</b>: чётно-нечётный эффект. У ²³⁵U нечётное число нейтронов; поймав ещё один, он спаривает его и выигрывает лишние ~1 МэВ энергии связи — хватает перевалить барьер деления от <b>любого</b>, даже медленного нейтрона. У ²³⁸U (чётный) — не хватает: нужен быстрый нейтрон с 1+ МэВ. То же для Pu-239 (делится) и Pu-240 (нет).</li>
+        </ul>
+      </div>
+      <div>
+        <div class="svgbox">
+          <div class="dg">
+            <div class="row">
+              <div class="bx" style="flex:0 0 60px"><b style="color:var(--cyan)">n</b><span>медленный</span></div>
+              <div class="arr">→</div>
+              <div class="bx am"><b>²³⁵U</b><span>захват</span></div>
+              <div class="arr">→</div>
+              <div class="bx am"><b>²³⁶U*</b><span>колеблется 10⁻¹⁴ с</span></div>
+              <div class="arr rd">→</div>
+              <div class="stack" style="flex:1.2">
+                <div class="bx rd"><b>Осколок A ~95</b><span>Kr, Sr, Zr…</span></div>
+                <div class="bx rd"><b>Осколок B ~140</b><span>Ba, Xe, I, Cs…</span></div>
+                <div class="bx cy"><b>2–3 n + γ</b><span>+ β, ν позже</span></div>
+              </div>
+            </div>
+            <div class="lbl mono" style="margin-top:6px">Баланс энергии на одно деление, МэВ:</div>
+            <table class="t" style="font-size:13px">
+              <tr><td>Кинетическая энергия осколков</td><td class="d">~170</td><td class="d">мгновенно, тепло</td></tr>
+              <tr><td>Мгновенные нейтроны</td><td class="d">~5</td><td class="d">носители цепи</td></tr>
+              <tr><td>Мгновенные γ</td><td class="d">~7</td><td class="d">тепло + защита</td></tr>
+              <tr><td>β осколков (запаздывающие)</td><td class="d">~7</td><td class="d">остаточное тепловыделение после остановки — Фукусима</td></tr>
+              <tr><td>γ запаздывающие</td><td class="d">~6</td><td class="d">то же</td></tr>
+              <tr><td>Нейтрино</td><td class="d">~10</td><td class="d">улетают, потеряны</td></tr>
+              <tr><td><b>Итого</b></td><td class="d"><b>~200</b></td><td class="d">1 г ²³⁵U = 1 МВт·сут = 2.5 т угля</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s14">
+  <div class="content">
+    <div class="kicker">Деление · цепь</div>
+    <h2>k = 1: разница между реактором и бомбой — в одной цифре</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Коэффициент размножения k</b>: сколько нейтронов следующего поколения даёт один нейтрон этого. Из 2.43 рождённых часть вылетает наружу, часть захватывается без деления (U-238, конструкции, примеси). <b>k &lt; 1</b> — реакция гаснет. <b>k = 1</b> — критичность, стационарная мощность: реактор. <b>k &gt; 1</b> — рост по экспоненте: за 80 поколений — 10²⁴ делений.</li>
+          <li>Время жизни поколения — 10⁻⁸ с в чистом металле (быстрые нейтроны), 10⁻⁴ с в реакторе (нейтроны замедлены до тепловых). Значит, в бомбе 80 поколений — <b>микросекунда</b>. В реакторе при k = 1.001 мощность удваивается за секунды — управляемо стержнями. Но при k = 1.01 на мгновенных нейтронах — за миллисекунды. Чернобыль.</li>
+          <li><b>Критическая масса</b>: нейтрон должен успеть встретить ядро до вылета наружу. Пробег ~10 см в уране. Шар меньше — утечка через поверхность (∝ R²) побеждает рождение в объёме (∝ R³). U-235: 52 кг голый шар, 15 кг с отражателем. Pu-239: 10 кг / 4 кг. Сжать вдвое — критмасса в 4 раза меньше: отсюда имплозия.</li>
+          <li>Природный уран — 0.72% U-235, остальное U-238, который нейтроны ест. С природным ураном k &lt; 1 при любой массе… <b>кроме</b> воды-замедлителя из тяжёлой воды или графита (Ферми, 1942, Чикаго, k = 1.0006). Или обогащение: 3–5% для АЭС, 20% — «высокообогащённый», 90% — оружие.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Обогащение: разделить неразделимое</h3>
+          <p>²³⁵U и ²³⁸U химически идентичны. Разница масс — 1.3%. Единственный рычаг — физика: чуть разная скорость молекул UF₆ при одной температуре.</p>
+          <ul style="margin-top:8px">
+            <li><b>Газовая диффузия</b> (Манхэттен, K-25): газ через пористую перегородку, лёгкий чуть быстрее. Коэффициент разделения 1.004 на ступень — нужны тысячи ступеней и гигаватты энергии. Завод — самое большое здание в мире на 1945.</li>
+            <li><b>Центрифуги</b> (сегодня): ротор 1500 об/с, тяжёлые к стенке. Коэффициент 1.3 на ступень, каскад из тысяч. В 50 раз меньше энергии. Секрет Зиппе/Уренко утёк через Абдул Кадыр Хана в Пакистан, Иран, КНДР.</li>
+            <li><b>Лазерное</b> (SILEX): лазер настроен на линию ²³⁵UF₆, сдвинутую изотопным эффектом на 0.1 нм. Ионизирует только его. Работает, засекречено.</li>
+          </ul>
+          <p style="margin-top:8px" class="dim">Отсюда вся политика нераспространения: реактор и бомба — <b>одна</b> технология, разница — сколько раз прогнать через каскад. От 3.5% до 90% — не 25 раз работы, а ~4: основная работа — на первых процентах.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 5: РЕАКТОР ============ -->
+<section class="slide chapter" id="s15">
+  <div class="bgimg"><img src="assets/ch_reactor.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5</div>
+    <h1>Реактор: кипятильник на цепной реакции</h1>
+    <p class="lead">При всей физике внутри, АЭС — это паровая машина XIX века. Ядро только греет воду. Всё искусство — держать k ровно на единице и не дать остановленному реактору расплавить себя собственным остаточным теплом.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s16">
+  <div class="content">
+    <div class="kicker">Реактор · устройство</div>
+    <h2>Пять частей: топливо, замедлитель, стержни, теплоноситель, защита</h2>
+    <div class="dg" style="margin-bottom:18px">
+      <div class="row" style="align-items:stretch">
+        <div class="bx am"><b>Топливо</b><span>таблетки UO₂, 3–5% ²³⁵U, в трубках из циркония (ТВЭЛ). 160 сборок × 300 стержней</span></div>
+        <div class="bx cy"><b>Замедлитель</b><span>вода / графит / D₂O. Тормозит нейтроны с 2 МэВ до 0.025 эВ за ~20 соударений — тепловые ловятся ²³⁵U в 500 раз лучше</span></div>
+        <div class="bx rd"><b>Стержни</b><span>бор, кадмий, гафний — глотают нейтроны. Вдвинуть — k вниз. Аварийная защита: падают за 2–4 с</span></div>
+        <div class="bx gr"><b>Теплоноситель</b><span>вода 300 °C под 160 атм (не кипит) → парогенератор → турбина. Или сама вода кипит в зоне (РБМК, BWR)</span></div>
+        <div class="bx"><b>Защита</b><span>корпус сталь 20 см, бетон 1–2 м, контейнмент от самолёта. У РБМК контейнмента не было</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Почему реактором можно управлять</b>: 0.65% нейтронов — <b>запаздывающие</b>, вылетают из осколков через секунды–минуты после деления. Из-за них эффективное время поколения — не 10⁻⁴ с, а ~0.1 с. Пока k &lt; 1.0065, реактор разгоняется медленно, стержни успевают. Перевалил за 1.0065 — «мгновенная критичность», разгон за миллисекунды, стержни не успеют. Именно это случилось в Чернобыле.</li>
+          <li><b>Отрицательная обратная связь</b>: вода нагрелась → расширилась → хуже замедляет → k падает. Топливо нагрелось → доплеровское уширение → ²³⁸U больше ловит → k падает. Хороший реактор сам себя тормозит. РБМК при малой мощности имел <b>положительный паровой коэффициент</b>: вода закипела → пар не поглощает нейтроны → k <b>растёт</b> → ещё больше пара.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Типы</h3>
+        <table class="t">
+          <tr><th>Тип</th><th>Замедлитель / теплоноситель</th><th>Где</th></tr>
+          <tr><td>ВВЭР / PWR</td><td class="d">вода / вода под давлением, 2 контура</td><td class="d">70% мира: Россия, Франция, США</td></tr>
+          <tr><td>BWR</td><td class="d">вода / вода кипит в зоне, 1 контур</td><td class="d">США, Япония (Фукусима)</td></tr>
+          <tr><td>РБМК</td><td class="d">графит / кипящая вода</td><td class="d">СССР; Чернобыль; 7 ещё работают</td></tr>
+          <tr><td>CANDU</td><td class="d">тяжёлая вода — работает на природном уране</td><td class="d">Канада, Индия</td></tr>
+          <tr><td>БН (быстрый)</td><td class="d">без замедлителя / натрий 550 °C</td><td class="d">БН-800 Белоярск — единственный промышленный</td></tr>
+          <tr><td>SMR / ториевые / солевые</td><td class="d">разное</td><td class="d">прототипы, 2030-е</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s17">
+  <div class="bgimg"><img src="assets/ch_chernobyl.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Реактор · когда ломается</div>
+    <h2>Чернобыль и Фукусима: две разные физики отказа</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="rd">Чернобыль, 26.04.1986 — реактивностная авария</h3>
+          <ul>
+            <li>Испытание выбега турбины. Мощность провалили до 30 МВт (из 3200) — реактор «отравился» ксеноном-135 (поглотитель, копится при малой мощности). Чтобы поднять — вытащили почти все стержни. Запас реактивности ниже регламента.</li>
+            <li>Малая мощность + РБМК = <b>положительный паровой коэффициент</b>. Вода начала кипеть → k вырос → больше пара → больше k.</li>
+            <li>01:23:40 — АЗ-5, стержни вниз. <b>Конструктивный дефект</b>: на концах стержней — графитовые вытеснители; первые 3–4 секунды хода они <b>добавляли</b> реактивность в низ зоны. Локальная мгновенная критичность.</li>
+            <li>Мощность в 100× номинала за 4 с. Топливо раскрошилось, пар разорвал каналы, крышку 2000 т подбросило. Второй взрыв — водород + пар. Графит горел 10 дней, разнося осколки по Европе.</li>
+          </ul>
+          <p style="margin-top:8px" class="dim">31 смерть острая; ~4000 прогнозных от рака (ВОЗ); 6000 случаев рака щитовидки у детей от йода-131 (15 смертей). Зона 2600 км².</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Фукусима, 11.03.2011 — потеря теплоотвода</h3>
+          <ul>
+            <li>Землетрясение 9.0 — реакторы <b>заглушились штатно</b>, за секунды. Цепная реакция остановлена. Физика сработала.</li>
+            <li>Но остаточное тепловыделение осколков — <b>7% мощности</b> сразу после остановки, 1% через сутки. Для 1500-мегаваттного реактора — 100 МВт, потом 15. Надо качать воду <b>месяцами</b>.</li>
+            <li>Цунами 14 м через 50 минут: дизель-генераторы в подвале затоплены. Нет насосов. Вода в зоне выкипела за часы, топливо 2800 °C, цирконий + пар → водород. Взрывы водорода, три расплавленных зоны.</li>
+            <li>Выброс ~10% от чернобыльского. <b>0 смертей от радиации</b>, ~2000 — от эвакуации (стресс, стариков). Море разбавило всё.</li>
+          </ul>
+          <p style="margin-top:8px" class="dim">Урок: реактор нельзя «выключить». Его можно только перевести в режим 7%-го кипятильника, которому нужна вода. Новые проекты (ВВЭР-1200, AP1000) — пассивный отвод: вода сама течёт под гравитацией 72 часа без электричества.</p>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Статистика:</b> смертей на ТВт·ч — уголь 25, нефть 18, газ 3, гидро 1.3 (одна плотина Баньцяо — 170 000), атом 0.03, ветер 0.04, солнце 0.02 — с учётом Чернобыля и Фукусимы. Атом — на уровне возобновляемых.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s18">
+  <div class="bgimg"><img src="assets/ch_waste.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Реактор · что остаётся</div>
+    <h2>Отработанное топливо: 96% урана и 4% проблемы</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Сборка стоит в реакторе 4–5 лет, выгорает 4–5% тяжёлых атомов. Вытащили: <b>95% ²³⁸U</b>, ~1% ²³⁵U, <b>1% плутоний</b> (наработан из ²³⁸U + n), 3% осколки деления, 0.1% младшие актиниды (Am, Cm, Np).</li>
+          <li>Первые 5 лет — в бассейне под водой (синее свечение Черенкова: электроны быстрее света в воде). Активность падает в 1000 раз. Потом — сухие контейнеры на площадке. Всего человечество наработало ~400 000 т, вся АЭС за 60 лет работы — один бассейн размером с спортзал.</li>
+          <li><b>Опасность по времени</b>: 300 лет — осколки (Cs-137, Sr-90, T½ 30 лет, 10 периодов) — самое горячее, γ, нужна защита. После этого — актиниды: Pu-239 (24 000 лет), Am-241, Np-237 (2 млн лет). Это α-излучатели, снаружи безвредны — опасны, если попадут в воду.</li>
+          <li><b>Варианты</b>: (1) закопать целиком — Онкало (Финляндия, гранит, 400 м, открыто 2025), 100 000 лет; (2) переработать — извлечь U и Pu (Франция, Россия, Маяк), в отходы уходит только 4%, объём в 5 раз меньше, но растёт риск распространения; (3) <b>дожечь в быстром реакторе</b> — актиниды делятся быстрыми нейтронами, остаются только 300-летние осколки. Это работает (БН-800), но экономически пока дороже свежего урана.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Быстрые реакторы: замкнутый цикл</h3>
+          <p>Без замедлителя нейтроны быстрые. ²³⁸U их ловит и превращается в ²³⁹Pu: <b>реактор производит топлива больше, чем сжигает</b> (бридер). Природный уран используется не на 0.7%, а на 60%+ — запасов на тысячи лет вместо ста. Теплоноситель — натрий (не замедляет, отлично греет, горит на воздухе) или свинец.</p>
+          <p style="margin-top:8px">Тот же Pu — оружейный материал. Поэтому США закрыли программу в 1977 (Картер), Франция — Superphénix в 1997. Россия — единственная, у кого БН-600 и БН-800 работают в сети, БРЕСТ-300 на свинце строится.</p>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3>Торий</h3>
+          <p>²³²Th в 3 раза больше в земле, сам не делится, но + n → ²³³U, который делится отлично. Плюсы: мало плутония, отходы короче. Минусы: нужен стартовый делящийся материал, ²³²U в цепочке — жёсткий γ, переработка сложнее. Индия и Китай строят прототипы; в промышленности — ноль.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 6: ОРУЖИЕ ============ -->
+<section class="slide chapter" id="s19">
+  <div class="bgimg"><img src="assets/ch_weapon.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6</div>
+    <h1>Оружие: k ≫ 1 за микросекунду</h1>
+    <p class="lead">Физика бомбы проще физики реактора — не надо держать равновесие, надо только успеть собрать сверхкритическую массу быстрее, чем она разлетится. Всё инженерное искусство — в слове «успеть».</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s20">
+  <div class="content">
+    <div class="kicker">Оружие · деление</div>
+    <h2>Пушка и имплозия: две схемы 1945 года</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="am">Пушечная — «Малыш», Хиросима</h3>
+          <p>64 кг U-235 (80%): цилиндр-снаряд выстреливается порохом в кольцо-мишень по стволу. Вместе — сверхкритично. Скорость 300 м/с, сборка за миллисекунду.</p>
+          <p style="margin-top:8px">Простота: не испытывали до применения — были уверены. КПД 1.4%: из 64 кг разделилось <b>0.9 кг</b>. Выход 15 кт.</p>
+          <p style="margin-top:8px" class="rd">Плутоний в пушку нельзя: Pu-240 спонтанно делится, фон нейтронов 10⁵/с. За миллисекунду сборки цепь стартует раньше времени — «предетонация», шипение вместо взрыва. Нужно собирать за микросекунды.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="rd">Имплозия — «Толстяк», Нагасаки, Тринити</h3>
+          <p>Шар Pu-239 6.2 кг — <b>докритический</b> при нормальной плотности. Вокруг — 2.5 т взрывчатки в 32 линзах (быстрая и медленная ВВ, формирующие сферически сходящуюся волну). Детонация всех линз одновременно (±100 нс).</p>
+          <p style="margin-top:8px">Ударная волна сжимает шар в 2–2.5 раза по плотности → критмасса падает в 4–6 раз → сверхкритичность. В центре — инициатор (Po-Be), выдающий вспышку нейтронов в момент максимума сжатия. КПД 17%, 21 кт.</p>
+          <p style="margin-top:8px" class="dim">Сложность — в синхронности взрывчатки: этим занимался весь Лос-Аламос год. Сегодня — «левитирующее ядро», отражатель из бериллия, композитные ядра: 4 кг Pu хватает на 20 кт.</p>
+        </div>
+      </div>
+    </div>
+    <div class="dg" style="margin-top:16px">
+      <div class="row">
+        <div class="bx"><b>t = 0</b><span>детонаторы</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>+10 мкс</b><span>волна дошла до ядра</span></div>
+        <div class="arr">→</div>
+        <div class="bx am"><b>+12 мкс</b><span>максимум сжатия, инициатор</span></div>
+        <div class="arr">→</div>
+        <div class="bx am"><b>+0.5 мкс</b><span>~55 поколений, 10¹⁶ делений/нс</span></div>
+        <div class="arr rd">→</div>
+        <div class="bx rd"><b>+1 мкс</b><span>ядро 10⁷ К, 10¹¹ атм, расширяется — цепь гаснет</span></div>
+        <div class="arr rd">→</div>
+        <div class="bx rd"><b>+1 мс</b><span>огненный шар 200 м, ударная волна</span></div>
+      </div>
+      <div class="cap">Вся ядерная часть — микросекунда. Цепь останавливается сама: ядро расширилось, плотность упала ниже критической. Чем дольше удержать — тем выше КПД. Отсюда тяжёлый тампер (уран-238) вокруг: инерция + отражение нейтронов + сам делится быстрыми.</div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s21">
+  <div class="content">
+    <div class="kicker">Оружие · синтез</div>
+    <h2>Термоядерная: бомба внутри бомбы, зажигаемая рентгеном</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Предел деления — ~500 кт: больше плутония не собрать, не сдетонирует раньше. Дальше — <b>синтез</b>: D + T → He + n + 17.6 МэВ. На килограмм — в 4 раза больше, чем деление, и нет критмассы: сколько угодно топлива.</li>
+          <li>Но зажечь нужно 100 млн градусов и плотность. <b>Теллер–Улам (1951)</b>: <b>первичный</b> заряд (плутониевая имплозия) взрывается. Его <b>рентгеновское излучение</b> (90% энергии на первой микросекунде) заполняет корпус, испаряет обмазку <b>вторичного</b> цилиндра — испарение сжимает его как ракетный двигатель наизнанку. Радиационная имплозия.</li>
+          <li>Внутри вторичного — дейтерид лития-6 (твёрдый, ⁶Li + n → T на месте, тритий не надо хранить) вокруг стержня плутония (свеча зажигания). Сжатие 30× → свеча критична → делится → греет → синтез → нейтроны 14 МэВ делят ⁶Li и оболочку из ²³⁸U (третья ступень — грязная половина энергии).</li>
+          <li><b>Первая — «Айви Майк», 1952</b>, 10.4 Мт, 80-тонный криостат с жидким дейтерием. <b>Царь-бомба 1961</b>: 50 Мт (проектная 100 — заменили урановый тампер свинцом, чтобы не убить экипаж). Ударная волна трижды обошла Землю. Сегодня боеголовки — 100–500 кт: точность важнее мощности.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Эффекты взрыва 1 Мт на высоте 2 км</h3>
+          <table class="t">
+            <tr><th>Эффект</th><th>Доля энергии</th><th>Радиус</th></tr>
+            <tr><td>Ударная волна (5 psi, дома рушатся)</td><td class="d">50%</td><td class="d">~7 км</td></tr>
+            <tr><td>Тепловое излучение (ожоги III ст.)</td><td class="d">35%</td><td class="d">~10 км</td></tr>
+            <tr><td>Мгновенная радиация (5 Зв)</td><td class="d">5%</td><td class="d">~3 км — меньше зоны ударной волны</td></tr>
+            <tr><td>Остаточная радиация (осадки)</td><td class="d">10%</td><td class="d">при наземном взрыве — сотни км по ветру</td></tr>
+            <tr><td>ЭМИ</td><td class="d">&lt;1%</td><td class="d">высотный взрыв — континент без электроники</td></tr>
+          </table>
+          <p style="margin-top:10px" class="dim">Мощность растёт как объём, а поражение — как площадь: радиус ∝ мощность<sup>1/3</sup>. 1 Мт даёт не 60× радиуса 15 кт, а 4×. Поэтому 10 боеголовок по 100 кт эффективнее одной по 1 Мт — отсюда РГЧ.</p>
+          <p style="margin-top:8px">Арсеналы: ~12 100 боеголовок (2025), 88% у России и США. Пик 1986 — 70 000. Испытаний всего 2056, последнее — КНДР, 2017.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 7: СИНТЕЗ ============ -->
+<section class="slide chapter" id="s22">
+  <div class="bgimg"><img src="assets/ch_fusion.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 7</div>
+    <h1>Синтез: как горит Солнце</h1>
+    <p class="lead">В центре Солнца 15 миллионов градусов — и это в сто раз меньше, чем нужно, чтобы протоны сблизились классически. Солнце горит только потому, что протоны туннелируют. Медленно. Поэтому оно горит миллиарды лет, а не секунды.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s23">
+  <div class="content">
+    <div class="kicker">Синтез · Солнце</div>
+    <h2>pp-цикл: четыре протона → гелий за 10 миллиардов лет</h2>
+    <div class="cols">
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx cy"><b>p + p → D + e⁺ + ν</b><span>слабое взаимодействие; в среднем протон ждёт этого <b>9 млрд лет</b></span></div>
+          </div>
+          <div class="row"><div class="arr" style="margin:0 auto">↓ 1 секунда</div></div>
+          <div class="row">
+            <div class="bx cy"><b>D + p → ³He + γ</b><span>5.5 МэВ</span></div>
+          </div>
+          <div class="row"><div class="arr" style="margin:0 auto">↓ ~1 млн лет</div></div>
+          <div class="row">
+            <div class="bx am"><b>³He + ³He → ⁴He + 2p</b><span>12.9 МэВ; два протона возвращаются в игру</span></div>
+          </div>
+          <div class="cap">Итого 4p → ⁴He + 2e⁺ + 2ν + 26.7 МэВ. 0.7% массы в энергию. Солнце сжигает 600 млн тонн водорода в секунду, теряя 4 млн тонн массы — и этого хватит ещё на 5 млрд лет.</div>
+        </div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Узкое место — первый шаг.</b> Два протона при сближении должны за 10⁻²¹ с (время пролёта) успеть превратить один в нейтрон через слабое взаимодействие. Вероятность 10⁻²⁵. Плюс туннелирование через кулоновский барьер. Вместе — протон в центре Солнца ждёт 9 млрд лет. <b>Это и есть причина, почему Солнце не бомба.</b></li>
+          <li><b>Мощность на объём</b> ядра Солнца — 276 Вт/м³. Как у компостной кучи. Солнце светит не потому, что горит ярко, а потому, что <b>большое</b>. Термоядерный реактор на Земле должен быть в миллионы раз интенсивнее — поэтому не pp, а D+T, у которого сечение в 10²⁵ раз больше.</li>
+          <li><b>Нейтрино</b> вылетают из центра за 2 секунды — единственное, что мы видим напрямую из ядра Солнца. Фотон из центра до поверхности идёт ~100 000 лет (рассеяния). В 1970–2000 детекторы видели в 3 раза меньше нейтрино, чем положено — «проблема солнечных нейтрино». Решение: нейтрино осциллируют между сортами в полёте. Нобель 2015. Значит, у нейтрино есть масса.</li>
+          <li>В звёздах тяжелее Солнца работает <b>CNO-цикл</b>: углерод как катализатор, скорость ∝ T¹⁷ — чуть горячее, и звезда сгорает за миллионы лет вместо миллиардов.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s24">
+  <div class="bgimg"><img src="assets/ch_stars.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Синтез · откуда элементы</div>
+    <h2>Нуклеосинтез: ты сделан из пепла трёх поколений звёзд</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Большой взрыв</b> (первые 3 минуты): 75% H, 25% He, следы D, ³He, ⁷Li. И всё. Дальше вселенная остыла — не хватает температуры. Ни углерода, ни кислорода: барьер Be-8 (T½ 10⁻¹⁶ с) не перепрыгнуть без плотности звёздного ядра.</li>
+          <li><b>Звёзды</b>: водород → гелий (миллиарды лет). Кончился водород — ядро сжалось, 100 млн К — <b>тройная альфа</b>: 3 ⁴He → ¹²C через резонанс Хойла (предсказан антропно в 1953: «мы есть, значит, уровень 7.65 МэВ должен быть»; нашли). Потом C → O → Ne → Mg → Si → <b>Fe</b>. Каждая стадия короче предыдущей: последняя, кремний в железо, — сутки.</li>
+          <li><b>Железо — тупик</b>: дальше синтез энергию не даёт, а забирает. Ядро звезды теряет опору, коллапсирует за секунду до нейтронной звезды (плотность ядра, 10 км). Отскок + нейтрино 10⁴⁶ Дж — <b>сверхновая</b>. Оболочка улетает, унося весь пепел в космос.</li>
+          <li><b>Тяжелее железа</b> — только захватом нейтронов: <b>s-процесс</b> (медленно, в красных гигантах: Sr, Ba, Pb) и <b>r-процесс</b> (быстро, 10²⁰ нейтронов/см³ за секунду: Au, Pt, U). Где r-процесс — спорили 60 лет; в 2017 гравитационные волны + свет от слияния двух нейтронных звёзд (GW170817) показали: там. Всё золото на Земле — из столкновений нейтронных звёзд.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Происхождение твоих атомов</h3>
+          <table class="t">
+            <tr><th>Элемент</th><th>Где сделан</th><th>В тебе</th></tr>
+            <tr><td>H</td><td class="d">Большой взрыв</td><td class="d">10% массы; вода</td></tr>
+            <tr><td>C, N, O</td><td class="d">звёзды солнечной массы, гелиевое горение; выброшены планетарными туманностями</td><td class="d">83%; всё органическое</td></tr>
+            <tr><td>Ca, P, S, Fe</td><td class="d">массивные звёзды, сверхновые II</td><td class="d">кости, ДНК, гемоглобин</td></tr>
+            <tr><td>Fe (большая часть)</td><td class="d">сверхновые Ia (белые карлики)</td><td class="d">кровь</td></tr>
+            <tr><td>I, Se, Mo</td><td class="d">s-процесс в AGB-звёздах</td><td class="d">щитовидка, ферменты</td></tr>
+            <tr><td>Au, Pt, U</td><td class="d">слияние нейтронных звёзд</td><td class="d">кольцо на пальце, тепло Земли</td></tr>
+          </table>
+          <p style="margin-top:10px">Солнце — звезда третьего поколения: облако, из которого оно родилось, дважды обогащалось сверхновыми. Возраст атомов углерода в твоём теле — 7–12 млрд лет. Они прошли через ядро звезды, взрыв, межзвёздный газ, планету — и стали читать этот текст.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s25">
+  <div class="bgimg"><img src="assets/ch_tokamak.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Синтез · на Земле</div>
+    <h2>Токамак и лазер: 70 лет до «через 30 лет»</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Задача</b>: D + T → ⁴He (3.5 МэВ) + n (14.1 МэВ). Нужно 150 млн К (в 10 раз горячее Солнца — компенсируем малый объём) и удержать плазму, пока выход не превысит вложенное. <b>Критерий Лоусона</b>: n·T·τ &gt; 3·10²¹ кэВ·с/м³. Тройное произведение выросло в 10 000 раз с 1970 — быстрее закона Мура. Не хватает ещё ~5×.</li>
+          <li><b>Токамак</b> (Сахаров, Тамм, 1950): плазма-бублик в магнитном поле 5–12 Тл; ток в плазме сам создаёт удерживающее поле. Плазма ни за что не касается стенок (иначе остывает мгновенно). Проблема — неустойчивости: плазма извивается, срывается, за миллисекунды сбрасывает 300 МДж в стенку.</li>
+          <li><b>ИТЭР</b> (Франция, 35 стран, $25+ млрд): 830 м³ плазмы, Q = 10 (500 МВт из 50). Первая плазма — 2034 (было 2016). DEMO — электростанция — 2050-е. Параллельно частники: Commonwealth Fusion (ВТСП-магниты 20 Тл, компактнее в 40 раз), Helion, TAE — обещают 2030-е.</li>
+          <li><b>Лазерный</b> (NIF, Ливермор): 192 лазера, 2 МДж за 10 нс на капсулу 2 мм с D-T льдом. Сжатие в 30 раз, 100 млн К в центре на 100 пс. <b>Декабрь 2022 — зажигание</b>: 3.15 МДж выхода на 2.05 МДж лазера. Q &gt; 1 впервые в истории. Правда, лазеры съели из сети 300 МДж, и это один выстрел в день. До электростанции — надо 10 выстрелов в секунду.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Почему это стоит 70 лет усилий</h3>
+          <table class="t">
+            <tr><th></th><th>Деление</th><th>Синтез D-T</th></tr>
+            <tr><td>Топливо</td><td class="d">уран, на ~100–1000 лет</td><td class="d">дейтерий из воды — на миллиарды лет; тритий из лития в самом реакторе</td></tr>
+            <tr><td>Энергия / кг</td><td class="d">80 ТДж</td><td class="d">340 ТДж</td></tr>
+            <tr><td>Отходы</td><td class="d">актиниды, 10⁵ лет</td><td class="d">активированная стенка, ~100 лет; гелий</td></tr>
+            <tr><td>Цепная реакция</td><td class="d">да; k надо держать</td><td class="d">нет: отключи магниты — потухло за мс. Разгон невозможен физически</td></tr>
+            <tr><td>Оружие</td><td class="d">тот же материал</td><td class="d">не даёт делящихся материалов</td></tr>
+            <tr><td>Статус</td><td class="d">440 реакторов, 10% электричества мира</td><td class="d">Q &gt; 1 один раз, на 100 пс</td></tr>
+          </table>
+          <p style="margin-top:8px" class="dim">Гелий-3 с Луны, «холодный синтез» и пузырьковый синтез — в разной степени фантастика; аневтронный p + ¹¹B — реален, но нужен 1 млрд К.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 8: ПРИМЕНЕНИЯ ============ -->
+<section class="slide chapter" id="s26">
+  <div class="bgimg"><img src="assets/ch_medicine.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 8</div>
+    <h1>Ядро в мирной жизни</h1>
+    <p class="lead">Кроме реакторов и бомб: 40 миллионов медицинских процедур в год, датировка всего, что старше письменности, зонды за пределами Солнечной системы — и дым-детектор у тебя на потолке.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s27">
+  <div class="content">
+    <div class="kicker">Применения · медицина</div>
+    <h2>Ядерная медицина: увидеть функцию и сжечь опухоль</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>Диагностика: ПЭТ</h3>
+        <p>Глюкоза с фтором-18 (β⁺, T½ 110 мин). Опухоль жрёт глюкозу в 10 раз активнее — копит F-18. Позитрон аннигилирует с электроном → <b>два γ по 511 кэВ разлетаются точно в противоположные стороны</b>. Кольцо детекторов ловит пары, восстанавливает линию — точка распада на ней. Миллионы линий — 3D-карта метаболизма с разрешением 4 мм.</p>
+        <p style="margin-top:8px" class="dim">Видит рак до того, как он изменил анатомию (КТ/МРТ показывают форму, ПЭТ — работу). F-18 делают на циклотроне утром и везут на весь день — 2 часа периода.</p>
+      </div>
+      <div class="card">
+        <h3 class="am">Диагностика: сцинтиграфия</h3>
+        <p><b>Технеций-99m</b> — 80% всей ядерной медицины. γ 140 кэВ (идеально для гамма-камеры), T½ 6 ч (успел, ушёл), химия позволяет прицепить к чему угодно: к фосфатам — кости (метастазы), к макроагрегатам — лёгкие, к сестамиби — сердце.</p>
+        <p style="margin-top:8px">Получают из молибдена-99 (T½ 66 ч), который делают в 5–6 реакторах на планете и рассылают в «генераторах» — колонках, с которых каждое утро смывают свежий Tc. Когда в 2009 канадский NRU встал — мировой дефицит.</p>
+        <p style="margin-top:8px" class="dim">Йод-123 / 131 — щитовидка: она сама его собирает. 131 в большой дозе — не смотреть, а сжечь (тиреотоксикоз, рак).</p>
+      </div>
+      <div class="card">
+        <h3 class="rd">Терапия</h3>
+        <p><b>Дистанционная</b>: линейный ускоритель, фотоны 6–18 МэВ с 10 направлений, пересекающихся в опухоли — ей 60 Гр, окружающим тканям — по 6. <b>Протонная</b>: протон отдаёт энергию в конце пробега (пик Брэгга) — за опухолью ноль дозы; для детских и мозговых опухолей.</p>
+        <p style="margin-top:8px"><b>Радионуклидная</b>: тащим изотоп прямо в опухоль. Лютеций-177 на пептиде к нейроэндокринным, PSMA-617 — к простате (одобрено 2022). Радий-223 в кости. Альфа-эмиттеры (Ac-225): пробег 3 клетки — убивает только то, к чему прилип.</p>
+        <p style="margin-top:8px" class="dim"><b>Брахитерапия</b>: зёрна I-125 в простату, навсегда — доза за 3 месяца, потом молчат.</p>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:16px"><b>Стерилизация</b>: 40% одноразовых медицинских изделий в мире стерилизуют кобальтом-60 — 25 кГр γ убивают всё, не нагревая и не оставляя химии. То же — специи, лук, ягоды (снятие запрета в РФ 2016). Продукт не становится радиоактивным: γ не активирует ядра.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s28">
+  <div class="content">
+    <div class="kicker">Применения · остальное</div>
+    <h2>Часы, батарейки, детекторы: где ещё живёт распад</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="am">Радиоуглеродное датирование (Либби, Нобель 1960)</h3>
+          <p>Космические лучи бьют азот в стратосфере → ¹⁴C, T½ 5730 лет. Он окисляется в CO₂, его едят растения, растения едят все. В живом — равновесие: 1 атом ¹⁴C на 10¹² обычных. Умер — обмен прекратился, ¹⁴C убывает. Измерил отношение — узнал, когда умер. До 50 000 лет (потом остаётся &lt;0.2%).</p>
+          <p style="margin-top:8px" class="dim">Калибровка по годичным кольцам (уровень ¹⁴C в атмосфере плавал). Ядерные испытания 1950–60-х удвоили ¹⁴C в воздухе — «бомбовый пик», по которому датируют вино, слоновую кость и нейроны (оказалось, в гиппокампе они рождаются всю жизнь).</p>
+          <p style="margin-top:8px">Для геологии — U-Pb (4.5 млрд лет для Земли), K-Ar (вулканы, гоминиды), Rb-Sr. Возраст Солнечной системы — 4.568 млрд лет по метеоритам, точность 0.02%.</p>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3>Ядерные батарейки: РИТЭГ</h3>
+          <p>Плутоний-238 (α, T½ 88 лет, 0.5 Вт/г тепла, почти без γ) — керамическая таблетка, термопары вокруг. Никаких движущихся частей. Вояджеры (1977) летят на них до сих пор — 470 Вт стало 220. Curiosity, Perseverance, Кассини, Новые горизонты. Без РИТЭГ за Юпитером солнца нет.</p>
+          <p style="margin-top:8px" class="dim">Pu-238 делают из нептуния в реакторе; США остались без него в 1988, возобновили в 2015 — 400 г в год. В СССР ставили РИТЭГи на маяки на Севере — до сих пор ищут забытые.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Быт и промышленность</h3>
+          <table class="t">
+            <tr><th>Где</th><th>Изотоп</th><th>Принцип</th></tr>
+            <tr><td>Дым-детектор ионизационный</td><td class="d">Am-241, 0.3 мкг</td><td class="d">α ионизирует воздух в камере — ток идёт; дым поглотил — ток упал — сигнал</td></tr>
+            <tr><td>Толщиномер бумаги/стали на прокате</td><td class="d">Sr-90, Cs-137</td><td class="d">ослабление β/γ ∝ толщине, без касания, в реальном времени</td></tr>
+            <tr><td>Дефектоскопия сварных швов</td><td class="d">Ir-192, Co-60</td><td class="d">γ-рентген трубопроводов в поле без электричества</td></tr>
+            <tr><td>Каротаж скважин</td><td class="d">Am-Be источник нейтронов</td><td class="d">нейтроны замедляются водородом — видят нефть и воду за стенкой</td></tr>
+            <tr><td>Нейтронно-активационный анализ</td><td class="d">реакторные нейтроны</td><td class="d">облучил образец — по γ-спектру состав до 10⁻¹² г; волосы Наполеона, картины</td></tr>
+            <tr><td>Стерильные насекомые</td><td class="d">Co-60</td><td class="d">облучённые самцы бесплодны — вывели муху цеце с Занзибара, плодовую с Мексики</td></tr>
+            <tr><td>Тритиевая подсветка</td><td class="d">T, 12 лет</td><td class="d">β возбуждает люминофор; прицелы, часы, выходы — светят без батареек</td></tr>
+          </table>
+          <p style="margin-top:8px" class="dim">Ядерный магнитный резонанс (МРТ) и рентген — не ядерная физика в строгом смысле: МРТ работает со спинами протонов, рентген — с электронными оболочками. Но без понимания ядра не появились бы.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ИТОГИ ============ -->
+<section class="slide" id="s29">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Вся ядерная физика на одном слайде</h2>
+    <table class="t" style="font-size:15px">
+      <tr><th>Явление</th><th>Физика</th><th>Масштаб</th><th>Где встречается</th></tr>
+      <tr><td>Сильное взаимодействие</td><td class="d">кварки, глюоны, конфайнмент; остаточное — между нуклонами</td><td class="d">1 фм, 10⁻²³ с, ~40 МэВ яма</td><td class="d">почему ядро есть; 99% твоей массы</td></tr>
+      <tr><td>Энергия связи</td><td class="d">дефект массы, E = mc²; максимум у Fe-56</td><td class="d">8 МэВ/нуклон</td><td class="d">синтез слева, деление справа</td></tr>
+      <tr><td>α-распад</td><td class="d">туннелирование через кулоновский барьер</td><td class="d">4–9 МэВ, 10⁻⁶ с – 10¹⁸ лет</td><td class="d">радон, полоний, РИТЭГ, дым-детектор</td></tr>
+      <tr><td>β-распад</td><td class="d">слабое взаимодействие, n ↔ p, нейтрино</td><td class="d">кэВ–МэВ, мс – 10²⁴ лет</td><td class="d">C-14, K-40, медицина, горение Солнца</td></tr>
+      <tr><td>γ-излучение</td><td class="d">переходы между уровнями ядра</td><td class="d">0.1–10 МэВ</td><td class="d">сцинтиграфия, стерилизация, защита</td></tr>
+      <tr><td>Деление</td><td class="d">капля рвётся; 2.4 n/акт; k — всё</td><td class="d">200 МэВ, 10⁻⁸–10⁻⁴ с/поколение</td><td class="d">440 реакторов, 12 000 боеголовок</td></tr>
+      <tr><td>Синтез</td><td class="d">туннелирование + сильная; D-T проще всего</td><td class="d">17.6 МэВ, 10⁸ К</td><td class="d">все звёзды, водородная бомба, ИТЭР</td></tr>
+      <tr><td>Нуклеосинтез</td><td class="d">звёзды до Fe, нейтронный захват дальше</td><td class="d">10⁶–10¹⁰ лет</td><td class="d">таблица Менделеева целиком</td></tr>
+      <tr><td>Радиобиология</td><td class="d">ионизация → радикалы → двойные разрывы ДНК</td><td class="d">Гр, Зв; 4 Зв = ЛД₅₀</td><td class="d">лучевая терапия, нормы, Чернобыль</td></tr>
+    </table>
+    <div class="note">Два числа держат всё: <b>8 МэВ на нуклон</b> (в миллион раз больше химии — отсюда и энергетика, и оружие, и почему звёзды светят так долго) и <b>1 фм радиуса сильной силы</b> (нуклон видит только соседей — отсюда насыщение, капля, предел таблицы Менделеева и само существование деления).</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s30">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <div class="kicker amber">Финал</div>
+    <h1>Десять в пятнадцатой</h1>
+    <p class="lead">Ядро → кварки → глюонная струна → 8 МэВ связи → долина стабильности → α через туннель, β через W → уран ловит нейтрон → капля рвётся → 200 МэВ и 2.4 нейтрона → k = 1 в реакторе, k ≫ 1 в бомбе → рентген сжимает дейтерид лития → 50 мегатонн. И в другую сторону: протон ждёт 9 миллиардов лет → гелий → углерод → железо → коллапс → сверхновая → золото → ты.</p>
+    <p class="lead" style="margin-top:14px">Всё это — на масштабе 10⁻¹⁵ метра, куда ни один микроскоп не заглянет напрямую. Мы знаем ядро только по тому, что из него вылетает. И этого хватило, чтобы построить и электростанцию, и бомбу, и объяснить, из чего сделаны звёзды.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- SLIDES_END -->
+
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>

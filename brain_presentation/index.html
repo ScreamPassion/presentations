@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мозг: 86 миллиардов нейронов на 20 ваттах</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #c084fc; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Brain deep dive · Гвендолин-ночные-лекции</div>
+    <h1>Мозг: 86 миллиардов нейронов на 20 ваттах</h1>
+    <p class="lead">Как полтора килограмма жира и белка генерируют электрические импульсы со скоростью 120 м/с, хранят 70 лет воспоминаний без единого байта, спят, чтобы промыть себя от мусора, и почему всё это до сих пор не удаётся повторить ни одной нейросети - при том, что нейросети именно с мозга и списаны.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 1: МАСШТАБ ============ -->
+<section class="slide chapter" id="s2">
+  <div class="bgimg"><img src="assets/ch_scale.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1</div>
+    <h1>Масштаб: числа, от которых кружится голова</h1>
+    <p class="lead">В мозге примерно столько же нейронов, сколько звёзд в Млечном Пути. У каждого - до 10 тысяч связей. Общая длина аксонов - 150 тысяч километров. И всё это потребляет меньше, чем лампочка в холодильнике.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">Масштаб · цифры</div>
+    <h2>Мозг в числах</h2>
+    <div class="cols">
+      <div>
+        <table class="t" style="font-size:13.5px">
+          <tr><th>Параметр</th><th>Значение</th><th>Для сравнения</th></tr>
+          <tr><td>Масса</td><td class="d">1300-1400 г, ~2% тела</td><td class="d">потребляет 20% кислорода и глюкозы</td></tr>
+          <tr><td>Нейронов</td><td class="d">~86 млрд (Эркулано-Оузел, 2009; раньше писали 100)</td><td class="d">звёзд в Млечном Пути 100-400 млрд; параметров в GPT-4 ~1.8 трлн</td></tr>
+          <tr><td>Из них в коре</td><td class="d">~16 млрд</td><td class="d">в мозжечке - 69 млрд (80%!), но мелких</td></tr>
+          <tr><td>Глиальных клеток</td><td class="d">~85 млрд (соотношение ~1:1, не 10:1 как учили)</td><td class="d">астроциты, олигодендроциты, микроглия</td></tr>
+          <tr><td>Синапсов</td><td class="d">100-150 трлн у взрослого; до 1 квадриллиона у ребёнка в 2-3 года</td><td class="d">потом половина отмирает - прунинг</td></tr>
+          <tr><td>Связей на нейрон</td><td class="d">в среднем 7 000, у клеток Пуркинье - до 200 000</td><td class="d">-</td></tr>
+          <tr><td>Длина аксонов</td><td class="d">~150 000 км (в основном тонких немиелинизированных)</td><td class="d">4 раза вокруг Земли</td></tr>
+          <tr><td>Мощность</td><td class="d">~20 Вт</td><td class="d">GPU для обучения LLM - 700 Вт, кластер - мегаватты</td></tr>
+          <tr><td>Скорость сигнала</td><td class="d">0.5-120 м/с (зависит от миелина и диаметра)</td><td class="d">медь - 200 000 км/с</td></tr>
+          <tr><td>Частота импульсов</td><td class="d">1-200 Гц, обычно 1-10 Гц; рефрактерный период 1-2 мс</td><td class="d">CPU - 5 ГГц</td></tr>
+          <tr><td>Кровоток</td><td class="d">750 мл/мин, 15% сердечного выброса; капилляров ~640 км</td><td class="d">без кислорода: сознание теряется за 10 с, необратимо за 4-6 мин</td></tr>
+        </table>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Медленный, но параллельный.</b> Нейрон срабатывает в миллион раз реже транзистора, но их 86 млрд, и все работают одновременно. Распознать лицо мозг успевает за 100-150 мс - это всего ~100 последовательных «тактов». Значит, алгоритм глубиной не больше 100 шагов, а ширина колоссальная.</li>
+          <li><b>Энергоэффективность</b> - главная загадка для инженеров. 20 Вт на «обучение и инференс» одновременно, 24/7. Половина энергии уходит на поддержание мембранного потенциала (натрий-калиевые насосы), не на сигналы. Нейроморфные чипы (Intel Loihi, IBM TrueNorth) пытаются повторить - пока на 3-4 порядка хуже по универсальности.</li>
+          <li><b>Не размер решает.</b> У кашалота мозг 8 кг, у слона 5 кг. Важнее число нейронов в коре: человек 16 млрд, шимпанзе 6, слон 5.6, ворона 1.5 млрд на 10 граммах. Объём мозга с IQ коррелирует слабо (r≈0.3); мозг Эйнштейна - 1230 г, ниже среднего.</li>
+          
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s4">
+  <div class="content">
+    <div class="kicker">Масштаб · история</div>
+    <h2>Как поняли, что думает не сердце</h2>
+    <div class="dg" style="margin-bottom:16px">
+      <div class="row" style="align-items:stretch">
+        <div class="bx am"><b>~1700 до н.э.</b><span>Папирус Эдвина Смита: первое описание мозга и травм черепа. Египтяне при мумификации мозг выбрасывали, сердце - хранили</span></div>
+        <div class="bx am"><b>IV в. до н.э.</b><span>Гиппократ: мозг - орган мысли. Аристотель: нет, радиатор для охлаждения крови; думает сердце</span></div>
+        <div class="bx"><b>II в.</b><span>Гален: анатомия на животных, нервы проводят «пневму». Доминировал 1400 лет</span></div>
+        <div class="bx"><b>1543-1664</b><span>Везалий - точная анатомия; Виллис - «Cerebri anatome», термин «неврология»</span></div>
+        <div class="bx cy"><b>1791-1848</b><span>Гальвани: нерв лягушки - электричество. 1848: Финеас Гейдж - лом через лобную долю, личность изменилась, жив 12 лет</span></div>
+        <div class="bx cy"><b>1861-1874</b><span>Брока и Вернике: речь локализована - повреждение конкретных зон ломает конкретные функции</span></div>
+        <div class="bx gr"><b>1888-1906</b><span>Кахаль (окраска Гольджи): мозг состоит из отдельных клеток - нейронов, а не сплошной сети. Нобель 1906 с Гольджи, который был против</span></div>
+        <div class="bx gr"><b>1929-1952</b><span>Бергер - ЭЭГ. Ходжкин и Хаксли - математика потенциала действия на аксоне кальмара (Нобель 1963)</span></div>
+        <div class="bx gr"><b>1953-2020-е</b><span>пациент H.M.: без гиппокампа - без новой памяти. 1990 - фМРТ. 2005 - оптогенетика. 2024 - полный коннектом мухи (140 тыс. нейронов), 1 мм³ коры человека (Google/Harvard, 1.4 ПБ)</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <ul class="pts">
+        <li><b>Мозг изучали через поломки.</b> Гейдж, Брока, H.M., пациенты с расщеплённым мозгом (Сперри, Нобель 1981): почти всё, что известно о локализации функций до эпохи фМРТ, получено из травм, инсультов и операций. Этика этого - отдельная тема.</li>
+        <li><b>Нейронная доктрина Кахаля</b> - нейроны отдельны, сигнал идёт в одну сторону (дендриты → тело → аксон), контакт через щель. Электронный микроскоп подтвердил синаптическую щель только в 1950-х.</li>
+      </ul>
+      <div class="card">
+        <h3 class="am">Что мы до сих пор не знаем</h3>
+        <ul>
+          <li>Как из активности нейронов возникает субъективный опыт (hard problem)</li>
+          <li>Как кодируется конкретное воспоминание (энграмма найдена у мышей - но как читать?)</li>
+          <li>Зачем 69 млрд нейронов в мозжечке</li>
+          <li>Полный коннектом человека: 86 млрд нейронов × 10⁴ связей - зеттабайты. Мухи хватило на 2024 год</li>
+          <li>Почему сон обязателен и что именно сломается без него на уровне молекул</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2: НЕЙРОН ============ -->
+<section class="slide chapter" id="s5">
+  <div class="bgimg"><img src="assets/ch_neuron.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2</div>
+    <h1>Нейрон: клетка, которая стреляет</h1>
+    <p class="lead">Батарейка на 70 милливольт, провод из жира, переключатель из белка. Потенциал действия - самый изученный процесс в биологии и единственный сигнал, которым мозг вообще умеет пользоваться.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="content">
+    <div class="kicker">Нейрон · строение</div>
+    <h2>Части нейрона и что каждая делает</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_neuron_parts.png" alt=""><div class="pcap">Вход слева (дендриты), обработка в центре (тело, аксонный холмик), выход справа (аксон и терминали). Направление сигнала - одно, всегда.</div></div>
+      <table class="t pt">
+        <tr><th>Часть</th><th>Что делает</th><th>Цифры</th></tr>
+        <tr><td><b>Дендриты</b></td><td class="d">ветвистые входы; принимают сигналы от тысяч других нейронов через синапсы на <b>шипиках</b> (spines). Не пассивные провода: локально усиливают, суммируют, умножают - дендрит сам по себе мини-процессор</td><td class="d">1000-10 000 шипиков; общая длина дендритов пирамидного нейрона - до 1 см</td></tr>
+        <tr><td><b>Сома (тело)</b></td><td class="d">ядро, ДНК, синтез белков; интегрирует входы. Диаметр 4-100 мкм</td><td class="d">потенциал покоя −70 мВ</td></tr>
+        <tr><td><b>Аксонный холмик</b></td><td class="d">место решения: если суммарный потенциал достиг порога (~−55 мВ) - генерируется импульс. Всё или ничего</td><td class="d">высочайшая плотность Na⁺-каналов</td></tr>
+        <tr><td><b>Аксон</b></td><td class="d">выходной провод, один на нейрон (но ветвится в конце). От 1 мм до 1 м (мотонейрон от поясницы до пальца ноги)</td><td class="d">диаметр 0.2-20 мкм</td></tr>
+        <tr><td><b>Миелин</b></td><td class="d">жировая изоляция из олигодендроцитов (в ЦНС) / шванновских клеток (периферия), намотана сегментами с разрывами - <b>перехватами Ранвье</b>. Импульс прыгает от перехвата к перехвату (сальтаторно) - в 10-50 раз быстрее</td><td class="d">120 м/с с миелином, 0.5-2 м/с без. Белое вещество = миелин</td></tr>
+        <tr><td><b>Терминали</b></td><td class="d">окончания с пузырьками нейромедиатора; синапс с дендритом следующего нейрона</td><td class="d">1 аксон - до 10 000 терминалей</td></tr>
+        <tr><td><b>Глия</b></td><td class="d"><b>астроциты</b> - питание, гомеостаз ионов, контроль синапсов, гемато-энцефалический барьер; <b>олигодендроциты</b> - миелин; <b>микроглия</b> - иммунитет и прунинг синапсов</td><td class="d">~85 млрд; астроцит обслуживает до 2 млн синапсов</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s7">
+  <div class="content">
+    <div class="kicker">Нейрон · потенциал действия</div>
+    <h2>Потенциал действия: 2 миллисекунды, 100 милливольт</h2>
+    <div class="part rev">
+      <div>
+        <div class="flow" style="margin:0 0 14px">
+          <div class="step"><b>Покой −70 мВ</b><span>снаружи много Na⁺, внутри K⁺. Na/K-насос качает 3 Na⁺ наружу, 2 K⁺ внутрь, жрёт 1 ATP. Утечка K⁺ держит минус внутри</span></div>
+          <div class="step"><b>Деполяризация до порога</b><span>входы от синапсов сдвигают потенциал к −55 мВ на аксонном холмике</span></div>
+          <div class="step"><b>Взлёт до +40 мВ</b><span>потенциал-зависимые Na⁺-каналы открываются лавинно: Na⁺ врывается внутрь. 0.5 мс</span></div>
+          <div class="step"><b>Реполяризация</b><span>Na⁺-каналы инактивируются, K⁺-каналы открываются, K⁺ выходит. Возврат к минусу. 1 мс</span></div>
+          <div class="step"><b>Гиперполяризация</b><span>«перелёт» до −80 мВ, K⁺-каналы закрываются медленно. Рефрактерный период: назад импульс не пойдёт</span></div>
+        </div>
+        <ul class="pts" style="font-size:15px">
+          <li><b>Всё или ничего.</b> Импульс одинаковой амплитуды всегда. Информация - не в размере, а в <b>частоте</b> и <b>времени</b> прихода импульсов (rate coding и temporal coding). Сильный стимул = чаще, не сильнее.</li>
+          <li><b>Распространение без затухания:</b> каждый участок мембраны заново генерирует полный импульс - как эстафета, а не как ток по проводу. Отсюда медленно, но на метр без потерь.</li>
+          <li><b>Ходжкин-Хаксли (1952)</b> описали это четырьмя дифференциальными уравнениями на аксоне кальмара (диаметр 1 мм - удобно втыкать электрод). Модель работает до сих пор, Нобель 1963.</li>
+          <li><b>Яды бьют сюда:</b> тетродотоксин (фугу) блокирует Na⁺-каналы - паралич; лидокаин - то же, локально; яд скорпиона держит их открытыми.</li>
+        </ul>
+      </div>
+      <div class="pimg"><img src="assets/p_action_potential.png" alt=""><div class="pcap">Волна открывающихся ионных каналов бежит по мембране. За ней - зона рефрактерности, поэтому импульс идёт только вперёд.</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 3: СИНАПС ============ -->
+<section class="slide chapter" id="s8">
+  <div class="bgimg"><img src="assets/ch_synapse.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3</div>
+    <h1>Синапс: где электричество становится химией</h1>
+    <p class="lead">Между двумя нейронами - щель в 20 нанометров. Импульс через неё не перепрыгнет. Вместо этого - пузырёк молекул, рецептор, и полмиллисекунды задержки. Именно тут работают все психоактивные вещества, антидепрессанты и обучение.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s9">
+  <div class="content">
+    <div class="kicker">Синапс · механика</div>
+    <h2>Как передаётся сигнал через щель</h2>
+    <div class="cols">
+      <div>
+        <div class="flow amber" style="margin:0 0 14px">
+          <div class="step"><b>1. Импульс в терминаль</b><span>деполяризация открывает Ca²⁺-каналы, кальций входит</span></div>
+          <div class="step"><b>2. Экзоцитоз</b><span>Ca²⁺ заставляет везикулы (пузырьки с ~5000 молекул медиатора) слиться с мембраной - SNARE-белки. 0.2 мс</span></div>
+          <div class="step"><b>3. Диффузия</b><span>медиатор пересекает щель 20-40 нм за микросекунды</span></div>
+          <div class="step"><b>4. Рецептор</b><span>ионотропный: открывает канал сразу (быстро, мс). Метаботропный (GPCR): запускает каскад внутри клетки (медленно, секунды-минуты, но усиливает)</span></div>
+          <div class="step"><b>5. Уборка</b><span>обратный захват транспортёрами в терминаль, расщепление ферментом (ацетилхолинэстераза), диффузия. Здесь работают SSRI и кокаин</span></div>
+        </div>
+        <ul class="pts" style="font-size:15px">
+          <li><b>Возбуждающий</b> синапс (глутамат) впускает Na⁺ → мембрана ближе к порогу (EPSP, +0.5-1 мВ). <b>Тормозный</b> (ГАМК) впускает Cl⁻ или выпускает K⁺ → дальше от порога (IPSP). Нейрон суммирует сотни EPSP и IPSP в пространстве и времени; порог пробивается, если возбуждение перевесило.</li>
+          <li><b>Один нейрон - один основной медиатор</b> (принцип Дейла, с оговорками): глутаматный нейрон всегда возбуждает, ГАМК-нейрон всегда тормозит. 80% нейронов коры - возбуждающие пирамидные, 20% - тормозные интернейроны, и без них кора уходит в эпилепсию за секунды.</li>
+          <li><b>Электрические синапсы</b> (щелевые контакты) тоже есть - без химии, без задержки, но без усиления и модуляции. В сетчатке, в сердце, для синхронизации интернейронов.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Цифры синапса</h3>
+        <table class="t" style="font-size:14px">
+          <tr><td>Ширина щели</td><td class="d">20-40 нм (химический), 3 нм (электрический)</td></tr>
+          <tr><td>Задержка</td><td class="d">0.5-1 мс; 100 синапсов подряд = 100 мс - вот куда уходит время реакции</td></tr>
+          <tr><td>Везикул в терминали</td><td class="d">100-1000, готовых к выбросу - 5-10</td></tr>
+          <tr><td>Молекул в везикуле</td><td class="d">~5000</td></tr>
+          <tr><td>Вероятность выброса</td><td class="d">0.1-0.9: синапс <b>ненадёжен по конструкции</b> - стохастичность как фича</td></tr>
+          <tr><td>Рецепторов на шипике</td><td class="d">10-200 AMPA; число меняется при обучении</td></tr>
+          <tr><td>Размер шипика</td><td class="d">0.01-0.8 мкм³; растёт при LTP за минуты, остаётся годами</td></tr>
+          <tr><td>Синапсов на мм³ коры</td><td class="d">~1 млрд</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s10">
+  <div class="content">
+    <div class="kicker">Синапс · нейромедиаторы</div>
+    <h2>Нейромедиаторы: кто за что отвечает</h2>
+    <div class="part" style="grid-template-columns:0.8fr 2.6fr">
+      <div class="pimg"><img src="assets/p_neurotransmitters.png" alt=""><div class="pcap">Около сотни известных медиаторов, 90% работы делают шесть. «Дофамин = удовольствие» - упрощение до неправды.</div></div>
+      <table class="t pt">
+        <tr><th>Медиатор</th><th>Реально делает</th><th>Мало / много</th><th>Что на него действует</th></tr>
+        <tr><td><b>Глутамат</b></td><td class="d">главный возбуждающий (90% синапсов коры); обучение через NMDA-рецепторы</td><td class="d">избыток - эксайтотоксичность при инсульте, эпилепсия</td><td class="d">кетамин, PCP, мемантин (NMDA-блок); ламотриджин</td></tr>
+        <tr><td><b>ГАМК</b></td><td class="d">главный тормозный; держит кору от перевозбуждения, сон, снижение тревоги</td><td class="d">мало - тревога, судороги, бессонница</td><td class="d">бензодиазепины, алкоголь, барбитураты, золпидем, габапентин - усиливают</td></tr>
+        <tr><td><b>Дофамин</b></td><td class="d"><b>не удовольствие, а предсказание награды и мотивация</b> («хочу», не «нравится»); движение; рабочая память</td><td class="d">мало в стриатуме - Паркинсон; много - психоз, тики; сбой - СДВГ, зависимости</td><td class="d">L-DOPA, амфетамин, кокаин (блок захвата), метилфенидат; антипсихотики блокируют D2</td></tr>
+        <tr><td><b>Серотонин</b></td><td class="d">настроение, сон, аппетит, импульсивность, боль; 90% серотонина тела - в кишечнике</td><td class="d">«мало серотонина = депрессия» - гипотеза шатается (Moncrieff 2022)</td><td class="d">SSRI (флуоксетин и т.п.), MDMA (массовый выброс), псилоцибин/ЛСД (агонисты 5-HT2A), триптаны</td></tr>
+        <tr><td><b>Норадреналин</b></td><td class="d">бдительность, внимание, стресс-ответ, консолидация эмоциональной памяти. Из голубого пятна на весь мозг</td><td class="d">мало - апатия, СДВГ; много - тревога, бессонница</td><td class="d">атомоксетин, бета-блокаторы (пропранолол - убирает дрожь и «память страха»), клонидин</td></tr>
+        <tr><td><b>Ацетилхолин</b></td><td class="d">мышцы (нервно-мышечный синапс), внимание, обучение, REM-сон</td><td class="d">потеря нейронов - Альцгеймер (первая мишень)</td><td class="d">никотин (агонист), донепезил (блок эстеразы), атропин, ботулотоксин (блок выброса), кураре, боевые ОВ</td></tr>
+        <tr><td>Эндорфины, аденозин, окситоцин</td><td class="d">«нравится» и обезболивание; давление сна; привязанность</td><td class="d">-</td><td class="d">опиоиды; <b>кофеин блокирует аденозин</b></td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s11">
+  <div class="content">
+    <div class="kicker">Синапс · пластичность</div>
+    <h2>Пластичность: как синапс учится</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Правило Хебба (1949):</b> «нейроны, которые активируются вместе, связываются вместе». Если пресинаптический нейрон часто стреляет прямо перед постсинаптическим, синапс усиливается. Это единственный известный механизм обучения в мозге - и прямой предок backpropagation по духу, хотя механика совсем другая (нет глобальной ошибки).</li>
+          <li><b>LTP (долговременная потенциация, Блисс и Лёмо 1973):</b> сильная активация → NMDA-рецептор пропускает Ca²⁺ (он открывается только при <i>одновременно</i> глутамате И деполяризации - молекулярный детектор совпадений) → каскад киназ → в мембрану встраиваются новые AMPA-рецепторы → шипик растёт. Через часы - синтез белков, синапс закреплён на годы.</li>
+          <li><b>LTD (депрессия):</b> слабая, несинхронная активация → небольшой Ca²⁺ → фосфатазы → AMPA убираются, шипик сжимается и может исчезнуть. Забывание - активный процесс.</li>
+          <li><b>STDP:</b> порядок решает. Пре за 10 мс до пост - усиление; пост раньше пре - ослабление. Синапс учит причинность.</li>
+          <li><b>Структурная пластичность:</b> новые шипики за часы (жонглирование 3 месяца - плотность серого вещества выросла), перестройка карт коры (у слепых зрительная кора читает Брайль; у ампутантов «фантомная конечность» - соседняя область захватила территорию).</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Критические периоды</h3>
+          <table class="t" style="font-size:14px">
+            <tr><td>Зрение (бинокулярное)</td><td class="d">до 5-8 лет; косоглазие или катаракта не исправлены - амблиопия навсегда (Хьюбел и Визель, котята, Нобель 1981)</td></tr>
+            <tr><td>Фонетика языка</td><td class="d">до 12 мес. младенец различает все фонемы мира, к году - только родные (японцы теряют r/l)</td></tr>
+            <tr><td>Грамматика</td><td class="d">до ~7 лет без акцента и с нативной грамматикой; до пубертата - почти; после - никогда как родной</td></tr>
+            <tr><td>Абсолютный слух</td><td class="d">формируется до 6-7 лет, потом почти невозможно</td></tr>
+            <tr><td>Префронтальная кора</td><td class="d">миелинизация и прунинг до 25 лет: контроль импульсов, планирование дозревают последними</td></tr>
+          </table>
+        </div>
+        <div class="note" style="margin-top:12px">Пластичность взрослого сохраняется, но дороже: нужны внимание, повторение, сон и ошибки (дофаминовый сигнал «не то, что ожидал» - главный учитель). Нейрогенез у взрослого - только в гиппокампе (~700 нейронов в день) и спорно.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 4: АНАТОМИЯ ============ -->
+<section class="slide chapter" id="s12">
+  <div class="bgimg"><img src="assets/ch_anatomy.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4</div>
+    <h1>Анатомия: карта отделов</h1>
+    <p class="lead">Три этажа эволюции в одном черепе: ствол ящерицы, лимбика млекопитающего, кора примата. Каждый отдел - своя эпоха, свои задачи и своя цена при поломке.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s13">
+  <div class="content">
+    <div class="kicker">Анатомия · отделы</div>
+    <h2>Снизу вверх: от дыхания до философии</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_brain_regions.png" alt=""><div class="pcap">Ствол - автоматика; мозжечок - координация; промежуточный мозг - коммутатор и гормоны; лимбика - эмоции и память; кора - всё остальное.</div></div>
+      <table class="t pt">
+        <tr><th>Отдел</th><th>Функция</th><th>При поражении</th></tr>
+        <tr><td><b>Продолговатый мозг</b></td><td class="d">дыхание, сердечный ритм, давление, глотание, рвота, кашель. Перекрёст пирамидных путей (левое полушарие - правая половина тела)</td><td class="d">смерть. Именно его отсутствие активности = смерть мозга</td></tr>
+        <tr><td><b>Мост и средний мозг</b></td><td class="d">ретикулярная формация - бодрствование и сон; движения глаз; слуховой и зрительный рефлексы; чёрная субстанция (дофамин → движение); голубое пятно (норадреналин)</td><td class="d">кома, locked-in синдром (сознание есть, движений нет), Паркинсон</td></tr>
+        <tr><td><b>Мозжечок</b></td><td class="d">координация, баланс, точность и тайминг движений, моторное обучение (велосипед); участвует и в когнитивных функциях. 69 млрд нейронов, 80% всех</td><td class="d">атаксия: пьяная походка, тремор при движении, невнятная речь. Алкоголь бьёт сюда первым</td></tr>
+        <tr><td><b>Таламус</b></td><td class="d">коммутатор: все сенсорные сигналы (кроме обоняния) идут через него в кору; регулирует, что пропустить в сознание; ритмы сна</td><td class="d">потеря чувствительности, таламическая боль, нарушение сознания</td></tr>
+        <tr><td><b>Гипоталамус</b></td><td class="d">4 грамма, управляет всем телом: голод, жажда, температура, циркадные ритмы (СХЯ), половое поведение, гипофиз и все гормоны, стресс (ось HPA)</td><td class="d">ожирение или истощение, несахарный диабет, нарушение терморегуляции</td></tr>
+        <tr><td><b>Базальные ганглии</b></td><td class="d">выбор и запуск действий, привычки, торможение лишних движений; стриатум - дофаминовое обучение</td><td class="d">Паркинсон (не запускается), Хантингтон (не тормозится), ОКР, Туретт</td></tr>
+        <tr><td><b>Лимбическая система</b></td><td class="d">гиппокамп (память), амигдала (страх, значимость), поясная кора, обонятельный мозг</td><td class="d">амнезия, отсутствие страха (Urbach-Wiethe), ПТСР</td></tr>
+        <tr><td><b>Кора</b></td><td class="d">2-4 мм, 6 слоёв, 2500 см² в складках; восприятие, движение, речь, планирование, сознание</td><td class="d">зависит от зоны - следующий слайд</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s14">
+  <div class="content">
+    <div class="kicker">Анатомия · кора</div>
+    <h2>Кора: четыре доли и что где</h2>
+    <div class="cols">
+      <div>
+        <table class="t" style="font-size:14px">
+          <tr><th>Доля</th><th>Ключевые зоны</th><th>Поломка</th></tr>
+          <tr><td><b>Лобная</b> (35% коры)</td><td class="d">моторная кора (карта тела, ноги сверху); премоторная - планирование движений; <b>зона Брока</b> - производство речи; <b>префронтальная</b> - рабочая память, планирование, контроль импульсов, личность, социальное поведение</td><td class="d">Гейдж: грубость, импульсивность. Афазия Брока: понимает, сказать не может. Лоботомия (40 тыс. в США) - апатия</td></tr>
+          <tr><td><b>Теменная</b></td><td class="d">соматосенсорная кора (осязание, карта тела); пространство, внимание, счёт, «где» в зрении; интеграция чувств</td><td class="d">неглект: игнорирует левую половину мира (ест с половины тарелки, бреет полбороды); не может одеться; акалькулия</td></tr>
+          <tr><td><b>Височная</b></td><td class="d">слуховая кора; <b>зона Вернике</b> - понимание речи; распознавание объектов и лиц (веретенообразная извилина); гиппокамп внутри; семантическая память</td><td class="d">афазия Вернике: бегло говорит бессмыслицу; прозопагнозия - не узнаёт лица, включая своё; амнезия</td></tr>
+          <tr><td><b>Затылочная</b></td><td class="d">зрительная кора V1-V5: края, цвет, движение, форма. Только зрение</td><td class="d">корковая слепота (глаза целы); акинетопсия - мир как слайд-шоу; слепозрение</td></tr>
+          <tr><td><b>Островок</b> (внутри)</td><td class="d">интероцепция: чувство своего тела, отвращение, боль, тяга (craving), эмпатия</td><td class="d">курильщики с инсультом островка бросают без ломки</td></tr>
+        </table>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>6 слоёв и колонки.</b> Кора везде построена одинаково: 6 слоёв, входы из таламуса в слой 4, выходы из 5-6, локальные связи в 2-3. Вертикальная колонка ~0.5 мм - повторяющийся модуль (Маунткасл). Гипотеза: кора - универсальный алгоритм, а специализация зон - от того, что подключено. Аргумент: перенаправленный зрительный нерв у хорьков заставил слуховую кору видеть.</li>
+          <li><b>Иерархия обработки:</b> V1 видит края под углом, V2 - контуры, V4 - формы и цвета, IT - объекты и лица. Каждый уровень абстрактнее. Ровно так устроены свёрточные сети - и это не совпадение: Фукусима и ЛеКун списывали с Хьюбела-Визеля.</li>
+          <li><b>Полушария:</b> левое - язык, последовательности, детали (у 95% правшей); правое - пространство, лица, просодия, целое. Но «левополушарные люди» - миф: обе стороны работают в каждой задаче. Мозолистое тело (200 млн аксонов) их связывает; разрезанное (при эпилепсии) - два сознания в одном черепе (Сперри, Газзанига).</li>
+          <li><b>Складки</b> - для площади: 2500 см² в 1400 см³. У крысы кора гладкая, у дельфина складок больше, чем у нас.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 5: ВОСПРИЯТИЕ ============ -->
+<section class="slide chapter" id="s15">
+  <div class="bgimg"><img src="assets/ch_senses.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5</div>
+    <h1>Восприятие: мозг не видит - он догадывается</h1>
+    <p class="lead">Сетчатка отдаёт 10 мегабит в секунду, и это всё, что есть. Остальное - цвет, глубина, постоянство объектов, слепое пятно, которого ты не видишь - мозг дорисовывает сам. Восприятие - это управляемая галлюцинация, сверенная с сенсорами.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s16">
+  <div class="content">
+    <div class="kicker">Восприятие · зрение</div>
+    <h2>Зрение: от фотона до лица за 150 миллисекунд</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_visual_path.png" alt=""><div class="pcap">Сетчатка → зрительный нерв → хиазма (перекрёст носовых половин) → таламус (ЛКТ) → V1 в затылке. Левое поле зрения обоих глаз - в правое полушарие.</div></div>
+      <table class="t pt">
+        <tr><th>Этап</th><th>Что происходит</th><th>Цифры</th></tr>
+        <tr><td><b>Сетчатка</b></td><td class="d">часть мозга, вынесенная в глаз. 120 млн палочек (ночь, ч/б, периферия) + 6 млн колбочек (цвет, 3 типа, в центре - фовеа). Уже тут: контраст, края, движение - 5 слоёв нейронов делают предобработку</td><td class="d">выход: 1.2 млн аксонов ганглиозных клеток ~ 10 Мбит/с. Фовеа - 1° поля, но 50% V1</td></tr>
+        <tr><td><b>Слепое пятно</b></td><td class="d">место выхода нерва без фоторецепторов, 5° поля. Мозг заполняет фоном - ты его никогда не видел</td><td class="d">размер ~ 9 лун в небе</td></tr>
+        <tr><td><b>Таламус (ЛКТ)</b></td><td class="d">ретрансляция + фильтрация; 80% входов в ЛКТ - <b>обратно из коры</b>, а не из глаза. Кора говорит таламусу, что ожидать</td><td class="d">-</td></tr>
+        <tr><td><b>V1</b></td><td class="d">ретинотопическая карта: детекторы ориентированных краёв (Хьюбел-Визель), колонки ориентации, доминантности глаза</td><td class="d">~140 млн нейронов; 40 мс после стимула</td></tr>
+        <tr><td><b>Два потока</b></td><td class="d"><b>вентральный</b> («что») через V4 в височную: форма, цвет, объекты, лица. <b>Дорсальный</b> («где/как») через V5/MT в теменную: движение, положение, наведение руки</td><td class="d">пациентка D.F.: не узнаёт объекты, но точно берёт их рукой</td></tr>
+        <tr><td><b>Распознавание</b></td><td class="d">веретенообразная извилина - лица (FFA), парагиппокампальная - места, есть нейроны на конкретных людей («нейрон Дженнифер Энистон»)</td><td class="d">лицо опознано за 100-170 мс (N170 в ЭЭГ)</td></tr>
+        <tr><td><b>Саккады</b></td><td class="d">глаз прыгает 3-4 раза в секунду, во время прыжка мозг «выключает» картинку (саккадическое подавление). ~2 часа в день ты слеп и не замечаешь</td><td class="d">до 900°/с, 20-200 мс каждая</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s17">
+  <div class="content">
+    <div class="kicker">Восприятие · остальные чувства</div>
+    <h2>Слух, осязание, обоняние, вкус - и те, что не в школьной пятёрке</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>Слух</h3>
+        <p>Улитка - 3.5 см спирали с 16 000 волосковых клеток, разложенных по частоте как клавиатура: 20 кГц у основания, 20 Гц у вершины. Механический Фурье-анализ в реальном времени. Волосковые клетки не восстанавливаются - громкость убивает их навсегда.</p>
+        <p style="margin-top:8px"><b>Локализация:</b> разница прихода в 10 микросекунд между ушами - мозг её слышит (медиальная верхняя олива). Точность 1-2°.</p>
+        <p style="margin-top:8px"><b>Речь:</b> 10-15 фонем в секунду, восстановление по контексту. Кохлеарный имплант - 22 электрода вместо 16 000 клеток - и человек понимает речь: мозг дообучается за месяцы.</p>
+      </div>
+      <div class="card">
+        <h3>Осязание и боль</h3>
+        <p>Рецепторы давления, вибрации, растяжения, температуры (TRPV1 - жар и капсаицин, TRPM8 - холод и ментол). Карта тела в S1 - гомункул: губы и пальцы огромные, спина крошечная. Плотность: 2 мм на кончике пальца, 40 мм на спине.</p>
+        <p style="margin-top:8px"><b>Боль</b> - не сенсор, а оценка: ноцицепторы дают сигнал, а мозг решает, больно ли, с учётом контекста, внимания, ожидания. Отсюда плацебо (реально включает эндорфины), фантомная боль, хроническая боль без повреждения. Ворота боли в спинном мозге - почему потереть ушиб помогает.</p>
+      </div>
+      <div class="card">
+        <h3>Химия и скрытые чувства</h3>
+        <p><b>Обоняние:</b> 400 типов рецепторов (у собаки 800, у мыши 1100), комбинаторный код → триллион различимых запахов. Единственное чувство мимо таламуса, напрямую в лимбику - поэтому запах бьёт в память и эмоции. Первый симптом Паркинсона и ковида.</p>
+        <p style="margin-top:8px"><b>Вкус:</b> 5 базовых (сладкий, солёный, кислый, горький, умами) + жир спорно. 80% «вкуса» - запах.</p>
+        <p style="margin-top:8px"><b>Ещё:</b> проприоцепция (где мои конечности - с закрытыми глазами), вестибулярный аппарат (ускорение, гравитация), интероцепция (сердце, кишечник, голод), термоцепция, чувство времени. Итого чувств - не 5, а 20+.</p>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:14px"><b>Predictive processing</b> - ведущая теория восприятия: кора не обрабатывает вход снизу вверх, а генерирует предсказание сверху вниз и сравнивает. По нервам вверх идёт только <b>ошибка предсказания</b>. Отсюда иллюзии, «слышу слова в шуме», галлюцинации при сенсорной депривации, и то, почему 80% связей в зрительной системе идут сверху вниз.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 6: ПАМЯТЬ ============ -->
+<section class="slide chapter" id="s18">
+  <div class="bgimg"><img src="assets/ch_memory.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6</div>
+    <h1>Память: не жёсткий диск, а пересказ</h1>
+    <p class="lead">В мозге нет адресов и файлов. Воспоминание - это паттерн синапсов, который при каждом вызове перезаписывается и слегка меняется. Гиппокамп записывает, кора хранит, сон переносит. Пациент, потерявший гиппокамп в 1953-м, объяснил всё это лучше любой теории.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s19">
+  <div class="content">
+    <div class="kicker">Память · виды</div>
+    <h2>Систем памяти - несколько, и они независимы</h2>
+    <div class="cols">
+      <div>
+        <table class="t" style="font-size:14px">
+          <tr><th>Система</th><th>Что хранит</th><th>Где</th><th>Длительность / объём</th></tr>
+          <tr><td><b>Сенсорная</b></td><td class="d">сырой образ (иконическая, эхоическая)</td><td class="d">сенсорная кора</td><td class="d">0.2-4 с; много</td></tr>
+          <tr><td><b>Рабочая (кратковременная)</b></td><td class="d">то, о чём думаешь сейчас: номер, промежуточный результат</td><td class="d">префронтальная кора + теменная, поддержание активностью</td><td class="d">10-30 с без повторения; <b>4±1 элемент</b> (не 7±2 - Коуэн 2001)</td></tr>
+          <tr><td><b>Эпизодическая</b></td><td class="d">события с контекстом: где, когда, что чувствовал. «Помню, как»</td><td class="d">гиппокамп → распределённо в коре</td><td class="d">годы; первые 3 года жизни не сохраняются (инфантильная амнезия)</td></tr>
+          <tr><td><b>Семантическая</b></td><td class="d">факты и понятия без контекста: Париж - столица Франции. «Знаю, что»</td><td class="d">височная кора, распределённо</td><td class="d">десятилетия; ёмкость не измерена, оценки 1-1000 ТБ бессмысленны</td></tr>
+          <tr><td><b>Процедурная</b></td><td class="d">навыки: велосипед, печать, игра на инструменте</td><td class="d">базальные ганглии, мозжечок, моторная кора</td><td class="d">пожизненно; H.M. учился рисовать по зеркалу, не помня уроков</td></tr>
+          <tr><td><b>Прайминг, условные рефлексы, эмоциональная</b></td><td class="d">неявные ассоциации; страх на стимул</td><td class="d">кора; амигдала</td><td class="d">амигдала помнит страх, даже когда гиппокамп забыл контекст</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Пациент H.M. (Генри Молейсон, 1926-2008)</h3>
+          <p>В 1953 хирург Сковилл удалил ему оба гиппокампа с окружением, чтобы вылечить эпилепсию. Эпилепсия ушла. Вместе с ней - способность запоминать что-либо новое дольше 30 секунд. 55 лет он знакомился с исследователями каждый день заново.</p>
+          <p style="margin-top:8px">Что осталось: интеллект (IQ 112), речь, старые воспоминания до операции (с провалом за 2-3 года до неё), рабочая память, <b>моторные навыки</b> - он учился новым задачам, каждый раз удивляясь, что уже умеет.</p>
+          <p style="margin-top:8px">Что доказал: память - не одна система; гиппокамп нужен для <b>записи</b> эпизодов, но не для хранения (старое сохранилось) и не для навыков. Самый изученный пациент в истории - 2401 срез его мозга оцифрован.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s20">
+  <div class="content">
+    <div class="kicker">Память · гиппокамп</div>
+    <h2>Гиппокамп: индексатор, GPS и ночной архиватор</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts" style="font-size:15px">
+          <li><b>Индекс, не хранилище.</b> Событие - это активность в зрительной, слуховой, эмоциональной коре одновременно. Гиппокамп связывает эти разбросанные паттерны одним «указателем» (быстро, за один раз - one-shot learning). При вспоминании указатель реактивирует всю картину. Со временем связи между самими зонами коры укрепляются, и указатель уже не нужен - воспоминание «переехало» в кору (консолидация, месяцы-годы).</li>
+          <li><b>GPS:</b> клетки места (О'Киф, 1971) - нейрон стреляет, когда крыса в конкретной точке комнаты. Grid-клетки в энторинальной коре (Мозеры, 2005) - гексагональная координатная сетка. Нобель 2014. Та же система кодирует «карту» понятий и времени - память эпизодов по сути пространственная. Отсюда работают «дворцы памяти».</li>
+          <li><b>Паттерн-сепарация и комплетация:</b> зубчатая извилина разводит похожие события (вчерашняя и сегодняшняя парковка), CA3 достраивает целое по фрагменту (запах → вся сцена). Сбой сепарации = «всё сливается» при старении.</li>
+          <li><b>Ночной replay:</b> во сне гиппокамп прокручивает дневные последовательности клеток места в 10-20 раз быстрее, синхронно с веретёнами в коре. Это и есть перенос. Прерви медленный сон - память за день не закрепится.</li>
+          <li><b>Уязвим:</b> первым страдает при Альцгеймере, гипоксии, хроническом стрессе (кортизол убивает нейроны CA3, гиппокамп уменьшается при депрессии и ПТСР), алкоголе (blackout = гиппокамп отключился, ты действуешь, но не записываешь).</li>
+        </ul>
+      </div>
+      <div class="pimg"><img src="assets/p_hippocampus.png" alt=""><div class="pcap">Гиппокамп («морской конёк») - по одному в каждой височной доле, 3-4 см. Вокруг - энторинальная кора (вход), амигдала (эмоциональная метка).</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s21">
+  <div class="content">
+    <div class="kicker">Память · как она врёт</div>
+    <h2>Реконсолидация: каждое воспоминание - пересказ пересказа</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Вспомнить = сделать лабильным.</b> При извлечении воспоминание переходит в нестабильное состояние и должно быть записано заново (реконсолидация, Надер 2000). В этом окне (часы) его можно изменить: добавить деталь, ослабить эмоцию (пропранолол после вспоминания травмы - основа терапии ПТСР), или стереть у крыс.</li>
+          <li><b>Ложные воспоминания внедряются легко.</b> Лофтус (1974): вопрос «как быстро ехали машины, когда <i>врезались</i>?» вместо «столкнулись» - свидетели «вспоминают» разбитое стекло, которого не было. 25% испытуемых «вспомнили» детское событие, которого не было, после трёх бесед. Свидетельские показания - худшее доказательство в суде, 70% оправданных по ДНК были осуждены по ним.</li>
+          <li><b>Flashbulb memories</b> («где ты был 11 сентября») ощущаются кристально точными и врут так же, как обычные: через 3 года 40% деталей не совпадают с записанным на следующий день. Уверенность и точность не связаны.</li>
+          <li><b>Забывание - функция, не баг.</b> Кривая Эббингауза: 50% за час, 70% за сутки без повторения. Но интервальное повторение (SRS: 1 день - 3 - 7 - 21) переворачивает кривую. Забывание убирает шум, чтобы обобщать: люди с гипертимезией (помнят каждый день жизни) не умнее и часто страдают.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Что реально работает для запоминания</h3>
+          <table class="t" style="font-size:14px">
+            <tr><td><b>Интервальное повторение</b></td><td class="d">эффект размера d≈0.7-1.0, самый надёжный результат когнитивной психологии. Anki и аналоги</td></tr>
+            <tr><td><b>Активное извлечение</b></td><td class="d">тестировать себя вместо перечитывания: +50% через неделю (Karpicke & Roediger 2008)</td></tr>
+            <tr><td><b>Сон после обучения</b></td><td class="d">ночь после - +20-40% удержания; дневной сон 60-90 мин тоже работает</td></tr>
+            <tr><td><b>Связывание и смысл</b></td><td class="d">глубокая обработка (зачем, с чем связано) &gt; механическое. Дворец памяти - использует пространственную систему гиппокампа</td></tr>
+            <tr><td><b>Чередование</b></td><td class="d">interleaving тем вместо блоков: хуже ощущается, лучше запоминается</td></tr>
+            <tr><td><b>Не работает</b></td><td class="d">перечитывание, подчёркивание, «стили обучения», зубрёжка в ночь, «мозговые тренажёры» (не переносятся)</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 7: СОН ============ -->
+<section class="slide chapter" id="s22">
+  <div class="bgimg"><img src="assets/ch_sleep.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 7</div>
+    <h1>Сон: треть жизни на обслуживание</h1>
+    <p class="lead">Эволюция не оставила бы животное беззащитным на 8 часов в сутки без крайней необходимости. Сон есть у всех - от мухи до кита. За ночь мозг промывает себя, переписывает память и подрезает синапсы. Без него крыса умирает за 2-3 недели - раньше, чем без еды.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s23">
+  <div class="content">
+    <div class="kicker">Сон · архитектура</div>
+    <h2>Стадии сна и что в каждой происходит</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_sleep_stages.png" alt=""><div class="pcap">Ночь - 4-6 циклов по ~90 минут. В первой половине больше глубокого сна (N3), во второй - REM. Отсюда: лёг в 3 ночи - потерял глубокий сон, встал в 5 утра - потерял REM.</div></div>
+      <table class="t pt">
+        <tr><th>Стадия</th><th>ЭЭГ</th><th>Что происходит</th><th>Доля ночи</th></tr>
+        <tr><td><b>Бодрствование</b></td><td class="d">бета 15-30 Гц, альфа 8-12 при закрытых глазах</td><td class="d">-</td><td class="d">-</td></tr>
+        <tr><td><b>N1</b> (дремота)</td><td class="d">тета 4-8 Гц</td><td class="d">переход, гипнагогические образы, вздрагивания (миоклонии). Легко разбудить, «я не спал»</td><td class="d">5%</td></tr>
+        <tr><td><b>N2</b></td><td class="d">тета + <b>сонные веретёна</b> (12-15 Гц вспышки) + К-комплексы</td><td class="d">веретёна - таламус блокирует внешние сигналы и «прошивает» память в кору; чем больше веретён, тем лучше запомнил моторику</td><td class="d">45-55%</td></tr>
+        <tr><td><b>N3</b> (глубокий, медленноволновой)</td><td class="d">дельта 0.5-4 Гц, амплитуда огромная - вся кора синхронно вкл/выкл</td><td class="d">консолидация декларативной памяти (replay гиппокамп → кора); <b>глимфатическая промывка</b>; гормон роста; иммунитет. Разбудить трудно, разбуженный - в отключке (sleep inertia)</td><td class="d">15-25%; падает с возрастом (в 70 лет почти нет)</td></tr>
+        <tr><td><b>REM</b> (быстрый)</td><td class="d">как бодрствование (бета/тета), быстрые движения глаз</td><td class="d">яркие сны; <b>атония</b> мышц (иначе разыгрывал бы сны - при её сбое так и бывает, предвестник Паркинсона); эмоциональная переработка (норадреналин на нуле - единственное время); процедурная и творческая память; терморегуляция выключена</td><td class="d">20-25%, эпизоды удлиняются к утру</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s24">
+  <div class="content">
+    <div class="kicker">Сон · зачем</div>
+    <h2>Зачем спать: четыре ответа науки</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Промывка (Недергаард, 2013).</b> Во сне межклеточное пространство мозга расширяется на 60%, спинномозговая жидкость прокачивается через ткань по каналам вокруг сосудов (<b>глимфатическая система</b>) и вымывает метаболиты, включая бета-амилоид и тау. Одна бессонная ночь - амилоид в гиппокампе +5%. Хронический недосып - фактор риска Альцгеймера.</li>
+          <li><b>Консолидация памяти.</b> Медленный сон: гиппокамп → кора, факты и события. REM: связывание, обобщение, инсайт (после ночи сна задачу с скрытым правилом решают в 2 раза чаще). Ночь без сна перед экзаменом = −40% к запоминанию учебного материала на следующий день - гиппокамп «полон».</li>
+          <li><b>Синаптический гомеостаз (Тонони).</b> Днём синапсы только усиливаются (обучение) - к вечеру они «перегреты», мозг шумит. Медленный сон глобально ослабляет все синапсы на ~20%, сохраняя пропорции: сигнал/шум растёт, энергия экономится, место для завтра освобождается. Прунинг - буквально: микроглия обкусывает слабые синапсы во сне.</li>
+          <li><b>Эмоциональная перезагрузка.</b> В REM норадреналин на нуле, амигдала прогоняет дневные события без стресс-гормона - воспоминание остаётся, острота уходит. При недосыпе амигдала на 60% реактивнее, префронтальный контроль слабее: раздражительность и тревога - прямое следствие.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Регуляция: два процесса</h3>
+          <table class="t" style="font-size:14px">
+            <tr><td><b>Циркадный</b> (процесс C)</td><td class="d">супрахиазматическое ядро гипоталамуса, ~24.2 ч, синхронизируется <b>светом</b> через сетчатку (меланопсиновые клетки, чувствительны к синему 480 нм). Мелатонин из эпифиза - сигнал «темно», не снотворное. Смещение: 1 час в день максимум, отсюда джетлаг</td></tr>
+            <tr><td><b>Гомеостатический</b> (процесс S)</td><td class="d">аденозин накапливается за бодрствование как побочный продукт расхода ATP, давит на сон; во сне расщепляется. <b>Кофеин блокирует рецепторы аденозина</b> - не даёт энергию, а скрывает долг. Полувыведение 5-6 ч: кофе в 16:00 - половина в крови в 22:00</td></tr>
+          </table>
+        </div>
+        <div class="note warn" style="margin-top:12px"><b>Недосып в цифрах:</b> 17 часов без сна = когнитивно как 0.5‰ алкоголя (0.05% BAC), 24 часа = 1‰. 6 часов сна 2 недели = дефицит как 2 бессонные ночи, при этом субъективно «привык». Риск ДТП ×2 при &lt;6 ч. Хронически &lt;6 ч: +20% смертность, +48% ИБС, инсулинорезистентность за неделю, тестостерон −15%. Нормы: взрослые 7-9 ч, подростки 8-10, короткоспящие по гену DEC2 - 1% населения, остальные врут себе.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 8: ЭМОЦИИ ============ -->
+<section class="slide chapter" id="s25">
+  <div class="bgimg"><img src="assets/ch_emotion.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 8</div>
+    <h1>Эмоции, награда, зависимость</h1>
+    <p class="lead">Амигдала решает за 12 миллисекунд - быстрее, чем ты осознал, что увидел. Дофамин обещает, а не награждает. Стресс полезен на 20 минут и разрушителен на 20 месяцев. Все зависимости - от героина до ленты соцсети - работают через одну и ту же схему из трёх узлов.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s26">
+  <div class="content">
+    <div class="kicker">Эмоции · схема</div>
+    <h2>Амигдала, дофамин и стресс: три контура</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>Амигдала: детектор значимости</h3>
+        <p>Два миндалевидных ядра в глубине височных долей. Получает сырой сенсорный сигнал от таламуса напрямую (<b>«низкая дорога»</b>, 12 мс) и обработанный от коры (<b>«высокая дорога»</b>, 30-40 мс). Отпрыгнул от палки, потом понял, что не змея - это оно.</p>
+        <p style="margin-top:8px">Запускает: замирание/бегство/драку через гипоталамус, выброс адреналина, усиление внимания, запись в память с меткой «важно» (эмоциональные события помнятся лучше - через норадреналин). Не только страх: значимость вообще, включая приятное.</p>
+        <p style="margin-top:8px" class="dim">Пациентка S.M. с разрушенной амигдалой: не чувствует страха вовсе, подходит к любому, доверяет всем, несколько раз почти убита. Ужас в фильмах - не понимает.</p>
+      </div>
+      <div class="card">
+        <h3>Дофамин: ошибка предсказания</h3>
+        <p>Шульц (1997): дофаминовые нейроны VTA стреляют не на награду, а на <b>разницу между ожидаемым и полученным</b>. Ожидал сок, получил сок - тишина. Неожиданный сок - всплеск. Ожидал, не получил - провал ниже базы. Это буквально TD-learning из reinforcement learning, открытое в мозге через 10 лет после алгоритма.</p>
+        <p style="margin-top:8px">Дофамин = <b>«хочу», мотивация, обучение</b>. «Нравится» - опиоидная система и эндоканнабиноиды в других местах. Крыса без дофамина не идёт к еде, но ест с удовольствием, если положить в рот.</p>
+        <p style="margin-top:8px" class="dim">Непредсказуемая награда даёт больший всплеск, чем регулярная: игровые автоматы, лента, уведомления - «переменное подкрепление» Скиннера.</p>
+      </div>
+      <div class="card">
+        <h3>Стресс: ось HPA</h3>
+        <p>Угроза → гипоталамус (CRH) → гипофиз (ACTH) → надпочечники → <b>кортизол</b> за 15-20 минут (адреналин - за секунды, другим путём). Кортизол: глюкоза в кровь, подавить иммунитет и пищеварение, обострить память на событие.</p>
+        <p style="margin-top:8px"><b>Острый стресс полезен:</b> внимание, память, иммунитет на подъёме на часы. <b>Хронический</b> (недели): кортизол убивает дендриты в гиппокампе (−10-15% объёма при ПТСР и депрессии), растит амигдалу, тормозит префронтальную кору, ломает сон и иммунитет, накапливает висцеральный жир. Сапольски: зебра боится льва 5 минут, человек - ипотеки 20 лет, а система одна и та же.</p>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:14px"><b>Зависимость - это обучение, вышедшее из-под контроля.</b> Вещество/действие вызывает дофаминовый всплеск в 2-10 раз выше естественного → стриатум записывает: «это важнее всего» → сигналы среды (место, время, люди) начинают сами вызывать тягу (craving) через инсулу и амигдалу → префронтальная кора, которая должна сказать «нет», ослаблена хроническим избытком дофамина. Толерантность (рецепторы D2 уменьшаются) → нужно больше → удовольствия всё меньше, а тяги всё больше. Ремиссия - годы, потому что синапсы стриатума перестраиваются медленно.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 9: СОЗНАНИЕ И ИИ ============ -->
+<section class="slide chapter" id="s27">
+  <div class="bgimg"><img src="assets/ch_mind.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 9</div>
+    <h1>Сознание, мозг и нейросети</h1>
+    <p class="lead">Искусственные нейросети списаны с мозга в 1943-м и с тех пор обогнали его в шахматах, го и переводе. При этом ни одна не объясняет, почему у тебя есть ощущение красного, а у неё - только число 0.87. И работают они совсем не так, как думали.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s28">
+  <div class="content">
+    <div class="kicker">Сознание · что известно</div>
+    <h2>Сознание: измеримая часть неизмеримого</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Два вопроса.</b> Лёгкая проблема: какие процессы в мозге соответствуют сознанию (решается экспериментами). <b>Трудная проблема</b> (Чалмерс, 1995): почему эти процессы вообще <i>ощущаются</i> - почему обработка сигнала 620 нм сопровождается переживанием красного. Ответа нет ни у кого, включая нейробиологов, философов и нейросети.</li>
+          <li><b>Нейронные корреляты:</b> сознание требует таламо-кортикальной системы (ствол включает, кора наполняет содержанием). Мозжечок с 69 млрд нейронов - не нужен: люди без мозжечка сознательны. Ключ - <b>рекуррентная обработка</b> и <b>интеграция</b>: сигнал должен не просто дойти до коры, а «зазвенеть» между зонами 200-300 мс (P3b, глобальное зажигание).</li>
+          <li><b>Теории-кандидаты:</b> Global Workspace (Дехане) - сознание = информация, транслируемая по всей коре через префронтально-теменную сеть; Integrated Information Theory (Тонони) - сознание = мера интеграции Φ системы, и её в принципе можно посчитать; Higher-order theories; predictive processing. В 2023 - adversarial collaboration GWT vs IIT, обе частично провалились.</li>
+          <li><b>Бессознательное делает большую часть работы.</b> Прайминг, слепозрение, решения до осознания (Либет: моторная кора активна за 300+ мс до «я решил» - но интерпретация спорна), автопилот вождения. Сознание - узкое горлышко в 40-50 бит/с на входе в 10 Мбит/с.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Состояния и их измерение</h3>
+          <table class="t" style="font-size:14px">
+            <tr><td><b>Анестезия</b></td><td class="d">пропофол усиливает ГАМК → кора теряет дальние связи, локальная активность остаётся. Мы до сих пор не знаем точно, <i>почему</i> это выключает сознание. 1-2 на 1000 просыпаются во время операции</td></tr>
+            <tr><td><b>Кома / вегетативное / минимальное сознание</b></td><td class="d">10-20% «вегетативных» пациентов по фМРТ выполняют команды («представьте теннис») - сознание есть, выхода нет. Перкурбационный индекс (TMS+ЭЭГ) отличает с точностью ~95%</td></tr>
+            <tr><td><b>Сон</b></td><td class="d">N3 - сознание почти выключено, но не совсем (сны бывают); REM - полное сознание без тела</td></tr>
+            <tr><td><b>Психоделики</b></td><td class="d">агонисты 5-HT2A → распад сети пассивного режима (DMN), «растворение эго», энтропия активности ↑. Терапия депрессии и ПТСР в фазе III</td></tr>
+            <tr><td><b>Расщеплённый мозг</b></td><td class="d">два полушария отвечают по-разному на один вопрос; левое сочиняет объяснения действиям правого - «интерпретатор» Газзаниги</td></tr>
+            <tr><td><b>Локация «я»</b></td><td class="d">нет единого центра. Ощущение тела - теменная + островок; иллюзия резиновой руки и выход из тела - стимуляцией одной точки (угловая извилина)</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s29">
+  <div class="content">
+    <div class="kicker">Мозг vs нейросеть</div>
+    <h2>Что нейросети взяли у мозга и в чём разошлись</h2>
+    <table class="t" style="font-size:13.5px">
+      <tr><th></th><th>Мозг</th><th>Искусственная нейросеть (LLM, CNN)</th><th>Кто выигрывает</th></tr>
+      <tr><td>Единица</td><td class="d">нейрон: тысячи входов, нелинейный, стохастический, с внутренней динамикой (дендриты считают), 100+ типов</td><td class="d">взвешенная сумма + ReLU/GELU; одинаковые; детерминированные</td><td class="d">-</td></tr>
+      <tr><td>Сигнал</td><td class="d">спайки: бинарные события, время важно (STDP)</td><td class="d">непрерывные float, время - только в RNN/трансформере через позиции</td><td class="d">-</td></tr>
+      <tr><td>Обучение</td><td class="d">локальные правила (Хебб, STDP), глобальные модуляторы (дофамин), без backprop - нет механизма передать ошибку назад через синапс</td><td class="d">backpropagation: глобальный градиент через все слои. Биологически неправдоподобно, но работает лучше всего известного</td><td class="d">ИИ - по эффективности градиента</td></tr>
+      <tr><td>Данные для обучения</td><td class="d">ребёнок к 3 годам слышит ~30 млн слов и выучивает язык</td><td class="d">LLM - 10-20 трлн токенов, в миллион раз больше</td><td class="cy">мозг - по data efficiency, разгромно</td></tr>
+      <tr><td>Энергия</td><td class="d">20 Вт, обучение и работа одновременно</td><td class="d">обучение GPT-4 ~50 ГВт·ч; инференс - сотни ватт на запрос-секунду</td><td class="cy">мозг ×10⁶</td></tr>
+      <tr><td>Параметры</td><td class="d">~10¹⁴ синапсов, аналоговые, каждый со своей динамикой</td><td class="d">10¹¹-10¹² весов</td><td class="d">сравнимо по порядку, некорректно по смыслу</td></tr>
+      <tr><td>Скорость</td><td class="d">мс на операцию, 100 шагов на решение</td><td class="d">нс на операцию, миллионы шагов</td><td class="am">ИИ ×10⁶ на такт</td></tr>
+      <tr><td>Непрерывное обучение</td><td class="d">учится всю жизнь без забывания старого</td><td class="d">catastrophic forgetting: дообучил - сломал старое. Обучение и инференс разделены</td><td class="cy">мозг</td></tr>
+      <tr><td>Обобщение</td><td class="d">один пример - понятие; здравый смысл, физика мира из опыта тела</td><td class="d">тысячи примеров; интерполяция в данных; галлюцинации там, где данных нет</td><td class="cy">мозг</td></tr>
+      <tr><td>Что общего оказалось</td><td class="d" colspan="2">иерархия признаков в зрении (V1 ≈ первые слои CNN, IT ≈ глубокие: активации предсказывают друг друга с r≈0.7); ошибка предсказания как сигнал обучения (дофамин ≈ TD-error); replay памяти (гиппокамп ≈ experience replay в DQN); внимание как выбор; языковые области предсказывают следующие слова так же, как GPT (Шримпф 2021)</td><td class="gr">оба</td></tr>
+    </table>
+    <div class="note" style="margin-top:10px;font-size:13.5px">Итог: нейросети - <b>не модель мозга</b>, а инженерное решение, вдохновлённое им в 1943 (Маккалок-Питтс) и 1958 (перцептрон). Но они стали лучшим инструментом <i>для изучения</i> мозга: если сеть, обученная на задаче, воспроизводит активность нейронов - мы понимаем, какую задачу решает зона. Нейроморфное железо (спайки, локальное обучение) - попытка вернуться к оригиналу за энергоэффективностью.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s30">
+  <div class="content">
+    <div class="kicker">Интерфейсы</div>
+    <h2>Мозг-компьютер: что уже работает</h2>
+    <div class="cols">
+      <div>
+        <table class="t" style="font-size:14px">
+          <tr><th>Метод</th><th>Разрешение</th><th>Что даёт</th></tr>
+          <tr><td><b>ЭЭГ</b></td><td class="d">см, мс; сглаженная сумма миллионов нейронов через череп</td><td class="d">стадии сна, эпилепсия, P300-спеллеры (5-10 символов/мин), нейрогаджеты (в основном шум)</td></tr>
+          <tr><td><b>фМРТ</b></td><td class="d">1-3 мм, 1-2 с; измеряет кровоток (BOLD), не нейроны</td><td class="d">карты активности, декодирование увиденного изображения и услышанной речи из активности (2023, с диффузионными моделями - грубо, но узнаваемо)</td></tr>
+          <tr><td><b>ECoG</b></td><td class="d">электроды на поверхности коры, мм, мс; инвазивно</td><td class="d">декодирование речи из моторной коры: 78 слов/мин с ошибкой 25% у парализованной пациентки (UCSF 2023), синтез голоса</td></tr>
+          <tr><td><b>Микроэлектроды</b> (Utah array, Neuralink N1)</td><td class="d">отдельные нейроны, 100-1000 каналов</td><td class="d">курсор и роботизированная рука мыслью (BrainGate с 2004); Neuralink: первый пациент январь 2024, играет в шахматы и Civilization; 90 символов/мин рукописный ввод (Stanford 2021)</td></tr>
+          <tr><td><b>Стимуляция</b></td><td class="d">DBS - электрод в глубине; TMS - магнит снаружи; оптогенетика - свет + вирус (только животные)</td><td class="d">DBS: Паркинсон (200 тыс. пациентов, тремор выключается кнопкой), ОКР, депрессия (экспериментально). TMS: одобрена при депрессии. Кохлеарные импланты - 1 млн человек слышат</td></tr>
+        </table>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Главное ограничение - не электроника, а биология:</b> электроды зарастают глией за месяцы-годы (сигнал деградирует), 1000 каналов из 86 млрд - как слушать город через 1000 микрофонов. Neuralink потерял 85% нитей у первого пациента через месяц (отошли от ткани), софт скомпенсировал.</li>
+          <li><b>Чтение работает лучше записи.</b> Декодировать намерение движения или речи - да. Записать знание или воспоминание - нет ни у кого и не предвидится: мы не знаем формат.</li>
+          <li><b>Пластичность - союзник:</b> мозг подстраивается под любой стабильный интерфейс за недели. Кохлеарный имплант с 22 каналами вместо 16 000 - и речь понятна. Пациент BrainGate учится курсору как новой конечности.</li>
+          <li><b>Реалистичный горизонт 10 лет:</b> речь и движение для парализованных на уровне «медленно, но полноценно»; зрительные протезы низкого разрешения; DBS с обратной связью для эпилепсии и депрессии. Нереалистичный: «загрузка знаний», телепатия, апгрейд памяти здоровым.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 10: ПОЛОМКИ ============ -->
+<section class="slide chapter" id="s31">
+  <div class="bgimg"><img src="assets/ch_failures.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 10</div>
+    <h1>Поломки: что и как ломается</h1>
+    <p class="lead">Инсульт убивает 2 миллиона нейронов в минуту. Альцгеймер начинается за 20 лет до первого симптома. Депрессия - не «мало серотонина». Каждая болезнь мозга - это лекция о том, как он устроен, прочитанная самым жестоким способом.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s32">
+  <div class="content">
+    <div class="kicker">Поломки · обзор</div>
+    <h2>Восемь главных поломок</h2>
+    <table class="t" style="font-size:13px">
+      <tr><th>Болезнь</th><th>Механизм</th><th>Масштаб</th><th>Что можно</th><th>Что понято про мозг</th></tr>
+      <tr><td><b>Инсульт</b></td><td class="d">ишемический (85%): тромб перекрыл артерию, без O₂ нейроны гибнут за минуты, глутаматный шторм добивает соседей. Геморрагический: разрыв</td><td class="d">12 млн в год в мире, №2 причина смерти, №1 инвалидности</td><td class="d">тромболизис до 4.5 ч, тромбэктомия до 24 ч - «время = мозг», 1.9 млн нейронов в минуту. Реабилитация - пластичность соседних зон, окно 3-6 мес</td><td class="d">локализация функций; пластичность взрослого</td></tr>
+      <tr><td><b>Альцгеймер</b></td><td class="d">амилоидные бляшки снаружи + тау-клубки внутри нейронов → синапсы гибнут, начиная с энторинальной коры и гиппокампа. Процесс стартует за 15-20 лет до симптомов</td><td class="d">55 млн с деменцией в мире, 60-70% - Альцгеймер; риск 1 из 10 после 65, 1 из 3 после 85</td><td class="d">леканемаб/донанемаб (2023) убирают амилоид, замедляют на 27-35% на ранней стадии; профилактика: сон, давление, слух, движение, образование - до 40% случаев предотвратимы (Lancet 2020)</td><td class="d">гиппокамп и память; глимфатика и сон</td></tr>
+      <tr><td><b>Паркинсон</b></td><td class="d">гибель дофаминовых нейронов чёрной субстанции (к симптомам - уже 60-80%); альфа-синуклеин; начинается, вероятно, в кишечнике и обонянии за 10 лет</td><td class="d">10 млн; после 60 - 1%</td><td class="d">L-DOPA (эффект 5-10 лет), DBS, агонисты. Не лечится, замедляется физнагрузкой</td><td class="d">базальные ганглии и запуск движения; дофамин</td></tr>
+      <tr><td><b>Эпилепсия</b></td><td class="d">синхронный разряд большой группы нейронов - дисбаланс возбуждение/торможение (глутамат/ГАМК), рубец, каналопатия</td><td class="d">50 млн; 1 из 26 за жизнь</td><td class="d">препараты контролируют 70%; хирургия очага (H.M. - оттуда); кето-диета; DBS/VNS</td><td class="d">почти вся карта коры - от стимуляции пациентов перед операцией (Пенфилд)</td></tr>
+      <tr><td><b>Депрессия</b></td><td class="d">не «дефицит серотонина»; снижение нейропластичности (BDNF), гиперактивная амигдала и DMN, вялая префронтальная, воспаление, стресс-ось, уменьшение гиппокампа</td><td class="d">280 млн; №1 причина нетрудоспособности</td><td class="d">SSRI работают у 50-60% (плацебо 35-40%), эффект через 2-6 недель - вероятно, через пластичность, не серотонин; КПТ сравнима; кетамин - часы; ЭСТ 80%; псилоцибин в фазе III</td><td class="d">пластичность как лечение; сети DMN</td></tr>
+      <tr><td><b>Шизофрения</b></td><td class="d">избыток дофамина в стриатуме (позитивные симптомы), дефицит в префронтальной (негативные), сбой NMDA, избыточный прунинг синапсов в подростковом возрасте (C4 гены), 80% наследуемость</td><td class="d">24 млн, 0.7%; дебют 18-25</td><td class="d">антипсихотики (D2-блок) убирают галлюцинации, не когнитивный дефицит; KarXT (2024) - первый не-дофаминовый механизм за 70 лет</td><td class="d">дофамин и значимость; прунинг</td></tr>
+      <tr><td><b>Мигрень</b></td><td class="d">волна корковой депрессии (аура) + сенситизация тройничного нерва, CGRP</td><td class="d">1 млрд, 15%, №2 по нетрудоспособности</td><td class="d">триптаны, анти-CGRP антитела (2018) - профилактика у 50%</td><td class="d">возбудимость коры</td></tr>
+      <tr><td><b>ЧМТ и хроническая травма</b></td><td class="d">сдвиг мозга в черепе рвёт аксоны (диффузное аксональное); повторные сотрясения → CTE (тау), у 99% исследованных мозгов игроков NFL</td><td class="d">69 млн ЧМТ в год</td><td class="d">только защита и покой; лечения аксонов нет</td><td class="d">белое вещество и связность</td></tr>
+    </table>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s33">
+  <div class="content">
+    <div class="kicker">Поломки · что помогает</div>
+    <h2>Что реально сохраняет мозг (с доказательствами)</h2>
+    <div class="cols">
+      <div>
+        <table class="t" style="font-size:14px">
+          <tr><th>Фактор</th><th>Эффект</th><th>Механизм</th></tr>
+          <tr><td><b>Аэробная нагрузка</b></td><td class="d">−30% риск деменции; гиппокамп +2% объёма за год ходьбы (Эриксон 2011); лучшее из известного</td><td class="d">BDNF, нейрогенез, кровоток, сон, инсулин</td></tr>
+          <tr><td><b>Сон 7-8 ч</b></td><td class="d">&lt;6 или &gt;9 - риск деменции ×1.3-1.5</td><td class="d">глимфатика, консолидация, амилоид</td></tr>
+          <tr><td><b>Давление &lt;130</b></td><td class="d">SPRINT-MIND: −19% лёгких когнитивных нарушений</td><td class="d">микроинсульты, белое вещество</td></tr>
+          <tr><td><b>Слух (аппарат)</b></td><td class="d">нелеченая тугоухость - самый большой модифицируемый риск деменции (8%); аппарат снижает риск почти до нормы</td><td class="d">когнитивная нагрузка, социальная изоляция, атрофия слуховой коры</td></tr>
+          <tr><td><b>Образование и сложная работа</b></td><td class="d">когнитивный резерв: те же бляшки - симптомы на 5-7 лет позже</td><td class="d">избыточные связи компенсируют потери</td></tr>
+          <tr><td><b>Социальные связи</b></td><td class="d">одиночество - риск ×1.5, сравнимо с курением</td><td class="d">стресс, депрессия, стимуляция</td></tr>
+          <tr><td><b>Не курить, алкоголь &lt;100 г/нед</b></td><td class="d">алкоголь: нет безопасной дозы для мозга (UK Biobank 2022, объём падает от 1 дринка/день)</td><td class="d">сосуды, токсичность, тиамин</td></tr>
+          <tr><td><b>Изучение нового</b> (язык, инструмент)</td><td class="d">эффект есть, но скромнее, чем у спорта; «тренажёры мозга» - нет переноса</td><td class="d">пластичность требует новизны и сложности</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Мифы, которые не подтвердились</h3>
+          <ul>
+            <li><b>«Используем 10% мозга»</b> - используем весь, просто не одновременно; неактивные зоны отмирают</li>
+            <li><b>«Нейроны не восстанавливаются»</b> - почти правда для коры, но синапсы и дендриты перестраиваются всю жизнь, а в гиппокампе есть нейрогенез</li>
+            <li><b>«Левополушарные / правополушарные люди»</b> - нет такого (Nielsen 2013, 1000 мозгов)</li>
+            <li><b>«Стили обучения» (визуал/аудиал)</b> - не влияют на результат ни в одном контролируемом исследовании</li>
+            <li><b>«Моцарт повышает IQ»</b> - эффект 15 минут от любой приятной стимуляции</li>
+            <li><b>«Мозг закончил развиваться в 18»</b> - префронтальная зреет до 25, миелинизация - до 40</li>
+            <li><b>«Ноотропы»</b> - пирацетам и компания не имеют доказательств у здоровых; работают кофеин, сон и физнагрузка</li>
+            <li><b>«Многозадачность»</b> - переключение, каждое стоит 20-40% эффективности; мозг не параллелит осознанные задачи</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s34">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Весь мозг на одном слайде</h2>
+    <table class="t" style="font-size:14px">
+      <tr><th>Уровень</th><th>Что делает</th><th>Ключевое число</th><th>Главная уязвимость</th></tr>
+      <tr><td>Нейрон</td><td class="d">суммирует входы, стреляет «всё или ничего» по аксону</td><td class="d">−70 мВ покой, +40 пик, 2 мс, до 120 м/с</td><td class="d">кислород: 10 с до потери сознания, 4-6 мин до смерти</td></tr>
+      <tr><td>Синапс</td><td class="d">химическая передача, усиление/ослабление при обучении (LTP/LTD)</td><td class="d">20 нм щель, 0.5 мс, 10¹⁴ штук</td><td class="d">все психоактивные вещества бьют сюда</td></tr>
+      <tr><td>Медиаторы</td><td class="d">глутамат вкл, ГАМК выкл, дофамин «хочу», серотонин настроение, норадреналин бдительность, ацетилхолин внимание/мышцы</td><td class="d">~100 известных, 6 главных</td><td class="d">баланс: ГАМК/глутамат → эпилепсия; дофамин → Паркинсон/психоз</td></tr>
+      <tr><td>Отделы</td><td class="d">ствол - жизнь, мозжечок - координация, таламус - коммутатор, гипоталамус - тело, лимбика - эмоции и память, кора - остальное</td><td class="d">кора 2500 см², 16 млрд нейронов, 6 слоёв</td><td class="d">каждая зона - своя болезнь при поражении</td></tr>
+      <tr><td>Восприятие</td><td class="d">предсказание сверху вниз, коррекция ошибкой снизу вверх</td><td class="d">10 Мбит/с с сетчатки, 40-50 бит/с в сознание, лицо за 150 мс</td><td class="d">иллюзии, галлюцинации - тот же механизм</td></tr>
+      <tr><td>Память</td><td class="d">гиппокамп индексирует, кора хранит, сон переносит; вспомнить = переписать</td><td class="d">рабочая 4 элемента; 50% забыто за час без повторения</td><td class="d">гиппокамп: стресс, алкоголь, гипоксия, Альцгеймер - первым</td></tr>
+      <tr><td>Сон</td><td class="d">промывка, консолидация, ослабление синапсов, эмоциональная перезагрузка</td><td class="d">4-6 циклов по 90 мин; 7-9 ч; кофеин полувыведение 5-6 ч</td><td class="d">хронический недосып: деменция, ИБС, метаболизм, +20% смертность</td></tr>
+      <tr><td>Эмоции и награда</td><td class="d">амигдала - значимость за 12 мс; дофамин - ошибка предсказания; кортизол - мобилизация</td><td class="d">зависимость = дофамин ×2-10 от нормы</td><td class="d">хронический стресс сжимает гиппокамп и префронтальную</td></tr>
+      <tr><td>Сознание</td><td class="d">интеграция и рекуррентность таламо-кортикальной системы; трудная проблема не решена</td><td class="d">200-300 мс до осознания</td><td class="d">анестезия выключает, и мы не знаем точно как</td></tr>
+    </table>
+    <div class="note" style="margin-top:10px;font-size:13.5px">Три идеи под всей лекцией: <b>мозг предсказывает, а не воспринимает</b>; <b>память - реконструкция, а не запись</b>; <b>пластичность - и механизм обучения, и механизм всех зависимостей, и единственный способ лечить</b>. Плюс одна практическая: спорт, сон и давление делают для мозга больше, чем всё остальное вместе.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s35">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <div class="kicker amber">Финал</div>
+    <h1>Полтора килограмма, которые читают этот слайд</h1>
+    <p class="lead">Фотоны с экрана → 120 миллионов палочек → миллион аксонов → таламус → затылок → края, формы, буквы → височная доля → слова → смысл. 150 миллисекунд, 20 ватт. Потом гиппокамп поставит на это указатель, ночью прокрутит в 20 раз быстрее и перепишет в кору - и через год ты вспомнишь не этот слайд, а его пересказ, слегка отредактированный.</p>
+    <p class="lead" style="margin-top:14px">Мы знаем, как работает нейрон, до последнего иона. Мы примерно знаем, как работают зоны. Мы не знаем, почему всё это ощущается как «ты». Единственный объект во Вселенной, который пытается понять сам себя - и пока проигрывает.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- SLIDES_END -->
+
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>

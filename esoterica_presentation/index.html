@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Эзотерика под микроскопом: где чудо становится механизмом</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #c084fc; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Свет по звону · выпуск 1 · Гвендолин-ночные-лекции</div>
+    <h1>Эзотерика под микроскопом: где чудо становится механизмом</h1>
+    <p class="lead">Мессинг и Ханнуссен, Ванга и Калиостро, выход из тела, призраки, ауры, вещие сны, лозоходство и «память места». Не разоблачение, а поиск устройства: что человек реально пережил, как это устроено, и где наука честно говорит «дальше не знаем». Первый выпуск серии, в которой мы нащупываем свет по звону.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s2">
+  <div class="content">
+    <div class="kicker">Вступление · правила игры</div>
+    <h2>Не «вас обманули», а «вот как это работает»</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/ch_rules.png" alt="">
+        <div class="pcap">Глаз, в котором белый свет раскладывается в спектр, а половина спектра тонет в тумане. Это и есть главная мысль деки: мы видим не мир, а то, что пропустили фильтры. У кого фильтры настроены иначе, тот видит иначе - и называет это даром.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Феномен реален почти всегда.</b> Человек действительно почувствовал присутствие, увидел себя сверху, угадал чужую мысль. Спорить с переживанием бесполезно и глупо. Спорить можно с объяснением, и то - предлагая лучшее, а не просто «нет».</li>
+          <li><b>Три инструмента, которые объясняют 90% эзотерики:</b> <span class="cy">фильтры восприятия</span> (мозг прячет от нас большую часть входа, и у некоторых прячет меньше), <span class="cy">идеомоторика</span> (тело отвечает на мысль движением без ведома хозяина) и <span class="cy">статистика больших чисел</span> (на 8 млрд человек и 1800 снов в год у каждого «невозможное» случается ежедневно).</li>
+          <li><b>Оставшиеся 10% - честная граница.</b> Есть вещи, которые проверяли и не закрыли (Хоум, часть Ганцфельд-опытов, отдельные случаи AWARE). Мы их не замалчиваем и не раздуваем: помечаем «открыто» и идём дальше.</li>
+          <li><b>Про людей говорим уважительно.</b> Мессинг не жулик, а человек с редкой перцепцией, который придумал объяснение из инструментов своего времени. Как и Ньютон с алхимией.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">Вступление · шкала</div>
+    <h2>Шкала от «объяснено» до «открыто»</h2>
+    <div class="dg">
+      <div class="row">
+        <div class="bx gr"><b>Объяснено и воспроизведено</b><span>лозоходство, спиритическая доска, эффект Барнума, сонный паралич, аура мигрени</span></div>
+        <div class="bx gr"><b>Объяснено в лаборатории</b><span>выход из тела (Бланке 2002), «присутствие» (Персингер, робот 2014), плацебо, гипноз</span></div>
+        <div class="bx cy"><b>Механизм ясен, детали спорят</b><span>околосмертный опыт, дежавю, «чтение мыслей» сенситивами, чувство взгляда</span></div>
+        <div class="bx am"><b>Работает, но не так, как заявлено</b><span>медитация, туммо, магниторецепция человека, «целительство»</span></div>
+        <div class="bx rd"><b>Проверяли, не закрыли</b><span>Хоум, Ганцфельд, AWARE, Stargate (частично), «память места»</span></div>
+      </div>
+    </div>
+    <div class="cols" style="margin-top:18px">
+      <div class="card">
+        <h3>Что считается «объяснено»</h3>
+        <ul>
+          <li>Механизм назван и воспроизводится у случайных людей в контролируемых условиях.</li>
+          <li>Если убрать механизм (завязать глаза, изолировать звук, снять контакт), феномен исчезает.</li>
+          <li>Предсказания механизма подтверждаются там, где эзотерическое объяснение молчит.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Что считается «открыто»</h3>
+        <p>Есть протоколы, есть контроль, а результат всё равно выше случайности, или единичный случай, который не удалось повторить и не удалось объяснить. Таких мало, и они дороже всего: именно с них начинаются новые главы науки, а не с тех, где всё сошлось. Про них в конце.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 1: МЕССИНГ ============ -->
+<section class="slide chapter" id="s4">
+  <div class="bgimg"><img src="assets/ch_messing.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1</div>
+    <h1>Чтение мыслей: Мессинг и его ремесло</h1>
+    <p class="lead">Человек с завязанными глазами ведёт зрителя через зал и находит спрятанную булавку. Зал уверен, что видел телепатию. На сцене работало кое-что интереснее: тело зрителя, которое само всё рассказало.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="content">
+    <div class="kicker">Мессинг · кто он</div>
+    <h2>Вольф Мессинг: легенда, автобиография и то, что подтверждается</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Биография в фактах:</b> 1899, Гура-Кальвария под Варшавой, еврейская семья. Выступал в Польше и Европе с «психологическими опытами». 1939 - бежал в СССР, с 1940-х - самый известный эстрадный «телепат» страны, тысячи концертов до 1974 года. Единственное документально подтверждённое «чудо»: в 1944 году на свои гонорары купил фронту истребитель Як-7, есть телеграмма Сталина.</li>
+          <li><b>Биография по «О самом себе» (1965):</b> встречи с Эйнштейном и Фрейдом в Вене в 1915-м (Эйнштейн там не жил), предсказание падения Гитлера и награда 200 000 марок за его голову (ни одного документа), выход из тюрьмы «внушением охране», вызовы к Сталину и «прогулка» через охрану Кремля. Книгу писал журналист Михаил Хвастунов, и это отдельный жанр советской биографии.</li>
+          <li><b>Сам он говорил ровно то, с чего мы начали:</b> «Я не чудотворец. Я обычный человек, которому дано читать мысли по мышцам». Слово «идеомоторика» у него в книге есть. Дар он описывал как усиленную чувствительность, а не как магию, и это самая честная фраза во всей его легенде.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Что показывал на сцене</h3>
+          <table class="t">
+            <tr><td>Поиск спрятанного предмета</td><td class="d">держит запястье «индуктора», ведёт по залу</td></tr>
+            <tr><td>Выполнение мысленного задания</td><td class="d">задание записано в конверт у жюри, индуктор его знает</td></tr>
+            <tr><td>Угадывание числа, имени, страницы</td><td class="d">индуктор рядом или задаёт вопрос вслух</td></tr>
+            <tr><td>«Каталепсия», обезболивание</td><td class="d">классическая гипнотическая эстрада</td></tr>
+          </table>
+          <p class="dim" style="margin-top:8px">Заметь: во всех номерах рядом человек, который знает ответ. Без индуктора Мессинг не работал никогда, и это сказано в его же книге.</p>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Проверка:</b> в 1970-х психолог Владимир Львов и физиолог Леонид Васильев описывали его опыты как идеомоторное чтение высшего класса. Ни одного контролируемого опыта без контакта с индуктором Мессинг не проходил и не предлагал.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="content">
+    <div class="kicker">Мессинг · двойник</div>
+    <h2>Берлин 1930-х: два телепата, две судьбы, один механизм</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/berlin.png" alt="">
+        <div class="pcap">Берлин, начало 30-х. Афишная тумба с гипнотическим глазом - это Ханнуссен, звезда варьете «Скала» и любимец штурмовиков. Мессинг в своей книге вспоминает его как конкурента с бешеной славой и деньгами. Оба показывали одно и то же, но у одного не осталось документов, а у второго - полицейские протоколы, газеты и уголовное дело.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th></th><th>Эрик Ян Ханнуссен</th><th>Вольф Мессинг</th></tr>
+          <tr><td>Кто</td><td class="d">Герман Штайншнайдер, 1889, Вена, еврей, объявил себя датским аристократом</td><td class="d">Вольф Мессинг, 1899, Гура-Кальвария</td></tr>
+          <tr><td>Жанр</td><td class="d">телепатия, ясновидение, гипноз, «Дворец оккультизма» 1933</td><td class="d">«психологические опыты», гипноз</td></tr>
+          <tr><td>Суд</td><td class="d">Лейтмериц 1929-30: обвинён в мошенничестве, оправдан, показав суду чтение по мышцам</td><td class="d">не судился</td></tr>
+          <tr><td>Знаменитое предсказание</td><td class="d">поджог Рейхстага за сутки, 26.02.1933: в его ложе сидели офицеры СА, которые его и организовали</td><td class="d">падение Гитлера, 1937: только по его словам</td></tr>
+          <tr><td>Финал</td><td class="d">убит СА в марте 1933: знал слишком много и слишком многим одолжил</td><td class="d">умер в Москве в 1974, народный артист</td></tr>
+        </table>
+        <div class="note" style="margin-top:10px"><b>Почему это важно.</b> Ханнуссен доказал в суде, что его «дар» - навык. Легенда Мессинга про Гитлера и розыск, скорее всего, собрана из берлинских газет о Ханнуссене: там всё это было на самом деле. Одинаковое ремесло, разная судьба архива - и один остался «загадкой», а второй «разоблачён».</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s7">
+  <div class="content">
+    <div class="kicker">Мессинг · механизм</div>
+    <h2>Muscle reading: тело зрителя рассказывает всё</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Как работает.</b> Ты знаешь, где спрятана булавка. Тебя ведут за руку. Когда ведущий сворачивает не туда, твоя рука на долю секунды напрягается: ты сам этого не замечаешь, а он держит запястье именно для этого. Так же читаются дыхание, пауза, поворот головы, сглатывание. Метод «тепло-холодно», только сигналы выдаёт не голос, а мышцы.</li>
+          <li><b>История ремесла.</b> Джон Рэндалл Браун (США, 1870-е) первым сделал из этого эстраду. Вашингтон Ирвинг Бишоп находил спрятанные булавки в целых городах, Стюарт Кумберленд честно назвал жанр «contact mind reading» и написал учебник. Мессинг и Ханнуссен - третье поколение той же школы.</li>
+          <li><b>Умный Ганс, 1907.</b> Конь считал и отвечал на вопросы копытом. Психолог Оскар Пфунгст показал: Ганс читает микронаклон головы спрашивающего, который сам не знает, что кивает на правильном числе. Уберите зрителя, знающего ответ, и Ганс глупеет. Все «телепаты» проваливаются на том же условии.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Что выдаёт индуктор</h3>
+          <table class="t">
+            <tr><th>Сигнал</th><th>Что читается</th></tr>
+            <tr><td>Тонус руки и запястья</td><td class="d">направление, «стоп», «здесь»</td></tr>
+            <tr><td>Дыхание</td><td class="d">задержка перед целью, выдох после</td></tr>
+            <tr><td>Взгляд и наклон головы</td><td class="d">куда смотрит, того и боится</td></tr>
+            <tr><td>Шаг</td><td class="d">замедление в нужном месте</td></tr>
+            <tr><td>Пульс</td><td class="d">ускорение при приближении</td></tr>
+          </table>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Проверь сам:</b> попроси друга спрятать монету в комнате, возьми его за запястье и иди с закрытыми глазами, говоря «иду туда?». С третьей попытки начнёт получаться. Дальше только практика: у Мессинга её было 50 лет.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s8">
+  <div class="content">
+    <div class="kicker">Мессинг · второй инструмент</div>
+    <h2>Cold reading и эффект Барнума: портрет, который подходит всем</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Эффект Форера, 1948.</b> Психолог Бертрам Форер раздал 39 студентам «персональные» характеристики и попросил оценить точность. Средняя оценка - 4.26 из 5. Текст у всех был одинаковый, собранный из гороскопов: «Вы нуждаетесь в одобрении, но умеете быть критичным к себе. Часть ваших способностей не раскрыта». Повторяли сотни раз, результат тот же.</li>
+          <li><b>Холодное чтение</b> - набор приёмов, чтобы казаться знающим: универсальные утверждения, вопросы под видом ответов («вижу человека, чьё имя начинается на М... или на Н?»), чтение реакции и мгновенная корректировка, «дробовик» из десятка догадок, из которых запомнят одну попавшую. Всё это работает лучше, если клиент сам хочет верить.</li>
+          <li><b>Горячее чтение</b> - когда информация собрана заранее: анкеты, слуги, разговоры в очереди, письма. Ванга принимала людей после многочасовой очереди, в которой с ними разговаривали помощники. Ханнуссен держал сеть информаторов среди прислуги Берлина.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Универсальный текст Форера (фрагмент)</h3>
+          <p>«Вы очень нуждаетесь в том, чтобы вас любили и восхищались вами. Вы склонны критиковать себя. У вас есть значительные неиспользованные возможности. Внешне дисциплинированный, внутри вы часто тревожны. Временами вы сомневаетесь, правильно ли поступили. Вы предпочитаете некоторую перемену, ограничения вас раздражают. Вы гордитесь независимостью суждений. Иногда вы общительны, иногда замкнуты».</p>
+          <p class="dim" style="margin-top:8px">Прочитал и узнал себя? Это и есть эффект. Он усиливается, если текст «лично для вас», если источник авторитетен и если в нём больше положительного, чем отрицательного.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s9">
+  <div class="content">
+    <div class="kicker">Мессинг · третий инструмент</div>
+    <h2>Сенсорный гейтинг: люди, у которых фильтр слабее</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Мозг прячет от тебя почти всё.</b> Через глаза идёт ~10 Мбит/с, до сознания доходит доли процента. Есть измеримые фильтры: подавление P50 (второй одинаковый щелчок мозг гасит), латентное торможение (знакомый стимул перестаёт замечаться), префронтальное подавление шума. Это защита от перегрузки.</li>
+          <li><b>У части людей фильтр слабее, и это измеримо:</b> шизотипия, синестезия, часть аутистического спектра, мигрень с аурой. Такие люди буквально видят и слышат больше: микровыражения лица (Экман: 1/25 секунды), дрожь в голосе, изменение ритма дыхания собеседника, запах стресса. Последний реален: в 2012 году де Гроот показал, что пот испуганного человека заставляет других людей делать испуганное лицо, не осознавая почему.</li>
+          <li><b>Цена.</b> Слабая латентное торможение при высоком IQ даёт креативность (Карсон, 2003), при низком - риск психоза. Тот же механизм, который делает человека «сенситивом», делает его уязвимым. Отсюда «дар как проклятие» во всех биографиях: это не литературный штамп, а описание одного и того же нейротипа с двух сторон.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Сетчатка</b><span>~10 Мбит/с</span></div>
+            <div class="bx"><b>Зрительный нерв</b><span>~1 Мбит/с</span></div>
+            <div class="bx cy"><b>Внимание</b><span>~40-50 бит/с</span></div>
+            <div class="bx am"><b>Сознание</b><span>7 ± 2 объекта</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3>Что читает «сенситив», не зная об этом</h3>
+          <ul>
+            <li>Микровыражения: страх, отвращение, презрение за 40 мс</li>
+            <li>Зрачок: расширяется при интересе и когнитивной нагрузке</li>
+            <li>Голос: частота, дрожь, паузы перед ложью</li>
+            <li>Хемосигналы: андростадиенон, «запах страха»</li>
+            <li>Поза, дистанция, ритм дыхания</li>
+          </ul>
+          <p class="dim" style="margin-top:6px">Всё это доступно и обычному человеку, только он это отфильтровал. «Сенситив» получает вывод без доступа к расчёту и честно называет его интуицией или голосом.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s10">
+  <div class="content">
+    <div class="kicker">Мессинг · проверка</div>
+    <h2>Телепатия в лаборатории: 90 лет опытов и что осталось</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Карты Зенера, 1930-е.</b> Джозеф Райн в Дьюке: пять символов, угадывание вслепую, миллионы попыток. Результаты чуть выше 20% случайности, но при ужесточении контроля (экраны, независимые записи) таяли до нуля. Сенсорные утечки, ошибки записи, отбор удачных серий.</li>
+          <li><b>Ганцфельд, 1970-2010-е.</b> «Приёмник» лежит в полусенсорной депривации (половинки шариков для пинг-понга на глазах, розовый шум в наушниках), «отправитель» в другой комнате смотрит картинку, приёмник потом выбирает из четырёх. Случайность - 25%. Метаанализ Хонортона 1985 - 35%, Бем и Хонортон 1994 - 32%, Милтон и Уайзман 1999 - ноль, Сторм 2010 - снова около 32%. Спор о методике и «эффекте ящика стола» (неопубликованные нули) не закончен до сих пор.</li>
+          <li><b>Вывод честный:</b> эффект, если он есть, крошечный, неустойчивый и исчезает у скептиков в лаборатории. Для сценического «чтения мыслей» с индуктором за руку это не нужно вовсе: там всё объясняет мышца.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Итоги проверок</h3>
+          <table class="t">
+            <tr><th>Метод</th><th>Результат</th><th>Статус</th></tr>
+            <tr><td>Карты Зенера (Райн)</td><td class="d">выше случайности до ужесточения</td><td class="d">закрыто</td></tr>
+            <tr><td>Ганцфельд</td><td class="d">25% → 30-35% в части метаанализов</td><td class="d">открыто, спорно</td></tr>
+            <tr><td>Дальновидение (Stargate)</td><td class="d">$20 млн, 1972-95, «не имеет разведценности»</td><td class="d">закрыто, см. главу 2</td></tr>
+            <tr><td>Сценические телепаты без индуктора</td><td class="d">ни одного успешного контролируемого теста</td><td class="d">закрыто</td></tr>
+            <tr><td>Приз Рэнди $1 млн, 1964-2015</td><td class="d">~1000 заявок, 0 прошедших предварительный тур</td><td class="d">закрыто</td></tr>
+          </table>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Что бы доказало телепатию:</b> устойчивый эффект у независимых групп, растущий, а не тающий с контролем. За 90 лет этого не случилось ни разу, но Ганцфельд честно висит в «спорно».</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2: ТОП-14 ============ -->
+<section class="slide chapter" id="s11">
+  <div class="bgimg"><img src="assets/ch_top.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2</div>
+    <h1>Люди-аномалии: четырнадцать имён</h1>
+    <p class="lead">От Калиостро до Кашпировского. Формат один: что делал, что заявлял, что показала проверка, какой механизм. Двое из четырнадцати до конца не закрыты, и это сказано прямо.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s12">
+  <div class="content">
+    <div class="kicker">Топ · пророчицы и пророки</div>
+    <h2>Ванга и Эдгар Кейси: предсказание как жанр</h2>
+    <div class="cols">
+      <div class="card">
+        <h3>Вангелия Гуштерова, 1911-1996</h3>
+        <ul>
+          <li><b>Что делала:</b> слепая с 12 лет, принимала в Петриче до 100 человек в день, отвечала на вопросы о пропавших, болезнях, будущем. С 1967 - на госслужбе, институт суггестологии Болгарии вёл записи.</li>
+          <li><b>Что показала проверка:</b> предсказания записывались после событий и пересказывались, точных дат и формулировок «до» почти нет. «Курск уйдёт под воду» появилось в печати после 2000 года. Известные «попадания» (Сталин, Кеннеди) не документированы при жизни.</li>
+          <li><b>Механизм:</b> многочасовая очередь, в которой с людьми говорили помощники; сахар, который приносили заранее «переночевать» (ещё один разговор); cold reading голосом и запахом при обострённом слухе слепой; вера посетителей, доделывающая ответ.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Эдгар Кейси, 1877-1945</h3>
+        <ul>
+          <li><b>Что делал:</b> «спящий пророк»: ложился на кушетку, входил в транс и диктовал «чтения» - 14 000 стенограмм о здоровье, прошлых жизнях, Атлантиде.</li>
+          <li><b>Что показала проверка:</b> медицинские советы - смесь народной медицины эпохи (касторка, остеопатия), без единого подтверждённого диагноза, поставленного «на расстоянии». Атлантида должна была всплыть в 1968-69, Калифорния - уйти под воду. Ни одно датированное предсказание не сбылось.</li>
+          <li><b>Механизм:</b> самогипноз и диссоциация (транс настоящий), свободные ассоциации на тему, заданную письмом клиента, помощники, знавшие анамнез, и архив, в котором ищут попадания постфактум.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:14px"><b>Общее правило жанра:</b> пророчество считается только если оно записано ДО события, с датой, конкретно и без права на второе прочтение. Под это условие в истории не проходит ни одно из знаменитых. Зато под условие «человек с обострённым восприятием и хорошей памятью на людей» - все.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s13">
+  <div class="content">
+    <div class="kicker">Топ · те, кого не поймали</div>
+    <h2>Калиостро и Хоум: два открытых дела</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/cagliostro.png" alt="">
+        <div class="pcap">Лаборатория «графа» - алхимия, эликсиры, египетская ложа. Но к его дверям в Страсбурге стояли очереди бедняков, которых он лечил бесплатно, и врачи признавали улучшения. В эпоху кровопусканий любой, кто не вредит, выглядел чудотворцем.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Джузеппе Бальзамо, «граф Калиостро», 1743-1795.</b> Палермский сирота, аптекарь, авантюрист, масон. Был, и был точно: протокол инквизиции 1790-91 - сотни страниц, дело об ожерелье королевы, Бастилия, смерть в крепости Сан-Лео. <span class="cy">За:</span> массовое бесплатное лечение с реальными улучшениями. <span class="cy">Против:</span> «превращение ртути в золото» и эликсир молодости разобраны химиками тогда же, посвящения в «египетскую ложу» за деньги. <span class="am">Открыто:</span> откуда он знал придворные тайны. Сеть информаторов или редкая перцепция, инквизицию интересовало другое.</li>
+          <li><b>Дэниел Данглас Хоум, 1833-1886.</b> Шотландец, самый знаменитый медиум XIX века. Столы поднимались, аккордеон играл в клетке, в 1868 году он «вылетел» из окна третьего этажа Эшли-хаус и «влетел» в соседнее при трёх свидетелях. Физик Уильям Крукс тестировал его в 1871 году с приборами и подтвердил «психическую силу». <span class="am">Ни разу не был пойман на трюке за 25 лет</span>, хотя ловили всех вокруг. Скептики предлагают: темнота, подготовленные комнаты, аккордеон-губная гармошка, полёт по карнизу. Ни одна из версий не доказана. Это честное «открыто».</li>
+        </ul>
+        <div class="note" style="margin-top:8px"><b>Почему это не аргумент за магию:</b> «не поймали» - не то же, что «проверили и подтвердили». Хоум никогда не работал при свете и при контроле, который принял бы сегодняшний фокусник. Но и списать его в жулики по умолчанию - нечестно. Так и оставляем.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s14">
+  <div class="content">
+    <div class="kicker">Топ · телекинез</div>
+    <h2>Палладино и Кулагина: столы, спички и нитки</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Эузапия Палладино, 1854-1918.</b> Неаполитанская медиумка, столы и «руки духов». Ловили на трюках раз десять (Кембридж 1895, Нью-Йорк 1910): освобождала руку или ногу из контроля и двигала стол ею. При этом в Неаполе в 1908 году трое опытных скептиков (Феилдинг, Бэггалли, Каррингтон) провели 11 сеансов и не нашли трюка. Её собственная формула честнее всех: «Если вы дадите мне обмануть, я обману. Если нет - буду делать по-настоящему». Что такое «по-настоящему», так и не выяснили.</li>
+          <li><b>Нинель Кулагина, 1926-1990.</b> Ленинград, 1960-70-е: двигала спички, компас, отделяла белок от желтка, останавливала лягушачье сердце. Есть плёнки, есть свидетельства физиологов (Сергеев, Наумов). Что видно на плёнках: сильнейшее мышечное напряжение, движения рук над предметами, съёмка при своих условиях. Скептики показали: те же эффекты воспроизводятся тонкой нитью, магнитом под одеждой и электростатикой. Контрольного опыта в чужой лаборатории с досмотром Кулагина не прошла ни одного, и это не претензия, а факт: их не было.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/kulagina.png" alt="">
+        <div class="pcap">Ленинградская кухня, спичечный коробок, компас, напряжённые руки и кинокамера на штативе. Плёнки Кулагиной - самое «убедительное» видео телекинеза в истории, и именно поэтому по ним же видно всё, что скептики называют механизмом.</div>
+      </div>
+    </div>
+    <div class="dg" style="margin-top:12px">
+      <div class="row">
+        <div class="bx"><b>Нить</b><span>невидима на плёнке 16 мм, двигает лёгкие предметы</span></div>
+        <div class="bx"><b>Магнит</b><span>компас и стальные предметы</span></div>
+        <div class="bx"><b>Электростатика</b><span>лёгкие предметы, спички, бумага</span></div>
+        <div class="bx cy"><b>Своя комната, своё время</b><span>главный признак трюка в любой эпохе</span></div>
+        <div class="bx rd"><b>Чего нет</b><span>ни одного опыта в чужой лаборатории с досмотром</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s15">
+  <div class="content">
+    <div class="kicker">Топ · ложки и ЦРУ</div>
+    <h2>Геллер и Свонн: сцена и секретная программа</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/stargate.png" alt="">
+        <div class="pcap">Кабинет 1970-х, повязка на глазах, конверт с координатами, магнитофон. Так выглядело «дальновидение» в Стэнфордском институте и позже в армейской программе Stargate: 23 года, 20 миллионов долларов и вердикт 1995 года.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Ури Геллер, 1946.</b> Гнул ложки, «чинил» часы, угадывал рисунки. В 1974 году Тарг и Путхофф опубликовали в Nature опыты с ним в SRI: угадывание рисунков в изолированной комнате. Позже выяснилось, что комната имела щели, а протокол вёл сам Геллер. 1973, шоу Джонни Карсона: Рэнди заранее подменил реквизит, Геллер за 22 минуты не смог ничего. Дальше судился со скептиками, проиграл, живёт как «мистификатор и артист». Механизм: ловкость рук, отвлечение, ложки, согнутые заранее, и уверенность.</li>
+          <li><b>Инго Свонн, 1933-2013.</b> Художник, «отец дальновидения». По его протоколу ЦРУ и армия США с 1972 по 1995 год гоняли программу удалённого просмотра (Stargate): опишите объект по координатам. Итог экспертизы Хаймана и Аттс (1995): статистически «что-то есть» в лабораторных сериях, но результат «ни разу не пригодился в операции», описания расплывчаты, попадания подбираются судьями постфактум. Программу закрыли. Механизм: расплывчатые описания плюс субъективный подсчёт совпадений. <span class="am">Аттс до сих пор считает эффект реальным - открыто в лабораторной части, закрыто в практической.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s16">
+  <div class="content">
+    <div class="kicker">Топ · телевизор</div>
+    <h2>Кашпировский и Чумак: плацебо на 280 миллионов</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Анатолий Кашпировский, 1939.</b> Психотерапевт из Винницы. Октябрь 1989 - шесть телесеансов на всю страну: «даю установку», немигающий взгляд, обещание рассасывания рубцов и седины. Письма о выздоровлении шли мешками. В 1988 году провёл реальное дистанционное обезболивание операции по телемосту Киев-Тбилиси (документировано). Механизм: массовая суггестия, отбор писем, естественное течение болезней, эффект ожидания. Обратная сторона: волна обращений к психиатрам, о которой писали уже в 1990-м.</li>
+          <li><b>Аллан Чумак, 1935-2017.</b> Журналист, «заряжал» воду и кремы через экран, молча водил руками. Вода, разумеется, оставалась водой. Но люди, пившие «заряженную», сообщали об облегчении - и это тоже правда, потому что это плацебо в чистом виде, о котором в главе 8.</li>
+          <li><b>Почему это сработало именно тогда:</b> 1989 год, распад привычного мира, тревога, единственный телеканал, авторитет «показали по телевизору». Условия для внушения идеальные. То же самое делали Кейси в 1930-е и Калиостро в 1780-е, только без телевизора.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/kashpirovsky.png" alt="">
+        <div class="pcap">Осень 1989-го: вся семья перед телевизором, на нём банки с водой «под зарядку». Самый массовый эксперимент по внушению в истории, проведённый без контрольной группы и без единого измерения.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s17">
+  <div class="content">
+    <div class="kicker">Топ · озарение</div>
+    <h2>Рамануджан и Тесла: «богиня диктует», «вижу машину целиком»</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/insight.png" alt="">
+        <div class="pcap">Человек с закрытыми глазами, над которым висит готовая машина. Тесла описывал именно это: он «включал» устройство в воображении, давал ему поработать неделю и смотрел, где износ. Это не эзотерика, но заявляли они ровно то же, что Мессинг: «это приходит ко мне извне».</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Сриниваса Рамануджан, 1887-1920.</b> Самоучка из Мадраса, без формального образования выдал ~3900 формул, часть которых доказывают до сих пор (в том числе для чёрных дыр). Сам говорил: формулы ему во сне показывает богиня Намагири, он их только записывает. Механизм: инкубация в фазе сна (доказана: Вагнер 2004, задачи решаются после сна втрое чаще), гигантская неосознанная практика (с 15 лет решал сборник из 5000 теорем) и то, что мозг не показывает хозяину свой расчёт, только результат. Как у сенситива: вывод есть, доступа к процессу нет, значит «извне».</li>
+          <li><b>Никола Тесла, 1856-1943.</b> В автобиографии «Мои изобретения»: видения в детстве, вспышки света, конструирование «в воображении с точностью до детали». Механизм: эйдетическая образность, вероятно синестезия и мигрень с аурой (вспышки описаны как классическая скотома). Плюс обсессивные черты. Тот же нейротип, что у «сенситивов», только приложенный к электротехнике.</li>
+          <li><b>Зачем они в этой деке:</b> чтобы показать, что переживание «мне дали извне» - универсальное свойство мозга при инсайте, а не признак контакта с чем-то. Рамануджан и Мессинг описывают одно и то же ощущение. Разница только в том, что формулы можно проверить.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s18">
+  <div class="content">
+    <div class="kicker">Топ · особый случай</div>
+    <h2>Га-Ноцри: самый документированный и самый непроверяемый</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Рамка.</b> Говорим не о Христе веры, а об Иешуа из Назарета - человеке, которого запомнили (Га-Ноцри - «из Назарета» в булгаковском написании). Про воскресение и божественность дека молчит: это не её предмет, и так честнее для всех.</li>
+          <li><b>Что известно историкам.</b> Проповедник из Галилеи, казнён при Пилате около 30-33 года. Независимые упоминания: Иосиф Флавий (частично дописан позже), Тацит. Евангелия записаны через 40-70 лет после событий людьми, которые его не видели. Проверить ни один эпизод невозможно, и это надо сказать прямо.</li>
+          <li><b>Что описано.</b> Исцеления «одержимых», слепых, парализованных, «кровоточивой женщины», прокажённых. Это ровно тот спектр, где внушение и ожидание реально работают: конверсионные (психогенные) параличи и слепота, психотические состояния и эпилепсия («бесы»), хронические боли и кровотечения на фоне стресса. Массовые исцеления у харизматичных проповедников документированы в XX веке десятки раз с тем же спектром диагнозов и с тем же откатом через недели.</li>
+          <li><b>Почему он интереснее всех в списке.</b> Единственный, кто ничего не выдумывал про механизм. Не «читаю энергию», не «египетские тайны», а «вера твоя спасла тебя» (Мк 5:34) и «по вере вашей да будет вам». В терминах этой деки это самая точная формулировка плацебо за две тысячи лет, и она произнесена самим целителем.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/yeshua.png" alt="">
+        <div class="pcap">Пыльная дорога в Галилее, толпа, человек с поднятой рукой над больным. Что бы там ни произошло, запомнили это так. И в самом описании лежит ключ: «вера твоя».</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 3: ОТКУДА ОНИ БЕРУТСЯ ============ -->
+<section class="slide chapter" id="s19">
+  <div class="bgimg"><img src="assets/ch_origin.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3</div>
+    <h1>Откуда берутся такие люди</h1>
+    <p class="lead">Случайность, нейроразнообразие, эволюция или деградация, а может, мир растит себе наблюдателя. Четыре ответа, и три из них - наука, а четвёртый - честно помечен как разговор под пиво.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s20">
+  <div class="content">
+    <div class="kicker">Откуда · случайность</div>
+    <h2>Хвосты распределения: на 8 миллиардов аномалии обязаны быть</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Любой признак распределён колоколом,</b> и у колокола есть хвосты. Если чувствительность к микровыражениям, слуховая острота, память на лица и склонность к диссоциации распределены независимо, то человек в верхнем проценте по всем четырём - это один на 100 миллионов. На планете таких 80 человек прямо сейчас. Каждый из них, попав на сцену или в храм, будет выглядеть чудом.</li>
+          <li><b>Ошибка выжившего.</b> Мы знаем Мессинга, потому что он попал на сцену, в СССР и в книгу. Тысячи таких же людей прожили жизнь бухгалтерами и «просто хорошо чувствовали людей». История отбирает не самых способных, а самых заметных: с импресарио, войной и биографом.</li>
+          <li><b>Закон больших чисел работает и на события.</b> Диаконис и Мостеллер (1989): при 8 млрд человек событие с вероятностью один на миллион в день случается ~8000 раз в сутки. «Приснился звонок, и позвонили» - будничная статистика, а не дар. Дар начинается там, где это повторяется у одного человека под контролем, и вот этого пока не нашли.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Арифметика редкости</h3>
+          <table class="t">
+            <tr><th>Признак (верхний 1%)</th><th>Людей на Земле</th></tr>
+            <tr><td>один признак</td><td class="d">80 000 000</td></tr>
+            <tr><td>два независимых</td><td class="d">800 000</td></tr>
+            <tr><td>три</td><td class="d">8 000</td></tr>
+            <tr><td>четыре</td><td class="d">80</td></tr>
+            <tr><td>пять</td><td class="d">~1 (и он где-то есть)</td></tr>
+          </table>
+          <p class="dim" style="margin-top:8px">Признаки коррелируют, так что реальных «уникумов» больше. Но и порог сцены ниже: достаточно двух-трёх.</p>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Следствие:</b> «такой один на свете» - математически почти всегда ложь, «такой один на сто миллионов» - правда, и этого достаточно для легенды.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s21">
+  <div class="content">
+    <div class="kicker">Откуда · нейроразнообразие</div>
+    <h2>Сырьё дара: эпилепсия, синестезия, савантизм, слабые фильтры</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/epilepsy.png" alt="">
+        <div class="pcap">Электрическая буря в височной доле. Достоевский описывал «экстатическую ауру» перед припадком как секунды абсолютной гармонии, за которые не жаль отдать жизнь. Височная доля отвечает за память, смысл и чувство присутствия - и за то, что при её раздражении человек встречает Бога.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Височная эпилепсия и синдром Гешвинда:</b> гиперрелигиозность, гиперграфия, ощущение глубокого смысла, видения. Ретроспективные диагнозы ставили Достоевскому (документирован), Жанне д'Арк, апостолу Павлу, Магомету, Сведенборгу. Доказать нельзя, но описания совпадают с клиникой один в один.</li>
+          <li><b>Синестезия</b> (4% людей): цвет у букв, вкус у слов, цвет у людей - готовая «аура». <b>Савантизм:</b> Ким Пик помнил 12 000 книг, Дэниел Таммет видит числа как формы и считает ими. <b>Слабое латентное торможение:</b> человек не перестаёт замечать привычное, видит «лишнее», при высоком интеллекте это креативность, при низком - психоз (Карсон 2003, Неттл 2006).</li>
+          <li><b>Итог:</b> это не деградация и не эволюция, а вариация. Одна и та же нейробиология в 1400 году называлась святостью, в 1900 - истерией, в 1960 - экстрасенсорикой, в 2020 - нейроразнообразием. Мозг тот же, менялся словарь.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s22">
+  <div class="content">
+    <div class="kicker">Откуда · отбор</div>
+    <h2>Эволюция или деградация: что отбор даёт и что забирает</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Аргумент «эволюция».</b> В группе из 50 человек, где все выживают вместе, тот, кто первым чувствует чужой страх, ложь и болезнь, полезен всем. Шаман в каждой известной культуре - человек с диссоциативными и «сенситивными» чертами (Полимени и Рейсс, 2002: шизотипия как «шаманский» фенотип). Гены таких признаков держатся в популяции на стабильном уровне 3-5% тысячелетиями - это не мутационный мусор, а сбалансированный полиморфизм, как серповидная анемия против малярии.</li>
+          <li><b>Аргумент «деградация».</b> Те же гены в гомозиготе и в неудачной среде дают шизофрению (1% населения, репродукция ниже средней). Гиперчувствительность в городе на 10 млн - не дар, а перегрузка и тревожное расстройство. То, что было преимуществом в племени, в мегаполисе становится диагнозом.</li>
+          <li><b>Честный ответ:</b> ни то ни другое. Это цена, которую популяция платит за креативность и социальную чуткость: немного «сенситивов» на грани - и много обычных людей с половиной дозы тех же генов. Мессинг - не следующая ступень и не ошибка. Он - край нормы, который нужен норме, чтобы быть нормой.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx gr"><b>Половина дозы</b><span>эмпатия, интуиция, креативность · большинство</span></div>
+            <div class="bx cy"><b>Полная доза + среда ок</b><span>шаман, артист, «сенситив»</span></div>
+            <div class="bx am"><b>Полная доза + стресс</b><span>тревога, диссоциация, «голоса»</span></div>
+            <div class="bx rd"><b>Перебор</b><span>психоз · 1% · отбор против</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Почему признак не вымывается</h3>
+          <p>Если бы «сенситивность» была чистой поломкой, отбор убрал бы её за сотню поколений. Она держится, значит, где-то платит. Кандидаты: чтение чужих намерений (главный навык примата), творчество, религия как клей группы. Гены при этом те же, что и у психозов: несколько сотен вариантов с крошечным вкладом каждый, нет «гена дара» и нет «гена болезни».</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s23">
+  <div class="content">
+    <div class="kicker">Откуда · телеология</div>
+    <h2>Хочет ли мир нам помочь: три ответа без вердикта</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>1. Мир растит наблюдателя</h3>
+        <p><b>Телеология.</b> Вселенная развивается к сложности и самопознанию, «сенситивы» - её щупальца в неизвестное. Тейяр де Шарден, «точка Омега», Уилер с «соучаствующей Вселенной». <span class="dim">За: направление от кварков к мозгу видно невооружённым глазом. Против: направление не равно намерению, у реки тоже есть направление. Проверить нельзя.</span></p>
+      </div>
+      <div class="card">
+        <h3 class="am">2. Мы видим тех, кто выжил</h3>
+        <p><b>Антропный принцип.</b> Никто никого не растит, но мы можем задать вопрос только в мире, где такие люди появились и пригодились. Отсюда иллюзия замысла: выжившие всегда чувствуют себя избранными. <span class="dim">За: объясняет всё без дополнительных сущностей. Против: скучно и ничего не предсказывает.</span></p>
+      </div>
+      <div class="card">
+        <h3 class="gr">3. Никто не хочет, но оно само</h3>
+        <p><b>Самоорганизация.</b> Сложные системы производят аномалии на краях просто потому, что так устроена динамика (хвосты, критичность, «край хаоса»). Сенситивы - как вихри в потоке: неизбежны, полезны, никем не задуманы. <span class="dim">За: работает от муравейников до экономик. Против: не отвечает на вопрос «зачем», только на «как».</span></p>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:16px"><b>Наша позиция:</b> первый ответ - не наука, но и не глупость: это рамка, а рамку не опровергнуть. Второй и третий - наука, и они объясняют всё наблюдаемое без первого. Что выбрать - вопрос вкуса, а не данных. В деке мы держим третий и не мешаем первому: он ничего не ломает и делает вечер интереснее.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 4: ИДЕОМОТОРИКА ============ -->
+<section class="slide chapter" id="s24">
+  <div class="bgimg"><img src="assets/ch_ideomotor.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4</div>
+    <h1>Тело обманывает хозяина: идеомоторика</h1>
+    <p class="lead">Маятник качается сам, лоза дёргается над водой, планшетка спиритической доски пишет имена. Всё это делает твоя рука, и она тебе об этом не докладывает.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s25">
+  <div class="content">
+    <div class="kicker">Идеомоторика · три обёртки</div>
+    <h2>Лоза, маятник, доска: один механизм, три костюма</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Механизм.</b> Мысль о движении вызывает микросокращение мышц, которые это движение делают. Это открыл Уильям Карпентер в 1852 году и назвал «идеомоторным актом». Ты думаешь «маятник качнётся к да» - и пальцы на 0.1 мм смещаются в такт, маятник это усиливает в сто раз. Ощущение при этом абсолютно честное: «я не двигал».</li>
+          <li><b>Лозоходство.</b> Прут в напряжённых руках - неустойчивое равновесие, любая микродрожь его роняет. Лозоходец знает местность, видит растительность и рельеф, и рука «сама» дёргается там, где вода по опыту должна быть. Часто попадает: грунтовые воды есть почти везде, если бурить достаточно глубоко.</li>
+          <li><b>Спиритическая доска.</b> Несколько рук на планшетке, каждый чуть-чуть ведёт к ожидаемой букве, никто не ведёт «специально». Завяжите участникам глаза и незаметно переверните доску - «духи» начнут писать бессмыслицу. Это делали десятки раз, результат один.</li>
+          <li><b>Облегчённая коммуникация.</b> Самая печальная обёртка: «помощник» держит руку неговорящего ребёнка над клавиатурой, и ребёнок «пишет» тексты. Слепые тесты 1990-х: если помощник не видит вопрос, ответа нет. Тексты писал помощник, не зная об этом.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Идеомоторика в быту</h3>
+          <table class="t">
+            <tr><th>Где</th><th>Что делает рука</th></tr>
+            <tr><td>Маятник над животом беременной</td><td class="d">качается в ту сторону, которую ждёт мать</td></tr>
+            <tr><td>Лоза над трубой</td><td class="d">дёргается там, где лозоходец её ожидает</td></tr>
+            <tr><td>Планшетка на доске</td><td class="d">ползёт к букве, которую все «предчувствуют»</td></tr>
+            <tr><td>Столоверчение</td><td class="d">стол едет от суммарного давления ладоней</td></tr>
+            <tr><td>«Кинезиология» мышечный тест</td><td class="d">рука слабеет, когда врач ждёт, что она ослабнет</td></tr>
+            <tr><td>Muscle reading (глава 1)</td><td class="d">индуктор ведёт телепата к ответу</td></tr>
+          </table>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Ключ ко всему:</b> мозг не показывает хозяину копию команд, которые шлёт мышцам. Поэтому собственное движение ощущается как внешняя сила. Это не дефект, а экономия: ты же не хочешь чувствовать каждое сокращение.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s26">
+  <div class="content">
+    <div class="kicker">Идеомоторика · опыты</div>
+    <h2>Фарадей 1853 и «сарай в Мюнхене» 1990: как это проверяли</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/faraday.png" alt="">
+        <div class="pcap">Майкл Фарадей и столоверчение. Он положил на стол две доски с картонными валиками между ними и индикатором: если стол двигают духи, верхняя доска отстаёт; если руки - опережает. Опережала. Сеанс с индикатором на виду у участников проваливался всегда: стоило людям увидеть свои руки, «духи» уходили.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Шеврёль, 1833.</b> Химик Мишель Шеврёль (тот, что с маргарином) взял маятник над ртутью, заметил, что тот качается «сам», подложил стекло - перестал; закрыл глаза - перестал; положил руку на опору - перестал. Вывод: движение делает рука, управляемая ожиданием и зрением. Это первое в истории экспериментальное описание идеомоторики.</li>
+          <li><b>Мюнхен, 1986-88.</b> Крупнейший тест лозоходства: правительство ФРГ, 500 лозоходцев, сарай с трубой, которую двигали под полом случайно. Отобрали 43 лучших, гоняли по 10 серий. Авторы (Бетц) заявили, что «несколько показали результат»; повторный анализ Энрайта (1995) показал: разброс лучших ровно такой, какой даёт случайность при 43 попытках. Ни один не воспроизвёл результат в следующей серии.</li>
+          <li><b>Приз Рэнди.</b> Из ~1000 претендентов на миллион больше половины были лозоходцами. Все соглашались с протоколом заранее, все проваливали. Самая частая реакция после: «сегодня не мой день». Это тоже честно: они действительно не понимают, что делает их рука.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s27">
+  <div class="content">
+    <div class="kicker">Идеомоторика · почему «внешнее»</div>
+    <h2>Почему своё движение ощущается чужим</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Эфферентная копия.</b> Когда мозг посылает команду мышце, он отправляет копию в сенсорные зоны: «сейчас будет вот такое ощущение, не пугайся». Поэтому нельзя пощекотать себя: ощущение предсказано и погашено. Идеомоторное движение идёт в обход этого механизма: команда слабая и не осознана, копии нет, ощущение приходит «без предупреждения» и маркируется как внешнее.</li>
+          <li><b>Тот же сбой при шизофрении:</b> у больных ломается предсказание собственных действий, и свои мысли ощущаются как вложенные, а движения - как управляемые извне. Здоровый человек с маятником переживает крошечную дозу того же самого и называет её «духом» или «энергией».</li>
+          <li><b>Отсюда важный вывод для всей деки:</b> когда человек говорит «я чувствую, что меня ведёт», он не врёт и не глуп. Он точно описывает своё ощущение. Ошибка только в атрибуции источника, и она встроена в мозг.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Намерение</b><span>«пусть качнётся к да»</span></div>
+            <div class="bx cy"><b>Микрокоманда</b><span>ниже порога осознания</span></div>
+            <div class="bx cy"><b>Мышца</b><span>0.1 мм</span></div>
+            <div class="bx am"><b>Маятник</b><span>×100, видимое движение</span></div>
+            <div class="bx rd"><b>Осознание</b><span>«оно само» → «дух»</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Тест на кухне</h3>
+          <p>Возьми нитку с кольцом, держи над столом, задай вопрос «да/нет». Качнётся. Теперь закрой глаза и попроси кого-то задать вопрос молча, записав его. Не качнётся или качнётся случайно. Открой глаза - снова работает. За минуту ты сам воспроизвёл опыт Шеврёля 1833 года.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 5: ВЫХОД ИЗ ТЕЛА ============ -->
+<section class="slide chapter" id="s28">
+  <div class="bgimg"><img src="assets/ch_obe.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5</div>
+    <h1>Выход из тела и свет в тоннеле</h1>
+    <p class="lead">Десять процентов людей хотя бы раз видели себя со стороны. Каждый пятый переживший остановку сердца рассказывает о свете и покое. С 2002 года это включается кнопкой, и всё равно остаётся один вопрос без ответа.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s29">
+  <div class="content">
+    <div class="kicker">Выход из тела · кнопка</div>
+    <h2>Бланке 2002: выход из тела по нажатию электрода</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Опыт.</b> Женева, пациентка 43 лет с эпилепсией, электроды в коре для поиска очага. Олаф Бланке стимулирует правый угловой извилину (височно-теменной узел, TPJ) - и она «проваливается в кровать»; сильнее - «вижу себя сверху, только ноги и туловище». Воспроизводимо, дозозависимо, опубликовано в Nature. Позже - у десятков пациентов.</li>
+          <li><b>Что делает TPJ.</b> Собирает в одну картинку зрение, вестибулярный аппарат, проприоцепцию и осязание, чтобы ответить на вопрос «где я». Если входы рассинхронизировать (эпилепсия, гипоксия, кетамин, засыпание, стимуляция), мозг строит модель тела в лучшем доступном месте: «сверху, откуда всё видно».</li>
+          <li><b>Эрссон и Ленггенхагер, 2007, Science.</b> Здоровым людям надевают очки с камерой, стоящей за спиной, и гладят грудь синхронно с картинкой. Через минуту человек ощущает себя в двух метрах позади собственного тела. Выход из тела за 60 секунд, без электродов и без эпилепсии.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Что говорят пережившие и что это по-нейробиологически</h3>
+          <table class="t">
+            <tr><th>Переживание</th><th>Механизм</th></tr>
+            <tr><td>«Вижу себя сверху»</td><td class="d">TPJ строит модель тела вне тела</td></tr>
+            <tr><td>«Лёгкость, полёт»</td><td class="d">вестибулярный вход отключён или спутан</td></tr>
+            <tr><td>«Кто-то рядом» (см. главу 6)</td><td class="d">вторая модель тела не «приклеена» к своей</td></tr>
+            <tr><td>«Абсолютная реальность»</td><td class="d">височная доля даёт метку «значимо и истинно»</td></tr>
+          </table>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Проверка «реальности» выхода:</b> если человек реально покидает тело, он видит то, чего не мог видеть с кровати. Для этого в реанимациях с 2008 года кладут на верх шкафов картинки. Результат - на слайде про AWARE.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s30">
+  <div class="content">
+    <div class="kicker">Выход из тела · химия</div>
+    <h2>Околосмертный опыт: что делает умирающий мозг</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/tunnel.png" alt="">
+        <div class="pcap">Тоннель со светом в конце - самый частый образ. У лётчиков в центрифуге при перегрузке он появляется за секунды до потери сознания: сетчатка теряет кровь с периферии к центру, поле зрения сужается в трубу, центр остаётся ярким. Это описано на сотнях испытуемых и никакого «того света» не требует.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Статистика.</b> 10-20% переживших остановку сердца сообщают об ОСО: покой, свет, тоннель, взгляд на себя сверху, встреча с умершими, «вся жизнь перед глазами», нежелание возвращаться. Набор культурно окрашен (индийцы встречают Яму и чиновников, американцы - свет и родню), ядро одинаковое.</li>
+          <li><b>Химия.</b> <span class="cy">Гипоксия</span> и <span class="cy">гиперкапния</span>: эйфория, отключение периферии, растормаживание височной доли. <span class="cy">Эндорфины</span>: покой и обезболивание. <span class="cy">Кетаминоподобные состояния</span>: NMDA-блокада при ишемии, и кетамин в клинике даёт ОСО целиком - тоннель, свет, выход из тела, «встречи» (Янсен, 1997). <span class="cy">ДМТ</span>: Тиммерман (2018) - переживания под ДМТ статистически неотличимы от ОСО по стандартной шкале Грейсона.</li>
+          <li><b>Умирающий мозг не гаснет, а вспыхивает.</b> Борджигин (2013, крысы; 2023, четыре человека на отключении от ИВЛ): в первые 30 секунд после остановки сердца - всплеск гамма-активности выше, чем в бодрствовании, синхронизация зон, отвечающих за зрение и память. Мозг в последние секунды работает громче, чем когда-либо. Именно туда помещаются «самые яркие переживания жизни».</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s31">
+  <div class="content">
+    <div class="kicker">Выход из тела · детали</div>
+    <h2>Свет, покой и «вся жизнь перед глазами»: по кирпичикам</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Тоннель и свет.</b> Ишемия сетчатки (периферия гаснет первой) плюс растормаживание зрительной коры: без входа она генерирует свет сама, как при закрытых глазах в темноте появляются пятна. Центр поля зрения имеет больше нейронов, поэтому «свет» яркий и в центре.</li>
+          <li><b>Покой и отсутствие страха.</b> Эндорфины и серотонин, отключение миндалины при гипоксии. Часто цитируют: «Я никогда не был так спокоен». Это описание опиоидного состояния слово в слово.</li>
+          <li><b>«Вся жизнь перед глазами».</b> Гиппокамп и височная доля растормаживаются, воспоминания всплывают каскадом без контроля лобной коры. При стимуляции височной доли электродом пациенты Пенфилда в 1950-х тоже «проживали» сцены детства. Ощущение «одновременно» - потому что нет лобного тайминга, который раскладывает события по порядку.</li>
+          <li><b>Встречи с умершими.</b> Височная доля плюс ожидание плюс культура: американцы встречают родных, индийцы - посланников Ямы, дети - живых учителей и животных. Кого ждёшь, того и видишь.</li>
+          <li><b>«Реальнее реальности».</b> Метка значимости от височной доли и миндалины ставится на всё переживание сразу. Она же делает религиозный опыт и первую любовь «самым настоящим».</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Один и тот же набор в разных дверях</h3>
+          <table class="t">
+            <tr><th>Ситуация</th><th>Тоннель</th><th>Выход из тела</th><th>Покой</th><th>Встречи</th></tr>
+            <tr><td>Остановка сердца</td><td class="d">да</td><td class="d">да</td><td class="d">да</td><td class="d">да</td></tr>
+            <tr><td>Перегрузка в центрифуге</td><td class="d">да</td><td class="d">да</td><td class="d">эйфория</td><td class="d">сны</td></tr>
+            <tr><td>Кетамин</td><td class="d">да</td><td class="d">да</td><td class="d">да</td><td class="d">да</td></tr>
+            <tr><td>ДМТ</td><td class="d">да</td><td class="d">да</td><td class="d">да</td><td class="d">«сущности»</td></tr>
+            <tr><td>Обморок (гипервентиляция)</td><td class="d">часто</td><td class="d">иногда</td><td class="d">да</td><td class="d">редко</td></tr>
+            <tr><td>Стимуляция TPJ</td><td class="d">нет</td><td class="d">да</td><td class="d">нет</td><td class="d">присутствие</td></tr>
+          </table>
+          <p class="dim" style="margin-top:8px">Если бы ОСО был «окном в иное», он не воспроизводился бы наркозом и центрифугой. Воспроизводится.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s32">
+  <div class="content">
+    <div class="kicker">Выход из тела · открытое</div>
+    <h2>AWARE: что осталось необъяснённым</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>AWARE, 2008-2014 (Сэм Парниа).</b> 15 больниц, 2060 остановок сердца, 330 выживших, 140 опрошенных. 9% - классический ОСО, 2% - «осознание» во время реанимации. <b>Один пациент</b> точно описал события трёх минут реанимации (звуки дефибриллятора, действия персонала), когда, по протоколу, сердце не билось. Картинки на шкафах для проверки «выхода из тела» не увидел никто - в тех палатах, где он случился, их не было.</li>
+          <li><b>AWARE II, 2017-2023.</b> 567 остановок, 53 выживших опрошено, у 6 - воспоминания о реанимации, часть с деталями; ЭЭГ у ряда пациентов показывала всплески активности до часа после начала реанимации. Парниа считает, что «сознание при остановке сердца - реальность», его критики - что это память о моментах перед или после, когда мозг уже частично работал.</li>
+          <li><b>Пэм Рейнольдс, 1991.</b> Операция на аневризме с остановкой кровообращения и охлаждением до 15°C. Описала костную пилу и разговор хирургов. Проверка: описанное происходило ДО полной остановки, под наркозом, когда слух мог частично работать. Самый известный случай оказался объяснимым, но объяснение спорное.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Честный статус</h3>
+          <table class="t">
+            <tr><td>Тоннель, свет, покой, выход из тела</td><td class="d gr">объяснено, воспроизводится</td></tr>
+            <tr><td>Точные детали реанимации у 1-2% пациентов</td><td class="d am">частично: слух под наркозом, фрагменты сознания при массаже</td></tr>
+            <tr><td>Сознание при нулевой ЭЭГ</td><td class="d rd">ни одного подтверждённого случая с ЭЭГ в момент опыта</td></tr>
+            <tr><td>Картинка на шкафу</td><td class="d">0 из ~1000 попыток за 15 лет</td></tr>
+          </table>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Что бы всё изменило:</b> один пациент, увидевший картинку на шкафу, при записанной плоской ЭЭГ. Протокол стоит, палаты оборудованы. Пока пусто, и это самый честный эксперимент во всей теме: он может дать любой ответ.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 6: ПРИЗРАКИ ============ -->
+<section class="slide chapter" id="s33">
+  <div class="bgimg"><img src="assets/ch_ghost.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6</div>
+    <h1>Призраки, присутствие и старуха на груди</h1>
+    <p class="lead">Фигура у кровати, которая давит и не даёт дышать. Холод и «кто-то за спиной» в старом доме. Дом, где семья видела призраков каждую ночь - и их видел даже врач. У каждого есть механизм, и у некоторых он опасен по-настоящему.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s34">
+  <div class="content">
+    <div class="kicker">Призраки · сонный паралич</div>
+    <h2>Сонный паралич: один сценарий на все культуры</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/sleep_paralysis.png" alt="">
+        <div class="pcap">Фюссли, «Ночной кошмар» (1781): демон на груди спящей. Ньюфаундленд - «старая карга», Япония - канасибари, Россия - домовой душит, Мексика - «мёртвый залез на меня», современный Запад - похищение инопланетянами. Один и тот же опыт, разные декорации.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Что происходит.</b> В фазе быстрого сна мозг отключает мышцы (иначе мы бы отыгрывали сны). Иногда сознание просыпается раньше, чем мышцы включаются: ты лежишь, всё видишь, не можешь пошевелиться и дышать полной грудью (дыхание в REM автоматическое и поверхностное). Мозг ещё наполовину во сне и достраивает картинку.</li>
+          <li><b>Почему именно «кто-то давит».</b> Паралич плюс страх включают миндалину, миндалина ищет угрозу, а система «обнаружения агента» (та, что видит лица в облаках) находит её у кровати. Давление на грудь - это заблокированные дыхательные мышцы. Гипнагогические галлюцинации добавляют звуки шагов, шёпот, фигуру. Всё вместе - идеальный демон.</li>
+          <li><b>Цифры.</b> Хотя бы раз в жизни - 8% населения в среднем, до 30% у студентов и при сменной работе, чаще на спине, при недосыпе и джетлаге. Полностью объяснено, воспроизводится в лаборатории сна, лечится режимом. Из всей эзотерики это самый частый «контакт с потусторонним», и он же самый закрытый.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s35">
+  <div class="content">
+    <div class="kicker">Призраки · физика и химия</div>
+    <h2>Инфразвук 19 Гц и угарный газ: дома, которые пугают по-настоящему</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Вик Тэнди, 1998.</b> Инженер в «лаборатории с привидением» в Ковентри: холод, тоска, серая фигура краем глаза, страх. Однажды заметил, что зажатая в тисках рапира вибрирует сама. Нашёл источник: новый вытяжной вентилятор давал стоячую волну 18.9 Гц. Ниже порога слышимости, зато глазное яблоко резонирует около 19 Гц - отсюда «мелькание» на периферии; плюс тревога, давление в груди, озноб. Выключили вентилятор - призрак ушёл. Потом нашёл 19 Гц в подвале «самого призрачного» замка Ковентри.</li>
+          <li><b>Проверка, 2003.</b> Уайзман и Лорд провели концерт в Лондоне, где часть пьес сопровождалась инфразвуком 17 Гц, не объявляя каких. Слушатели сообщали «странные ощущения, тревогу, холод, мурашки» на 22% чаще именно в тех номерах.</li>
+          <li><b>Угарный газ.</b> Классический случай 1921 года: семья въехала в старый дом, все слышали шаги, видели фигуры, чувствовали тяжесть и слабость, дети плакали, растения гибли. Офтальмолог Уильям Уилмер нашёл неисправную печь и утечку CO. Устранили - призраки исчезли. Отравление CO даёт головную боль, галлюцинации, тревогу и ощущение присутствия. С тех пор у охотников за привидениями первый прибор - детектор CO, и он спасает жизни.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/infrasound.png" alt="">
+        <div class="pcap">Вентилятор в стене, дрожащее пламя свечи и серое пятно на краю зрения. Тэнди искал призрака и нашёл резонанс. Совет всем, у кого в доме «нехорошо»: сначала вытяжка, котёл и детектор угарного газа, потом всё остальное.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s36">
+  <div class="content">
+    <div class="kicker">Призраки · присутствие</div>
+    <h2>«Кто-то за спиной»: шлем Бога и робот, который его сломал</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Ощущение присутствия</b> - «здесь кто-то есть», без образа и звука. Знают альпинисты на высоте (третий человек в связке, Шеклтон), вдовцы, люди в изоляции и переутомлении, пациенты с височной эпилепсией и Паркинсоном. Это не галлюцинация в обычном смысле: ничего не видно, но уверенность абсолютная.</li>
+          <li><b>Персингер и «шлем Бога», 1980-2000-е.</b> Слабые магнитные поля на височные доли через мотошлем с катушками; 80% испытуемых сообщали о «присутствии», часть - о Боге и умерших. Сенсация. Шведская группа Гранквиста (2005) повторила вслепую: эффект давали не поля, а внушаемость и ожидание, с выключенным шлемом результат тот же. Персингер спорил до конца жизни. Итог: «присутствие» вызывается, но внушением, а не магнитами.</li>
+          <li><b>Бланке, 2014, Current Biology.</b> Здоровый человек с завязанными глазами двигает джойстик перед собой, робот за спиной синхронно касается его спины. Синхронно - «я сам себя трогаю». Задержка 500 мс - и треть испытуемых чувствует, что за спиной кто-то стоит, некоторые считают до четырёх «людей», двое попросили прекратить. Присутствие включается рассинхроном между моторной командой и осязанием: мозг не может приписать касание себе и создаёт «другого». Тот же механизм у эпилептиков со стимуляцией той же зоны.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Когда мозг «создаёт другого»</h3>
+          <table class="t">
+            <tr><th>Условие</th><th>Что ломается</th></tr>
+            <tr><td>Высота, истощение, холод</td><td class="d">гипоксия и рассинхрон сенсорных входов</td></tr>
+            <tr><td>Горе, изоляция</td><td class="d">ожидание конкретного человека + недосып</td></tr>
+            <tr><td>Височная эпилепсия</td><td class="d">очаг у TPJ, «вторая модель тела»</td></tr>
+            <tr><td>Паркинсон</td><td class="d">дофаминовая терапия, 40% пациентов</td></tr>
+            <tr><td>Робот Бланке</td><td class="d">задержка 500 мс между командой и касанием</td></tr>
+            <tr><td>Старый дом ночью</td><td class="d">инфразвук + ожидание + тишина</td></tr>
+          </table>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Вывод:</b> «присутствие» - штатная функция мозга, который моделирует чужое тело рядом со своим, чтобы жить в обществе. Когда модель отклеивается от источника, появляется призрак. Он честный: его действительно чувствуешь.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s37">
+  <div class="content">
+    <div class="kicker">Призраки · полтергейст и экспедиции</div>
+    <h2>Полтергейст, Хэмптон-Корт и эдинбургские подвалы</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Полтергейст почти всегда подросток.</b> С XIX века известна закономерность: «шумный дух» живёт в доме, где есть ребёнок 10-16 лет в стрессе, и стихает, когда его нет дома или на него смотрят. Классика: Тина Реш, Колумбус, 1984 - телефон «летал» через комнату, пока оператор не оставил включённую камеру: на плёнке она сама дёргает шнур. Плюс внимание, ожидание и то, что в любом доме за неделю что-то падает и трещит.</li>
+          <li><b>Хэмптон-Корт, 2001, и подвалы Эдинбурга, 2003 (Уайзман).</b> Сотни добровольцев ходили по «призрачным» и «спокойным» комнатам, не зная, какие где. Ощущения «присутствия» и холода концентрировались именно в комнатах с репутацией. Но объяснялось это не репутацией: там были ниже температура, сквозняки, темнее, выше и уже помещения, ниже частота звука. Люди чувствовали физику, а история дома просто совпадала с той же физикой: где неуютно, там и легенда.</li>
+          <li><b>Итог главы.</b> Ни один охотник за привидениями за 150 лет не принёс ничего, кроме фото с пылью и ЭМ-датчиков, реагирующих на проводку. Но каждый, кто «видел», видел реально. Механизмов ровно пять: сон, инфразвук, газ, ожидание и рассинхрон тела. Их хватает.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx gr"><b>Сонный паралич</b><span>фигура у кровати, давление</span></div>
+            <div class="bx gr"><b>Инфразвук</b><span>тревога, холод, пятно на периферии</span></div>
+            <div class="bx gr"><b>Угарный газ</b><span>шаги, фигуры, тяжесть, смерть растений</span></div>
+            <div class="bx cy"><b>Ожидание</b><span>шлем Бога без магнитов</span></div>
+            <div class="bx cy"><b>Рассинхрон тела</b><span>присутствие за спиной</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Чек-лист, если у тебя «нехорошая квартира»</h3>
+          <ul>
+            <li>Детектор CO и проверка котла, колонки, печи</li>
+            <li>Вентиляторы, вытяжки, старые трубы - искать гул на 15-20 Гц</li>
+            <li>Сон: сколько, на спине ли, во сколько ложишься</li>
+            <li>Кто в доме подросток и как у него дела</li>
+            <li>Только потом - священник, и то для спокойствия</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 7: АУРЫ, ДЕЖАВЮ, СНЫ ============ -->
+<section class="slide chapter" id="s38">
+  <div class="bgimg"><img src="assets/ch_aura.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 7</div>
+    <h1>Ауры, дежавю, вещие сны и предчувствия</h1>
+    <p class="lead">Свечение вокруг человека, «я здесь уже был», сон про звонок перед звонком и «я знал, что он врёт». Четыре разных механизма, и все четыре - штатные.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s39">
+  <div class="content">
+    <div class="kicker">Ауры · три источника</div>
+    <h2>Аура: мигрень, синестезия и послеобраз</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Мигренозная аура.</b> У 25-30% мигренозников за полчаса до боли по полю зрения ползёт зигзагообразная мерцающая дуга («фортификационная скотома»), цветная, с выпадением зрения внутри. Это волна корковой депрессии, идущая по зрительной коре со скоростью 3 мм/мин. Хильдегарда Бингенская описывала свои видения ровно так, и её миниатюры - учебник по мигрени. Если аура накладывается на человека перед тобой, ты видишь «его свечение».</li>
+          <li><b>Синестезия «человек-цвет».</b> У части синестетов люди, буквы и эмоции имеют цвет. В 2005-2012 годах описаны пациенты, у которых «аура» вокруг знакомых стабильна годами и совпадает с их отношением к человеку (Рамачандран, Милан). Это не восприятие энергии, а перекрёстная активация зон цвета и эмоций. Проверяется просто: цвет один и тот же у одного синестета и разный у двух.</li>
+          <li><b>Послеобраз.</b> Смотри 30 секунд на человека на светлом фоне и переведи взгляд: вокруг силуэта появится ореол дополнительного цвета. Так «видят ауру» на семинарах: тебя просят долго смотреть на фигуру у белой стены, и она «начинает светиться». Это утомление колбочек сетчатки.</li>
+          <li><b>Кирлиан.</b> «Фотография ауры» - коронный разряд в высокочастотном поле, зависящий от влажности кожи и давления на пластину. Аура у монеты получается не хуже, чем у пальца. Отрезанный лист светится, пока не высох.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Быстрая диагностика «видящего ауры»</h3>
+          <table class="t">
+            <tr><th>Признак</th><th>Скорее всего</th></tr>
+            <tr><td>Зигзаг, мерцание, потом головная боль</td><td class="d">мигрень с аурой</td></tr>
+            <tr><td>Цвет у людей стабилен, есть и у букв/чисел</td><td class="d">синестезия</td></tr>
+            <tr><td>Только после долгого взгляда, на светлом фоне</td><td class="d">послеобраз</td></tr>
+            <tr><td>Только на «ауракамере» за деньги</td><td class="d">эффект Кирлиан и датчик на ладонях</td></tr>
+            <tr><td>Цвет «читается» как настроение</td><td class="d">cold reading по лицу, глава 1</td></tr>
+          </table>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Тест, который проваливали все:</b> «видящий» должен сказать, за какой из пяти ширм стоит человек, по ауре, выходящей за край. Рэнди проводил десятки раз. Результат - случайность. Аура, которая не выходит за ширму, находится в голове смотрящего, и это не обидно: там же находится всё, что мы видим.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s40">
+  <div class="content">
+    <div class="kicker">Дежавю · сбой тайминга</div>
+    <h2>Дежавю: память, которая сработала раньше восприятия</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/dejavu.png" alt="">
+        <div class="pcap">Коридор, в котором ты на шаг позади самого себя. Дежавю - это не «я здесь был», а «сигнал знакомости пришёл раньше, чем сцена дособралась». Мозг честно докладывает о конфликте: чувство «знаю», а откуда - не знаю.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Статистика.</b> 60-80% людей испытывали, пик в 15-25 лет, реже с возрастом, чаще при усталости и стрессе. У больных височной эпилепсией дежавю - типичная аура перед приступом, и стимуляция ринальной коры вызывает его электродом. Значит, у него есть адрес.</li>
+          <li><b>Механизм.</b> У памяти два контура: «знакомо» (быстрый, парагиппокампальная кора) и «вспомнил откуда» (медленный, гиппокамп). Обычно они согласованы. Если первый сработал на новую сцену, а второй молчит, получается «знакомо без источника». Лобная кора тут же проверяет и говорит «ты здесь впервые», отсюда странность ощущения: мы одновременно знаем, что «было», и что «не было».</li>
+          <li><b>Опыт Клири, 2012.</b> В виртуальной реальности испытуемым показывали комнаты, а потом новые комнаты с той же геометрией расстановки (диван там, где был стол) при другой отделке. Дежавю возникало именно в «геометрически знакомых» комнатах, хотя люди не могли сказать почему. Знакомость срабатывает на структуру, не на детали.</li>
+          <li><b>«Я знаю, что будет дальше».</b> Клири (2018) проверила и это: во время дежавю люди уверены, что предвидят продолжение, но угадывают его не лучше случайности. Ощущение предвидения - часть пакета, не предвидение.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s41">
+  <div class="content">
+    <div class="kicker">Вещие сны · арифметика</div>
+    <h2>Вещие сны: 1800 попыток в год у каждого</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Цифры.</b> Человек видит 4-6 снов за ночь, около 1800 в год, помнит малую часть. Сны состоят из знакомых людей, тревог и недавних событий. Вероятность, что хоть один сон в году совпадёт с чем-то важным, близка к единице. Вероятность, что ты запомнишь именно совпавший, тоже: несовпавшие забываются к завтраку.</li>
+          <li><b>Селективная память и подгонка.</b> Сон вспоминается после события, и детали «дособираются» под него. Экспериментально: если просить записывать сны каждое утро с датой, «вещих» становится в разы меньше, а формулировки - расплывчатыми. Дневники сновидений - лучший скептик.</li>
+          <li><b>Линкольн и сон о собственных похоронах.</b> Записан Ламоном через 30 лет после события, по памяти. Классика жанра: пророчество, датированное задним числом. Сны о смерти у президента в разгар войны и угроз - не редкость, а норма.</li>
+          <li><b>Где сны реально «знают» больше.</b> Мозг во сне обрабатывает то, что ты заметил и не осознал: слабость в теле за неделю до болезни, напряжение в отношениях, мелочи на работе. Сон «начальник уволит» перед увольнением - не пророчество, а сводка данных, которые ты днём отфильтровал. Это тот же гейтинг из главы 1, только ночью фильтр слабее.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Закон очень больших чисел</h3>
+          <table class="t">
+            <tr><td>Снов на человека в год</td><td class="d">~1800</td></tr>
+            <tr><td>Людей на планете</td><td class="d">8 млрд</td></tr>
+            <tr><td>Снов на планете за ночь</td><td class="d">~40 млрд</td></tr>
+            <tr><td>Шанс, что данный сон «сбудется» (щедро)</td><td class="d">1 : 10 000</td></tr>
+            <tr><td>«Вещих» снов за ночь на планете</td><td class="d">~4 000 000</td></tr>
+            <tr><td>Из них попадут в газеты</td><td class="d">десятки, самые яркие</td></tr>
+          </table>
+          <p class="dim" style="margin-top:8px">Диаконис и Мостеллер (1989): «При достаточно большой выборке любое возмутительное событие почти наверняка произойдёт». Это не аргумент против чудес, это их производство.</p>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Тест:</b> год вести дневник снов с датами, потом сверить. У всех, кто это делал, «вещих» снов оказывалось столько, сколько положено случайности. Дар исчезает при бухгалтерии.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s42">
+  <div class="content">
+    <div class="kicker">Предчувствие · быстрый путь</div>
+    <h2>«Я знал, что он врёт»: миндалина видит раньше тебя</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Низкая дорога Леду.</b> Сигнал от глаз идёт в кору (осознание, ~150-300 мс) и параллельно короткой дорогой в миндалину (~30-50 мс). Миндалина успевает оценить лицо, позу, движение и выдать «опасно» до того, как ты понял, что видишь. Ускорился пульс, вспотели ладони - и ты называешь это предчувствием. Оно правдиво: только источник - твоя же сетчатка.</li>
+          <li><b>Слепозрение.</b> Пациент TN с разрушенной зрительной корой (2008) прошёл коридор с препятствиями, не видя их, и не мог объяснить, как. Зрительная информация доходит до моторики и эмоций в обход осознания. У здоровых это работает так же, просто сверху есть ещё и картинка.</li>
+          <li><b>Тонкие срезы (Амбади, 1993).</b> По 10-секундному немому видео студенты оценивали преподавателя так же, как его студенты после семестра. Впечатление формируется за секунды из невербалики и оказывается точным. «Интуиция на людей» - это быстрая статистика на огромной выборке лиц, которую мозг собирал с рождения.</li>
+          <li><b>Бем, 2011, «Чувствуя будущее».</b> Девять опытов, где реакция людей якобы менялась ДО показа стимула. Опубликовано в топ-журнале, вызвало кризис репликации в психологии: Ричи, Уайзман и Френч (2012) повторили точно - ноль. Итог: доказательств предчувствия будущего нет, зато есть реформа статистики в науке. Хороший побочный эффект.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Сетчатка</b><span>0 мс</span></div>
+            <div class="bx cy"><b>Таламус → миндалина</b><span>30-50 мс: «опасно?»</span></div>
+            <div class="bx am"><b>Тело</b><span>80-100 мс: пульс, пот, мурашки</span></div>
+            <div class="bx"><b>Зрительная кора</b><span>150 мс: картинка</span></div>
+            <div class="bx rd"><b>Сознание</b><span>300+ мс: «я почувствовал заранее»</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что предчувствие умеет и не умеет</h3>
+          <ul>
+            <li>Умеет: оценить человека, опасность, ложь по невербалике, изменение в привычной среде</li>
+            <li>Умеет: сложить сигналы тела (интероцепция) в «что-то не так» до осознания</li>
+            <li>Не умеет: узнать то, чего нет в сенсорном входе. Ни один опыт этого не показал</li>
+            <li>Ошибается: систематически, на незнакомых культурах и на обаятельных лжецах</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 8: ЧТО РАБОТАЕТ ============ -->
+<section class="slide chapter" id="s43">
+  <div class="bgimg"><img src="assets/ch_works.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 8</div>
+    <h1>То, что работает по-настоящему</h1>
+    <p class="lead">Плацебо, которое снимает боль опиоидами. Гипноз, при котором делают операции. Монахи, у которых на ЭЭГ гамма-ритм, и тибетцы, греющие себя на морозе. Птицы с квантовым компасом в глазу. Здесь чудо есть, только оно устроено иначе, чем обещали.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s44">
+  <div class="content">
+    <div class="kicker">Работает · плацебо и ноцебо</div>
+    <h2>Плацебо: таблетка из сахара, которая включает опиоиды</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/placebo.png" alt="">
+        <div class="pcap">Пустая таблетка и мозг, который на неё отвечает. Плацебо не «кажется, что легче». Оно измеримо меняет химию: эндорфины при боли, дофамин при Паркинсоне, иммунный ответ при аллергии. Целитель, шаман и Чумак с водой работают одним и тем же инструментом.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Левин, 1978.</b> Пациентам после удаления зуба давали плацебо - боль уходила. Потом вводили налоксон, блокатор опиоидных рецепторов, - боль возвращалась. Плацебо-обезболивание оказалось настоящим выбросом собственных опиоидов. Бенедетти за 30 лет разобрал это по молекулам: ожидание включает ту же систему, что морфин.</li>
+          <li><b>Паркинсон.</b> Де ла Фуэнте-Фернандес (2001): плацебо-инъекция вызывает у пациентов выброс дофамина в стриатуме, измеримый ПЭТ, сопоставимый с амфетамином. Тремор реально уменьшается.</li>
+          <li><b>Открытое плацебо.</b> Капчук (2010): больным синдромом раздражённого кишечника прямо говорили «это сахар, но плацебо часто помогает». Помогало: улучшение у 59% против 35% без таблеток. Ритуал работает даже без обмана.</li>
+          <li><b>Ноцебо - обратная сторона, и она убивает.</b> Кэннон (1942) описал «смерть вуду»: здоровый человек, уверенный в проклятии, умирал за дни от стресс-каскада. Мидор (1992): пациент с «раком печени» и прогнозом в месяцы умер в срок; вскрытие - опухоли не было, ошибочный диагноз. Ривз (2007): участник испытаний выпил 26 «антидепрессантов» из плацебо, давление упало до 80/40, откачали, сказали правду - давление нормализовалось за 15 минут.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s45">
+  <div class="content">
+    <div class="kicker">Работает · гипноз</div>
+    <h2>Гипноз: не сон и не магия, а перераспределение внимания</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Что это.</b> Состояние глубокой сосредоточенности с приглушённой самокритикой, при котором внушение работает сильнее обычного. Не сон (ЭЭГ бодрствования), не потеря воли (загипнотизированный не сделает того, чего не сделал бы без гипноза), не всеобщий: по Стэнфордской шкале 10-15% людей высокогипнабельны, 20% почти не поддаются.</li>
+          <li><b>Что видно на фМРТ (Шпигель, 2016).</b> Снижение активности передней поясной коры (детектор конфликтов, «что-то не так»), усиление связи префронтальной коры с островком (контроль над телом), ослабление связи с сетью «сам с собой» (самонаблюдение). Человек делает, не проверяя, и не смотрит на себя со стороны.</li>
+          <li><b>Что может.</b> Обезболивание вплоть до хирургии (Эсдейл в Индии, 1840-е: сотни операций до эфира; сейчас - в стоматологии и ожоговых центрах), контроль тревоги, синдром раздражённого кишечника, бородавки (документировано, механизм неясен). Косслин (2000): высокогипнабельным внушали «видеть цвет» на серой картинке - и цветовые зоны коры включались. Мозг реально «видел» цвет.</li>
+          <li><b>Чего не может.</b> Вернуть «истинные воспоминания» (даёт конфабуляции, отсюда запрет гипноза в суде), заставить убить, вылечить рак. «Регрессия в прошлые жизни» - смесь внушения и фантазии на материале книг, что проверяли по деталям «жизней».</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Гипноз в эзотерике под другими именами</h3>
+          <table class="t">
+            <tr><th>Как называют</th><th>Что это</th></tr>
+            <tr><td>Транс медиума, «чтение» Кейси</td><td class="d">самогипноз, диссоциация</td></tr>
+            <tr><td>Сеансы Кашпировского</td><td class="d">массовая суггестия по ТВ</td></tr>
+            <tr><td>Каталепсия Мессинга на сцене</td><td class="d">эстрадный гипноз с отбором гипнабельных</td></tr>
+            <tr><td>Хождение по углям</td><td class="d">физика (низкая теплопроводность угля) + внушение против боли</td></tr>
+            <tr><td>Одержимость, экзорцизм</td><td class="d">диссоциативное расстройство в религиозной рамке; экзорцизм - гипнотерапия с костюмами</td></tr>
+            <tr><td>«Регрессия в прошлые жизни»</td><td class="d">конфабуляция под внушением</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s46">
+  <div class="content">
+    <div class="kicker">Работает · медитация и йоги</div>
+    <h2>Монахи в лаборатории: гамма-ритм, туммо и Вим Хоф</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Дэвидсон и Лутц, 2004, PNAS.</b> Восемь тибетских монахов с 10-50 тысячами часов практики против новичков. При медитации «сострадания» у монахов - гамма-ритм 25-42 Гц амплитуды, которой раньше не видели у здоровых людей, и синхронизация полушарий. Эффект рос с часами практики. Это первое строгое доказательство, что многолетняя медитация меняет работу мозга измеримо.</li>
+          <li><b>Туммо.</b> Бенсон (1982) измерял монахов, сушивших на себе мокрые простыни на морозе: температура пальцев росла на 8°C. Кожевникова (2013): практикующие поднимали температуру ядра тела до 38.3°C дыханием и визуализацией. Механизм: форсированное дыхание, мышечное напряжение и симпатическая активация. Никакой «внутренней энергии», но контроль над вегетатикой, которого нет у обычных людей.</li>
+          <li><b>Вим Хоф, 2014, PNAS.</b> 12 человек по его методу (дыхание, холод, медитация) против 12 контрольных ввели эндотоксин. У тренированных - выброс адреналина, меньше воспаления, меньше симптомов. Волевой контроль иммунного ответа, который считался невозможным, воспроизведён.</li>
+          <li><b>Что не подтвердилось:</b> левитация (ТМ-«йогические полёты» - прыжки в лотосе), жизнь без еды (все проверенные «праноеды» ели), остановка сердца по желанию (замедление - да, у йогов до 30 ударов). Осознанность MBSR: эффекты скромные, на уровне хорошей психотерапии, не больше.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Что измерено у практикующих</h3>
+          <table class="t">
+            <tr><th>Заявка</th><th>Измерение</th><th>Статус</th></tr>
+            <tr><td>«Особое состояние ума»</td><td class="d">гамма 25-42 Гц, синхронизация</td><td class="d gr">да</td></tr>
+            <tr><td>Внутренний жар</td><td class="d">+8°C пальцы, ядро 38.3°C</td><td class="d gr">да, вегетатика</td></tr>
+            <tr><td>Управление иммунитетом</td><td class="d">адреналин, IL-10, меньше воспаления</td><td class="d gr">да</td></tr>
+            <tr><td>Замедление сердца</td><td class="d">до 30 уд/мин, не остановка</td><td class="d am">частично</td></tr>
+            <tr><td>Кора мозга толще</td><td class="d">Лазар 2005, небольшие выборки</td><td class="d am">спорно</td></tr>
+            <tr><td>Левитация, праноедение</td><td class="d">-</td><td class="d rd">нет</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s47">
+  <div class="content">
+    <div class="kicker">Работает · магниторецепция</div>
+    <h2>Шестое чувство, которое существует: компас в глазу</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/cryptochrome.png" alt="">
+        <div class="pcap">Зарянка видит магнитное поле Земли. В её сетчатке белок криптохром-4, в котором свет создаёт пару радикалов с запутанными спинами, и поле меняет исход реакции. Птица буквально видит компас, наложенный на картинку. Это единственный известный квантовый сенсор у животных, доказанный в 2021 году.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>У животных - точно.</b> Птицы (криптохром, Xu и др., Nature 2021), морские черепахи (магнитная карта океана), лососи, голуби, пчёлы, бактерии с магнетитом. Магниторецепция - древнее и распространённое чувство, а не экзотика.</li>
+          <li><b>У человека - вероятно, и это самая честная «экстрасенсорика» в деке.</b> Киршвинк и Ван (2019, eNeuro): 34 человека в экранированной камере, поле вращали незаметно. У части испытуемых альфа-ритм ЭЭГ падал при определённых поворотах поля - мозг регистрирует поле, хотя человек ничего не чувствует. Магнетит в мозге человека найден ещё в 1992-м. Осознанного ощущения нет, зато сигнал есть.</li>
+          <li><b>Что провалилось.</b> Опыты Бейкера (1980): студентов с завязанными глазами возили по Манчестеру и просили показать домой; «попадали», пока не повторили в других лабораториях. Лозоходцы с «магнитным чувством» - см. главу 4.</li>
+          <li><b>Почему это важно.</b> Это готовый пример, как должно выглядеть «шестое чувство» в науке: сенсорный белок, физический носитель, измеримый ответ мозга, повторяемость. Всё, чего нет у телепатии, здесь есть. Так что вопрос не в том, бывают ли скрытые чувства. Бывают. Вопрос в том, что у них есть рецептор.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s48">
+  <div class="content">
+    <div class="kicker">Работает · чувства, о которых не говорят</div>
+    <h2>Интероцепция, чувство взгляда и будильник в голове</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Интероцепция.</b> Ощущение тела изнутри: сердцебиение, дыхание, кишечник, воспаление. Люди сильно различаются по точности (тест на подсчёт пульса без пальцев). Точные интероцепторы лучше чувствуют эмоции, свои и чужие, и раньше «предчувствуют» болезнь: то самое «сердце чует». Островковая кора собирает это в «самочувствие», и оно часто знает про тело больше, чем ты.</li>
+          <li><b>Чувство взгляда.</b> «Обернулся - на меня смотрят». Титченер проверял в 1898-м, Шелдрейк в 2000-х утверждал, что эффект есть. Строгие повторы (Колвелл 2000, Маркс 2000): результат случайный, а «попадания» - от подсказок и ожидания. Реальный механизм: периферическое зрение ловит поворот головы и белки глаз (у человека они белые именно чтобы направление взгляда читалось), а обернувшийся запоминает только те разы, когда на него смотрели.</li>
+          <li><b>Внутренний будильник.</b> Борн (1999): люди, которым сказали «разбудим в 6», за час до срока получали подъём АКТГ, хотя спали. Мозг ведёт отсчёт времени во сне и готовит тело к нужному часу. Просыпаешься за минуту до будильника - не мистика, а гормон.</li>
+          <li><b>Феромоны и «химия».</b> Сигналов в поте достаточно, чтобы передать страх, стресс и, вероятно, фазу цикла. Специализированного вомероназального органа у человека нет, обычный нос справляется. «Не могу объяснить, но он мне неприятен» часто имеет запах.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Скрытые чувства человека: инвентарь</h3>
+          <table class="t">
+            <tr><th>Чувство</th><th>Рецептор</th><th>Осознаётся</th></tr>
+            <tr><td>Интероцепция</td><td class="d">блуждающий нерв, островок</td><td class="d">частично</td></tr>
+            <tr><td>Проприоцепция, равновесие</td><td class="d">мышцы, вестибулярный аппарат</td><td class="d">частично</td></tr>
+            <tr><td>Время (циркадное)</td><td class="d">супрахиазматическое ядро</td><td class="d">нет</td></tr>
+            <tr><td>Хемосигналы</td><td class="d">обонятельный эпителий</td><td class="d">нет</td></tr>
+            <tr><td>Магнитное поле</td><td class="d">криптохром/магнетит, гипотеза</td><td class="d">нет</td></tr>
+            <tr><td>Зрение без осознания</td><td class="d">сетчатка → верхние бугорки</td><td class="d">нет</td></tr>
+          </table>
+          <p class="dim" style="margin-top:8px">Каждое из них в нужный момент выглядит как «шестое чувство». Их шесть, и все настоящие.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 9: АСТРОЛОГИЯ ============ -->
+<section class="slide chapter" id="s49">
+  <div class="bgimg"><img src="assets/ch_astro.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 9</div>
+    <h1>Астрология, таро и нумерология</h1>
+    <p class="lead">Самый большой рынок эзотерики и самая изученная её часть. Не работает как предсказание, работает как разговор, и это стоит понимать, а не высмеивать.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s50">
+  <div class="content">
+    <div class="kicker">Астрология · проверка</div>
+    <h2>Карлсон 1985, Nature: 28 астрологов против случайности</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Дизайн.</b> Шон Карлсон, физик из Беркли, договорился с ведущими астрологами США о протоколе, который они сами признали честным. 116 человек заполнили психологический опросник CPI. Астрологу давали натальную карту и три профиля CPI: один настоящий, два чужих. Надо выбрать свой. Случайность - 33%.</li>
+          <li><b>Результат.</b> 34%. Ноль эффекта. Уверенность астролога в ответе не коррелировала с попаданием. Вторая часть: сами люди выбирали «свой» гороскоп из трёх - тоже случайно. Астрологи приняли результаты и объяснили «плохим днём» и тем, что «CPI не улавливает тонкости».</li>
+          <li><b>Другие.</b> Дин и Келли (2003): 2000 «временных близнецов», рождённых в Лондоне с разницей в минуты, в 1958 году, отслеживались десятилетиями - ни по одному из 100 признаков не похожи больше случайности. «Эффект Марса» Гоклена (спортсмены рождаются при восходящем Марсе) рассыпался при проверке выборки. Собственные астрологические интерпретации разных астрологов одной карты совпадают на уровне случайности (Дин).</li>
+          <li><b>Почему сработать не могло.</b> Гравитация акушерки при рождении больше, чем у Марса. Созвездия за 2000 лет сдвинулись на знак (прецессия), и «Овен» астролога сейчас в Рыбах. Зато это не мешает, потому что механизм астрологии не в звёздах.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Итоги проверок</h3>
+          <table class="t">
+            <tr><th>Тест</th><th>Ожидалось / вышло</th></tr>
+            <tr><td>Карлсон 1985, выбор профиля</td><td class="d">33% / 34%</td></tr>
+            <tr><td>Люди выбирают свой гороскоп</td><td class="d">33% / 33%</td></tr>
+            <tr><td>Временные близнецы (2000 чел.)</td><td class="d">сходство / нет</td></tr>
+            <tr><td>Совместимость пар по знакам (Voas 2007, 10 млн пар)</td><td class="d">предпочтение знаков / нет</td></tr>
+            <tr><td>Астрологи узнают карту убийцы / святого</td><td class="d">выше случайности / нет</td></tr>
+          </table>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Таро и нумерология</b> проверены тем же способом и с тем же итогом. Но у них честнее рамка: гадалка не обещает физику, она обещает разговор. О нём - следующий слайд.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s51">
+  <div class="content">
+    <div class="kicker">Астрология · почему работает</div>
+    <h2>Почему это всё-таки помогает: гороскоп как терапия</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Эффект Барнума в промышленном масштабе.</b> Двенадцать текстов на восемь миллиардов, и каждый «про меня» на 4 из 5 (глава 1). Гороскоп - готовая структура для самоописания, которая заранее подходит.</li>
+          <li><b>Разрешение.</b> Расклад таро говорит «уходи от него» то, что человек хотел услышать, но не давал себе права. Внешний авторитет снимает ответственность за решение. Это буквально функция психотерапевта, только за меньшие деньги и без лицензии.</li>
+          <li><b>Структура и внимание.</b> Час, когда кто-то внимательно слушает тебя и говорит только о тебе. В опросах клиентов гадалок главное - «меня поняли», а не «сбылось». Терапевтический альянс работает независимо от метода, и у гадалки он есть.</li>
+          <li><b>Внешняя атрибуция.</b> «Ретроградный Меркурий» лучше, чем «я всё завалил»: снижает стыд, даёт язык для разговора о проблеме. Это же делает диагноз в медицине.</li>
+          <li><b>Риски.</b> Тот же механизм, что у ноцебо: «у вас порча», «в этом месяце опасно» - и человек реально болеет и отказывается от лечения. Плюс деньги: рынок эзотерических услуг в России оценивают в десятки миллиардов рублей в год, и он растёт в кризисы.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Гадалка и психотерапевт: сравнение функций</h3>
+          <table class="t">
+            <tr><th>Функция</th><th>Гадалка</th><th>Терапевт</th></tr>
+            <tr><td>Структурированный разговор о себе</td><td class="d">да</td><td class="d">да</td></tr>
+            <tr><td>Внимание и принятие</td><td class="d">да</td><td class="d">да</td></tr>
+            <tr><td>Разрешение на решение</td><td class="d">да, от «судьбы»</td><td class="d">да, от себя</td></tr>
+            <tr><td>Язык для проблемы</td><td class="d">символы карт, планет</td><td class="d">схемы, диагнозы</td></tr>
+            <tr><td>Ответственность за вред</td><td class="d">нет</td><td class="d">есть</td></tr>
+            <tr><td>Проверка результата</td><td class="d">нет</td><td class="d">есть, хоть и слабая</td></tr>
+          </table>
+          <p class="dim" style="margin-top:8px">Поэтому «астрология не работает» и «мне помогло» не противоречат друг другу. Не работает предсказание. Работает разговор.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 10: ПАМЯТЬ МИРА ============ -->
+<section class="slide chapter" id="s52">
+  <div class="bgimg"><img src="assets/ch_memory.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 10</div>
+    <h1>Память мира и вопрос «зачем»</h1>
+    <p class="lead">Помнят ли стены? Куда деваются события? Если информация не исчезает, то Вселенная - запись, а кто её читает? Последняя глава - там, где наука доходит до края и честно говорит, что дальше начинаемся мы.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s53">
+  <div class="content">
+    <div class="kicker">Память мира · гипотеза</div>
+    <h2>Теория каменной плёнки: место записывает, сенситив воспроизводит</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Идея.</b> Сильное событие (убийство, битва, горе) «записывается» в материал места, как звук на магнитную ленту, а человек с подходящей чувствительностью потом «проигрывает» запись: видит фигуры, слышит шаги, чувствует ужас. Призрак - не душа, а повтор. Название - от телефильма BBC «The Stone Tape» (1972), но идею высказывали Чарльз Бэббидж (1837: воздух хранит все сказанные слова) и археолог Летбридж (1961).</li>
+          <li><b>Почему она красивая.</b> Она не требует загробного мира и духов, объясняет, почему призраки «не общаются» и повторяют одно и то же, и почему видят не все. Это самая научная из эзотерических гипотез по форме: носитель, запись, воспроизведение.</li>
+          <li><b>Как проверяли.</b> Если запись в материале, её должно быть можно снять приборами: остаточную намагниченность, ЭМ-аномалии, что угодно. Не нашли ничего, кроме проводки. Если воспроизводит человек, сенситивы должны находить «записанные» места вслепую. В Хэмптон-Корте и Эдинбурге (глава 6) они находили холодные и низкочастотные комнаты, а не «исторические». Когда включали инфразвук в «чистой» комнате, «запись» появлялась там.</li>
+          <li><b>Итог:</b> гипотеза не подтверждена ни по носителю, ни по считывателю. Но она задала правильный вопрос: что вообще хранит прошлое? Ответ есть, и он лучше, чем каменная плёнка.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Что нужно, чтобы «место помнило»</h3>
+          <table class="t">
+            <tr><th>Условие</th><th>Есть ли</th></tr>
+            <tr><td>Носитель с устойчивыми состояниями</td><td class="d">камень - да, но пишет дозу и поле, не сцену</td></tr>
+            <tr><td>Механизм записи события в носитель</td><td class="d">не найден: эмоция не излучает ничего, что камень фиксирует</td></tr>
+            <tr><td>Кодировка, сохраняющая смысл</td><td class="d">нет: даже магнитная лента хранит колебания, а не «ужас»</td></tr>
+            <tr><td>Считыватель у человека</td><td class="d">нет рецептора ни к одному кандидату</td></tr>
+            <tr><td>Слепая воспроизводимость</td><td class="d">не показана</td></tr>
+          </table>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Что бы её спасло:</b> сенситив, находящий вслепую комнаты с «историей» при равных температуре, звуке и свете. Опыт дешёвый, ставился, результат случайный. Дверь не закрыта, но за ней пока пусто.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s54">
+  <div class="content">
+    <div class="kicker">Память мира · факт</div>
+    <h2>Мир помнит всё: где на самом деле лежит прошлое</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/thermolum.png" alt="">
+        <div class="pcap">Черепок светится в темноте лаборатории. Кристаллы кварца в глине копят электроны, выбитые радиацией, с момента последнего обжига. Нагрей - и они высветят всё накопленное за 10 000 лет: столько времени прошло с того костра. Это термолюминесценция, и это самая настоящая память места.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Термолюминесценция:</b> глина и кремень помнят дату обжига на сотни тысяч лет. <b>Палеомагнетизм:</b> застывшая лава хранит направление поля Земли в момент застывания, по ней прочитали дрейф континентов и переполюсовки. <b>Изотопы в зубах:</b> стронций и кислород в эмали говорят, где человек рос: Эци, «лучник из Эймсбери» с Альп. <b>Кольца, лёд, донные слои:</b> климат по годам на 800 000 лет назад.</li>
+          <li><b>eDNA.</b> В 2022 году из мерзлоты Гренландии прочитали ДНК экосистемы двухмиллионной давности: мастодонты, олени, растения. В комнате, где ты сидишь, пыль хранит ДНК всех, кто в ней жил. Это «место помнит» в буквальном смысле, только читать надо секвенатором.</li>
+          <li><b>Свет.</b> Каждое событие излучает свет, и он летит наружу вечно. Посмотри на звезду - видишь прошлое. Гипотетический телескоп в 70 световых годах увидел бы Землю 1955 года. Запись существует, она просто уносится со скоростью света, и вернуть её нельзя.</li>
+          <li><b>Итог:</b> мир хранит прошлое в десятках носителей, и мы его читаем. Ни один из носителей не хранит смысл, эмоцию или образ: только дозу, поле, изотоп, последовательность. Смысл добавляет читатель.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s55">
+  <div class="content">
+    <div class="kicker">Память мира · физика</div>
+    <h2>Информация не исчезает: спор Хокинга и цена стирания</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Унитарность.</b> В квантовой механике эволюция состояния обратима: зная полное состояние сейчас, можно в принципе восстановить прошлое. Информация не создаётся и не уничтожается, только перемешивается. Это не философия, а условие непротиворечивости теории, и все проверки его подтверждают.</li>
+          <li><b>Пари 1997 года.</b> Хокинг утверждал: чёрная дыра испаряется и информация о том, что в неё упало, исчезает навсегда, унитарность нарушена. Торн - с ним, Прескилл - против. В 2004-м Хокинг признал поражение и подарил Прескиллу бейсбольную энциклопедию: «из неё информацию извлечь можно, хоть и трудно». Сегодня консенсус: информация выходит с излучением Хокинга, перемешанная до неузнаваемости, но сохранённая.</li>
+          <li><b>Принцип Ландауэра (1961).</b> Хранить информацию энергии не стоит. Стереть один бит стоит минимум kT·ln2 тепла, и это измерено в 2012 году. Вселенная не тратит ничего на то, чтобы помнить, и платит за то, чтобы забыть. Так что «мир всё помнит» - буквальная физика, а не поэзия.</li>
+          <li><b>Голографический принцип</b> ('т Хоофт, Сасскинд, 1990-е): вся информация в объёме пространства может быть записана на его границе, максимум ~10⁶⁹ бит на квадратный метр (граница Бекенштейна). У Вселенной есть ёмкость, и она конечна, около 10¹²² бит. Это тоже не поэзия: из этого считают энтропию чёрных дыр, и сходится.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/universe_record.png" alt="">
+        <div class="pcap">Вселенная как сфера, покрытая записью. Уилер назвал это «it from bit»: вещество вторично, информация первична. Одна из самых серьёзных программ в физике, а не эзотерика, хотя звучит одинаково.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s56">
+  <div class="content">
+    <div class="kicker">Память мира · хаос</div>
+    <h2>Детерминированный хаос: мир, который всё решил и ничего не сказал</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/lorenz.png" alt="">
+        <div class="pcap">Аттрактор Лоренца, 1963: три простых уравнения, ноль случайности, и траектория, которую нельзя предсказать дальше нескольких витков. Будущее определено полностью и записано с точностью, которую в принципе нельзя измерить.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Демон Лапласа, 1814:</b> разум, знающий положение и скорость всех частиц, увидит прошлое и будущее как одну картину. Классическая физика с ним согласна: мир детерминирован. Каждая частица - «отражение того, что было, и знак того, что будет» - в этом смысле правда.</li>
+          <li><b>Горизонт Ляпунова.</b> Две траектории, отличающиеся на 10⁻¹⁵, расходятся экспоненциально. У каждой системы своё время, за которое ошибка вырастает в e раз: двойной маятник - секунды, погода - около двух недель (и никакой суперкомпьютер это не сдвинет), Солнечная система - 5-10 млн лет (Ласкар 1989: положение Меркурия дальше не предсказать). Бильярдный шар: после нескольких десятков соударений на траекторию влияет гравитация электрона на краю Галактики (Берри, 1978).</li>
+          <li><b>Квантовый пол.</b> На точности 10⁻³⁵ м вмешивается неопределённость, и хаос за ляпуновское время поднимает её до макромира. Хаос - усилитель, вытаскивающий квантовую случайность в нашу жизнь. Итого: прошлое записано и в принципе восстановимо, будущее существует только как распределение вероятностей (Белл, Нобель 2022 закрыли скрытые параметры).</li>
+          <li><b>Энтропия</b> - мера того, чего ты не знаешь о микросостоянии, а не свойство траектории. Знать энтропию - знать размер незнания. Как знать, что в колоде 52 карты, но не порядок.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s57">
+  <div class="content">
+    <div class="kicker">Зачем · всё === память</div>
+    <h2>Если информация вечна, Вселенная - это запись</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Тезис.</b> Соберём главу: информация не исчезает (унитарность), хранение бесплатно (Ландауэр), ёмкость конечна (Бекенштейн), и всё, что происходит, оставляет след (термолюминесценция, свет, ДНК). Тогда Вселенная - не сцена, на которой что-то происходит, а запись того, что произошло, растущая с каждым событием. В этом смысле «всё есть память» - строгое утверждение.</li>
+          <li><b>«It from bit» (Уилер, 1989).</b> Каждая частица, каждое поле получает своё существование из ответов на вопросы «да/нет», которые задаёт измерение. Материя - производная от информации, а не наоборот. Отсюда «соучаствующая Вселенная»: наблюдатель не смотрит на запись, а дописывает её.</li>
+          <li><b>Голографическая Вселенная.</b> Если всё содержимое объёма кодируется на границе, то трёхмерный мир - развёртка двумерной записи. Малдасена (1997) показал это строго для одного класса вселенных (AdS/CFT), и это самая цитируемая работа в физике. Для нашей Вселенной - гипотеза с хорошей репутацией.</li>
+          <li><b>Что это даёт эзотерику.</b> Ничего конкретного, и в этом честность: из «мир - запись» не следует, что человек может её читать. Но мысль «всё, что было, где-то есть» перестаёт быть мечтой и становится физикой. Это то, что стоит забрать с собой.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx cy"><b>Унитарность</b><span>информация не уничтожается</span></div>
+            <div class="bx cy"><b>Ландауэр</b><span>хранить бесплатно, стирать дорого</span></div>
+            <div class="bx cy"><b>Бекенштейн</b><span>ёмкость конечна: ~10¹²² бит</span></div>
+            <div class="bx am"><b>Уилер</b><span>it from bit</span></div>
+            <div class="bx rd"><b>Вывод</b><span>Вселенная = растущая запись</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Аккуратно с «всё есть память»</h3>
+          <p>Слово «память» подразумевает того, кто помнит. Физика говорит только о сохранении состояния. Разница между «запись существует» и «кто-то помнит» - вся следующая половина главы. Пока запомним: первое доказано, второе - вопрос.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s58">
+  <div class="content">
+    <div class="kicker">Зачем · всё !== память</div>
+    <h2>Запись без читателя - не память, а состояние</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Камень «помнит» дозу, но не знает об этом.</b> Черепок хранит 10 000 лет радиации, лава - направление поля, зуб - изотопы. Ни один из них не помнит: у них нет ни модели прошлого, ни возможности его использовать. Память - это запись плюс доступ плюс применение. Без читателя это просто состояние вещества, как и любое другое.</li>
+          <li><b>Смысл не хранится.</b> Термолюминесценция кодирует дозу, палеомагнетизм - вектор, ДНК - последовательность. Нигде в носителе нет «горя», «убийства», «любви». Это накладывает читатель, когда переводит дозу в дату, а дату в «здесь горел костёр». Каменная плёнка провалилась именно тут: она предполагала, что материал пишет сцену. Материал пишет числа.</li>
+          <li><b>Записи размазаны.</b> След события через год распределён по триллионам частиц (хаос из прошлого слайда), и собрать его - задача с ёмкостью, превышающей Вселенную. Информация есть. Доступа нет. Как у сгоревшей книги: физика говорит, что текст не уничтожен, и он действительно не уничтожен, и прочитать его нельзя.</li>
+          <li><b>Отсюда честное «!==».</b> «Всё есть память» верно про сохранение и ложно про доступность. Мир хранит всё и не помнит ничего, пока не появится тот, кто читает. И вот тут начинается самый интересный вопрос главы.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Запись, память, смысл</h3>
+          <table class="t">
+            <tr><th>Уровень</th><th>Что нужно</th><th>Есть у камня</th><th>Есть у мозга</th></tr>
+            <tr><td>Запись</td><td class="d">носитель с состояниями</td><td class="d gr">да</td><td class="d gr">да</td></tr>
+            <tr><td>Кодировка</td><td class="d">соответствие событие → состояние</td><td class="d am">только физ. величины</td><td class="d gr">да</td></tr>
+            <tr><td>Доступ</td><td class="d">возможность прочитать</td><td class="d rd">только прибором</td><td class="d gr">да, частично</td></tr>
+            <tr><td>Смысл</td><td class="d">модель, в которой запись что-то значит</td><td class="d rd">нет</td><td class="d gr">да</td></tr>
+            <tr><td>Применение</td><td class="d">поведение меняется от прочитанного</td><td class="d rd">нет</td><td class="d gr">да</td></tr>
+          </table>
+          <p class="dim" style="margin-top:8px">Память начинается с третьей строки. Вселенная пока сидит на первых двух, если не считать нас.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s59">
+  <div class="content">
+    <div class="kicker">Зачем · кто будет читать</div>
+    <h2>Зачем процесс помнит и кто прочтёт: догадки под пиво</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/reader.png" alt="">
+        <div class="pcap">Глаз из туманностей и человек с фонарём. Всё, что на этом слайде, - не наука, и помечено так. Но вопрос «зачем Вселенная хранит всё, если некому читать» физика оставляет открытым, а значит, его можно задавать.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Гипотеза</th><th>Кто читает</th><th>За · против</th></tr>
+          <tr><td>Никто</td><td class="d">сохранение - побочный эффект законов, не функция</td><td class="d">за: ничего лишнего · против: не объясняет, почему законы такие</td></tr>
+          <tr><td>Мы и есть читатель (Уилер)</td><td class="d">наблюдатели дописывают и читают Вселенную, она «соучаствующая»</td><td class="d">за: КМ реально зависит от измерения · против: «наблюдатель» в физике - любое взаимодействие, не человек</td></tr>
+          <tr><td>Будущий читатель</td><td class="d">разум, который соберёт запись (Типлер, «точка Омега»; Дайсон)</td><td class="d">за: ёмкость и информация есть · против: тепловая смерть и ускоряющееся расширение против</td></tr>
+          <tr><td>Симуляция (Бостром, 2003)</td><td class="d">запись - лог, читает тот, кто запустил</td><td class="d">за: логически не опровергнуть · против: не проверить, и лог тоже надо где-то хранить</td></tr>
+          <tr><td>Панпсихизм (Чалмерс, Гофф)</td><td class="d">опыт есть у всего, запись «переживает сама себя»</td><td class="d">за: решает трудную проблему сознания одним махом · против: ничего не предсказывает</td></tr>
+          <tr><td>Больцмановский мозг</td><td class="d">читатель - случайная флуктуация, и, возможно, это ты сейчас</td><td class="d">за: следует из статистики · против: если так, то и эта дека - флуктуация</td></tr>
+        </table>
+        <div class="note gold" style="margin-top:8px"><b>Наша позиция:</b> первая строка - наука, остальные - рамки. Ни одну из рамок нельзя опровергнуть, и это не аргумент за них, а признак, что вопрос лежит вне физики. Что не мешает задавать его в 2 часа ночи. Для этого и есть серия.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s60">
+  <div class="content">
+    <div class="kicker">Зачем · граница</div>
+    <h2>Чего не хватает гипотезе «сенситив читает память мира»</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Носитель.</b> Прошлое хранится в изотопах, спинах, ДНК, свете, улетающем со скоростью света. Ни один из этих носителей не хранит сцену или эмоцию. «Энергия» не хранит ничего: энергия - свойство, а не вещество, и тепло свечи 1850 года размазалось по атмосфере за минуты.</li>
+          <li><b>Кодировка.</b> Чтобы «прочитать ужас», нужно, чтобы кто-то его записал в понятном виде. Природа пишет числа. Между дозой в кристалле и «здесь был костёр» стоит лаборатория, теория и датировка. У сенситива этого промежутка нет.</li>
+          <li><b>Рецептор.</b> Единственное честное «шестое чувство» (магниторецепция) имеет белок, физику и измеримый ответ мозга. У «чтения памяти места» нет ни кандидата на рецептор, ни сигнала, который он бы ловил. Слабые фильтры дают больше своих сигналов, а не новые каналы.</li>
+          <li><b>Проверка.</b> Слепые опыты с сенситивами в «исторических» местах дают случайность, а физика помещения (звук, холод, свет) объясняет всё наблюдаемое.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Где физики сами не договорились</h3>
+          <ul>
+            <li><b>Интерпретации КМ.</b> В многомировой и бомовской будущее «уже есть»; в копенгагенской - нет. Спор 100 лет, экспериментально не различимы.</li>
+            <li><b>Сознание.</b> Что такое «читатель» физически - трудная проблема, не решена. Панпсихизм и иллюзионизм равно уважаемы и равно недоказуемы.</li>
+            <li><b>Ганцфельд, AWARE, Хоум.</b> Три пункта из деки, где контроль был, а нуля не вышло. Малые эффекты, спорные протоколы, но не закрытые.</li>
+            <li><b>Магниторецепция человека.</b> Сигнал есть, чувства нет. Что ещё может быть в этом же статусе - неизвестно.</li>
+          </ul>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Формула на вынос:</b> наука не отвергла идею «мир помнит». Она нашла, где память мира лежит на самом деле, и там она интереснее, чем в стенах замка. А гипотезу про сенситивов оставила на столе с тремя пустыми графами: носитель, кодировка, рецептор. Заполнит кто-нибудь - будет новая наука.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ИТОГИ ============ -->
+<section class="slide" id="s61">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Вся эзотерика на одном слайде</h2>
+    <table class="t" style="font-size:12.5px">
+      <tr><th>Феномен</th><th>Что переживает человек</th><th>Механизм</th><th>Статус</th></tr>
+      <tr><td>Чтение мыслей на сцене</td><td class="d">«он нашёл то, о чём я думал»</td><td class="d">muscle reading, индуктор, cold reading</td><td class="d gr">объяснено</td></tr>
+      <tr><td>Ясновидение, пророчества</td><td class="d">«она знала про меня всё»</td><td class="d">горячее чтение, Барнум, подгонка постфактум</td><td class="d gr">объяснено</td></tr>
+      <tr><td>Телекинез</td><td class="d">«видел, как двигалось»</td><td class="d">нить, магнит, своя комната</td><td class="d gr">объяснено; Хоум - открыто</td></tr>
+      <tr><td>Лоза, маятник, доска</td><td class="d">«оно само»</td><td class="d">идеомоторика, нет эфферентной копии</td><td class="d gr">объяснено</td></tr>
+      <tr><td>Выход из тела</td><td class="d">«видел себя сверху»</td><td class="d">TPJ, рассинхрон сенсорики; кнопка Бланке</td><td class="d gr">объяснено</td></tr>
+      <tr><td>Околосмертный опыт</td><td class="d">тоннель, свет, покой, встречи</td><td class="d">гипоксия, эндорфины, NMDA, всплеск гаммы</td><td class="d am">механизм ясен, AWARE открыто</td></tr>
+      <tr><td>Призраки, присутствие</td><td class="d">фигура, давление, «кто-то здесь»</td><td class="d">сонный паралич, инфразвук, CO, рассинхрон тела</td><td class="d gr">объяснено</td></tr>
+      <tr><td>Ауры</td><td class="d">свечение вокруг людей</td><td class="d">мигрень, синестезия, послеобраз</td><td class="d gr">объяснено</td></tr>
+      <tr><td>Дежавю, вещие сны, предчувствие</td><td class="d">«я знал заранее»</td><td class="d">рассинхрон памяти, большие числа, миндалина</td><td class="d gr">объяснено</td></tr>
+      <tr><td>Целительство, заряженная вода</td><td class="d">реально полегчало</td><td class="d">плацебо: опиоиды, дофамин; ноцебо убивает</td><td class="d gr">работает, иначе</td></tr>
+      <tr><td>Гипноз, медитация, туммо</td><td class="d">контроль боли, тепла, иммунитета</td><td class="d">внимание, вегетатика, тренировка</td><td class="d gr">работает</td></tr>
+      <tr><td>Шестое чувство</td><td class="d">«чувствую поле, взгляд, время»</td><td class="d">криптохром/магнетит, интероцепция, циркадные часы</td><td class="d am">частично реально</td></tr>
+      <tr><td>Астрология, таро</td><td class="d">«всё про меня и помогло»</td><td class="d">Форер, разговор, разрешение</td><td class="d gr">не предсказание, а терапия</td></tr>
+      <tr><td>Телепатия в лаборатории</td><td class="d">-</td><td class="d">Ганцфельд 25% против 30-35%</td><td class="d rd">спорно, не закрыто</td></tr>
+      <tr><td>Память места</td><td class="d">«стены помнят»</td><td class="d">мир хранит всё в изотопах и свете, читать - прибором</td><td class="d rd">гипотеза без носителя и рецептора</td></tr>
+    </table>
+    <div class="note">Сквозная мысль деки: <b>переживание всегда настоящее, ошибка - в адресе источника.</b> Мозг не показывает хозяину ни команд мышцам, ни расчёта интуиции, ни фильтров восприятия, поэтому всё, что приходит без квитанции, ощущается как «извне». Мессинг, Рамануджан и человек с маятником описывают одно и то же ощущение, и все трое честны.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s62">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <div class="kicker amber">Финал · свет по звону</div>
+    <h1>Наука не забрала чудо. Она показала, где оно лежит</h1>
+    <p class="lead">Мессинг был прав в главном: он обычный человек с необычной настройкой. Не потому, что читал энергию, а потому что его мозг пропускал больше, чем наш, и не объяснял ему, откуда. Он придумал объяснение из инструментов своего времени, как Ньютон с алхимией и как мы с «энергией» и «полем».</p>
+    <p class="lead" style="margin-top:14px">А то, что осталось на столе, честно перечислено: три спорных эксперимента, один незакрытый медиум, вопрос о читателе Вселенной и три пустые графы в гипотезе о памяти места. Это и есть свет, который мы нащупываем по звону: не там, где кричат громче, а там, где тихо и никто ещё не был. Выпуск первый. Дальше - по звону.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- SLIDES_END -->
+
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>

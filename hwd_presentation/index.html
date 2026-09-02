@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>От кнопки до процесса — анатомия запуска ПК</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #46d4ff; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Hardware Deep Dive · Гвендолин-ночные-лекции</div>
+    <h1>От кнопки до процесса</h1>
+    <p class="lead">Полная анатомия запуска компьютера: куда течёт первый ампер, кто исполняет первую инструкцию, как биты становятся рабочим столом — и где именно виртуальная кнопка «Завершить работу» дотягивается до реального транзистора.</p>
+  </div>
+  <div class="pagenum">01</div>
+</section>
+
+<!-- ============ ГЛАВА 1. ПИТАНИЕ ============ -->
+<section class="slide chapter" id="s2">
+  <div class="bgimg"><img src="assets/ch_power.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1</div>
+    <h1>Питание: до первой инструкции</h1>
+    <p class="lead">Компьютер начинает работать задолго до того, как «включится». И кнопка питания не включает блок питания — она лишь вежливо просит.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">Питание · дежурный режим</div>
+    <h2>Пока ты «выключен», ты уже включён</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Воткнул вилку в розетку — в БП <b>сразу</b> запускается маленький дежурный преобразователь: линия <code>+5VSB</code> (standby, до 3 А) живёт всегда.</li>
+          <li>От +5VSB питаются: <b>чипсет</b> (его power-домен управления), <b>Super I/O / Embedded Controller</b>, микросхема сетевухи (ради Wake-on-LAN), часть USB-портов, CMOS-логика.</li>
+          <li>Часы (RTC) и хранение настроек — отдельная песня: домен <b>RTC well</b> питается от батарейки CR2032, когда вилка выдернута. Поэтому «сбросить BIOS» = вынуть батарейку.</li>
+          <li>То есть «выключенный» комп — это работающая микросеть из 3–5 живых чипов, ждущих события: кнопка, Wake-on-LAN, RTC-будильник, USB-пробуждение.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Разъём ATX 24-pin: провода-переговорщики</h3>
+        <table class="t">
+          <tr><th>Сигнал</th><th>Цвет</th><th>Роль</th></tr>
+          <tr><td><code>+5VSB</code></td><td class="d">фиолетовый</td><td class="d">дежурное питание, живёт всегда</td></tr>
+          <tr><td><code>PS_ON#</code></td><td class="d">зелёный</td><td class="d">притянуть к земле = «включай основные линии»</td></tr>
+          <tr><td><code>PWR_OK</code></td><td class="d">серый</td><td class="d">ответ БП: «напряжения стабильны, можно жить»</td></tr>
+          <tr><td>12V / 5V / 3.3V</td><td class="d">жёлт/красн/оранж</td><td class="d">основные силовые линии</td></tr>
+        </table>
+        <p style="margin-top:12px">Знак <code>#</code> = сигнал активен низким уровнем. Классика: замкнуть зелёный на чёрный скрепкой — БП стартует без всякой платы.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s4">
+  <div class="content">
+    <div class="kicker">Питание · кнопка</div>
+    <h2>Нажатие кнопки: самый примитивный сигнал в компьютере</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Кнопка на корпусе — <b>тупая механика</b>: просто замыкает два пина <code>PWR_BTN</code> на колодке платы. Ни логики, ни напряжения — контакт.</li>
+          <li>Замыкание видит <b>Super I/O / EC</b> (живой от +5VSB). Он дебаунсит дребезг контакта и сообщает чипсету: «просили включиться».</li>
+          <li>Чипсет (его ACPI-логика) решает: из S5 → в S0. И <b>притягивает PS_ON# к земле</b>. Вот и всё «нажатие» — один транзистор утянул один провод вниз.</li>
+          <li>Тот же пин обрабатывает и «подержать 4 секунды» — аппаратный форс-выключатель работает <b>даже при намертво зависшей ОС</b>, потому что ОС в этой цепочке не участвует вообще.</li>
+        </ul>
+        <div class="note">Заметь: между пальцем и БП — ноль строчек софта. Это чистый автомат на логических элементах, спроектированный так, чтобы работать, когда всё остальное умерло.</div>
+      </div>
+      <div>
+        <div class="flow" style="flex-direction:column">
+          <div class="step" style="border-radius:10px 10px 0 0"><b>Палец</b><span>замыкает контакты PWR_BTN → GND</span></div>
+          <div class="step"><b>Super I/O / EC</b><span>дебаунс, событие «power button pressed»</span></div>
+          <div class="step"><b>Чипсет (ACPI power logic)</b><span>переход S5→S0, тянет PS_ON# вниз</span></div>
+          <div class="step"><b>Блок питания</b><span>запускает основные преобразователи 12/5/3.3 В</span></div>
+          <div class="step" style="border-radius:0 0 10px 10px"><b>~100–500 мс спустя</b><span>PWR_OK: «напряжения стабильны»</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="bgimg"><img src="assets/ch_psu.png" alt="" style="object-position:center 30%"></div>
+  <div class="content">
+    <div class="kicker">Питание · блок питания</div>
+    <h2>Что происходит внутри БП за эти полсекунды</h2>
+    <div class="cols">
+      <div class="card">
+        <h3>Тракт преобразования (современный ATX)</h3>
+        <ul>
+          <li><b>Фильтр + выпрямитель:</b> 230 В AC → ~325 В DC (пульсирующий)</li>
+          <li><b>APFC:</b> активный корректор мощности накачивает шину до стабильных ~400 В DC и делает потребление синусоидальным (чтобы сеть не гадить гармониками)</li>
+          <li><b>LLC-резонансный полумост:</b> рубит 400 В на частоте ~100 кГц → маленький трансформатор (частота выше — железо меньше, вот почему БП не весит 10 кг)</li>
+          <li><b>Синхронное выпрямление:</b> на выходе мосфеты вместо диодов → 12 В с КПД 90%+</li>
+          <li><b>DC-DC модули:</b> 5 В и 3.3 В нынче делаются ИЗ 12 В отдельными понижайками</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Soft-start:</b> конденсаторы (миллифарады!) нельзя зарядить мгновенно — бросок тока сжёг бы всё. Заряд идёт плавно, это часть тех самых миллисекунд.</li>
+          <li>Пока идёт разгон, выходы «грязные». БП держит <code>PWR_OK</code> низким и поднимает его <b>только когда все линии в допуске ±5%</b> минимум 100 мс.</li>
+          <li><code>PWR_OK</code> — критический сигнал: пока его нет, чипсет держит <b>всю платформу в RESET</b>. Ни одна цифровая схема не начнёт работать на плывущем питании.</li>
+          <li>Защиты (OCP/OVP/UVP/SCP) следят постоянно: КЗ на линии — БП мгновенно гасится и отпускает PWR_OK. Поэтому «комп резко вырубился» часто = сработала защита БП.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="content">
+    <div class="kicker">Питание · VRM</div>
+    <h2>VRM: последняя миля — из 12 В в 1.1 В и триста ампер</h2>
+    <p class="lead" style="margin-bottom:18px">CPU не ест 12 В. Он ест ~0.9–1.4 В, зато сотнями ампер. Преобразует это VRM — кольцо силовой электроники вокруг сокета.</p>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Многофазный buck-конвертер:</b> 12–20 «фаз», каждая — пара мосфетов + дроссель. Фазы работают со сдвигом, размазывая пульсации. PWM ~300–800 кГц на фазу.</li>
+          <li><b>SVID / SVI3:</b> напряжение просит сам процессор, цифровой шиной, на лету: буст — «дай 1.35 В», простой — «хватит 0.7 В». Тысячи запросов в секунду.</li>
+          <li><b>Догрузка за наносекунды:</b> при скачке нагрузки (все ядра проснулись) ток растёт на сотни ампер за микросекунды. Пока дроссели раскачиваются — ток отдают конденсаторы, включая крошечные керамические <b>прямо под сокетом с обратной стороны платы</b>.</li>
+          <li><b>Power sequencing:</b> напряжения платы поднимаются в строгом порядке (сначала домены чипсета, потом память, потом ядра) — микросхемы дохнут, если «подать сзади» через защитные диоды.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="svgbox">
+          <div class="dg">
+            <div class="row">
+              <div class="bx cy" style="flex:0 0 70px"><b>БП</b><span>12 В</span></div>
+              <div class="arr">→</div>
+              <div class="stack">
+                <div class="bx"><b>фаза 1</b><span>FET + дроссель</span></div>
+                <div class="bx"><b>фаза 2</b></div>
+                <div class="bx"><b>фаза N</b><span>12–20 штук</span></div>
+              </div>
+              <div class="arr">→</div>
+              <div class="bx"><b>конденсаторы</b><span>сглаживание</span></div>
+              <div class="arr gr">→</div>
+              <div class="bx gr" style="flex:0 0 100px"><b>CPU</b><span>~1.2 В, 300 А</span></div>
+            </div>
+            <div class="row">
+              <div class="bx am" style="flex:0 0 190px"><b>PWM-контроллер</b><span>делит работу по фазам</span></div>
+              <div class="lbl mono" style="color:var(--green)">⟵ SVID: «дай мне 1.28 В» — цифровая шина от CPU</div>
+            </div>
+            <div class="cap">P = U×I: снизить напряжение вдвое — токи вдвое выше. Потому VRM — самая горячая зона платы после самого CPU, и потому у дешёвых плат топовый камень троттлит «на ровном месте».</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s7">
+  <div class="content">
+    <div class="kicker">Питание · reset и клок</div>
+    <h2>Пульс появился: тактирование и снятие RESET</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Вся синхронная цифровая логика мертва без такта. Опорный генератор — кварц + клокген, даёт <b>BCLK = 100 МГц</b> на всю платформу.</li>
+          <li>Из этой сотни каждый потребитель умножает своё: CPU через <b>PLL</b> (100 × 45 = 4.5 ГГц), память своё, PCIe своё. Разгон по BCLK гонит ВСЁ сразу — потому он и умер как жанр.</li>
+          <li>PLL требуется время «захватить» частоту (lock) — ещё одна причина, почему всё стартует по очереди, а не разом.</li>
+          <li>Когда питание в допуске (PWR_OK), клоки стабильны, PLL залочены — чипсет отпускает линии RESET#. Платформа формально жива. Но CPU ещё <b>не исполняет ничего</b> — и вот тут начинается самое интересное.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="svgbox">
+          <div class="dg">
+            <div class="lbl mono">Таймлайн включения (типичные ~0.5–1.5 с до первой инструкции):</div>
+            <div class="tl">
+              <div class="bar cy" style="left:0%;width:12%;top:22px"><span>PS_ON# ↓</span></div>
+              <div class="bar am" style="left:8%;width:28%;top:58px"><span>soft-start БП, заряд кондёров</span></div>
+              <div class="bar gr" style="left:24%;width:24%;top:94px"><span>sequencing VRM-доменов</span></div>
+              <div class="bar cy" style="left:40%;width:16%;top:130px"><span>PWR_OK ↑</span></div>
+              <div class="bar am" style="left:52%;width:20%;top:166px"><span>PLL lock, RESET# ↑</span></div>
+              <div class="bar rd" style="left:75%;width:25%;top:166px"><span>…но CPU ещё ждёт (гл. 2)</span></div>
+            </div>
+            <div class="tlx"><span>0 мс</span><span>~1000 мс</span></div>
+          </div>
+        </div>
+        <div class="note gold"><b>Итог главы:</b> от пальца до готового к работе кремния — цепочка из чистой электроники: кнопка → EC → чипсет → PS_ON# → БП → PWR_OK → sequencing → клоки → RESET снят. Софта здесь не существует. Он появится в следующей главе — и не там, где ты думаешь.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2. ПРОШИВКИ ============ -->
+<section class="slide chapter" id="s8">
+  <div class="bgimg"><img src="assets/ch_hidden.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2</div>
+    <h1>Прошивки: кто исполняет первую инструкцию</h1>
+    <p class="lead">Спойлер: не твой процессор. В каждом ПК живёт второй, скрытый компьютер — и он всегда просыпается первым.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s9">
+  <div class="content">
+    <div class="kicker">Прошивки · скрытый процессор</div>
+    <h2>PSP / ME: компьютер внутри компьютера</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Первым из reset выходит не x86. У AMD это <b>PSP</b> (Platform Security Processor, ядро ARM Cortex-A5 прямо на кристалле CPU), у Intel — <b>ME</b> (Management Engine, ядро x86-класса Quark внутри чипсета).</li>
+          <li>Он читает <b>свою</b> прошивку из той же SPI-флешки, проверяет её подпись зашитым в кремний ключом — это <b>hardware root of trust</b>, якорь всей цепочки доверия.</li>
+          <li>PSP инициализирует базовое: контроллеры, фьюзы, безопасность, помогает с инициализацией памяти — и только потом <b>снимает reset с x86-ядер</b>.</li>
+          <li>Твои ядра, все 16 штук на 5 ГГц, стоят и ждут разрешения от маленького ARM на 100-200 МГц. Иерархия, однако.</li>
+        </ul>
+        <div class="note warn"><b>Тёмная сторона:</b> этот сопроцессор работает всегда (даже в S5, пока есть дежурка), имеет доступ к памяти и сети, его прошивка закрыта. Отключить штатно нельзя. Параноики не зря нервничают — это самый привилегированный код в машине, ring −3 в народной классификации.</div>
+      </div>
+      <div class="card">
+        <h3>Порядок пробуждения (AMD, упрощённо)</h3>
+        <div class="flow" style="flex-direction:column">
+          <div class="step" style="border-radius:10px 10px 0 0"><b>1. PSP (ARM)</b><span>выходит из reset, читает и проверяет свою прошивку из SPI</span></div>
+          <div class="step"><b>2. PSP: верификация</b><span>проверяет подпись первых блоков BIOS (AGESA/PEI)</span></div>
+          <div class="step"><b>3. PSP: инфраструктура</b><span>фьюзы, домены питания, подготовка к memory init</span></div>
+          <div class="step"><b>4. x86 BSP</b><span>один «загрузочный» x86-поток (Boot Strap Processor) выходит из reset</span></div>
+          <div class="step" style="border-radius:0 0 10px 10px"><b>5. Остальные ядра (AP)</b><span>спят до явной команды INIT-SIPI гораздо позже</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s10">
+  <div class="bgimg"><img src="assets/ch_bios.png" alt="" style="object-position:center 60%"></div>
+  <div class="content">
+    <div class="kicker">Прошивки · носитель</div>
+    <h2>SPI-флешка: сейф на 32 мегабайта</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Весь стартовый код лежит в крошечной 8-ножечной микросхеме <b>SPI NOR flash</b> на 16–32 МБ рядом с чипсетом. Это и есть «BIOS-чип».</li>
+          <li>Внутри — <b>регионы</b>: дескриптор (карта самой флешки), регион ME/PSP-прошивки, регион UEFI, иногда GbE-конфиг сетевухи. Прошивка BIOS из ОС пишет именно сюда.</li>
+          <li>Шина SPI — медленная: десятки МГц, единицы МБ/с. Поэтому UEFI первым делом <b>копирует себя в RAM</b>... когда RAM появится. А до того исполняется прямо из флешки: <b>XIP, execute-in-place</b>.</li>
+          <li>Двойной BIOS на дорогих платах = вторая такая же флешка + логика переключения. «Кирпич» после неудачной прошивки — это когда убили единственную.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Как CPU вообще видит флешку?</h3>
+        <p>x86 после reset начинает с адреса <code>0xFFFF_FFF0</code> — 16 байт до конца 32-битного пространства. RAM там нет и быть не может.</p>
+        <p style="margin-top:10px">Чипсет <b>аппаратно декодирует</b> верхние адреса (~последние 16 МБ под 4 ГБ) в чтение SPI-флешки. CPU думает, что читает память — а чипсет незаметно ходит по SPI за каждым байтом.</p>
+        <p style="margin-top:10px">По адресу <code>FFFF_FFF0</code> лежит одна-единственная инструкция — прыжок в настоящий код. Эти 16 байт — <b>reset vector</b>, самые дорогие 16 байт в индустрии: их адрес не менялся с 386-го, 1986 год.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s11">
+  <div class="content">
+    <div class="kicker">Прошивки · первые инструкции</div>
+    <h2>Первый код x86: мир без памяти</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>BSP просыпается в <b>real mode</b> — режиме 8086 из 1978 года: 16 бит, сегменты, 1 МБ адресов. Каждый новейший процессор рождается древним стариком и молодеет по ходу загрузки.</li>
+          <li>Первые сотни инструкций — ассемблер в жёстких условиях: <b>RAM нет</b>, значит <b>нет стека</b>, значит нет вызовов функций, нет C. Только регистры и прыжки.</li>
+          <li>Решение красивое — <b>Cache-as-RAM (CAR)</b>: кэш L2/L3 конфигурируется в режим no-fill/no-evict и превращается в честные ~стек и данные. Кэш становится оперативкой на время, пока настоящая оперативка не заговорит.</li>
+          <li>На CAR уже поднимается C-окружение и стартует ранняя фаза UEFI (<b>SEC → PEI</b>), чья главная задача — инициализировать контроллер памяти.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="svgbox">
+          <div class="dg">
+            <div class="lbl mono">Адресное пространство при старте (без RAM):</div>
+            <div class="side">
+              <div class="col">
+                <div class="mark">0xFFFF_FFFF ↓</div>
+                <div class="bx am"><b>SPI flash</b><span>замаплена чипсетом</span></div>
+                <div class="mark rd">● 0xFFFF_FFF0 — reset vector</div>
+                <div class="bx dk" style="padding:26px 10px"><b>пустота: RAM ещё не существует</b></div>
+                <div class="bx cy"><b>legacy-область</b><span>VGA, BIOS shadow</span></div>
+                <div class="mark">0x0 ↑</div>
+              </div>
+              <div>
+                <div class="lbl" style="color:var(--text);margin-bottom:6px">Порядок в первые мс:</div>
+                <ol>
+                  <li>jmp из reset vector</li>
+                  <li>отключить прерывания</li>
+                  <li>включить CAR (кэш = RAM)</li>
+                  <li>поставить стек в кэш</li>
+                  <li>перейти в 32/64-bit режим</li>
+                  <li>запустить C-код PEI-фазы</li>
+                  <li class="am">→ memory training</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s12">
+  <div class="content">
+    <div class="kicker">Прошивки · инициализация памяти</div>
+    <h2>Memory training: BIOS учится разговаривать с планками</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Сначала — опрос: на каждой планке есть чип <b>SPD</b> (крошечная EEPROM), BIOS читает его по шине <b>SMBus (I²C)</b>: объём, организация, тайминги, профили XMP/EXPO.</li>
+          <li>Но паспорта мало. На скоростях DDR5 <b>каждая линия данных</b> — это ВЧ-канал со своими отражениями и задержками (даже длина дорожек чуть разная). Контроллер должен <b>откалиброваться под конкретные планки в конкретных слотах</b>.</li>
+          <li><b>Training:</b> write leveling, read/write DQ-калибровка, Vref-подбор, gate training — контроллер гоняет тестовые паттерны и двигает задержки каждой линии шагами в пикосекунды, ища центр «глаза» сигнала.</li>
+          <li>Это <b>тот самый</b> долгий первый старт с новыми планками (десятки секунд чёрного экрана на DDR5). Результат кэшируется (MRC cache) — потому второй старт быстрый. Смена настроек/планок/батарейки — и тренировка заново.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="svgbox">
+          <div class="dg">
+            <div class="lbl mono">«Глаз» сигнала: зачем нужен training</div>
+            <div class="side">
+              <div class="eye">
+                <svg viewBox="0 0 200 140">
+                  <path d="M 10 70 C 60 -5, 140 -5, 190 70 C 140 145, 60 145, 10 70 Z" fill="none" stroke="#46d4ff" stroke-width="2"/>
+                  <path d="M 10 70 C 60 15, 140 15, 190 70 C 140 125, 60 125, 10 70 Z" fill="#46d4ff11"/>
+                  <circle cx="100" cy="70" r="5" fill="#6ee7a0"/>
+                  <circle cx="30" cy="70" r="5" fill="#ff6b7a"/>
+                </svg>
+                <div class="lbl" style="margin-top:8px;line-height:1.6"><span style="color:var(--green)">●</span> после training: выборка в центре глаза<br><span style="color:var(--red)">●</span> до: у края, битовые ошибки<br><span style="color:var(--faint)">открытая зона = моменты, когда бит читается достоверно</span></div>
+              </div>
+              <div>
+                <div class="lbl" style="color:var(--text);margin-bottom:6px">Масштаб задачи (DDR5-6000):</div>
+                <ul style="list-style:none;color:var(--dim);font-size:13px;line-height:1.7">
+                  <li>битовое окно ~166 пс</li>
+                  <li>свет за это время: ~5 см</li>
+                  <li>линий данных: 64+ на канал</li>
+                  <li>параметров на подбор: сотни</li>
+                </ul>
+                <p style="color:var(--amber);font-size:13px;line-height:1.5;margin-top:10px">Разница длин дорожек в 1 см — уже треть окна. Потому дорожки DDR на плате извиваются змейкой: это выравнивание длин, не украшение.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s13">
+  <div class="content">
+    <div class="kicker">Прошивки · POST</div>
+    <h2>Остальной POST: перепись населения</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>RAM есть → UEFI копирует себя в память и разворачивается фаза <b>DXE</b>: сотни драйверов-модулей (для флешки, USB, NVMe, сети, GOP-видео...).</li>
+          <li><b>PCIe enumeration:</b> обход дерева bus/device/function, чтение Vendor/Device ID, раздача адресов через <b>BAR</b>-регистры — каждой железке нарезается кусок физического адресного пространства. MMIO: «регистры устройства как память».</li>
+          <li>Просыпаются остальные ядра: BSP шлёт им <b>INIT-SIPI-SIPI</b>, каждое AP-ядро повторяет путь «старик→современность» и паркуется в ожидании.</li>
+          <li>Строятся <b>ACPI-таблицы</b> — досье на платформу для будущей ОС: MADT (ядра/прерывания), FADT (регистры питания), DSDT (байткод-описание устройств). Запомни DSDT — она сыграет в главе про выключение.</li>
+          <li>Отдельно заводится <b>SMM</b> — режим системного менеджмента: невидимый для ОС код в спрятанной памяти (SMRAM), просыпается по SMI-прерыванию. Ring −2: правит железом за спиной у ядра ОС.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Что осталось от «пищит спикером»</h3>
+        <p>Классический POST 90-х (проверка RAM, пищание кодами) практически мёртв: память проверяется тренингом, ошибки сыпятся в Q-code индикатор или диагностические светодиоды платы.</p>
+        <p style="margin-top:10px">Порядок для дебага живой платы: светодиоды CPU→DRAM→VGA→BOOT. Висит на DRAM — привет, memory training. Висит на VGA — карта/райзер/моник. На BOOT — ушли в главу 3.</p>
+        <h3 class="am" style="margin-top:18px">Тайминг всего POST</h3>
+        <p>Холодный старт с NVMe: ~3–10 c до передачи управления загрузчику. Из них львиная доля — инициализация памяти и DXE-зоопарк. Fast Boot режет USB-опрос и legacy — потому клавиатура иногда «не успевает» в BIOS.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 3. ЗАГРУЗКА ОС ============ -->
+<section class="slide chapter" id="s14">
+  <div class="bgimg"><img src="assets/ch_boot.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3</div>
+    <h1>Загрузка ОС: от файла до рабочего стола</h1>
+    <p class="lead">UEFI сделал своё дело и хочет уйти. Осталось найти, проверить и запустить того, кому передать королевство.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s15">
+  <div class="content">
+    <div class="kicker">Загрузка · UEFI Boot Manager</div>
+    <h2>Кого грузим: NVRAM, ESP и подписи</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Порядок загрузки живёт в <b>NVRAM-переменных</b> UEFI (та же SPI-флешка): <code>BootOrder</code>, <code>Boot0000...</code> — по записи на каждую ОС. <code>bcdedit /enum firmware</code> покажет.</li>
+          <li>На диске ищется <b>ESP</b> — EFI System Partition, обычный FAT32 на ~100–500 МБ. UEFI умеет читать FAT32 и GPT сам — на этом его файловые таланты заканчиваются.</li>
+          <li>Для Windows берётся <code>\EFI\Microsoft\Boot\bootmgfw.efi</code> — обычный PE-файл (тот же формат, что .exe!), исполняемый прямо firmware-ой.</li>
+          <li><b>Secure Boot:</b> перед запуском UEFI проверяет цифровую подпись файла по базе ключей (db/dbx). Цепочка доверия, начатая PSP на слайде 9, дотянулась до файла на диске: кремний → прошивка → загрузчик → (дальше ядро проверит драйверы).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>bootmgfw → winload: эстафета внутри Windows</h3>
+        <div class="flow" style="flex-direction:column">
+          <div class="step" style="border-radius:10px 10px 0 0"><b>bootmgfw.efi</b><span>читает BCD (меню ОС), гибернацию отдаёт winresume, обычный старт — дальше</span></div>
+          <div class="step"><b>winload.efi</b><span>грузит в память: ntoskrnl.exe, hal.dll, ELAM-антивирус, boot-драйверы, куст реестра SYSTEM</span></div>
+          <div class="step"><b>ExitBootServices()</b><span>точка невозврата: сервисы UEFI гасятся, вся власть — будущему ядру</span></div>
+          <div class="step" style="border-radius:0 0 10px 10px"><b>ntoskrnl.exe</b><span>KiSystemStartup — ядро NT начинает дышать</span></div>
+        </div>
+        <p style="margin-top:12px">Твоя ремарка про «HAL, к которому диспетчер прикручен вплотную» — вот момент их встречи: winload грузит ntoskrnl и hal парой, и с 2020-х hal.dll — уже форвардер внутрь ядра.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s16">
+  <div class="content">
+    <div class="kicker">Загрузка · ядро NT</div>
+    <h2>Ядро просыпается: две фазы и дерево процессов</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Фаза 0:</b> ядро строит себя: менеджер памяти размечает физические страницы, включаются структуры планировщика, обрабатываются ACPI-таблицы (вот и досье пригодилось), стартуют прерывания.</li>
+          <li><b>Фаза 1:</b> PnP-менеджер начинает <b>перечисление устройств</b> заново, уже по-взрослому: строит дерево devnode, на каждое устройство навешивает <b>стек драйверов</b> (шинный + функциональный + фильтры).</li>
+          <li>I/O в NT — это <b>IRP-пакеты</b>, путешествующие вниз по стеку драйверов. Тот самый застрявший IRP из нашей ночной саги про неубиваемые процессы — вот где он живёт.</li>
+          <li>Ядро запускает первый процесс пользовательского режима — и дальше растёт дерево.</li>
+        </ul>
+        <div class="note">Session 0 — служебная (сервисы), Session 1 — твоя. Разделили после эпохи, когда сервисы могли рисовать окна на рабочем столе юзера — привет, shatter-атаки.</div>
+      </div>
+      <div>
+        <div class="svgbox">
+          <svg viewBox="0 0 560 330" font-family="Consolas, monospace" font-size="12.5">
+            <rect x="180" y="15" width="200" height="30" rx="6" fill="#151d29" stroke="#46d4ff"/><text x="280" y="35" fill="#46d4ff" text-anchor="middle">ntoskrnl (ядро)</text>
+            <line x1="280" y1="45" x2="280" y2="65" stroke="#223041" stroke-width="2"/>
+            <rect x="200" y="65" width="160" height="28" rx="6" fill="#151d29" stroke="#223041"/><text x="280" y="84" fill="#d7e0ea" text-anchor="middle">smss.exe (сессии)</text>
+            <line x1="230" y1="93" x2="150" y2="118" stroke="#223041" stroke-width="2"/>
+            <line x1="330" y1="93" x2="410 " y2="118" stroke="#223041" stroke-width="2"/>
+            <rect x="60" y="118" width="180" height="26" rx="6" fill="#151d29" stroke="#223041"/><text x="150" y="136" fill="#d7e0ea" text-anchor="middle">Session 0: csrss + wininit</text>
+            <rect x="320" y="118" width="180" height="26" rx="6" fill="#151d29" stroke="#223041"/><text x="410" y="136" fill="#d7e0ea" text-anchor="middle">Session 1: csrss + winlogon</text>
+            <line x1="150" y1="144" x2="150" y2="168" stroke="#223041" stroke-width="2"/>
+            <rect x="40" y="168" width="105" height="40" rx="6" fill="#151d29" stroke="#223041"/><text x="92" y="185" fill="#d7e0ea" text-anchor="middle">services.exe</text><text x="92" y="200" fill="#8a97a8" text-anchor="middle">SCM, все службы</text>
+            <rect x="155" y="168" width="90" height="40" rx="6" fill="#151d29" stroke="#223041"/><text x="200" y="185" fill="#d7e0ea" text-anchor="middle">lsass.exe</text><text x="200" y="200" fill="#8a97a8" text-anchor="middle">пароли, токены</text>
+            <line x1="410" y1="144" x2="410" y2="168" stroke="#223041" stroke-width="2"/>
+            <rect x="330" y="168" width="160" height="26" rx="6" fill="#151d29" stroke="#223041"/><text x="410" y="186" fill="#d7e0ea" text-anchor="middle">LogonUI → пароль/PIN</text>
+            <line x1="410" y1="194" x2="410" y2="218" stroke="#223041" stroke-width="2"/>
+            <rect x="330" y="218" width="160" height="26" rx="6" fill="#151d29" stroke="#223041"/><text x="410" y="236" fill="#d7e0ea" text-anchor="middle">userinit → explorer.exe</text>
+            <line x1="410" y1="244" x2="410" y2="268" stroke="#6ee7a0" stroke-width="2"/>
+            <rect x="310" y="268" width="200" height="30" rx="6" fill="#6ee7a022" stroke="#6ee7a0"/><text x="410" y="288" fill="#6ee7a0" text-anchor="middle">Рабочий стол. Приехали.</text>
+            <text x="150" y="240" fill="#55606e">svchost'ы, драйверные</text>
+            <text x="150" y="256" fill="#55606e">службы, планировщики —</text>
+            <text x="150" y="272" fill="#55606e">всё дети services.exe</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s17">
+  <div class="content">
+    <div class="kicker">Загрузка · что такое процесс</div>
+    <h2>Процесс: во что всё это превратилось</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Процесс в NT — это структура <b>EPROCESS</b> в ядре: своё виртуальное адресное пространство (карта VAD + таблицы страниц из главы про RAM), таблица хэндлов, токен безопасности, квоты.</li>
+          <li>Исполняются не процессы, а <b>потоки</b> (ETHREAD). Планировщик (диспетчер!) раздаёт им кванты на ядрах: 32 уровня приоритета, preemption, boost'ы для интерактивных.</li>
+          <li>Каждые ~1–15 мс — прерывание таймера, планировщик решает «кто следующий». Переключение контекста = сохранить регистры одного потока, загрузить другого, переключить CR3 (корень таблиц страниц) — и TLB частично инвалидируется, это его скрытая цена.</li>
+          <li>Твой двойной клик по .exe: CreateProcess → ядро строит EPROCESS → маппит образ → создаёт первый поток → тот попадает в очередь планировщика → «программа запустилась».</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Итого: полный стек одного клика</h3>
+        <table class="t">
+          <tr><th>Слой</th><th>Кто</th></tr>
+          <tr><td>Ты</td><td class="d">двойной клик</td></tr>
+          <tr><td>user mode</td><td class="d">explorer → CreateProcess → ntdll → syscall</td></tr>
+          <tr><td>kernel</td><td class="d">EPROCESS, VAD, страницы, поток, планировщик</td></tr>
+          <tr><td>CPU</td><td class="d">µops, кэши, TLB, спекуляция</td></tr>
+          <tr><td>RAM</td><td class="d">ACT/RD, row buffer, refresh</td></tr>
+          <tr><td>Электроны</td><td class="d">VRM держит 1.2 В, БП держит 12 В, розетка держит всех</td></tr>
+        </table>
+        <p style="margin-top:12px">Верх этой таблицы существует миллисекунды, низ — миллиарды тактов. И всё это — один клик.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 4. СТЫК ============ -->
+<section class="slide chapter" id="s18">
+  <div class="bgimg"><img src="assets/ch_shutdown.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4</div>
+    <h1>Стык миров: как пиксель выключает транзистор</h1>
+    <p class="lead">Ты просил показать место, где виртуальная кнопка «Завершить работу» дотягивается до физики. Вот оно, с точностью до регистра.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s19">
+  <div class="content">
+    <div class="kicker">Стык · софтовая половина</div>
+    <h2>Сверху вниз: от клика до последнего syscall</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Клик по «Завершить работу» — explorer зовёт <code>ExitWindowsEx(EWX_SHUTDOWN)</code>.</li>
+          <li>Запрос уходит в <b>csrss/winlogon</b>: всем GUI-приложениям рассылается <code>WM_QUERYENDSESSION</code> → <code>WM_ENDSESSION</code>. У каждого ~5 секунд на «сохраниться и умереть», потом экран «приложение не отвечает».</li>
+          <li>Службы получают SERVICE_CONTROL_SHUTDOWN, у них свой таймаут. Потом вызывается <code>NtShutdownSystem</code> — всё, дальше только ядро.</li>
+          <li>Ядро: гасит процессы, <b>флашит грязные страницы кэша на диск</b> (вот почему нельзя рубить питание — write-back из главы про RAM/NVMe ещё не доехал), драйверы получают IRP_MJ_SHUTDOWN и переводят устройства в D3, файловые системы демонтируются.</li>
+          <li>Остался последний шаг — и он уже не про софт.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>ACPI: договор между ОС и железом</h3>
+        <p>Ещё при загрузке ядро прочитало ACPI-таблицы. В таблице <b>FADT</b> написано: «регистр управления питанием PM1a_CNT живёт по такому-то адресу ввода-вывода». В байткоде <b>DSDT</b> лежит пакет <code>\_S5</code> — пара магических цифр <code>SLP_TYP</code> для перехода в состояние S5 (soft-off) именно этой платы.</p>
+        <p style="margin-top:10px">То есть плата при старте оставила ОС записку: «захочешь меня выключить — запиши вот эти цифры вот в этот регистр». ОС хранила её всю сессию.</p>
+        <p style="margin-top:10px" class="am">S-состояния: S0 работаем · S3 сон (RAM под током) · S4 гибернация (RAM на диск) · S5 soft-off (жива только дежурка).</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s20">
+  <div class="content">
+    <div class="kicker">Стык · момент истины</div>
+    <h2>Одна инструкция OUT — и мир гаснет</h2>
+    <div class="svgbox">
+      <div class="dg">
+        <div class="band">Софт</div>
+        <div class="row">
+          <div class="bx cy"><b>клик «Завершить работу»</b><span>пиксели, user mode</span></div>
+          <div class="arr">→</div>
+          <div class="bx cy"><b>NtShutdownSystem</b><span>ядро гасит мир, флашит кэши</span></div>
+          <div class="arr">→</div>
+          <div class="bx am"><b>hal: запись в PM1a_CNT</b><span style="font-family:Consolas,monospace">out dx, ax · SLP_TYP|SLP_EN</span></div>
+          <div class="arr am">⚡</div>
+          <div class="bx am" style="background:#1d1712"><b>регистр в чипсете</b><span>физические триггеры, бит SLP_EN</span></div>
+        </div>
+        <div class="row" style="justify-content:flex-end;padding-right:9%"><div class="arr am">↓</div></div>
+        <div class="band am">Железо</div>
+        <div class="row">
+          <div class="bx am" style="background:#1d1712"><b>ACPI-автомат чипсета</b><span>sequencing выключения доменов</span></div>
+          <div class="arr am">→</div>
+          <div class="bx am" style="background:#1d1712"><b>PS_ON# отпущен ↑</b><span>тот самый зелёный провод</span></div>
+          <div class="arr am">→</div>
+          <div class="bx rd" style="background:#1d1712"><b>БП глушит 12/5/3.3</b><span>остаётся +5VSB</span></div>
+        </div>
+        <div class="cap" style="margin-top:6px;color:var(--dim);font-size:14px">Стык миров — одна инструкция процессора: запись пары битов в порт ввода-вывода.<br><span style="color:var(--faint);font-size:12.5px">Слева от неё — миллионы строк кода. Справа — только триггеры, провод и силовая электроника.</span></div>
+      </div>
+    </div>
+    <div class="note gold"><b>Симметрия запуска и выключения:</b> включение — железо будит софт (кнопка → PS_ON# → ... → explorer). Выключение — софт усыпляет железо (explorer → ... → PM1a_CNT → PS_ON#). Один и тот же зелёный провод, пройденный в обе стороны. А «подержать кнопку 4 секунды» — аварийный обход всей левой половины схемы.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 5. CPU ============ -->
+<section class="slide chapter" id="s21">
+  <div class="bgimg"><img src="assets/ch_cpu.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5</div>
+    <h1>CPU: фабрика с конвейером</h1>
+    <p class="lead">Внутри «процессора» давно нет одного процессора. Там город: фабрики-ядра, склады-кэши, своя железная дорога и таможня с переводчиком.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s22">
+  <div class="content">
+    <div class="kicker">CPU · план кристалла</div>
+    <h2>Что на самом деле лежит под крышкой</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Ядра</b> — лишь часть площади. Рядом: L3-кэш (огромный, десятки МБ), <b>IMC</b> (контроллер памяти — тот самый из главы про RAM), корневые порты <b>PCIe</b>, iGPU, контроллеры USB — половина «материнки» давно переехала в CPU.</li>
+          <li>Внутренняя магистраль: у Intel — кольцо/mesh, у AMD — <b>Infinity Fabric</b>. По ней ядра, кэш и контроллеры обмениваются кэш-линиями. Её частота — скрытый король задержек памяти (FCLK).</li>
+          <li><b>Чиплеты AMD:</b> ядра лежат в CCD-кристаллах (по 8 ядер), а IMC/PCIe/USB — в отдельном IOD-кристалле, связанном IF-линками. Дёшево в производстве, но межчиплетный хоп добавляет наносекунды — вот откуда «латентность у райзенов повыше».</li>
+          <li>Твой 7900XTX, кстати, чиплетный тем же манером: GCD с шейдерами + шесть MCD с кэшем и контроллерами GDDR6 вокруг.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Частоты: почему «5 ГГц» — это не скорость</h3>
+        <ul>
+          <li><b>База/буст:</b> частота плавает сотни раз в секунду: сколько ядер нагружено, сколько ватт, сколько градусов. «5.7 ГГц» на коробке — одно ядро, холод, удача.</li>
+          <li><b>Лимиты:</b> PPT/TDC/EDC (ватты, амперы), термальный потолок. Упёрся в любой — частота вниз. Троттлинг это не «поломка», это штатный регулятор.</li>
+          <li><b>Гонка ГГц умерла</b> ~в 2005: тепло растёт ~квадратично от напряжения, а без роста напряжения выше не тактуется. Потому ядер стало много, а ГГц — почти стоят 20 лет.</li>
+          <li>Отсюда же: AVX-нагрузка жрёт столько, что под неё частота отдельно снижается. «Мой камень медленнее под тяжёлой математикой» — не баг, физика.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s23">
+  <div class="content">
+    <div class="kicker">CPU · конвейер</div>
+    <h2>Путь инструкции: x86 снаружи, RISC внутри</h2>
+    <div class="svgbox">
+      <div class="dg">
+        <div class="row">
+          <div class="bx cy"><b>Fetch</b><span>16–32 байта/такт из L1i</span></div>
+          <div class="arr">→</div>
+          <div class="bx cy"><b>Decode</b><span>x86 → µops (перевод!)</span></div>
+          <div class="arr">→</div>
+          <div class="bx cy"><b>Rename</b><span>16 рег. → 300+ физических</span></div>
+          <div class="arr">→</div>
+          <div class="bx am"><b>Scheduler (OoO)</b><span>исполняем что ГОТОВО, а не «по порядку»</span></div>
+          <div class="arr">→</div>
+          <div class="bx cy"><b>Exec ports</b><span>ALU×6, load/store, FMA</span></div>
+          <div class="arr">→</div>
+          <div class="bx gr"><b>Retire</b><span>в порядке программы</span></div>
+        </div>
+        <div class="row" style="margin-top:6px">
+          <div class="bx rd" style="flex:0 0 340px"><b>Branch predictor</b><span>угадывает ветвления с точностью ~95–99% и подсказывает Fetch, что грузить дальше</span></div>
+          <div class="cap" style="text-align:left;flex:1">промах предсказания = слить конвейер, ~15–20 тактов в помойку. Потому сортированные данные обрабатываются быстрее несортированных.</div>
+        </div>
+      </div>
+    </div>
+    <div class="cols" style="margin-top:18px">
+      <ul class="pts">
+        <li><b>x86 — это фасад.</b> Декодер переводит CISC-инструкции в микрооперации (µops), и дальше живёт RISC-машина. Твой «x86-процессор» не исполнял x86 напрямую со времён Pentium Pro (1995).</li>
+        <li><b>Out-of-Order:</b> ждёшь данные из RAM 300 тактов? Конвейер в это время исполняет всё независимое, что нашлось в окне из ~500 инструкций вперёд. Легальный обгон по обочине.</li>
+      </ul>
+      <ul class="pts">
+        <li><b>Спекуляция:</b> предсказатель ветвлений угадывает «if» до вычисления условия, и CPU исполняет угаданную ветку авансом. Ошибся — результаты выкидываются... почти: следы в кэше остались. Так родился <b>Spectre</b> — цена, которую мы платим за скорость по сей день (и патчи её со скрипом возвращают).</li>
+        <li><b>SMT:</b> два потока на ядро — это не два ядра, а два фронта, деляшие одни исполнительные порты: пока один ждёт память, второй жуёт. +15–30%, не ×2.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s24">
+  <div class="bgimg"><img src="assets/ch_cache.png" alt="" style="object-position:center 20%"></div>
+  <div class="content">
+    <div class="kicker">CPU · кэши</div>
+    <h2>Кэши: вся архитектура — это сокрытие ста наносекунд</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>RAM отвечает ~80–100 нс = 400+ тактов. Без кэшей CPU 99% времени <b>стоял бы</b>. Иерархия: L1 (48К, 4 такта) → L2 (1–2М, ~14) → L3 (32–96М, ~50).</li>
+          <li>Единица всего — <b>кэш-линия 64 байта</b>. Отсюда правила жизни: ходи по памяти последовательно (prefetcher подхватит), держи горячие данные компактно, и <b>не клади два счётчика разных потоков в одну линию</b> — false sharing, ядра будут рвать линию друг у друга через MESI-протокол.</li>
+          <li><b>MESI:</b> каждая линия в каждом кэше в состоянии Modified/Exclusive/Shared/Invalid. Запись в Shared-линию = разослать всем «инвалидируй». Вот физическая цена «просто добавь mutex».</li>
+          <li>AMD <b>X3D</b> — L3 наращён третьим этажом (96+ МБ): игры, где рабочий набор внезапно влез в кэш, получают +20–30% из ниоткуда. Лучшая иллюстрация того, насколько всё упирается в память.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Задержки в человеческом масштабе</h3>
+        <p>Пусть 1 такт = 1 секунда. Тогда:</p>
+        <table class="t">
+          <tr><th>Куда</th><th>Реально</th><th>«По-человечески»</th></tr>
+          <tr><td>Регистр</td><td class="d">0 тактов</td><td class="d">мысль</td></tr>
+          <tr><td>L1</td><td class="d">4 такта</td><td class="d">взять со стола · 4 с</td></tr>
+          <tr><td>L2</td><td class="d">14</td><td class="d">сходить к шкафу · 14 с</td></tr>
+          <tr><td>L3</td><td class="d">~50</td><td class="d">сходить к соседу · 1 мин</td></tr>
+          <tr><td>RAM</td><td class="d">~400</td><td class="d">сходить в магазин · 7 мин</td></tr>
+          <tr><td>NVMe</td><td class="d">~400 000</td><td class="d">отпуск · 4.5 суток</td></tr>
+          <tr><td>HDD seek</td><td class="d">~40 000 000</td><td class="d">выйти на пенсию · 1.5 года</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 6. RAM ============ -->
+<section class="slide chapter" id="s25">
+  <div class="bgimg"><img src="assets/ch_ram.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6</div>
+    <h1>RAM: триллионы дырявых ведёрок</h1>
+    <p class="lead">Каждый бит твоей оперативки — конденсатор, из которого утекает заряд. Вся DRAM — это бесконечное переливание воды, притворяющееся памятью.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s26">
+  <div class="content">
+    <div class="kicker">RAM · путь адреса</div>
+    <h2>Формат адреса: одна цифра — три разборки</h2>
+    <div class="svgbox">
+      <svg viewBox="0 0 900 300" font-family="Consolas, monospace" font-size="12.5">
+        <text x="20" y="28" fill="#46d4ff">1. Виртуальный адрес (x86-64, страницы 4К) — то, что видит программа:</text>
+        <g>
+          <rect x="20" y="40" width="90" height="34" fill="#151d29" stroke="#55606e"/><text x="65" y="61" fill="#55606e" text-anchor="middle">63–48</text>
+          <rect x="110" y="40" width="110" height="34" fill="#151d29" stroke="#46d4ff"/><text x="165" y="61" fill="#d7e0ea" text-anchor="middle">PML4 [47:39]</text>
+          <rect x="220" y="40" width="110" height="34" fill="#151d29" stroke="#46d4ff"/><text x="275" y="61" fill="#d7e0ea" text-anchor="middle">PDPT [38:30]</text>
+          <rect x="330" y="40" width="110" height="34" fill="#151d29" stroke="#46d4ff"/><text x="385" y="61" fill="#d7e0ea" text-anchor="middle">PD [29:21]</text>
+          <rect x="440" y="40" width="110" height="34" fill="#151d29" stroke="#46d4ff"/><text x="495" y="61" fill="#d7e0ea" text-anchor="middle">PT [20:12]</text>
+          <rect x="550" y="40" width="130" height="34" fill="#151d29" stroke="#ffb347"/><text x="615" y="61" fill="#ffb347" text-anchor="middle">offset [11:0]</text>
+          <text x="695" y="54" fill="#55606e">→ 4 уровня таблиц,</text>
+          <text x="695" y="72" fill="#55606e">TLB кэширует</text>
+        </g>
+        <text x="20" y="115" fill="#46d4ff">2. Физический адрес → биты полей кэша (L1, 64Б линия):</text>
+        <g>
+          <rect x="20" y="127" width="330" height="34" fill="#151d29" stroke="#46d4ff"/><text x="185" y="148" fill="#d7e0ea" text-anchor="middle">tag (сравнение)</text>
+          <rect x="350" y="127" width="200" height="34" fill="#151d29" stroke="#46d4ff"/><text x="450" y="148" fill="#d7e0ea" text-anchor="middle">set index (какой набор)</text>
+          <rect x="550" y="127" width="130" height="34" fill="#151d29" stroke="#ffb347"/><text x="615" y="148" fill="#ffb347" text-anchor="middle">offset в линии [5:0]</text>
+        </g>
+        <text x="20" y="202" fill="#46d4ff">3. Тот же физический адрес → поля контроллера памяти (промах кэшей):</text>
+        <g>
+          <rect x="20" y="214" width="120" height="34" fill="#151d29" stroke="#6ee7a0"/><text x="80" y="235" fill="#d7e0ea" text-anchor="middle">row (~64К строк)</text>
+          <rect x="140" y="214" width="110" height="34" fill="#151d29" stroke="#6ee7a0"/><text x="195" y="235" fill="#d7e0ea" text-anchor="middle">bank group</text>
+          <rect x="250" y="214" width="90" height="34" fill="#151d29" stroke="#6ee7a0"/><text x="295" y="235" fill="#d7e0ea" text-anchor="middle">bank</text>
+          <rect x="340" y="214" width="120" height="34" fill="#151d29" stroke="#6ee7a0"/><text x="400" y="235" fill="#d7e0ea" text-anchor="middle">column</text>
+          <rect x="460" y="214" width="100" height="34" fill="#151d29" stroke="#6ee7a0"/><text x="510" y="235" fill="#d7e0ea" text-anchor="middle">channel</text>
+          <rect x="560" y="214" width="90" height="34" fill="#151d29" stroke="#6ee7a0"/><text x="605" y="235" fill="#d7e0ea" text-anchor="middle">rank</text>
+          <text x="670" y="235" fill="#55606e">← биты канала берут из младших:</text>
+          <text x="670" y="252" fill="#55606e">соседние линии → разные каналы</text>
+        </g>
+        <text x="450" y="288" fill="#8a97a8" text-anchor="middle">Один и тот же адрес три подсистемы нарезают по-своему. Программа не видит ни одной из этих разборок.</text>
+      </svg>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s27">
+  <div class="content">
+    <div class="kicker">RAM · внутри банка</div>
+    <h2>ACT → RD → PRE: разговор с конденсаторами</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>ACT:</b> строка целиком (~8 КБ!) выливается в <b>row buffer</b> — усилители на краю матрицы ловят «чуть выше/ниже половины» и раздувают до честных 0/1. Чтение <b>разрушает</b> заряд — буфер потом перезапишет строку обратно.</li>
+          <li><b>RD/WR + column:</b> из открытой строки выщёлкиваются нужные 64 байта, едут burst-пакетом (DDR5: 32 бита × 16). <b>CL</b> — такты ожидания этого щелчка.</li>
+          <li><b>PRE:</b> закрыть строку, подготовить банк. Тайминги с коробки <code>CL-tRCD-tRP</code> — это цены трёх этих шагов. Row hit = только CL; row miss = вся троица.</li>
+          <li><b>Refresh:</b> заряд утекает сам — каждые 64 мс каждая строка принудительно перечитывается. ~2–5% пропускной способности уходит на переливание ведёрок.</li>
+          <li>Контроллер жонглирует очередями и переупорядочивает запросы ради row hit'ов — RAM отдаёт максимум только тому, кто ходит предсказуемо.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Почему латентность стоит 20 лет</h3>
+          <p>DDR2-800 CL5 = 12.5 нс до данных. DDR5-6000 CL30 = 10 нс. За 20 лет — минус 20%. Пропускная способность выросла в 10 раз, задержка — почти нет: скорость света и RC-константы конденсаторной матрицы не масштабируются техпроцессом.</p>
+          <p style="margin-top:10px">Вся индустрия строит обходы: кэши толще (X3D), prefetch умнее, OoO глубже. Латентность RAM — гравитация вычислений.</p>
+          <h3 class="am" style="margin-top:16px">Rowhammer, до кучи</h3>
+          <p>Молотишь по одной строке миллионы раз — электромагнитные наводки подтекают заряд СОСЕДНИХ строк, и биты флипаются <b>без доступа к ним</b>. Дыра в безопасности из чистой физики. Лечат Target Row Refresh'ем, гонка щита и меча идёт до сих пор.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 7. МАТЕРИНКА ============ -->
+<section class="slide chapter" id="s28">
+  <div class="bgimg"><img src="assets/ch_board.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 7</div>
+    <h1>Материнка: город и его дороги</h1>
+    <p class="lead">Северный мост умер и переехал в CPU. Южный выжил, сменил имя на «чипсет» и стал большим USB-хабом с амбициями.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s29">
+  <div class="content">
+    <div class="kicker">Материнка · мосты</div>
+    <h2>Эволюция мостов: как север переехал в процессор</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3>Было (эпоха Core 2, ~2008)</h3>
+          <ul>
+            <li><b>Северный мост:</b> контроллер памяти + AGP/PCIe для видео + шина FSB к CPU. Горячий, с радиатором.</li>
+            <li><b>Южный мост:</b> SATA, USB, звук, сеть, LPC — вся медленная периферия.</li>
+            <li>Каждое обращение к RAM ходило через FSB и северный мост: +десятки нс задержки.</li>
+          </ul>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <h3 class="am">Стало (сейчас)</h3>
+          <ul>
+            <li><b>Северный мост целиком внутри CPU:</b> IMC, PCIe root (линии на видео и первый M.2 — напрямую из процессора!), USB-контроллеры.</li>
+            <li><b>Чипсет</b> (бывший южный) = коммутатор остального: доп. PCIe, SATA, USB-порты, сеть, звук.</li>
+            <li>Связь CPU↔чипсет: у Intel — DMI (~PCIe x8), у AMD — PCIe x4-линк. <b>Это бутылочное горлышко</b>: всё, что висит на чипсете, делит один канал.</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="svgbox">
+          <div class="dg">
+            <div class="row">
+              <div class="bx gr" style="flex:0 0 80px"><b>DDR5</b><span>2 канала</span></div>
+              <div class="arr gr">—</div>
+              <div class="bx cy" style="flex:2"><b>CPU</b><span>ядра · L3 · IMC · PCIe root · USB</span><span>(= бывший северный мост)</span></div>
+              <div class="arr">—</div>
+              <div class="stack" style="flex:0 0 110px">
+                <div class="bx cy"><b>GPU x16</b></div>
+                <div class="bx cy"><b>M.2 #1 x4</b></div>
+              </div>
+            </div>
+            <div class="row" style="justify-content:center;gap:14px"><div class="arr am">│</div><div class="lbl" style="color:var(--amber)">DMI / PCIe x4 — горлышко!</div></div>
+            <div class="row">
+              <div class="bx" style="flex:0 0 80px"><b>SATA ×4</b></div>
+              <div class="arr" style="color:var(--faint)">—</div>
+              <div class="bx am" style="flex:2"><b>Чипсет (PCH / X670)</b><span>(= бывший южный мост)</span></div>
+              <div class="arr" style="color:var(--faint)">—</div>
+              <div class="stack" style="flex:0 0 140px">
+                <div class="bx"><b>USB-порты</b></div>
+                <div class="bx"><b>M.2 #2, #3</b></div>
+                <div class="bx"><b>LAN · Wi-Fi · звук</b></div>
+              </div>
+            </div>
+            <div class="cap">Два NVMe на чипсетных M.2 + быстрая сеть = все толкаются в одном x4-линке. Потому первый M.2 (процессорный) — всегда лучший слот для системника.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s30">
+  <div class="content">
+    <div class="kicker">Материнка · шины</div>
+    <h2>Каталог дорог: от автобана до просёлка</h2>
+    <table class="t">
+      <tr><th>Шина</th><th>Скорость</th><th>Кто на ней живёт</th><th>Заметки</th></tr>
+      <tr><td><b>PCIe 5.0 x16</b></td><td>~63 ГБ/с</td><td class="d">видеокарта</td><td class="d">поколение ×2 = скорость ×2; x16/x8/x4/x1 — число полос</td></tr>
+      <tr><td><b>PCIe 4.0/5.0 x4</b></td><td>~8/16 ГБ/с</td><td class="d">NVMe SSD</td><td class="d">тот самый M.2</td></tr>
+      <tr><td><b>DDR5, 2 канала</b></td><td>~90 ГБ/с</td><td class="d">RAM ↔ IMC</td><td class="d">но латентность ~80 нс — гл. 6</td></tr>
+      <tr><td><b>USB4 / 3.x / 2.0</b></td><td>40 Гбит → 480 Мбит</td><td class="d">периферия</td><td class="d">зоопарк имён USB 3.2 Gen2x1 — маркетинговое преступление</td></tr>
+      <tr><td><b>SATA III</b></td><td>0.55 ГБ/с</td><td class="d">старые SSD, HDD</td><td class="d">легаси-протокол AHCI: одна очередь, 32 команды</td></tr>
+      <tr><td><b>SPI</b></td><td>~единицы МБ/с</td><td class="d">BIOS-флешка, TPM</td><td class="d">медленно — но при старте больше некому</td></tr>
+      <tr><td><b>SMBus / I²C</b></td><td>~100 КБ/с</td><td class="d">SPD планок, датчики, VRM-телеметрия</td><td class="d">двухпроводный просёлок из 1982</td></tr>
+      <tr><td><b>eSPI / LPC</b></td><td>~десятки МБ/с</td><td class="d">Super I/O: вентиляторы, кнопка, COM</td><td class="d">наследник ISA. Да, того самого, 1981</td></tr>
+    </table>
+    <div class="note" style="margin-top:20px"><b>Правило платы:</b> чем медленнее шина — тем она старше и живучее. PCIe меняет поколение раз в 3 года, а SMBus с 1995-го не трогали: по нему всего лишь спрашивают у планки паспорт и у датчика температуру — куда спешить. Эволюция жрёт автобаны и не замечает просёлков.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 8. GPU ============ -->
+<section class="slide chapter" id="s31">
+  <div class="bgimg"><img src="assets/ch_gpu.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 8</div>
+    <h1>GPU: десять тысяч студентов</h1>
+    <p class="lead">CPU — четыре профессора, решающие что угодно. GPU — десять тысяч студентов, решающих одно и то же. Вопрос лишь в том, какая у тебя задача.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s32">
+  <div class="content">
+    <div class="kicker">GPU · архитектура</div>
+    <h2>SIMT: латентность не прячут — её топят в параллелизме</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Ядро GPU примитивно: ни OoO, ни предсказателя, ни больших кэшей. Зато их <b>тысячи</b> (7900XTX: 6144 шейдерных ALU в 48 WGP).</li>
+          <li><b>SIMT:</b> потоки пачками по 32/64 (wave) исполняют <b>одну инструкцию на всех</b>. Ветвление внутри пачки = исполнить ОБЕ ветки с масками. Потому GPU-код боится if'ов.</li>
+          <li>Ожидание памяти не прячется кэшами — <b>перекрывается</b>: на каждом WGP крутятся 10+ wave'ов, память ждёт один — исполняется другой. Нужны десятки тысяч потоков, чтобы GPU не скучал.</li>
+          <li><b>VRAM:</b> GDDR6 на 7900XTX — шина 384 бита, ~960 ГБ/с (в 10 раз шире DDR5!). Плюс 96 МБ Infinity Cache. ГПУ — это в первую очередь машина пропускной способности.</li>
+          <li>Твой RenderMeshInstanced из Гвендолин — ровно эта философия: одна команда, тысяча волков, нулевые накладные на штуку.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>CPU vs GPU: разделение труда</h3>
+        <table class="t">
+          <tr><th></th><th>CPU</th><th>GPU</th></tr>
+          <tr><td>Ядра</td><td class="d">8–16 сложных</td><td class="d">тысячи простых</td></tr>
+          <tr><td>Сила</td><td class="d">латентность одной задачи</td><td class="d">пропускная способность миллиона</td></tr>
+          <tr><td>Ветвления</td><td class="d">предсказывает 98%</td><td class="d">страдает</td></tr>
+          <tr><td>Память</td><td class="d">кэши прячут</td><td class="d">параллелизм топит</td></tr>
+          <tr><td>Родная задача</td><td class="d">логика, сим, ОС</td><td class="d">пиксели, матрицы, нейронки</td></tr>
+        </table>
+        <p style="margin-top:12px">Потому нейронки живут на GPU: перемножение матриц — миллионы одинаковых умножений без ветвлений, идеальный студенческий субботник.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s33">
+  <div class="content">
+    <div class="kicker">GPU · путь кадра</div>
+    <h2>Путь кадра: от Update() до пикселя на матрице</h2>
+    <div class="flow">
+      <div class="step"><b>Игра / движок</b><span>Unity: draw calls, состояния, буферы</span></div>
+      <div class="step"><b>API (DX12/Vulkan)</b><span>командные списки, тонкая обёртка</span></div>
+      <div class="step"><b>Драйвер UMD</b><span>user-mode: компиляция шейдеров, валидация</span></div>
+      <div class="step"><b>Драйвер KMD</b><span>kernel-mode: очереди, память, ring buffer</span></div>
+      <div class="step"><b>GPU front-end</b><span>читает команды DMA из ring buffer</span></div>
+      <div class="step"><b>Конвейер</b><span>vertex → raster → pixel shader → ROP</span></div>
+      <div class="step"><b>Фреймбуфер</b><span>готовый кадр в VRAM</span></div>
+      <div class="step"><b>Сканаут</b><span>display engine стримит в DP/HDMI</span></div>
+    </div>
+    <div class="cols" style="margin-top:14px">
+      <ul class="pts">
+        <li><b>CPU и GPU асинхронны:</b> процессор готовит кадр N+1, пока карта рисует N. «Упор в CPU» = карта простаивает, ждёт команд; «упор в GPU» = процессор ждёт очередь. Профайлер Unity показывает ровно это.</li>
+        <li><b>Present и vsync:</b> готовый кадр меняется местами с показываемым (flip). Vsync ждёт кадрового гасящего импульса — привет, латентность; VRR (FreeSync) вместо этого двигает сам импульс.</li>
+      </ul>
+      <ul class="pts">
+        <li><b>Компиляция шейдеров:</b> HLSL → DXIL → <b>ISA конкретного GPU</b> происходит на машине игрока (у каждой архитектуры свой машинный код!). Первая встреча с шейдером = компиляция = статтер. Потому игры «прогревают кэш шейдеров».</li>
+        <li><b>PCIe — узкое место потоков данных:</b> текстуры и меши едут 30 ГБ/с при VRAM в 960. Отсюда стриминг, DirectStorage, и вечное «положи ассеты в VRAM заранее».</li>
+      </ul>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 9. NVME ============ -->
+<section class="slide chapter" id="s34">
+  <div class="bgimg"><img src="assets/ch_nvme.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 9</div>
+    <h1>NVMe: память, которая притворяется диском</h1>
+    <p class="lead">Внутри SSD нет ничего дискового. Там матрица ловушек для электронов и маленький компьютер, который врёт операционке о том, где что лежит.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s35">
+  <div class="content">
+    <div class="kicker">NVMe · NAND</div>
+    <h2>NAND: бит — это пойманные электроны</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Ячейка — транзистор с <b>ловушкой заряда</b>: электроны загоняются туда сквозь изолятор туннелированием и сидят годами без питания. Количество заряда сдвигает порог открытия — это и читается.</li>
+          <li><b>SLC→MLC→TLC→QLC:</b> 1→4 бита на ячейку = различать 2→16 уровней заряда. Плотность ×4, зато скорость записи и ресурс — вниз на порядки. Знакомая песня? Та же аналоговая ловушка, что и «255 уровней» в нашем ночном споре про фотоны)))</li>
+          <li>Геометрия: <b>страница</b> (~16 КБ) — минимум чтения/записи, <b>блок</b> (сотни страниц, мегабайты) — минимум... <b>стирания</b>. Перезаписать страницу на месте <b>нельзя</b> — только стереть весь блок целиком.</li>
+          <li>Каждая запись изнашивает изолятор: TLC живёт ~1–3К циклов стирания, QLC — сотни. 3D NAND: слои ячеек этажами (200+), плотность растёт вверх, раз вширь уже некуда.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="svgbox">
+          <svg viewBox="0 0 560 260" font-family="Consolas, monospace" font-size="12">
+            <text x="20" y="26" fill="#8a97a8">Пороговые уровни: SLC vs QLC (почему QLC медленный и смертный)</text>
+            <g>
+              <text x="20" y="60" fill="#46d4ff">SLC (1 бит):</text>
+              <rect x="130" y="45" width="180" height="22" rx="4" fill="#151d29" stroke="#223041"/>
+              <rect x="130" y="45" width="80" height="22" rx="4" fill="#46d4ff33"/><text x="170" y="60" fill="#46d4ff" text-anchor="middle">0</text>
+              <rect x="230" y="45" width="80" height="22" rx="4" fill="#6ee7a033"/><text x="270" y="60" fill="#6ee7a0" text-anchor="middle">1</text>
+              <text x="330" y="60" fill="#55606e">зазор огромный — быстро, надёжно</text>
+            </g>
+            <g>
+              <text x="20" y="110" fill="#ffb347">QLC (4 бита):</text>
+              <rect x="130" y="95" width="180" height="22" rx="4" fill="#151d29" stroke="#223041"/>
+              <g>
+                <rect x="130" y="95" width="11" height="22" fill="#46d4ff44"/><rect x="141" y="95" width="11" height="22" fill="#6ee7a044"/><rect x="152" y="95" width="11" height="22" fill="#ffb34744"/><rect x="163" y="95" width="11" height="22" fill="#ff6b7a44"/>
+                <rect x="174" y="95" width="11" height="22" fill="#46d4ff44"/><rect x="185" y="95" width="11" height="22" fill="#6ee7a044"/><rect x="196" y="95" width="11" height="22" fill="#ffb34744"/><rect x="207" y="95" width="11" height="22" fill="#ff6b7a44"/>
+                <rect x="218" y="95" width="11" height="22" fill="#46d4ff44"/><rect x="229" y="95" width="11" height="22" fill="#6ee7a044"/><rect x="240" y="95" width="11" height="22" fill="#ffb34744"/><rect x="251" y="95" width="11" height="22" fill="#ff6b7a44"/>
+                <rect x="262" y="95" width="11" height="22" fill="#46d4ff44"/><rect x="273" y="95" width="11" height="22" fill="#6ee7a044"/><rect x="284" y="95" width="11" height="22" fill="#ffb34744"/><rect x="295" y="95" width="11" height="22" fill="#ff6b7a44"/>
+              </g>
+              <text x="330" y="110" fill="#55606e">16 уровней: писать = ювелирно</text>
+              <text x="330" y="126" fill="#55606e">докапывать заряд итерациями</text>
+            </g>
+            <text x="20" y="170" fill="#d7e0ea">Запись QLC-страницы: программируй → проверь → докинь заряд → проверь → ...</text>
+            <text x="20" y="190" fill="#8a97a8">Потому прямая запись в QLC в разы медленнее чтения,</text>
+            <text x="20" y="208" fill="#8a97a8">и контроллер маскирует это pSLC-кэшем (следующий слайд).</text>
+            <text x="20" y="240" fill="#55606e">Дежавю: деление диапазона на 16 уровней — ровно то, что убивает и аналоговые вычисления. SNR — злой бог.</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s36">
+  <div class="content">
+    <div class="kicker">NVMe · контроллер</div>
+    <h2>FTL: маленький лжец, на котором всё держится</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>ОС говорит «запиши в сектор 12345». Но перезаписи на месте в NAND <b>нет</b>. Контроллер пишет в свежую страницу, а в таблице <b>FTL</b> помечает: «LBA 12345 теперь вон там». Старая версия — мусор.</li>
+          <li><b>Garbage collection:</b> фоном контроллер собирает живые страницы из полумёртвых блоков, переписывает компактно и стирает освободившееся. Твой SSD дефрагментирует сам себя, втайне, постоянно.</li>
+          <li><b>TRIM:</b> ОС подсказывает «эти LBA я удалила» — иначе контроллер таскал бы мёртвые данные при GC вечно. Удалённый файл физически исчезает не при удалении, а когда GC доберётся.</li>
+          <li><b>Write amplification:</b> одна твоя гигабайтная запись = 1.5–3 ГБ реальных записей в NAND (GC, переносы). На заполненном диске — хуже: GC задыхается без свободных блоков. Потому SSD, забитый под 95%, <b>деградирует и по скорости, и по ресурсу</b>.</li>
+          <li>Mapping-таблица живёт в DRAM-чипе на SSD (гигабайт на терабайт). Дешёвые DRAM-less берут кусок твоей RAM (HMB) — и всё равно тормозят на случайной записи.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>pSLC-кэш: спринтер с одышкой</h3>
+        <p>Свободный TLC/QLC контроллер временно использует <b>как SLC</b> (1 бит на ячейку — быстро!). Первые ~100–400 ГБ заливки летят на 5–7 ГБ/с, потом кэш кончается — и скорость падает до честной QLC-записи, порой ниже SATA. Тот самый «залил 300 гигов, а оно сдохло до 400 МБ/с».</p>
+        <h3 class="am" style="margin-top:16px">Очереди: чем NVMe убил SATA</h3>
+        <table class="t">
+          <tr><th></th><th>SATA/AHCI</th><th>NVMe</th></tr>
+          <tr><td>Очередей</td><td class="d">1</td><td class="d">до 65 535</td></tr>
+          <tr><td>Глубина</td><td class="d">32</td><td class="d">65 535</td></tr>
+          <tr><td>Путь</td><td class="d">через SATA-контроллер</td><td class="d">PCIe прямо в CPU</td></tr>
+          <tr><td>Латентность</td><td class="d">~100 мкс</td><td class="d">~10–20 мкс</td></tr>
+        </table>
+        <p style="margin-top:10px">Протокол спроектирован под параллельную природу NAND, а не под один вращающийся блин. Очередь на ядро, без глобальных локов.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 10. ИТОГИ ============ -->
+<section class="slide dense" id="s37">
+  <div class="bgimg"><img src="assets/ch_speed.png" alt="" style="object-position:center 40%"></div>
+  <div class="content">
+    <div class="kicker">Итоги · скорости</div>
+    <h2>Вся пирамида на одном слайде</h2>
+    <table class="t" style="font-size:16px">
+      <tr><th>Уровень</th><th>Латентность</th><th>Пропускная способность</th><th>Главная боль</th></tr>
+      <tr><td>Регистры</td><td class="d">0 тактов</td><td class="d">—</td><td class="d">их 16 (виртуально 300+)</td></tr>
+      <tr><td>L1 / L2 / L3</td><td class="d">1 / 4 / 15 нс</td><td class="d">ТБ/с</td><td class="d">размер; false sharing</td></tr>
+      <tr><td>RAM DDR5</td><td class="d">~80 нс</td><td class="d">~90 ГБ/с</td><td class="d">латентность стоит 20 лет</td></tr>
+      <tr><td>VRAM GDDR6</td><td class="d">~200+ нс</td><td class="d">~960 ГБ/с</td><td class="d">широко, но далеко</td></tr>
+      <tr><td>NVMe (PCIe 4)</td><td class="d">~15–80 мкс</td><td class="d">7 ГБ/с*</td><td class="d">*пока жив pSLC; QD1 — правда жизни</td></tr>
+      <tr><td>SATA SSD</td><td class="d">~100 мкс</td><td class="d">0.55 ГБ/с</td><td class="d">потолок протокола 2008 года</td></tr>
+      <tr><td>HDD</td><td class="d">~10 мс</td><td class="d">0.2 ГБ/с</td><td class="d">механика: головка едет физически</td></tr>
+      <tr><td>Интернет</td><td class="d">~10–100 мс</td><td class="d">≤1 ГБ/с</td><td class="d">скорость света + провайдер</td></tr>
+    </table>
+    <div class="note">Каждая ступень — на 2–3 порядка медленнее предыдущей по латентности. Вся инженерия компьютера — это прослойки, прячущие эти обрывы: кэши прячут RAM, RAM прячет SSD (page cache!), SSD прячет сам себя (pSLC), и все вместе прячут то, что данные на самом деле — конденсаторы, ловушки и намагниченность.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s38">
+  <div class="bgimg"><img src="assets/ch_pain.png" alt="" style="object-position:center 30%"></div>
+  <div class="content">
+    <div class="kicker">Итоги · костыли</div>
+    <h2>Музей действующих костылей</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>Наследие 1981–86</h3>
+        <ul>
+          <li><b>Real mode:</b> каждый CPU стартует как 8086 (1978)</li>
+          <li><b>Reset vector</b> на своём месте с 386-го</li>
+          <li><b>Линия A20:</b> до недавнего времени — костыль с контроллером клавиатуры ради софта 1981 года</li>
+          <li><b>eSPI/Super I/O</b> — правнук шины ISA</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Костыли скорости</h3>
+        <ul>
+          <li><b>Memory training</b> + его кэш: RAM слишком быстра, чтобы просто работать</li>
+          <li><b>pSLC-кэш:</b> QLC слишком медленный, чтобы его показывать</li>
+          <li><b>Спекуляция:</b> быстрее — исполнить и, может, выкинуть (цена: Spectre)</li>
+          <li><b>Refresh:</b> DRAM забывает — будем напоминать 15 раз в секунду</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Костыли доверия</h3>
+        <ul>
+          <li><b>PSP/ME:</b> тайный сопроцессор, ring −3, код закрыт</li>
+          <li><b>SMM:</b> невидимый режим, правящий за спиной ОС</li>
+          <li><b>SMBus без защиты:</b> SPD планки можно перешить (RAM с «неправильным» паспортом)</li>
+          <li><b>Rowhammer:</b> физика против криптографии — физика ведёт</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:22px"><b>Общий закон:</b> ничто в компьютере не выбрасывается — оно инкапсулируется. Каждый слой врёт слою выше, что мир проще, чем есть: FTL врёт про сектора, IMC врёт про байты, ОС врёт про память, x86-декодер врёт про x86. Компьютер — это башня из добросовестной лжи, и она РАБОТАЕТ.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s39">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <div class="kicker amber">Финал</div>
+    <h1>Полный маршрут: 10 порядков величины</h1>
+    <p class="lead" style="max-width:1000px">Розетка → дежурка → кнопка → PS_ON# → soft-start → VRM → клоки → PSP → reset vector → CAR → memory training → DXE → bootmgfw → ntoskrnl → smss → winlogon → explorer → твой двойной клик → CreateProcess → µops → кэш-линии → row buffer → пиксель на экране. От 50 герц розетки до 5 гигагерц ядра — десять порядков частоты, и ни одного слоя, который можно выкинуть.</p>
+    <p class="lead" style="margin-top:16px" class="dim">А выключение — тот же путь обратно, вплоть до одной инструкции <code>out</code>, отпускающей зелёный провод.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- SLIDES_END -->
+
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>

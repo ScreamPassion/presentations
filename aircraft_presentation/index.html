@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Самолёт: 80 тонн в воздухе и почему это надёжно</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #6fb7ff; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Aviation deep dive · Гвендолин-ночные-лекции</div>
+    <h1>Самолёт: 80 тонн в воздухе и почему это надёжно</h1>
+    <p class="lead">Полная анатомия авиалайнера по узлам: что реально держит крыло (не Бернулли), как турбина сжимает воздух в 40 раз и не плавится при 1700 °C, зачем три гидросистемы, кто на самом деле управляет самолётом, что происходит в кабине за 8 часов — и почему это самый безопасный способ добраться куда угодно.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 1: ИСТОРИЯ ============ -->
+<section class="slide chapter" id="s2">
+  <div class="bgimg"><img src="assets/ch_history.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1</div>
+    <h1>120 лет: от 12 секунд до 20 часов</h1>
+    <p class="lead">Первый полёт братьев Райт — 37 метров, короче размаха крыла Boeing 747. Через 66 лет человек стоял на Луне. Через 120 — 100 000 рейсов в день, 4.5 млрд пассажиров в год.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">История · таймлайн</div>
+    <h2>Девять поворотов, которые сделали авиацию</h2>
+    <div class="dg" style="margin-bottom:18px">
+      <div class="row" style="align-items:stretch">
+        <div class="bx am"><b>1903</b><span>Райты: 12 с, 37 м. Главное — не мотор, а управление по трём осям (перекос крыла)</span></div>
+        <div class="bx am"><b>1914–18</b><span>ПМВ: из игрушки в оружие за 4 года; 200 000 самолётов, алюминий, 200 км/ч</span></div>
+        <div class="bx cy"><b>1935</b><span>DC-3: первый прибыльный лайнер — цельнометалл, убирающееся шасси, 21 пассажир, 300 км/ч. 16 000 штук, летают до сих пор</span></div>
+        <div class="bx cy"><b>1939–44</b><span>реактивный двигатель (Уиттл, фон Охайн), He 178, Me 262; герметичная кабина (B-29)</span></div>
+        <div class="bx"><b>1952–58</b><span>Comet — первый реактивный лайнер, разваливался в воздухе (усталость металла у окон); Boeing 707 — учёл и захватил рынок</span></div>
+        <div class="bx"><b>1969</b><span>747 — 400 мест, цена билета ×0.5; Concorde — 2 Маха; оба в одном году</span></div>
+        <div class="bx gr"><b>1988</b><span>A320: первый лайнер с fly-by-wire и защитой от ошибок пилота; сайдстик</span></div>
+        <div class="bx gr"><b>2011</b><span>787: 50% композитов, электрика вместо пневматики, −20% топлива</span></div>
+        <div class="bx rd"><b>2018–19</b><span>737 MAX: две катастрофы, 346 погибших, 20 месяцев на земле — софт и сертификация</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Райты выиграли не мотором</b> — моторы были у всех. Они первые поняли, что самолёт неустойчив и им надо <b>управлять непрерывно</b> — как велосипедом. Построили аэродинамическую трубу, 200 профилей, планер с перекосом крыла. Три года испытаний до мотора.</li>
+          <li><b>Comet</b> (1952) — урок, написанный кровью: три самолёта разрушились в воздухе. Причина — усталость алюминия от циклов герметизации, трещины от углов квадратных окон. С тех пор: круглые окна, испытания на усталость в бассейне, сертификация — самая жёсткая в промышленности.</li>
+          <li><b>Экономика</b>: 747 сделал полёт массовым — стоимость пассажиро-километра упала вдвое. Сегодня билет Москва–Сочи в реальных деньгах стоит в 5 раз меньше, чем в 1970. Авиация — единственная отрасль, где дальность, скорость, безопасность и цена улучшались одновременно 70 лет.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Авиация сегодня (2024)</h3>
+        <table class="t">
+          <tr><td>Пассажиров в год</td><td class="d">4.7 млрд; 38 млн рейсов; 100 000+ в день</td></tr>
+          <tr><td>В воздухе одновременно</td><td class="d">10–15 тыс. самолётов, ~1.3 млн человек</td></tr>
+          <tr><td>Парк коммерческих</td><td class="d">~28 000; Boeing 737 — 11 000 построено, A320 — 11 500</td></tr>
+          <tr><td>Дуополия</td><td class="d">Airbus 766 поставок, Boeing 348 (кризис); Embraer, COMAC (C919, Китай), Иркут (МС-21, 2026?)</td></tr>
+          <tr><td>Безопасность</td><td class="d">2023: 0 погибших на коммерческих реактивных; 2024: 3 катастрофы. Риск на рейс ~1:10 млн</td></tr>
+          <tr><td>Топливо</td><td class="d">~300 млн т/год керосина, 2.5% мировых выбросов CO₂</td></tr>
+          <tr><td>Цена самолёта</td><td class="d">A320neo — $110 млн по каталогу, ~$50 млн реально; 787 — $250 млн; двигатель — $15–25 млн</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2: АЭРОДИНАМИКА ============ -->
+<section class="slide chapter" id="s4">
+  <div class="bgimg"><img src="assets/ch_lift.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2</div>
+    <h1>Почему летит: честная аэродинамика</h1>
+    <p class="lead">Объяснение из школы («сверху путь длиннее, воздух быстрее, давление ниже») — неверное: по нему самолёт не смог бы лететь перевёрнутым, а бумажный — вообще. Правда проще и интереснее.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="content">
+    <div class="kicker">Аэродинамика · подъёмная сила</div>
+    <h2>Крыло отбрасывает воздух вниз — и всё</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Ньютон</b>: крыло, наклонённое к потоку (угол атаки), отклоняет воздух вниз. Воздух получает импульс вниз — крыло получает такой же вверх. Третий закон. 80-тонный A320 на крейсере каждую секунду отбрасывает вниз ~10 тонн воздуха со скоростью ~80 км/ч. Вертолёт делает это очевидно, крыло — так же, но воздух отклоняется вдоль всего размаха.</li>
+          <li><b>Бернулли тоже прав</b>, но не так, как в школе: воздух над крылом действительно быстрее и давление там ниже — но <b>не потому</b>, что «путь длиннее и надо успеть» (воздух сверху приходит к задней кромке <b>раньше</b> нижнего, никто никого не догоняет). Быстрее — потому что крыло искривляет поток, и по законам сохранения искривление = перепад давления = ускорение. Ньютон и Бернулли — два описания одного явления, не две причины.</li>
+          <li><b>Профиль</b> нужен не для подъёмной силы (плоская доска под углом летит — бумажный самолётик), а чтобы поток <b>не отрывался</b>: плавная верхняя дуга держит воздух прилипшим до больших углов атаки. Отрыв = сваливание.</li>
+          <li><b>Формула</b>: L = ½ρv²·S·C<sub>L</sub>. Скорость в квадрате: вдвое быстрее — вчетверо больше силы. Плотность: на 11 км ρ втрое меньше — поэтому там нужна скорость 850 км/ч, а у земли хватает 250. C<sub>L</sub> растёт с углом атаки до ~15°, потом — срыв.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="svgbox">
+          <div class="dg">
+            <div class="lbl mono">Четыре силы в горизонтальном полёте:</div>
+            <svg viewBox="0 0 420 220" style="max-width:100%">
+              <path d="M 120 120 L 300 120 L 330 112 L 300 100 L 120 100 Z" fill="#151d29" stroke="#4fd8c8" stroke-width="2"/>
+              <path d="M 120 100 Q 200 60 300 100" fill="none" stroke="#4fd8c8" stroke-width="2"/>
+              <line x1="210" y1="95" x2="210" y2="25" stroke="#6ee7a0" stroke-width="3"/><polygon points="210,18 204,30 216,30" fill="#6ee7a0"/><text x="218" y="40" fill="#6ee7a0" font-size="12" font-family="Consolas">Подъёмная сила</text>
+              <line x1="210" y1="125" x2="210" y2="195" stroke="#ff6b7a" stroke-width="3"/><polygon points="210,202 204,190 216,190" fill="#ff6b7a"/><text x="218" y="190" fill="#ff6b7a" font-size="12" font-family="Consolas">Вес (80 т)</text>
+              <line x1="115" y1="110" x2="45" y2="110" stroke="#ffb347" stroke-width="3"/><polygon points="38,110 50,104 50,116" fill="#ffb347"/><text x="20" y="98" fill="#ffb347" font-size="12" font-family="Consolas">Тяга (2×12 т)</text>
+              <line x1="335" y1="110" x2="395" y2="110" stroke="#8a97a8" stroke-width="3"/><polygon points="402,110 390,104 390,116" fill="#8a97a8"/><text x="330" y="98" fill="#8a97a8" font-size="12" font-family="Consolas">Сопротивление</text>
+              <path d="M 30 70 Q 120 70 130 92" fill="none" stroke="#55606e" stroke-dasharray="3 3"/><path d="M 30 150 Q 120 150 130 128" fill="none" stroke="#55606e" stroke-dasharray="3 3"/>
+              <path d="M 305 100 Q 350 100 400 125" fill="none" stroke="#55606e" stroke-dasharray="3 3"/><path d="M 305 122 Q 350 128 400 150" fill="none" stroke="#55606e" stroke-dasharray="3 3"/>
+              <text x="270" y="170" fill="#55606e" font-size="11" font-family="Consolas">поток уходит вниз ↘</text>
+            </svg>
+            <div class="cap">Крейсер: подъёмная сила = вес, тяга = сопротивление. Тяга — всего 3–4% от веса: крыло делает работу, двигатели лишь компенсируют трение. Аэродинамическое качество (подъёмная/сопротивление) у лайнера 17–20: с высоты 11 км без двигателей он планирует 200 км. Планер — 60.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="content">
+    <div class="kicker">Аэродинамика · режимы</div>
+    <h2>Сваливание, звуковой барьер и почему лайнер не летает быстрее 0.85 Маха</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Сваливание</b> — не «мотор заглох», а поток оторвался от крыла при слишком большом угле атаки (~15–18°). Подъёмная сила падает вдвое мгновенно, самолёт проваливается. Случается на <b>любой скорости</b>, если резко задрать нос. Лечится опусканием носа — контринтуитивно, когда падаешь. Air France 447 (2009): пилоты 3 минуты тянули штурвал на себя в сваливании до самой воды.</li>
+          <li><b>Скорость сваливания</b> ∝ 1/√C<sub>L</sub> — поэтому на посадке выпускают <b>закрылки и предкрылки</b>: они увеличивают площадь и кривизну, C<sub>L</sub> растёт вдвое, можно лететь 250 км/ч вместо 350. В крейсере убраны — сопротивление.</li>
+          <li><b>Число Маха</b>: у 0.85 (~900 км/ч) на верхней поверхности крыла поток местами достигает звука → скачок уплотнения → сопротивление растёт в разы, эффективность рулей падает (волновой кризис). Поэтому лайнеры летают 0.78–0.85 М — быстрее топливо жрёт нелинейно. Concorde решал это дельта-крылом и форсажем — 20 т топлива в час, экономически мёртв.</li>
+          <li><b>Стреловидность крыла</b> (25–35°) — чтобы отодвинуть волновой кризис: для профиля важна составляющая скорости перпендикулярно кромке, и она меньше на cos угла. <b>Суперкритический профиль</b> (плоский верх) — то же. <b>Винглеты</b> — ослабляют концевой вихрь (воздух снизу перетекает наверх вокруг кончика): −4% топлива.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Скорости A320 (типичные)</h3>
+        <table class="t">
+          <tr><th>Момент</th><th>Скорость</th><th>Что происходит</th></tr>
+          <tr><td>V1 — решение</td><td class="d">~260 км/ч</td><td class="d">до неё можно прервать взлёт, после — обязаны взлетать даже с отказом</td></tr>
+          <tr><td>VR — подъём носа</td><td class="d">~270</td><td class="d">штурвал на себя, 3°/с</td></tr>
+          <tr><td>V2 — безопасная</td><td class="d">~280</td><td class="d">набор возможен с одним двигателем</td></tr>
+          
+          <tr><td>Ограничение до 3000 м</td><td class="d">460 (250 узлов)</td><td class="d">птицы, диспетчерский порядок</td></tr>
+          <tr><td>Крейсер, 11 км</td><td class="d">M 0.78 = 830 км/ч истинная; приборная ~480</td><td class="d">воздух втрое разреженнее — прибор видит меньше</td></tr>
+          <tr><td>Посадка, VREF</td><td class="d">~250</td><td class="d">закрылки полностью, 1.3 × скорость сваливания</td></tr>
+          
+        </table>
+        <p style="margin-top:8px" class="dim">Приборная скорость (по давлению набегающего потока) ≠ истинная ≠ путевая (с ветром). Пилоту важна приборная — она говорит, сколько крыло «чувствует». Пассажиру — путевая: попутный джет +200 км/ч, Нью-Йорк–Лондон на час быстрее, чем обратно.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 3: ПЛАНЕР ============ -->
+<section class="slide chapter" id="s7">
+  <div class="bgimg"><img src="assets/ch_wing.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3</div>
+    <h1>Планер: крыло, фюзеляж, шасси</h1>
+    <p class="lead">Крыло A320 гнётся на 2 метра в полёте и обязано выдержать 1.5× максимальной нагрузки без разрушения — крыло 777 на испытаниях ломали при 154%, изгиб 7 метров. Разбираем, из чего оно.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s8">
+  <div class="content">
+    <div class="kicker">Планер · крыло</div>
+    <h2>Крыло: топливный бак, который держит самолёт</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/ch_wing.png" alt=""><div class="pcap">Кессон — коробка из двух лонжеронов, нервюр и обшивки. Внутри — топливо: оно же охлаждает и демпфирует. Крыло держит самолёт снизу вверх; фюзеляж просто висит на нём.</div></div>
+      <table class="t pt">
+        <tr><th>Деталь</th><th>Что делает</th><th>Особенности</th></tr>
+        <tr><td><b>Лонжероны</b> (2–3)</td><td class="d">продольные балки от корня до конца — несут изгиб. Передний и задний образуют кессон</td><td class="d">алюминий 7000-й серии или углепластик (787, A350). Крыло A380 весит 30 т — с топливом 160</td></tr>
+        <tr><td><b>Нервюры</b></td><td class="d">поперечные «рёбра» каждые 50–70 см: держат профиль, передают нагрузку с обшивки на лонжероны</td><td class="d">с вырезами для топлива и проводки</td></tr>
+        <tr><td><b>Обшивка + стрингеры</b></td><td class="d">лист 2–8 мм с продольными рёбрами жёсткости; работает на сдвиг и кручение — не «кожа», а несущий элемент</td><td class="d">верх — на сжатие (толще), низ — на растяжение (усталость → осмотры)</td></tr>
+        <tr><td><b>Кессон-бак</b></td><td class="d">пространство между лонжеронами герметизировано — это и есть баки: центральный + 2 крыльевых</td><td class="d">A320: 24 000 л; 777: 180 000 л. Топливо в крыле разгружает его: центр масс ближе к подъёмной силе</td></tr>
+        <tr><td><b>Предкрылки</b> (slats)</td><td class="d">передняя кромка выезжает вперёд-вниз: щель направляет воздух вдоль верха, отодвигает срыв на +10° угла атаки</td><td class="d">5 секций, гидро/электропривод по рельсам</td></tr>
+        <tr><td><b>Закрылки</b> (flaps)</td><td class="d">задняя кромка выдвигается назад-вниз: +площадь, +кривизна, C<sub>L</sub> ×1.5–2. 5 положений</td><td class="d">щелевые Фаулера: на 777 отъезжают на метр назад. Асимметрия выпуска = катастрофа → взаимная блокировка</td></tr>
+        <tr><td><b>Элероны</b></td><td class="d">на концах задней кромки, отклоняются в противофазе — крен</td><td class="d">на больших скоростях — только внутренние (флаттер)</td></tr>
+        <tr><td><b>Спойлеры/интерцепторы</b></td><td class="d">пластины на верхней поверхности: поднялись — сорвали поток, убили подъёмную силу. Крен (одна сторона), торможение в воздухе, прижим к полосе после касания</td><td class="d">после посадки встают все — это тот «грохот» и резкое проседание</td></tr>
+        <tr><td><b>Винглет / шарклет</b></td><td class="d">вертикальная законцовка: мешает воздуху перетекать снизу вверх, ослабляет вихрь</td><td class="d">−3–5% топлива; A320neo, 737 MAX — раздвоенные</td></tr>
+        <tr><td>Пилоны</td><td class="d">подвес двигателей под крылом; с плавкими болтами — при аварии двигатель отрывается, не ломая крыло</td><td class="d">El Al 1862 (Амстердам): отвалился и снёс соседний</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s9">
+  <div class="content">
+    <div class="kicker">Планер · фюзеляж и шасси</div>
+    <h2>Фюзеляж: бочка под давлением, и шасси, которое садится 60 000 раз</h2>
+    <div class="part rev">
+      <table class="t pt">
+        <tr><th>Деталь</th><th>Что делает</th><th>Особенности</th></tr>
+        <tr><td><b>Шпангоуты</b></td><td class="d">поперечные кольца каждые 50 см — держат форму сечения и давление</td><td class="d">усиленные — в местах крыла, шасси, дверей</td></tr>
+        <tr><td><b>Стрингеры</b></td><td class="d">продольные рёбра, десятки по окружности — жёсткость на изгиб</td><td class="d">фюзеляж — балка, опёртая на крыло; нос и хвост «висят»</td></tr>
+        <tr><td><b>Обшивка</b></td><td class="d">алюминий 1–2 мм (2024-T3), заклёпки (1.5 млн на 747); или углепластик цельными секциями (787: 5 «бочек»)</td><td class="d">держит перепад 0.55–0.6 атм — 8 т на дверь. Круглое сечение — потому что давление</td></tr>
+        <tr><td><b>Иллюминаторы</b></td><td class="d">3 слоя акрила: внешний несёт давление, средний запасной, внутренний — от пальцев. Маленькая дырочка в среднем — выравнивать давление между слоями</td><td class="d">круглые/овальные — после Comet: углы концентрируют напряжение</td></tr>
+        <tr><td><b>Двери и аварийные выходы</b></td><td class="d">plug-type: больше проёма, открываются внутрь-вверх — давление прижимает, открыть в полёте физически невозможно</td><td class="d">эвакуация 90 с через половину выходов — сертификационное требование</td></tr>
+        <tr><td><b>Гермоперегородка</b></td><td class="d">купол в хвосте — задняя стенка «бочки»</td><td class="d">JAL 123 (1985): плохой ремонт → разрыв → снесло киль, 520 погибших</td></tr>
+        <tr><td><b>Центроплан</b></td><td class="d">силовая коробка под полом, соединяющая крылья через фюзеляж — самый нагруженный узел</td><td class="d">центральный бак внутри; шасси крепится рядом</td></tr>
+        <tr><td><b>Основное шасси</b></td><td class="d">стойки с амортизаторами (азот + масло, ход 40–50 см), 4 колеса на тележке (A320 — по 2), убираются в ниши гидравликой</td><td class="d">выдерживает касание 3 м/с; шины 15 атм, 200 посадок, до 400 км/ч; азот — не горит</td></tr>
+        <tr><td><b>Носовая стойка</b></td><td class="d">поворотная ±75°, руление; шимми-демпфер против виляния</td><td class="d">не несёт торможения; при аварийном выпуске — падает под своим весом</td></tr>
+        <tr><td><b>Тормоза</b></td><td class="d">многодисковые карбоновые пакеты в каждом колесе, гидравлика 210 атм, антиюз (ABS с 1950-х), автотормоз</td><td class="d">прерванный взлёт при MTOW — диски 1000 °C, плавкие предохранители в колёсах стравливают шины</td></tr>
+        <tr><td>Реверс тяги</td><td class="d">створки перенаправляют поток вентилятора вперёд — 30% усилия торможения, главное — на мокрой полосе</td><td class="d">колёсные тормоза всё равно основные</td></tr>
+      </table>
+      <div class="pimg"><img src="assets/ch_structure.png" alt=""><div class="pcap">Полумонокок: обшивка + шпангоуты + стрингеры работают вместе. Каждый цикл «наддув — сброс» — усталостный цикл; 737 сертифицирован на 75 000 циклов, потом — усиленные осмотры или списание.</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 4: ДВИГАТЕЛЬ ============ -->
+<section class="slide chapter" id="s10">
+  <div class="bgimg"><img src="assets/ch_engine.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4</div>
+    <h1>Турбовентиляторный двигатель: сжать, сжечь, раскрутить</h1>
+    <p class="lead">Самая сложная серийная машина человечества: 25 000 деталей, 1700 °C в камере при точке плавления лопаток 1300 °C, 10 000 об/мин, 15 тонн тяги — и 30 000 часов между съёмами с крыла.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s11">
+  <div class="content">
+    <div class="kicker">Двигатель · принцип</div>
+    <h2>Цикл Брайтона: тот же четырёхтактник, только непрерывно и в разных местах</h2>
+    <div class="dg" style="margin-bottom:16px">
+      <div class="row" style="align-items:stretch">
+        <div class="bx cy"><b>Вентилятор</b><span>Ø 2–3.4 м, 20 лопастей, 3000 об/мин. Гонит 1–1.5 т воздуха/с. 80–90% идёт <b>мимо</b> ядра — это и есть тяга</span></div>
+        <div class="arr">→</div>
+        <div class="bx cy"><b>Компрессор</b><span>НД 3–4 ступени + ВД 8–10 ступеней; сжатие ×40–50, нагрев до 650 °C ещё без горения</span></div>
+        <div class="arr">→</div>
+        <div class="bx rd"><b>Камера сгорания</b><span>керосин через 20 форсунок, 1700–2000 °C, горит непрерывно; воздух — 1/3 в горение, 2/3 на охлаждение стенок</span></div>
+        <div class="arr">→</div>
+        <div class="bx am"><b>Турбина</b><span>ВД 1–2 ступени крутит компрессор ВД; НД 5–7 ступеней крутит вентилятор. Лопатки 1300 °C в потоке 1600 °C</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>Сопло</b><span>остаток горячего газа — 10–20% тяги; смешивается с холодным потоком вентилятора</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Два (или три) вала внутри друг друга</b>: внешний — турбина ВД крутит компрессор ВД (12 000 об/мин); внутренний — турбина НД крутит вентилятор и компрессор НД (3000–5000). У Rolls-Royce — три. Вентилятору нужно медленно (кончик лопасти — уже сверхзвук), турбине — быстро. Компромисс убил <b>редуктор</b> (Pratt GTF, 2016): вентилятор на 3:1 медленнее турбины, −16% топлива, но проблемы с надёжностью.</li>
+          <li><b>Степень двухконтурности</b> (bypass ratio): сколько воздуха идёт мимо ядра к тому, что через него. Ранние реактивные — 0 (Comet), 707 — 1, CFM56 — 6, GE9X — 10, GTF — 12. Чем больше — тем экономичнее и тише: медленно разогнать много воздуха эффективнее, чем быстро — мало. Отсюда гигантские вентиляторы: GE9X — 3.4 м, шире фюзеляжа 737.</li>
+          <li><b>Тяга</b>: A320 — 2 × 12 т (CFM56 / LEAP), 777 — 2 × 52 т (GE90 — рекорд 57 т), 747 — 4 × 28. На взлёте — 100%, крейсер — 25–30%. Двигатель проводит 90% жизни на «полгаза».</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Числа одного двигателя (CFM LEAP-1A, A320neo)</h3>
+        <table class="t">
+          <tr><td>Тяга взлётная</td><td class="d">14.5 т</td></tr>
+          <tr><td>Расход воздуха</td><td class="d">~1000 кг/с; ядро — 90 кг/с</td></tr>
+          <tr><td>Расход топлива</td><td class="d">взлёт ~4 т/ч; крейсер ~1.2 т/ч на двигатель → A320 ~2.4 т/ч = 2.5 л на 100 км на пассажира</td></tr>
+          <tr><td>Степень сжатия</td><td class="d">40:1</td></tr>
+          <tr><td>Температура перед турбиной</td><td class="d">~1650 °C</td></tr>
+          
+          
+          <tr><td>Цена</td><td class="d">~$14 млн; сервис по «часам налёта» — производитель зарабатывает 30 лет на запчастях</td></tr>
+          <tr><td>Ресурс на крыле</td><td class="d">20–30 тыс. часов между капремонтами (LEAP пока меньше — проблемы с пылью)</td></tr>
+          <tr><td>КПД</td><td class="d">тепловой ~55%, пропульсивный ~80%; общий ~40% — вдвое лучше автомобильного ДВС</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s12">
+  <div class="content">
+    <div class="kicker">Двигатель · по деталям</div>
+    <h2>Турбина по узлам: как лопатка живёт при температуре выше своей плавки</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/ch_engine2.png" alt=""><div class="pcap">Лопатка турбины ВД: монокристалл никелевого суперсплава, внутри — каналы охлаждения, снаружи — керамика. $10–30 тыс. за штуку, 80 на ступень.</div></div>
+      <table class="t pt">
+        <tr><th>Деталь</th><th>Что делает</th><th>Как ломается</th></tr>
+        <tr><td><b>Лопасти вентилятора</b></td><td class="d">титан (полые, LEAP — углепластик с титановой кромкой), 20–24 шт., каждая 1–1.5 м; кончик — сверхзвук. На 10 000 об/мин центробежная сила на корне — 100 т</td><td class="d">птица (сертификация: 1.8 кг на взлёте), лёд, посторонний предмет с полосы; обрыв лопасти — корпус <b>обязан</b> удержать её (кевларовый контейнмент, испытание взрывом болта в корне)</td></tr>
+        <tr><td><b>Диски компрессора</b></td><td class="d">титан/никель, лопатки в «ёлочных» замках или цельные (blisk); 10–14 ступеней, каждая сжимает в 1.3–1.4 раза</td><td class="d">эрозия песком и пылью (Ближний Восток, Индия — ресурс вдвое меньше), усталостные трещины дисков → неудерживаемый разрыв (Sioux City 1989, Qantas 32)</td></tr>
+        <tr><td><b>Статор / направляющие</b></td><td class="d">неподвижные лопатки между роторными: разворачивают поток под нужным углом; часть — поворотные (VSV) для запуска и малого газа</td><td class="d">заклинивание механизма VSV → помпаж</td></tr>
+        <tr><td><b>Камера сгорания</b></td><td class="d">кольцевая жаровая труба из никелевого сплава с тысячами отверстий — воздух образует плёнку на стенке; форсунки с завихрителями; 2 свечи (только на запуск, потом горит само)</td><td class="d">прогар при неравномерном распылении; выбросы NOx — цель современных TAPS/Twin Annular</td></tr>
+        <tr><td><b>Лопатки турбины ВД</b></td><td class="d">монокристалл CMSX-4/René N5, каналы охлаждения (воздух из компрессора, 650 °C — «холодный»), термобарьерное керамическое покрытие 0.3 мм: газ 1650 °C, металл 1050 °C, плавка 1300 °C</td><td class="d">ползучесть (удлинение под нагрузкой), окисление, растрескивание покрытия, забитые каналы → сгорела. Меняют пакетом при капремонте, 30% стоимости ремонта</td></tr>
+        <tr><td><b>Подшипники и валы</b></td><td class="d">4–6 главных подшипников на масле под давлением, валы соосно один в другом; масло — синтетика Mobil Jet, 20 л, охлаждается топливом</td><td class="d">утечка масла → запах в салоне («fume event»); разрушение подшипника → вибрация → выключение</td></tr>
+        <tr><td><b>Коробка приводов (AGB)</b></td><td class="d">от вала ВД через угловую передачу: генераторы (2 × 90 кВА), гидронасосы, топливный насос, масляный, стартер (воздушный или электро)</td><td class="d">типичный отказ — генератор или насос; двигатель при этом работает</td></tr>
+        <tr><td><b>FADEC</b></td><td class="d">двухканальный компьютер на двигателе: пилот задаёт тягу, FADEC — топливо, VSV, отборы, зазоры; защита от превышения N1/N2/EGT</td><td class="d">резервирован полностью; ошибка обоих каналов — двигатель на фиксированном режиме</td></tr>
+        <tr><td><b>Отборы воздуха</b> (bleed)</td><td class="d">воздух из компрессора: наддув кабины, антиобледенение крыла и воздухозаборника, запуск второго двигателя</td><td class="d">утечка → перегрев пилона; 787 — почти без отборов, всё электрическое</td></tr>
+        
+      </table>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s13">
+  <div class="content">
+    <div class="kicker">Двигатель · режимы и отказы</div>
+    <h2>Что бывает с двигателем и почему это не страшно</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Запуск</b>: стартёр (сжатым воздухом от ВСУ или электро) раскручивает ядро до 20–25% N2 → топливо + свечи → «зажигание» → самоподдерж на 55–60% (малый газ). 40–60 секунд. Второй — от воздуха первого. Без ВСУ — от наземной установки или «перекрёстный запуск».</li>
+          <li><b>Помпаж</b> (compressor stall): поток в компрессоре оторвался от лопаток — воздух идёт назад с хлопком и языком пламени из воздухозаборника. Страшно выглядит, обычно безвредно: FADEC сбрасывает режим, восстанавливает. Причины: птица, лёд, износ, резкая дача газа на большой высоте.</li>
+          <li><b>Отказ одного</b>: сертификация ETOPS — лайнер обязан лететь на одном до 180–370 минут (A350: 370 мин = 5 часов над океаном). Разгон на одном, набор с градиентом 2.4%. Двухдвигательные летают через Атлантику с 1985 года именно поэтому — трёх- и четырёхдвигательные вымерли.</li>
+          <li><b>Отказ обоих</b> — событие раз в десятилетие: птицы (US 1549, Гудзон, 2009 — планирование 3 минуты), вулканический пепел (BA 009, 1982 — 4 двигателя встали, запустили на 4 км), топливо (Gimli Glider 1983 — 100 км планирования, Air Transat 236 — 120 км). Все с планированием: качество 17 — это 17 км вперёд на 1 км вниз.</li>
+          <li><b>Неудерживаемый разрыв</b> (uncontained failure): обломки диска пробивают корпус — 1 на 10 млн часов. Qantas 32 (2010, A380): диск турбины пробил крыло, потеряна одна из двух гидросистем и половина электрики, 650 сообщений об отказах, посадка через 2 часа, все живы. Резервирование работает.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">ВСУ и прочие «двигатели»</h3>
+        <table class="t">
+          <tr><th>Что</th><th>Где</th><th>Зачем</th></tr>
+          <tr><td><b>ВСУ (APU)</b></td><td class="d">хвост, небольшая газовая турбина 100–400 кВт</td><td class="d">электричество и воздух на земле (кондиционер, запуск двигателей), резерв в полёте; шум на стоянке — это она</td></tr>
+          <tr><td><b>RAT</b></td><td class="d">выпадающая ветрянка Ø 1 м</td><td class="d">при потере всего: крутится потоком, даёт гидравлику на рули и минимум электрики. Спасла Air Transat 236, US 1549</td></tr>
+          <tr><td><b>Аккумуляторы</b></td><td class="d">2–4 шт., 787 — литий-ионные (горели в 2013 — переделали)</td><td class="d">запуск ВСУ, 30 минут аварийного питания приборов</td></tr>
+          <tr><td>Генераторы IDG</td><td class="d">на каждом двигателе через привод постоянных оборотов</td><td class="d">115 В 400 Гц (или переменной частоты на новых), 90–250 кВА каждый; 787 — 1.45 МВт всего</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Правило: любая система, отказ которой опасен, — минимум дважды, чаще трижды, из разных источников (двигатель 1, двигатель 2, ВСУ, RAT, аккумулятор). Вероятность катастрофического отказа по сертификации — не чаще 10⁻⁹ на час полёта. Один раз в миллиард часов.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 5: СИСТЕМЫ ============ -->
+<section class="slide chapter" id="s14">
+  <div class="bgimg"><img src="assets/ch_hydraulics.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5</div>
+    <h1>Системы: гидравлика, управление, воздух, топливо</h1>
+    <p class="lead">Самолёт — это не планер с двигателями, а десяток систем, каждая продублирована, каждая с своей философией отказа. Тут — те, что двигают, дышат и кормят.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s15">
+  <div class="content">
+    <div class="kicker">Системы · управление</div>
+    <h2>Рули: от штурвала до элерона — тросы, гидравлика, провода</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/ch_controls.png" alt=""><div class="pcap">Три оси: тангаж (руль высоты), крен (элероны + спойлеры), рыскание (руль направления). Плюс триммеры, чтобы не держать усилие, и стабилизатор, который сам поворачивается целиком.</div></div>
+      <table class="t pt">
+        <tr><th>Элемент</th><th>Что делает</th><th>Как реализовано</th></tr>
+        <tr><td><b>Руль высоты</b></td><td class="d">на стабилизаторе, нос вверх/вниз (тангаж)</td><td class="d">2 половины, каждая — 2–3 гидропривода от разных систем</td></tr>
+        <tr><td><b>Переставной стабилизатор</b> (THS)</td><td class="d">весь горизонтальный хвост поворачивается на ±13° — триммирование по тангажу: снял усилие, руль высоты в нейтрали</td><td class="d">винтовой домкрат от 2 моторов; Alaska 261 (2000): смазка не делалась, гайка стёрлась — стабилизатор ушёл в упор</td></tr>
+        <tr><td><b>Элероны</b></td><td class="d">крен</td><td class="d">на A320 работают вместе со спойлерами 2–5; на скорости — ограничены</td></tr>
+        <tr><td><b>Руль направления</b></td><td class="d">рыскание, компенсация отказа двигателя, боковой ветер на посадке</td><td class="d">ограничитель отклонения по скорости — на 400 км/ч полный ход оторвёт киль (AA 587, 2001)</td></tr>
+        <tr><td><b>Механическая проводка</b> (до 1980-х, 737 до сих пор частично)</td><td class="d">штурвал → тросы и тяги → гидроусилитель → руль. Пилот чувствует аэродинамику через загрузочный механизм</td><td class="d">737: при отказе гидравлики можно рулить вручную, тяжело</td></tr>
+        <tr><td><b>Fly-by-wire</b> (A320 1988, 777, все новые)</td><td class="d">сайдстик/штурвал → датчики → 5–7 компьютеров → команда гидроприводу. Между рукой и рулём — только провода и софт</td><td class="d">Airbus: компьютер интерпретирует «хочу такую перегрузку/крен» и сам держит; Boeing: имитирует классическое поведение</td></tr>
+        <tr><td><b>Защиты (Airbus, Normal Law)</b></td><td class="d">не даст: превысить 2.5g, задрать угол атаки до сваливания, накренить больше 67°, разогнаться за Vmo. Тянешь стик до упора — самолёт даёт максимум безопасного</td><td class="d">при отказе датчиков деградирует до Alternate/Direct Law — защиты уходят, пилот один. AF 447 — именно так</td></tr>
+        <tr><td><b>MCAS (737 MAX)</b></td><td class="d">софт, опускающий нос при большом угле атаки — компенсировал новые тяжёлые двигатели, сместившие центровку</td><td class="d">брал данные с <b>одного</b> датчика; датчик врал — MCAS уводил нос вниз 4 раза подряд; пилотов не учили. 346 погибших. Теперь — 2 датчика, одно срабатывание, отключаемый</td></tr>
+        <tr><td><b>Автопилот</b></td><td class="d">держит курс, высоту, скорость, летит по маршруту FMS, снижается по глиссаде, сажает (CAT IIIb — видимость 75 м). Не взлетает</td><td class="d">включают на 300–1000 м после взлёта, выключают на 100–300 м перед посадкой или садятся на автомате в туман. 95% полёта — автопилот, 100% решений — экипаж</td></tr>
+        <tr><td><b>Автомат тяги</b></td><td class="d">держит заданную скорость или режим двигателей</td><td class="d">рычаги на Airbus не двигаются сами — привычка к Boeing подводит</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s16">
+  <div class="content">
+    <div class="kicker">Системы · гидравлика и шасси</div>
+    <h2>Гидравлика: три независимых системы по 210 атмосфер</h2>
+    <div class="part rev">
+      <table class="t pt">
+        <tr><th>Деталь</th><th>Что делает</th><th>Особенности</th></tr>
+        <tr><td><b>Три системы</b> (A320: Green, Blue, Yellow; 777: L, C, R)</td><td class="d">каждая — свой бак, насосы, магистрали; рули запитаны минимум от двух. Отказ одной — ничего, двух — ограничения, трёх — RAT + резерв</td><td class="d">3000 psi (210 бар), 787 и A380 — 5000 psi: трубы тоньше, легче</td></tr>
+        <tr><td><b>Насосы</b></td><td class="d">от двигателей (EDP, основные), электрические (резерв, на земле), RAT, ручной (для грузовой двери)</td><td class="d">PTU — гидромотор-насос между системами: передаёт мощность без смешивания жидкости; знакомый лай «собаки» под полом A320 при рулении</td></tr>
+        <tr><td><b>Жидкость</b> Skydrol</td><td class="d">фосфат-эфирная, негорючая, −55…+110 °C; 100–200 л на систему</td><td class="d">разъедает краску и кожу; течь — фиолетовые пятна</td></tr>
+        <tr><td><b>Гидроприводы</b> (актуаторы)</td><td class="d">цилиндр с золотником; сервоклапан управляется электрически (FBW) или тягой. На руле высоты — 3 привода от 3 систем, работают вместе</td><td class="d">787/A380: часть — электрогидростатические (EHA): свой моторчик и мини-насос, питание — провод</td></tr>
+        <tr><td><b>Потребители</b></td><td class="d">все рули, закрылки/предкрылки (гидромоторы + валы вдоль крыла), шасси (выпуск/уборка/поворот/тормоза), реверс, грузовые двери</td><td class="d">аварийный выпуск шасси — по гравитации, ручкой; тормоза — от аккумулятора давления на 7 нажатий</td></tr>
+        <tr><td><b>Амортизатор стойки</b></td><td class="d">олео-пневматический: азот сжимается, масло через дроссель гасит; ход 40–50 см</td><td class="d">садятся 1–2 м/с штатно; 3 м/с — «жёсткая», осмотр; 6 м/с — сертификационный предел</td></tr>
+        <tr><td><b>Колёса и шины</b></td><td class="d">A320: 2+2+2; 777: 6+6+2; A380: 22 колеса. Шины радиальные, 14–16 слоёв, азот 15 атм, 200–300 посадок, восстанавливают протектор до 7 раз</td><td class="d">Concorde 2000: кусок металла на полосе → шина → бак. Теперь осмотр полосы и кевлар в баках Concorde (поздно)</td></tr>
+        <tr><td><b>Антиюз и автотормоз</b></td><td class="d">датчики оборотов каждого колеса, модуляция давления 10 раз/с; автотормоз — заданное замедление после касания</td><td class="d">самолёт ABS с 1948 года — за 30 лет до автомобилей</td></tr>
+        <tr><td>Указатели положения</td><td class="d">3 зелёных — шасси выпущено и на замках</td><td class="d">лампочка не горит → проверка → облёт вышки визуально → посадка «на живот» крайне редко</td></tr>
+      </table>
+      <div class="pimg"><img src="assets/ch_hydraulics.png" alt=""><div class="pcap">Стойка A320 держит 30 т при касании и убирается за 10 с. Тормоза — карбон-карбон, диски трутся друг о друга; одна посадка снимает микроны, одна прерванная на V1 — сжигает пакет.</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s17">
+  <div class="content">
+    <div class="kicker">Системы · воздух</div>
+    <h2>Наддув и кондиционирование: почему ты дышишь на 11 км</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/ch_pressurization.png" alt=""><div class="pcap">Снаружи −56 °C и 0.22 атм — без наддува сознание уходит за 30–60 секунд. Внутри — 0.75–0.8 атм (эквивалент 2000–2400 м), +22 °C. Воздух в салоне полностью обновляется каждые 2–3 минуты.</div></div>
+      <table class="t pt">
+        <tr><th>Деталь</th><th>Что делает</th><th>Особенности</th></tr>
+        <tr><td><b>Отбор воздуха</b> (bleed)</td><td class="d">горячий сжатый воздух из компрессора (200–250 °C, 3 атм) через клапаны и предохладитель</td><td class="d">787 — электрические компрессоры вместо отбора: чище, эффективнее, и салон держат на 1800 м вместо 2400</td></tr>
+        <tr><td><b>Пакеты кондиционирования</b> (PACK, 2 шт.)</td><td class="d">турбохолодильники: воздух расширяется в турбине и охлаждается до +5, смешивается с горячим до нужной температуры; вода отделяется</td><td class="d">в брюхе у крыла; один пак — хватает на весь самолёт с ограничениями</td></tr>
+        <tr><td><b>Смеситель и рециркуляция</b></td><td class="d">50% свежего + 50% рециркулированного через HEPA-фильтры (как в операционных, 99.97% частиц)</td><td class="d">воздух в салоне чище офисного; «заражение в самолёте» — от соседа в радиусе 2 рядов, не от вентиляции</td></tr>
+        <tr><td><b>Клапан сброса</b> (outflow valve)</td><td class="d">одна большая створка в хвосте — регулирует, сколько воздуха выпустить; управляет давлением. Компьютер ведёт кабину плавно: 500 фут/мин вниз при снижении, чтобы уши успевали</td><td class="d">заклинил открытым — потеря давления медленная; закрытым — предохранительные клапаны стравят на 8.6 psi перепада</td></tr>
+        <tr><td><b>Кислородные маски</b></td><td class="d">выпадают при кабинной высоте 4200 м; химические генераторы (перхлорат натрия горит 12–15 минут — запах гари нормален) или баллоны; у пилотов — баллон на часы</td><td class="d">12 минут хватает: пилоты снижаются до 3000 м за 4–5 минут (аварийное снижение 6000 фут/мин)</td></tr>
+        <tr><td><b>Гипоксия</b></td><td class="d">на 11 км без маски: 30–60 с до потери сознания, без боли, с эйфорией. Helios 522 (2005): переключатель наддува в «ручном», все уснули, самолёт летел 2 часа на автопилоте</td><td class="d">поэтому маска сначала на себя, потом ребёнку — у тебя 15 секунд ясности</td></tr>
+        <tr><td><b>Антиобледенение</b></td><td class="d">горячий отбор — на переднюю кромку крыла и воздухозаборники; электрообогрев — стёкла, ПВД, датчики; на земле — облив гликолем</td><td class="d">лёд 1 мм на крыле — до −30% подъёмной силы; Air Florida 90 (1982) — взлёт с необработанным крылом</td></tr>
+        <tr><td>Обогрев стёкол</td><td class="d">токопроводящий слой в триплексе, 40 °C — от льда и <b>для прочности</b> при птице (тёплый акрил пластичнее)</td><td class="d">лобовое A320 — 4 слоя, выдерживает 1.8 кг на 600 км/ч</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s18">
+  <div class="content">
+    <div class="kicker">Системы · топливо</div>
+    <h2>Топливо: 20 тонн керосина в крыле и как его считают</h2>
+    <div class="part rev">
+      <table class="t pt">
+        <tr><th>Деталь</th><th>Что делает</th><th>Особенности</th></tr>
+        <tr><td><b>Керосин Jet A-1</b></td><td class="d">плотность 0.8, вспышка +38 °C (бензин −40: керосин в лужу можно бросить спичку — не вспыхнет), замерзает −47 °C, 43 МДж/кг; присадки против льда и статики</td><td class="d">на 11 км −56 °C снаружи — топливо охлаждается до −30; на длинных полярных маршрутах следят, иногда снижаются</td></tr>
+        <tr><td><b>Баки</b></td><td class="d">кессоны крыла (левый, правый) + центральный под полом + у дальних — в стабилизаторе (триммерный, для центровки) и дополнительные в багажнике. A320: 24 т макс, 777-300ER: 145 т — половина взлётной массы</td><td class="d">берут не «полные», а расчёт: маршрут + запасной аэродром + 30 мин + 5% + решение капитана. Лишняя тонна — +40 кг сжигания в час на её перевозку</td></tr>
+        <tr><td><b>Подкачивающие насосы</b></td><td class="d">электрические, по 2 в баке, подают к двигателям под 0.5–1 атм; двигательный насос ВД поднимает до 100 атм</td><td class="d">двигатель сосёт и самотёком — насосы для надёжности и высоты</td></tr>
+        <tr><td><b>Порядок расхода</b></td><td class="d">сначала центральный (разгрузить фюзеляж), потом крыльевые; внешние отсеки крыла — последними (топливо на концах гасит изгиб)</td><td class="d">автоматика; пилот следит за дисбалансом левый/правый — &gt;1.5 т — перекрёстное питание</td></tr>
+        <tr><td><b>Кран перекрёстного питания</b> (crossfeed)</td><td class="d">соединяет левую и правую системы: любой бак → любой двигатель</td><td class="d">Air Transat 236: течь справа, пилоты открыли crossfeed — слили всё в дырку. Теперь процедура «сначала найди утечку»</td></tr>
+        <tr><td><b>Топливомеры</b></td><td class="d">ёмкостные датчики (10–20 на бак), компенсация плотности и крена; плюс расходомеры на двигателях — две независимые оценки</td><td class="d">Gimli Glider 1983: топливомер сломан, заправили по расчёту в фунтах вместо кг — вдвое меньше</td></tr>
+        <tr><td><b>Инертизация</b></td><td class="d">азот из мембранного генератора вытесняет кислород из паров над топливом центрального бака</td><td class="d">после TWA 800 (1996): искра в пустом центральном баке от проводки → взрыв. С 2008 обязательна</td></tr>
+        <tr><td><b>Дренаж и вентиляция</b></td><td class="d">баки «дышат» через законцовки крыла; на земле сливают отстой воды</td><td class="d">вода в керосине → лёд в фильтрах → BA 38 (2008), оба двигателя на глиссаде</td></tr>
+        <tr><td><b>Аварийный слив</b></td><td class="d">у дальнемагистральных: 2–3 т/мин через сопла на крыле — снизить массу до посадочной при возврате</td><td class="d">у A320/737 — нет; садятся с перевесом, потом осмотр</td></tr>
+      </table>
+      <div class="pimg"><img src="assets/ch_fuel.png" alt=""><div class="pcap">A320 Москва–Сочи: ~1400 км, 2 часа, ~5.5 т топлива сжечь + 3–4 т запас. На пассажира — 30 кг, как бак маленькой машины. Взлёт и набор — 1/4 всего расхода.</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 6: КАБИНА ============ -->
+<section class="slide chapter" id="s19">
+  <div class="bgimg"><img src="assets/ch_cockpit.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6</div>
+    <h1>Кабина: приборы, навигация, экипаж</h1>
+    <p class="lead">Два человека, шесть экранов, 200 переключателей над головой. Что они видят, откуда самолёт знает, где он, и чем заняты пилоты, когда «всё делает автопилот».</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s20">
+  <div class="content">
+    <div class="kicker">Кабина · приборы и датчики</div>
+    <h2>Что видит пилот и откуда это берётся</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/ch_avionics.png" alt=""><div class="pcap">Снаружи на носу: 3 трубки Пито (скорость), 6 статических портов (высота), 3 флюгера угла атаки, датчики температуры. Внутри: 3 инерциальных блока, GPS, радиовысотомеры. Всё — по три, голосование 2 из 3.</div></div>
+      <table class="t pt">
+        <tr><th>Прибор / датчик</th><th>Что даёт</th><th>Как работает / что бывает</th></tr>
+        <tr><td><b>PFD</b> (основной пилотажный)</td><td class="d">авиагоризонт, скорость (лента слева), высота (лента справа), вертикальная скорость, курс, режимы автопилота — всё в одном экране перед каждым пилотом</td><td class="d">заменил «шесть часов» 1970-х</td></tr>
+        <tr><td><b>ND</b> (навигационный)</td><td class="d">карта: маршрут, точки, погодный радар, рельеф, другие самолёты (TCAS), аэропорты</td><td class="d">масштаб 10–640 миль</td></tr>
+        <tr><td><b>ECAM / EICAS</b></td><td class="d">двигатели (N1, EGT, расход), системы, предупреждения с процедурами — Airbus показывает, что делать, по шагам</td><td class="d">Qantas 32 — 650 сообщений за минуту</td></tr>
+        <tr><td><b>ПВД</b> (трубка Пито)</td><td class="d">скоростной напор → приборная скорость; с обогревом</td><td class="d">лёд/осы/заклеили скотчем (Aeroperú 603) → ложная скорость; AF 447 — кристаллы льда на 3 ПВД сразу</td></tr>
+        <tr><td><b>Статические порты</b></td><td class="d">атмосферное давление → барометрическая высота; QNH выставляется по данным аэропорта, выше 3000 м — все на 1013</td><td class="d">высота «по давлению» одинаково врёт у всех — эшелоны безопасны</td></tr>
+        <tr><td><b>Датчик угла атаки</b></td><td class="d">флюгер на борту фюзеляжа</td><td class="d">MCAS читал один; Airbus — три, отбрасывает выпавший</td></tr>
+        <tr><td><b>ИНС / ADIRU</b></td><td class="d">лазерные гироскопы + акселерометры: знает положение, ускорения, вычисляет позицию без внешних сигналов; дрейф 1–2 км/ч</td><td class="d">выравнивание 5–10 мин на стоянке; корректируется GPS и радиомаяками</td></tr>
+        <tr><td><b>GPS / GNSS</b></td><td class="d">позиция 10 м; основа RNAV/RNP-заходов</td><td class="d">спуфинг у зон конфликтов (Балтика, Ближний Восток, 2023–25) — ИНС и маяки как резерв</td></tr>
+        <tr><td><b>Радиовысотомер</b></td><td class="d">высота над землёй до 750 м по отражённому радиосигналу — для посадки и автоматических отсчётов «fifty, forty, thirty…»</td><td class="d">5G-конфликт частот в США 2022</td></tr>
+        <tr><td><b>Погодный радар</b></td><td class="d">в носу, видит осадки на 300 км, сдвиг ветра, турбулентность (доплер)</td><td class="d">не видит «ясное небо» турбулентность — только по отчётам</td></tr>
+        <tr><td><b>TCAS</b></td><td class="d">опрашивает транспондеры соседей, при угрозе даёт команду «climb/descend», согласованную с другим самолётом</td><td class="d">Юберлинген 2002: диспетчер сказал одно, TCAS другое, экипаж послушал диспетчера. Теперь TCAS — приоритет</td></tr>
+        <tr><td><b>EGPWS</b></td><td class="d">база рельефа + позиция → «TERRAIN, PULL UP» за 60 с до столкновения</td><td class="d">CFIT (столкновение с землёй в управляемом полёте) — было убийцей № 1, теперь почти ноль</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s21">
+  <div class="bgimg"><img src="assets/ch_atc.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Кабина · полёт от А до Б</div>
+    <h2>Один рейс по минутам: что делает экипаж, когда «всё на автопилоте»</h2>
+    <div class="cols">
+      <div>
+        <div class="dg">
+          <div class="row" style="align-items:stretch">
+            <div class="bx"><b>−90 мин</b><span>брифинг: погода, NOTAM, маршрут, топливо, запасные; кто пилотирует (PF), кто мониторит (PM)</span></div>
+            <div class="bx"><b>−40</b><span>осмотр снаружи, загрузка FMS (маршрут, массы, центровка, скорости), проверки по чеклисту</span></div>
+            <div class="bx cy"><b>0</b><span>выталкивание, запуск, руление по указаниям Ground; чеклист before takeoff</span></div>
+            <div class="bx cy"><b>+5</b><span>взлёт: PF рулит, PM читает скорости; V1 — VR — V2; шасси убрать; 1500 фут — автопилот</span></div>
+          </div>
+          <div class="row" style="align-items:stretch">
+            <div class="bx"><b>+20</b><span>набор до эшелона, передача между диспетчерами каждые 100–200 км; ремни выкл</span></div>
+            <div class="bx"><b>крейсер</b><span>мониторинг топлива и систем каждые 30 мин, погода впереди, связь, обход гроз, расчёт снижения (TOD)</span></div>
+            <div class="bx am"><b>−30 мин</b><span>брифинг посадки: заход, полоса, погода, минимумы, что делать при уходе на второй круг</span></div>
+            <div class="bx am"><b>−10</b><span>снижение, векторение, закрылки, шасси; 1000 фут — стабилизирован или уход</span></div>
+            <div class="bx gr"><b>0</b><span>касание, реверс, автотормоз, руление, выключение, документы</span></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Автопилот не пилот</b>: он держит то, что ему сказали. Пилоты решают, что ему сказать: высоту, скорость, маршрут, режим захода — и меняют это 50–100 раз за рейс по командам диспетчера и погоде. Плюс мониторят системы, топливо, связь, считают.</li>
+          <li><b>Два пилота — не «основной и запасной»</b>. PF летит, PM читает чеклисты, ведёт связь, следит за PF и обязан вмешаться. Роли меняются по рейсам. CRM (с 1980-х, после Тенерифе 1977 — 583 погибших из-за того, что бортинженер не решился перебить капитана) — второй пилот <b>обязан</b> оспорить. Это снизило катастрофы вдвое.</li>
+          <li><b>Диспетчеры</b>: Ground (руление) → Tower (взлёт/посадка) → Approach → Area Control (эшелоны, 50–200 самолётов на секторе) → и обратно. Эшелоны через 300 м, встречные — на нечётных/чётных; RVSM. Радар + ADS-B (каждый самолёт сам передаёт позицию раз в секунду — Flightradar это оно).</li>
+          <li><b>Уход на второй круг</b> — не ЧП, а штатная процедура: 1 на 300 заходов. Не стабилизирован к 1000 фут (скорость, глиссада, конфигурация) — уходим без обсуждения.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 7: БЕЗОПАСНОСТЬ ============ -->
+<section class="slide chapter" id="s22">
+  <div class="bgimg"><img src="assets/ch_safety.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 7</div>
+    <h1>Безопасность: почему один на десять миллионов</h1>
+    <p class="lead">Авиация — единственная отрасль, которая расследует каждую катастрофу до первопричины и меняет правила для всех. Каждый пункт чеклиста написан чьей-то кровью, и поэтому кровь больше не льётся.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s23">
+  <div class="content">
+    <div class="kicker">Безопасность · система</div>
+    <h2>Слои сыра: как устроена система, в которой ошибка не убивает</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Модель Ризона</b>: катастрофа — когда дырки в нескольких слоях защиты совпали. Слои: конструкция (резервирование 10⁻⁹) → техобслуживание → экипаж (2 человека, CRM, чеклисты) → процедуры (стабилизированный заход) → автоматика (защиты, TCAS, EGPWS) → диспетчер. Одна ошибка ловится следующим слоем. Катастрофа требует 5–7 совпадений — и в отчёте всегда цепочка.</li>
+          <li><b>Расследование, не наказание</b>: чёрные ящики (регистратор параметров — 1000+ каналов 25 ч, речевой — 2 ч; оранжевые, 3400g, 1100 °C, 30 дней подводный маяк), независимые комиссии (NTSB, МАК, BEA), отчёт — публичный, рекомендации — обязательные для всех. Пилоты добровольно сообщают об инцидентах без санкций (ASRS, 1976) — 100 000 отчётов в год: система учится на почти-ошибках.</li>
+          <li><b>Техобслуживание</b>: A-check каждые 400–600 ч (ночь), C-check каждые 20–24 мес (1–2 недели), D-check каждые 6–10 лет (2 месяца, самолёт раздевают до каркаса). Каждая деталь — с паспортом и ресурсом; контрафакт — уголовно. Самолёт 25 лет — норма при обслуживании; возраст не аргумент, история — да.</li>
+          <li><b>Сертификация</b>: тип самолёта — 5–8 лет испытаний: крыло до разрушения, бак с водой на усталость, посадка с перегрузом, эвакуация 90 с в темноте, птица в двигатель, обрыв лопасти, полёт на одном, минимальная скорость отрыва хвостом по полосе. 737 MAX показал, где сертификация прогнулась (самосертификация Boeing, недооценка MCAS) — FAA ужесточила.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Причины катастроф (коммерческая авиация, 2010–2024)</h3>
+        <table class="t">
+          <tr><th>Причина</th><th>Доля</th><th>Что делают</th></tr>
+          <tr><td>Потеря управления в полёте (LOC-I)</td><td class="d">~40% погибших</td><td class="d">тренировка сваливания на симуляторе (с 2019), защиты FBW</td></tr>
+          <tr><td>Столкновение с землёй (CFIT)</td><td class="d">~15%</td><td class="d">EGPWS — почти искоренено на Западе</td></tr>
+          <tr><td>Выкатывание с полосы</td><td class="d">много инцидентов, мало жертв</td><td class="d">стабилизированный заход, уход на второй круг</td></tr>
+          <tr><td>Отказ двигателя/техники</td><td class="d">~10%</td><td class="d">резервирование, ETOPS</td></tr>
+          <tr><td>Внешние: сбитие, теракт</td><td class="d">MH17, PS752, MH370 (?), 2024 Актау</td><td class="d">закрытие зон конфликтов — единственное средство</td></tr>
+          <tr><td>Погода как первичная</td><td class="d">&lt;5%</td><td class="d">радар, сдвиг ветра, обледенение — почти решено</td></tr>
+        </table>
+        <p style="margin-top:8px"><b>Статистика</b>: 1970 — 6.5 катастроф на млн рейсов; 2023 — 0.03. Риск погибнуть на одном рейсе — 1:10–13 млн. Летая каждый день, ждёшь катастрофы 30 000 лет. Дорога до аэропорта опаснее в 100 раз на километр. Турбулентность за 50 лет убила ~5 человек (непристёгнутых); за 2024 — один (Singapore 321).</p>
+        <p style="margin-top:8px" class="dim">Самые безопасные места — нет: статистика мала и противоречива. Пристёгнутый ремень при любой посадке — единственное, что реально влияет.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s24">
+  <div class="bgimg"><img src="assets/ch_future.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Безопасность · будущее</div>
+    <h2>Что дальше: топливо, один пилот, электричество, сверхзвук</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Топливо</b> — главная проблема: 2.5% CO₂ и рост 4%/год. Батареи — 250 Вт·ч/кг против 12 000 у керосина: электрический A320 весил бы 500 т. Реально: <b>SAF</b> (синтетический керосин из отходов/CO₂ + водород, −80% выбросов за цикл, ×3–5 цена, 0.5% рынка сейчас, мандат ЕС 70% к 2050); <b>водород</b> (Airbus ZEROe — отложен с 2035 на 2040-е: криобаки в 4 раза объёмнее); <b>электро</b> — только 9–19 мест на 300 км (Heart, Eviation Alice).</li>
+          <li><b>Двигатели</b>: открытый ротор (CFM RISE, 2030-е) — вентилятор без кожуха Ø 4 м, −20%; ещё выше двухконтурность; гибрид — электромотор помогает на взлёте.</li>
+          <li><b>Аэродинамика</b>: крыло увеличенного удлинения с подкосом (Boeing X-66, −30% сопротивления), ламинарные профили, blended wing body (JetZero — 2030-е). Планер лайнера с 1960-х почти не менялся — тут потенциал есть, но каждые 1% — 10 лет.</li>
+          <li><b>Один пилот</b> (eMCO — один в крейсере, второй отдыхает): Airbus и авиакомпании продвигают, пилоты и EASA тормозят. Полностью беспилотный лайнер — технически возможен с 2000-х, психологически и юридически — не в этом поколении. Грузовые — первыми.</li>
+          <li><b>Сверхзвук</b>: Boom Overture (2029?, M 1.7, 65 мест, SAF) — экономика не сходится, как и у Concorde; NASA X-59 — тихий сверхзвук (хлопок 75 дБ) для снятия запрета над сушей. Ниша для богатых, если вообще.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Что уже меняется (2025–2030)</h3>
+        <table class="t">
+          <tr><td>Новые лайнеры</td><td class="d">A321XLR (2024, 8700 км узкофюзеляжный — конец хабов?), 777X (2026), C919 (Китай, 100+ поставок), МС-21 (Россия, ПД-14, импортозамещение — 2026?)</td></tr>
+          <tr><td>Кабина</td><td class="d">сенсорные экраны, синтетическое зрение (рельеф в 3D на PFD), заходы по GPS без наземных маяков везде</td></tr>
+          <tr><td>УВД</td><td class="d">спутниковый ADS-B над океанами (Aireon) — интервалы с 80 до 15 миль; свободная маршрутизация; ИИ-секвенирование заходов</td></tr>
+          <tr><td>Обслуживание</td><td class="d">предиктивное: датчики двигателя шлют терабайты — деталь меняют до отказа; дроны для осмотра обшивки</td></tr>
+          <tr><td>Пассажирам</td><td class="d">Starlink на борту (с 2024), биометрия вместо посадочных, кабины A321 на 240 мест — теснее, но дешевле</td></tr>
+          <tr><td>Россия</td><td class="d">парк 700 бортов Airbus/Boeing без запчастей от производителя; каннибализация, «серые» детали, рост инцидентов; SSJ-New и МС-21 — по 10–20 в год в лучшем случае</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ИТОГИ ============ -->
+<section class="slide" id="s25">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Весь самолёт на одном слайде</h2>
+    <table class="t" style="font-size:14.5px">
+      <tr><th>Система</th><th>Задача</th><th>Ключевое число</th><th>Как резервировано</th></tr>
+      <tr><td>Крыло</td><td class="d">отбросить воздух вниз, нести топливо</td><td class="d">качество 17–20; изгиб 2 м; выдерживает 150%</td><td class="d">одно — но испытано до разрушения</td></tr>
+      <tr><td>Фюзеляж</td><td class="d">держать 0.6 атм перепада 75 000 раз</td><td class="d">8 т на дверь; круглое сечение</td><td class="d">3 слоя стекла, plug-двери, осмотры на усталость</td></tr>
+      <tr><td>Двигатель</td><td class="d">сжать ×40, сжечь, раскрутить вентилятор</td><td class="d">1650 °C при плавке 1300; 15 т тяги; КПД 40%</td><td class="d">два, каждый тянет один; ETOPS до 370 мин</td></tr>
+      <tr><td>Управление</td><td class="d">три оси + триммирование</td><td class="d">5–7 компьютеров; защиты от 2.5g и сваливания</td><td class="d">каждый руль — 2–3 привода от разных гидросистем</td></tr>
+      <tr><td>Гидравлика</td><td class="d">двигать рули, шасси, закрылки</td><td class="d">3 × 210 атм</td><td class="d">3 системы + PTU + RAT + аккумуляторы</td></tr>
+      <tr><td>Электрика</td><td class="d">приборы, компьютеры, свет, кухня</td><td class="d">2 × 90 кВА (A320) – 1.45 МВт (787)</td><td class="d">2 генератора + ВСУ + RAT + батареи 30 мин</td></tr>
+      <tr><td>Воздух</td><td class="d">дышать на 11 км, +22 °C</td><td class="d">0.8 атм внутри; обновление за 3 мин; HEPA</td><td class="d">2 пака, отбор с 2 двигателей + ВСУ, маски 12 мин</td></tr>
+      <tr><td>Топливо</td><td class="d">кормить и центровать</td><td class="d">24–145 т; 2.5 л/100 км/пасс; запас 30 мин + 5%</td><td class="d">насосы ×2 на бак, самотёк, crossfeed, две оценки остатка</td></tr>
+      <tr><td>Навигация</td><td class="d">знать где, видеть что впереди</td><td class="d">3 ИНС + GPS; TCAS; EGPWS</td><td class="d">всё по 3, голосование; маяки как резерв GPS</td></tr>
+      <tr><td>Экипаж</td><td class="d">решать; ловить ошибки друг друга</td><td class="d">2 человека; 1 уход на 300 заходов</td><td class="d">CRM, чеклисты, симулятор каждые 6 мес</td></tr>
+      <tr><td>Система в целом</td><td class="d">не убить</td><td class="d">1 катастрофа : 10 млн рейсов</td><td class="d">расследовать каждую, поменять правила для всех</td></tr>
+    </table>
+    <div class="note">Одна идея под всем: <b>ничто критичное не существует в одном экземпляре, и ни одна ошибка не должна быть последней</b>. Самолёт — не самая совершенная машина, а самая честная в отношении к отказам: он спроектирован с допущением, что всё сломается и все ошибутся.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s26">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <div class="kicker amber">Финал</div>
+    <h1>Восемьдесят тонн на десяти тоннах воздуха в секунду</h1>
+    <p class="lead">Керосин → 40 атмосфер → 1650 градусов → турбина → вентилятор → тонна воздуха в секунду назад → 830 км/ч → крыло отбрасывает десять тонн воздуха в секунду вниз → 80 тонн висят на 11 километрах при −56 °C, а внутри двести человек смотрят кино при +22 и жалуются на еду.</p>
+    <p class="lead" style="margin-top:14px">Каждая деталь этой цепочки когда-то ломалась и кого-то убивала. Каждая после этого стала резервированной, испытанной, проверяемой по чеклисту. Поэтому сегодня самое опасное в перелёте — дорога до аэропорта. Это не чудо техники. Это чудо институции, которая сто лет училась на своих ошибках и ни одну не позволила себе забыть.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- SLIDES_END -->
+
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>

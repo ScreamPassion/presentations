@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Автомобиль: от искры до колеса</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #ff9f43; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Auto deep dive · Гвендолин-ночные-лекции</div>
+    <h1>Автомобиль: от искры до колеса</h1>
+    <p class="lead">Полная анатомия машины: что происходит в цилиндре за 10 миллисекунд, зачем коробке передач шесть ступеней и почему их бывает ноль, куда уходят 70% бензина, чем робот отличается от автомата, как электромотор обходится без всего этого — и что осталось от автомобиля 1886 года в твоём.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 1: ИСТОРИЯ ============ -->
+<section class="slide chapter" id="s2">
+  <div class="bgimg"><img src="assets/ch_history.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1</div>
+    <h1>140 лет: от трёхколёски Бенца до Tesla</h1>
+    <p class="lead">Первый автомобиль — 0.75 л.с., 16 км/ч, зажигание от батареи, которой хватало на 20 минут. Через 22 года Форд делал их по одному каждые 93 минуты. Через 140 — половина новых машин в Китае без двигателя вообще.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">История · таймлайн</div>
+    <h2>Восемь поворотов, которые сделали автомобиль</h2>
+    <div class="dg" style="margin-bottom:18px">
+      <div class="row" style="align-items:stretch">
+        <div class="bx am"><b>1886</b><span>Benz Patent-Motorwagen: одноцилиндровый 954 см³, 0.75 л.с. Первая поездка на 106 км — Берта Бенц, без ведома мужа</span></div>
+        <div class="bx am"><b>1908</b><span>Ford Model T: 15 млн штук за 19 лет. 1913 — конвейер: сборка с 12 часов до 93 минут, цена с $850 до $260</span></div>
+        <div class="bx cy"><b>1930-е</b><span>независимая подвеска, гидравлические тормоза, синхронизаторы, автомат Hydra-Matic (1939), несущий кузов</span></div>
+        <div class="bx cy"><b>1950–60-е</b><span>дисковые тормоза, ремни (Volvo 1959), радиальные шины, впрыск Bosch (1967)</span></div>
+        <div class="bx"><b>1970-е</b><span>нефтяной кризис → малолитражки, катализатор (1975), ABS Bosch (1978), японцы завоёвывают США</span></div>
+        <div class="bx"><b>1990-е</b><span>электроника везде: ESP (1995), подушки, CAN-шина, OBD-II, Toyota Prius (1997) — первый серийный гибрид</span></div>
+        <div class="bx gr"><b>2008–2012</b><span>Tesla Roadster и Model S: электромобиль стал желанным, а не компромиссом</span></div>
+        <div class="bx gr"><b>2020-е</b><span>Китай — 60% мировых EV, BYD обгоняет Tesla; ADAS уровня 2 в базе; софт важнее железа</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Электромобиль старше бензинового.</b> В 1900 в США электрических было 38%, паровых 40%, бензиновых 22%. Электрички были тихими и без рукоятки-стартера — «женские». Убил их Model T (дешевле в 3 раза), электростартер (1912) и дешёвый техасский бензин. Аккумулятор за 100 лет стал лучше в 5 раз; бензин — как был.</li>
+          <li><b>Конвейер</b> — не изобретение Форда (скотобойни Чикаго), но он первым перевернул логику: не рабочий идёт к машине, а машина к рабочему. Плюс $5 в день — вдвое выше рынка — чтобы рабочие покупали свои же машины. Текучка упала с 370% до 16%.</li>
+          <li><b>Toyota Production System</b> (1950-е): не «делать быстрее», а «не делать лишнего» — just-in-time, канбан, остановка линии любым рабочим при браке. К 1980-м японцы делали машины с втрое меньшим числом дефектов за меньшие деньги. Вся мировая промышленность переучилась.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Рынок сегодня (2024)</h3>
+        <table class="t">
+          <tr><td>Продано в мире</td><td class="d">~90 млн новых</td></tr>
+          <tr><td>Из них электро (BEV)</td><td class="d">~11 млн (12%); +гибриды PHEV — 17 млн</td></tr>
+          <tr><td>Китай</td><td class="d">31 млн внутри + 6 млн экспорт (первый в мире, обогнал Японию)</td></tr>
+          <tr><td>Крупнейший производитель</td><td class="d">Toyota, 10.8 млн; VW 9 млн; Hyundai-Kia 7.2 млн</td></tr>
+          <tr><td>Крупнейший EV</td><td class="d">BYD 4.3 млн (с PHEV), Tesla 1.8 млн</td></tr>
+          <tr><td>Автопарк планеты</td><td class="d">~1.5 млрд машин; средний возраст в США 12.6 лет</td></tr>
+          <tr><td>Цена среднего нового</td><td class="d">США $48 000; Китай $22 000; Европа €35 000</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s4">
+  <div class="content">
+    <div class="kicker">История · компоновка</div>
+    <h2>Из чего состоит машина: карта на 30 000 деталей</h2>
+    <div class="dg" style="margin-bottom:16px">
+      <div class="row" style="align-items:stretch">
+        <div class="bx am"><b>Силовая установка</b><span>двигатель (ДВС / электро / гибрид), топливная или батарейная система, выпуск, охлаждение</span></div>
+        <div class="bx am"><b>Трансмиссия</b><span>сцепление, коробка, карданы, дифференциал, приводы — донести момент до колёс</span></div>
+        <div class="bx cy"><b>Ходовая</b><span>подвеска, рулевое, колёса и шины — держать на дороге</span></div>
+        <div class="bx cy"><b>Тормоза</b><span>гидравлика, диски/барабаны, ABS/ESP, стояночный</span></div>
+        <div class="bx"><b>Кузов и шасси</b><span>несущая структура, зоны деформации, навесные панели, стёкла</span></div>
+        <div class="bx"><b>Электрика и электроника</b><span>12 В сеть, 50–150 ЭБУ, сенсоры, шины CAN/Ethernet, мультимедиа</span></div>
+        <div class="bx gr"><b>Салон и безопасность</b><span>сиденья, климат, подушки, ремни, ADAS</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Компоновки</b>: передний привод, двигатель поперёк (90% легковых — дёшево, компактно, салон больше); задний привод, двигатель продольно (BMW, Mercedes, спорткары — баланс масс 50/50, рулит передняя ось, толкает задняя); полный (Subaru, Audi quattro, все внедорожники); среднемоторная (суперкары — двигатель за спиной, центр масс между осями).</li>
+          <li><b>Рама vs несущий кузов</b>: рама — лестница из лонжеронов, на неё ставится всё (грузовики, старые внедорожники, пикапы: прочно, тяжело, дубово). Несущий кузов (unibody, с 1930-х, массово с 1960-х) — сам кузов держит нагрузки: легче на 100–200 кг, жёстче, безопаснее при ударе. Все легковые сейчас.</li>
+          <li><b>Масса</b>: Model T — 540 кг. Гольф I (1974) — 800. Гольф VIII — 1300. Tesla Model Y — 2000. Растёт от безопасности (+150 кг), комфорта, размера и батарей. Каждые 100 кг — +0.3–0.5 л/100 км.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Где деньги в машине (себестоимость ДВС-седана, %)</h3>
+        <table class="t">
+          <tr><td>Кузов и покраска</td><td class="d">~20%</td></tr>
+          <tr><td>Двигатель + трансмиссия</td><td class="d">~20%</td></tr>
+          <tr><td>Электроника и ПО</td><td class="d">~15% (было 5% в 2000, будет 30% к 2030)</td></tr>
+          <tr><td>Салон</td><td class="d">~15%</td></tr>
+          <tr><td>Шасси, подвеска, тормоза, колёса</td><td class="d">~12%</td></tr>
+          <tr><td>Сборка, логистика</td><td class="d">~10%</td></tr>
+          <tr><td>Прочее</td><td class="d">~8%</td></tr>
+          <tr><td><b>Электромобиль:</b> батарея</td><td class="d"><b>30–40%</b> себестоимости — главная причина цены</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Маржа автопроизводителя на массовой машине — 3–8%. Деньги — в сервисе, запчастях, кредитах и премиуме. Porsche зарабатывает на машине больше, чем VW на семи.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2: ДВИГАТЕЛЬ ============ -->
+<section class="slide chapter" id="s5">
+  <div class="bgimg"><img src="assets/ch_engine.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2</div>
+    <h1>Двигатель: 3000 взрывов в минуту</h1>
+    <p class="lead">Поршневой ДВС — самая массовая тепловая машина в истории: два миллиарда штук. Принцип не менялся с 1876 года: сжать, поджечь, толкнуть, выбросить. Всё остальное — 150 лет борьбы за проценты.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s6">
+  <div class="bgimg"><img src="assets/ch_cylinder.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Двигатель · четыре такта</div>
+    <h2>Цилиндр и поршень: что происходит за два оборота</h2>
+    <div class="dg" style="margin-bottom:16px">
+      <div class="row" style="align-items:stretch">
+        <div class="bx cy"><b>1. Впуск</b><span>поршень вниз, впускной клапан открыт: засасывается воздух (+ бензин, если впрыск во впуск). 180° коленвала</span></div>
+        <div class="arr">→</div>
+        <div class="bx am"><b>2. Сжатие</b><span>клапаны закрыты, поршень вверх: смесь сжата в 10–12 раз (бензин) / 16–20 (дизель), нагрев до 400–600 °C</span></div>
+        <div class="arr">→</div>
+        <div class="bx rd"><b>3. Рабочий ход</b><span>искра (или самовоспламенение) → горение за ~2 мс → давление 50–100 атм → поршень вниз. Единственный такт, который даёт работу</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>4. Выпуск</b><span>выпускной клапан открыт, поршень вверх выталкивает газы при 700–900 °C в коллектор</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Из чего собрано</b>: блок цилиндров (чугун или алюминий с гильзами), поршни (алюминий, с кольцами — уплотнение и маслосъём), шатуны, коленвал (превращает возвратно-поступательное во вращение), головка блока с клапанами (2–5 на цилиндр), распредвалы (открывают клапаны через кулачки, крутятся вдвое медленнее коленвала), ремень/цепь ГРМ (синхронизирует), маховик (сглаживает толчки).</li>
+          <li><b>Скорости</b>: при 6000 об/мин поршень меняет направление 200 раз в секунду, разгоняясь до 25 м/с и испытывая 2000g. Клапан открывается за 5 мс. Всё это — в масляной плёнке толщиной микроны. Один сухой запуск — задиры.</li>
+          <li><b>Почему 4 цилиндра</b>: один рабочий ход на 720°. Один цилиндр — толчок, потом полтора оборота по инерции (мотоцикл). Четыре — рабочий ход каждые 180°, нет пауз. Шесть — каждые 120°, ещё ровнее (рядная шестёрка BMW — идеально уравновешена). Восемь — 90°, V-образно для компактности. Двенадцать — роскошь и звук.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Ключевые числа</h3>
+          <table class="t">
+            <tr><th>Параметр</th><th>Что это</th><th>Типично</th></tr>
+            <tr><td>Объём</td><td class="d">сумма объёмов цилиндров между крайними точками поршня</td><td class="d">1.0–2.0 л легковые; 6.2 л Hemi; 8.4 л Viper</td></tr>
+            <tr><td>Степень сжатия</td><td class="d">во сколько раз сжимается смесь</td><td class="d">10–12 бензин, 14 Mazda Skyactiv, 16–18 дизель</td></tr>
+            <tr><td>Мощность</td><td class="d">момент × обороты; л.с. = 0.735 кВт</td><td class="d">60–100 л.с./л атмосферный, 100–150 турбо</td></tr>
+            <tr><td>Момент</td><td class="d">сила на коленвалу; «тяга». Н·м</td><td class="d">пик у бензина 4000–5000 об/мин, у дизеля 1500–2500</td></tr>
+            <tr><td>Обороты</td><td class="d">максимум ограничен инерцией поршней и клапанов</td><td class="d">6500 обычный, 9000 Honda S2000, 20 000 F1 (2000-е)</td></tr>
+            <tr><td>КПД</td><td class="d">доля топлива → работа</td><td class="d">25–35% бензин, 40–45% дизель, 50% судовые</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s7">
+  <div class="content">
+    <div class="kicker">Двигатель · бензин vs дизель</div>
+    <h2>Искра или сжатие: два способа поджечь</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="am">Бензиновый (Отто, 1876)</h3>
+          <p>Смесь готовится <b>заранее</b> и поджигается <b>искрой</b> в нужный момент. Горит быстро (фронт пламени 20–40 м/с). Ограничение — <b>детонация</b>: если сжать сильнее, смесь взорвётся сама до искры, стуча по поршню. Отсюда предел сжатия ~12 и октановое число (стойкость к детонации: 95 = как смесь 95% изооктана + 5% гептана).</p>
+          <p style="margin-top:8px">Мощность регулируется <b>дросселем</b>: заслонка перекрывает воздух. На малых нагрузках двигатель сосёт через щель — насосные потери, КПД в городе падает до 15%.</p>
+          <p style="margin-top:8px" class="dim">Плюсы: лёгкий, дешёвый, тихий, высокие обороты, простая очистка выхлопа (трёхкомпонентный катализатор). Минусы: расход, момент только наверху.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="cy">Дизельный (Дизель, 1897)</h3>
+          <p>Сжимается <b>только воздух</b> — в 16–20 раз, до 700–900 °C. Топливо впрыскивается в этот огонь под 2000+ бар в самом конце сжатия и <b>самовоспламеняется</b>. Детонации не боится — наоборот, на ней работает. Высокое сжатие = высокий КПД (термодинамика: КПД ∝ степени сжатия).</p>
+          <p style="margin-top:8px">Дросселя нет — мощность регулируется количеством топлива. Нет насосных потерь → в городе экономнее на 30%. Горит медленнее → обороты ниже (4500 макс), но момент огромный с низов: грузовики, тракторы, корабли.</p>
+          <p style="margin-top:8px" class="dim">Минусы: тяжёлый (давления в 2 раза выше — толще стенки), дорогой (ТНВД, форсунки — точность микронов), шумный, грязный выхлоп: сажа (DPF-фильтр) и NOx (мочевина AdBlue, SCR). Dieselgate 2015: VW программно обманывал тесты NOx на 11 млн машин — $33 млрд штрафов и конец дизельной Европы.</p>
+        </div>
+      </div>
+    </div>
+    <div class="dg" style="margin-top:16px">
+      <table class="t" style="font-size:14px">
+        <tr><th></th><th>Бензин</th><th>Дизель</th><th>Комментарий</th></tr>
+        <tr><td>Степень сжатия</td><td class="d">10–12 (14 с прямым впрыском)</td><td class="d">16–20</td><td class="d">главный источник разницы КПД</td></tr>
+        <tr><td>Давление в цилиндре</td><td class="d">50–80 бар</td><td class="d">150–200 бар</td><td class="d">дизель тяжелее на 20–30%</td></tr>
+        <tr><td>Давление впрыска</td><td class="d">3–5 бар (во впуск), 200–350 (прямой)</td><td class="d">1600–2700 бар common rail</td><td class="d">пьезофорсунки, 5–8 впрысков за такт</td></tr>
+        <tr><td>Расход, л/100 км (C-класс)</td><td class="d">6–8</td><td class="d">4.5–6</td><td class="d">дизтопливо ещё и на 12% калорийнее</td></tr>
+        <tr><td>CO₂ на км</td><td class="d">130–160 г</td><td class="d">110–130 г</td><td class="d">но NOx и сажа хуже</td></tr>
+        <tr><td>Ресурс</td><td class="d">200–300 тыс. км</td><td class="d">400–1000 тыс.</td><td class="d">грузовые — до 2 млн</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s8">
+  <div class="bgimg"><img src="assets/ch_fuel.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Двигатель · наддув и впрыск</div>
+    <h2>Турбо, впрыск и фазы: как из 1.5 литров выжали 200 сил</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Турбонаддув</b>: выхлопные газы (даром, они всё равно улетают) крутят турбину до 250 000 об/мин, она — компрессор, который набивает в цилиндр в 1.5–2.5 раза больше воздуха. Больше воздуха → больше топлива → больше мощности при том же объёме. 1.5 л турбо = 2.5 л атмосферный по мощности, минус 40 кг и минус литр расхода на трассе. <b>Турбояма</b>: пока газы не раскрутили турбину — задержка 0.5–1 с; лечится маленькой турбиной, двумя турбинами, изменяемой геометрией, электронаддувом (48 В).</li>
+          <li><b>Механический компрессор</b> (Supercharger): крутится ремнём от коленвала — отклик мгновенный, но отбирает 10–15% мощности. Dodge Hellcat, старые Mercedes Kompressor.</li>
+          <li><b>Впрыск</b>: карбюратор (до 1990-х) смешивал по Бернулли, грубо. <b>Распределённый впрыск</b> — форсунка на каждый цилиндр во впускной канал, ЭБУ считает дозу 1000 раз в секунду по лямбда-зонду. <b>Прямой впрыск</b> (GDI/FSI/TSI, с 2000-х) — прямо в цилиндр под 200–350 бар: точнее, можно сжимать сильнее (испарение охлаждает), −10% расхода. Минус — нагар на впускных клапанах (бензин их больше не моет), поэтому многие ставят оба.</li>
+          <li><b>Фазы клапанов</b> (VTEC, VVT-i, Valvetronic): на низких оборотах клапаны открываются позже и меньше — экономия; на высоких — раньше и шире — мощность. Honda VTEC (1989) переключал профили кулачков с щелчком на 5500 — культ. BMW Valvetronic вообще убрал дроссель, регулируя подъём клапанов.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Куда уходит бензин (средняя езда)</h3>
+          <table class="t">
+            <tr><td>Тепло в выхлоп</td><td class="d">~30%</td></tr>
+            <tr><td>Тепло в охлаждение (радиатор)</td><td class="d">~30%</td></tr>
+            <tr><td>Трение, насосы, генератор, помпа</td><td class="d">~10%</td></tr>
+            <tr><td>Насосные потери на дросселе</td><td class="d">~5%</td></tr>
+            <tr><td><b>На колёса</b></td><td class="d"><b>~25%</b></td></tr>
+            <tr><td>из них: сопротивление воздуха</td><td class="d">на трассе — половина</td></tr>
+            <tr><td>качение шин</td><td class="d">~25% от колёсной</td></tr>
+            <tr><td>торможение (в городе — в тепло дисков)</td><td class="d">до 50% от колёсной</td></tr>
+          </table>
+          <p style="margin-top:8px">Из литра бензина (9.5 кВт·ч) до колёс доходит 2–3 кВт·ч. Электромобиль из 9.5 кВт·ч в батарее довезёт 8. В этом вся разница главы 6.</p>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Даунсайзинг</b> 2010-х (1.0 л трёхцилиндровые турбо на 125 л.с.) на бумаге экономил, в реальности — нет: на трассе турбо дует постоянно, расход как у 1.8. Плюс ресурс. Тренд откатывается к 1.5–2.0 + гибридизация.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s9">
+  <div class="content">
+    <div class="kicker">Двигатель · обслуга</div>
+    <h2>Масло, охлаждение, выхлоп: три системы, без которых он умрёт за минуту</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3 class="am">Смазка</h3>
+        <p>Насос гонит масло под 3–5 бар в коленвал, шатуны, распредвалы, на стенки цилиндров. Между вкладышем и шейкой вала — плёнка 2–5 микрон, металл металла не касается. Масло ещё и охлаждает поршни (до 40% тепла) и моет.</p>
+        <p style="margin-top:8px"><b>5W-30</b>: 5W — текучесть на холоде (0W лучше для запуска в −30), 30 — вязкость при 100 °C. Синтетика — стабильнее, дольше. Интервал 10–15 тыс. км; в городе с пробками — вдвое чаще: моточасы, а не километры.</p>
+        <p style="margin-top:8px" class="rd">Главная причина смерти двигателя — масляное голодание: уровень, забитый фильтр, задранные маслосъёмные кольца (масложор турбомоторов).</p>
+      </div>
+      <div class="card">
+        <h3 class="cy">Охлаждение</h3>
+        <p>Стенки цилиндра — 2000 °C изнутри при горении, алюминий плавится при 660. Антифриз (вода + этиленгликоль, −40…+125 °C) идёт по рубашке блока, забирает тепло, отдаёт в радиатор. Термостат держит 90–105 °C: холоднее — масло густое, расход и износ; горячее — детонация, прогар.</p>
+        <p style="margin-top:8px">Вентилятор включается на 100+. Помпа — от ремня или электро. Расширительный бачок — под давлением 1.2–1.5 бар, чтобы не кипело.</p>
+        <p style="margin-top:8px" class="rd">Перегрев 5 минут — ведёт головку, прогорает прокладка, антифриз в масле → капремонт. Никогда не открывать крышку горячим.</p>
+      </div>
+      <div class="card">
+        <h3>Выпуск и экология</h3>
+        <p>Коллектор → турбина → <b>катализатор</b> (платина/палладий/родий на керамических сотах, 400–800 °C: CO → CO₂, углеводороды → CO₂ + H₂O, NOx → N₂; убирает 95–99%) → сажевый фильтр (все дизели, бензин с прямым впрыском с 2018) → резонатор и глушитель (гасят волны давления) → труба.</p>
+        <p style="margin-top:8px"><b>Лямбда-зонд</b> до и после катализатора меряет кислород — ЭБУ держит смесь стехиометрической (14.7:1 по массе), иначе катализатор не работает.</p>
+        <p style="margin-top:8px" class="dim">Евро-1 (1992) → Евро-6d (2020): NOx снизили в 15 раз, частицы — в 30. Евро-7 (2027) — плюс износ шин и тормозов. Катализатор — самая дорогая деталь выхлопа: в нём $200–500 металла, отсюда кражи.</p>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:16px"><b>Прогрев зимой</b>: современному впрысковому двигателю не нужен — 30 секунд и ехать спокойно, без высоких оборотов, пока не 60 °C. Долгий прогрев на холостых — расход, нагар и смыв масла со стенок бензином. Совет «греть 10 минут» — из карбюраторной эпохи.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 3: ТРАНСМИССИЯ ============ -->
+<section class="slide chapter" id="s10">
+  <div class="bgimg"><img src="assets/ch_transmission.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3</div>
+    <h1>Трансмиссия: зачем нужна коробка</h1>
+    <p class="lead">Двигатель хорошо работает в узком окне 1500–5000 об/мин, а колёсам нужно от 0 до 1500. Коробка — переводчик между ними. Пять способов её сделать, у каждого — своя цена.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s11">
+  <div class="content">
+    <div class="kicker">Трансмиссия · зачем</div>
+    <h2>Момент, мощность и почему без передач не поедешь</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Мощность = момент × обороты.</b> Двигатель на 150 л.с. даёт их только на 5500 об/мин. Со старта колёса стоят — обороты нулевые. Напрямую соединить — двигатель глохнет (или буксует сцепление). Нужно понизить обороты в 10–15 раз, и тогда момент на колёсах вырастет в те же 10–15 раз: 250 Н·м на валу → 3000 Н·м на колёсах — машина трогается.</li>
+          <li>На 120 км/ч колёса делают ~1000 об/мин. Двигателю комфортно на 2000. Нужно понижение в 2 раза. Между 15 и 2 — ещё несколько ступеней, чтобы двигатель всё время оставался в своём окне. Больше ступеней — ближе к оптимуму на любой скорости, поэтому 4 → 5 → 6 → 8 → 10 передач за 40 лет.</li>
+          <li><b>Главная передача</b> (в дифференциале) — ещё одно постоянное понижение в 3–4.5 раза. Итоговое число на 1-й: 3.5 × 4 = 14. На высшей: 0.7 × 4 = 2.8 (овердрайв — вал крутится медленнее двигателя).</li>
+          <li><b>Дифференциал</b>: в повороте внешнее колесо едет дальше внутреннего. Жёсткая ось — одно из них скользит. Дифференциал (планетарка с сателлитами) делит момент поровну, а обороты — как получится. Побочка: одно колесо на льду крутится, второе стоит — момент уходит в буксующее. Лечение: блокировка, самоблок (LSD), электроника подтормаживает буксующее.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Путь момента (передний привод)</h3>
+          <div class="dg">
+            <div class="row">
+              <div class="bx am"><b>Коленвал</b><span>250 Н·м @ 2000</span></div>
+              <div class="arr">→</div>
+              <div class="bx"><b>Сцепление / гидротрансформатор</b><span>размыкает, чтобы переключить или стоять</span></div>
+              <div class="arr">→</div>
+              <div class="bx cy"><b>Коробка</b><span>×3.5 (1-я) … ×0.7 (6-я)</span></div>
+            </div>
+            <div class="row">
+              <div class="bx cy"><b>Главная пара + дифференциал</b><span>×4; делит между колёсами</span></div>
+              <div class="arr">→</div>
+              <div class="bx"><b>Приводные валы (ШРУСы)</b><span>передают момент под углом до 45°</span></div>
+              <div class="arr">→</div>
+              <div class="bx gr"><b>Колёса</b><span>3500 Н·м на 1-й; при R=0.3 м — тяга 1.2 т</span></div>
+            </div>
+            <div class="cap">Задний привод: между коробкой и дифференциалом — карданный вал вдоль машины. Полный: раздаточная коробка делит момент между осями (постоянно, по муфте или по блокировке). Потери в трансмиссии — 5–15%.</div>
+          </div>
+        </div>
+        <div class="note" style="margin-top:12px"><b>ШРУС</b> (шарнир равных угловых скоростей, «граната») — шесть шариков в канавках, передаёт вращение под углом без пульсаций. Порванный пыльник → грязь → хруст в поворотах → замена. Самый частый ремонт переднего привода.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s12">
+  <div class="content">
+    <div class="kicker">Трансмиссия · пять типов</div>
+    <h2>Механика, автомат, робот, вариатор, редуктор</h2>
+    <div class="cols5">
+      <div class="card">
+        <h3 class="am">Механика (MT)</h3>
+        <p>Пары шестерён на двух валах всегда в зацеплении; водитель муфтой с синхронизатором (конус трения выравнивает обороты) жёстко соединяет нужную пару с валом. Сцепление — сухой диск, прижатый пружиной к маховику, размыкается ногой.</p>
+        <p class="dim">КПД 96–98%, дёшево, ресурс 300+ тыс., ремонт копеечный. Требует навыка. Европа: с 80% (2010) до 25%; США — 1%.</p>
+      </div>
+      <div class="card">
+        <h3 class="cy">Автомат (AT)</h3>
+        <p><b>Гидротрансформатор</b> вместо сцепления: два лопастных колеса в масле — двигатель крутит насосное, поток масла крутит турбинное. Скользит на месте, плавно трогается, множит момент ×2. <b>Планетарные ряды</b>: тормозя фрикционами разные элементы, получаешь передачи без разрыва потока. ZF 8HP — эталон, 200 мс.</p>
+        <p class="dim">КПД 85–92%, плавность, надёжность при замене масла. Дорого, 90 кг, сложно.</p>
+      </div>
+      <div class="card">
+        <h3>Робот (AMT / DCT)</h3>
+        <p><b>Однодисковый</b>: механика с актуаторами. Дёшево, задумчиво, дёргается — умер. <b>Преселективный DCT/DSG</b> (VW 2003): две коробки в одной — чётные и нечётные передачи на двух валах со своими сцеплениями; следующая уже включена и ждёт, переброс за 50–100 мс без разрыва тяги.</p>
+        <p class="dim">КПД как у механики. Сухие (DQ200) греются в пробках; мокрые (DQ250/381) надёжнее. Porsche PDK, VW, Hyundai, китайцы.</p>
+      </div>
+      <div class="card">
+        <h3 class="am">Вариатор (CVT)</h3>
+        <p>Два раздвижных конических шкива и ремень/цепь. Шкивы сдвигаются — радиус меняется — передаточное число плавно от 2.5 до 0.4. Ступеней нет: двигатель висит на оптимуме, скорость растёт. Ремень держит ~400 Н·м.</p>
+        <p class="dim">КПД 85–88% из-за гидравлики. Nissan, Toyota, Honda, Subaru. Масло каждые 60 тыс., без буксировки. Toyota e-CVT в гибридах — другое устройство (планетарка + 2 мотора), ремня нет.</p>
+      </div>
+      <div class="card">
+        <h3 class="gr">Редуктор (электро)</h3>
+        <p>Не коробка: одна пара шестерён с фиксированным понижением ~9:1 плюс дифференциал в одном корпусе с мотором. Ни сцепления, ни гидротрансформатора, ни переключений — мотор тянет с 0 до 18 000 об/мин, диапазона хватает на всё.</p>
+        <p class="dim">КПД 96–98%, 15–25 кг, масло почти не меняется. Две ступени — только Porsche Taycan / Audi e-tron GT ради 260+ км/ч.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s13">
+  <div class="bgimg"><img src="assets/ch_drivetrain.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Трансмиссия · сравнение</div>
+    <h2>Что выбрать: таблица без маркетинга</h2>
+    <table class="t" style="font-size:14px">
+      <tr><th>Критерий</th><th>Механика</th><th>Автомат (гидро)</th><th>Робот DCT</th><th>Вариатор</th><th>Электро (редуктор)</th></tr>
+      <tr><td>Число ступеней</td><td class="d">5–6 (7 Porsche)</td><td class="d">6–10</td><td class="d">6–8</td><td class="d">∞ (плавно)</td><td class="d">1 (2 у Porsche Taycan)</td></tr>
+      <tr><td>Скорость переключения</td><td class="d">0.5–1 с (водитель)</td><td class="d">0.2–0.6 с</td><td class="d">0.05–0.15 с</td><td class="d">нет переключений</td><td class="d">—</td></tr>
+      <tr><td>КПД</td><td class="d">96–98%</td><td class="d">85–92%</td><td class="d">92–96%</td><td class="d">84–88%</td><td class="d">96–98%</td></tr>
+      <tr><td>Плавность</td><td class="d">зависит от ноги</td><td class="d">эталон</td><td class="d">рывки на малых скоростях (сухое)</td><td class="d">идеальная</td><td class="d">идеальная</td></tr>
+      <tr><td>Расход vs MT</td><td class="d">база</td><td class="d">+3–8% (старые), 0 (ZF 8HP)</td><td class="d">−2…+2%</td><td class="d">−3…−5% в городе</td><td class="d">—</td></tr>
+      <tr><td>Момент, до</td><td class="d">700+ Н·м</td><td class="d">1000+ (ZF в Rolls, грузовики)</td><td class="d">700 (мокрое); 250 (сухое)</td><td class="d">~400</td><td class="d">любой</td></tr>
+      <tr><td>Ресурс до капремонта</td><td class="d">300–500 тыс.</td><td class="d">250–400 тыс. с маслом каждые 60</td><td class="d">150–250 (сухое) / 250+ (мокрое)</td><td class="d">150–250</td><td class="d">ресурс машины</td></tr>
+      <tr><td>Цена ремонта</td><td class="d">низкая</td><td class="d">высокая</td><td class="d">высокая (мехатроник)</td><td class="d">высокая (часто целиком)</td><td class="d">почти не ломается</td></tr>
+      <tr><td>Буксировка на тросе</td><td class="d">да</td><td class="d">нет / ограничено</td><td class="d">нет</td><td class="d">нет</td><td class="d">нет (генерирует)</td></tr>
+      <tr><td>Где</td><td class="d">бюджет, Европа, энтузиасты</td><td class="d">премиум, США, кроссоверы</td><td class="d">VW, спорт, Китай</td><td class="d">японцы, бюджетные кроссоверы</td><td class="d">все электромобили</td></tr>
+    </table>
+    <div class="cols" style="margin-top:14px">
+      <div class="note"><b>Как ездить на автомате</b>: N на светофоре не нужно (масло циркулирует, ничего не греется); переключать D↔R только при полной остановке; на длинном спуске — ручной режим и пониженная; менять масло каждые 60 тыс. несмотря на «необслуживаемая» (это про гарантийный срок, не про ресурс).</div>
+      <div class="note gold"><b>Робот DCT</b> — в пробке лучше катиться, чем ползти на полусцеплении: сухое сцепление греется как в механике при «игре педалью». Мокрые (в масле) этой проблемы не имеют — при выборе смотреть индекс: DQ200 сухой, DQ250/381/500 мокрые.</div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 4: ХОДОВАЯ ============ -->
+<section class="slide chapter" id="s14">
+  <div class="bgimg"><img src="assets/ch_suspension.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4</div>
+    <h1>Ходовая: четыре пятна контакта размером с ладонь</h1>
+    <p class="lead">Всё, что делает машина — разгон, торможение, поворот — проходит через четыре куска резины общей площадью с лист А4. Подвеска, рулевое и тормоза существуют, чтобы эти четыре ладони не отрывались от асфальта.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s15">
+  <div class="content">
+    <div class="kicker">Ходовая · подвеска</div>
+    <h2>Пружина держит, амортизатор успокаивает, рычаги направляют</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Три задачи</b>: (1) изолировать кузов от неровностей; (2) держать колесо прижатым к дороге в любой момент — оторвалось на кочке — нет ни тяги, ни торможения, ни поворота; (3) держать геометрию: колесо должно стоять вертикально и ровно при кренах, клевках и ходах.</li>
+          <li><b>Пружина</b> (витая, реже торсион или пневмобаллон) — несёт вес и запасает энергию удара. Сама по себе будет качаться вечно. <b>Амортизатор</b> — гидравлический цилиндр с клапанами: поршень продавливает масло через дырки, превращая колебания в тепло. Мёртвый амортизатор → машина «плывёт» и колёса подпрыгивают на кочках — тормозной путь +20%.</li>
+          <li><b>Стабилизатор</b> поперечной устойчивости — торсионная штанга между левым и правым колесом: в повороте кузов кренится, внешнее колесо идёт вверх, штанга закручивается и тянет внутреннее вниз. Меньше крен, но хуже независимость на неровностях. Стучащие «стойки стабилизатора» — самый частый мелкий ремонт.</li>
+          <li><b>Углы установки</b>: <b>развал</b> (наклон колеса от вертикали; чуть отрицательный — лучше держит в повороте), <b>схождение</b> (колёса смотрят чуть внутрь — стабильность на прямой), <b>кастор</b> (наклон оси поворота назад — руль сам возвращается). Сбитые углы — жрёт резину и тянет в сторону.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Типы подвески</h3>
+          <table class="t">
+            <tr><th>Тип</th><th>Как</th><th>Где</th></tr>
+            <tr><td>МакФерсон</td><td class="d">амортизатор — часть направляющей стойки + один нижний рычаг. Дёшево, компактно, «нормально»</td><td class="d">перед 90% легковых</td></tr>
+            <tr><td>Двухрычажная</td><td class="d">два поперечных рычага, колесо держит геометрию при ходах. Дороже, лучше</td><td class="d">Mazda, Honda, спорт, пикапы</td></tr>
+            <tr><td>Многорычажная</td><td class="d">4–5 рычагов, каждый отвечает за своё; независимая настройка всего</td><td class="d">зад премиума и среднего класса</td></tr>
+            <tr><td>Торсионная балка</td><td class="d">полузависимая: два продольных рычага соединены упругой балкой. Дёшево, места не занимает</td><td class="d">зад бюджетных (Polo, Logan, Golf базовый)</td></tr>
+            <tr><td>Неразрезной мост</td><td class="d">колёса жёстко на одной балке; одно поднялось — второе наклонилось</td><td class="d">внедорожники, грузовики, УАЗ, Wrangler</td></tr>
+            <tr><td>Пневмо / адаптивная</td><td class="d">баллоны вместо пружин: клиренс и жёсткость по кнопке; амортизаторы с электроклапанами 500 раз/с</td><td class="d">премиум, Mercedes Airmatic, Audi</td></tr>
+          </table>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s16">
+  <div class="bgimg"><img src="assets/ch_brakes.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Ходовая · тормоза и руль</div>
+    <h2>Тормоза сильнее двигателя, руль — единственный контакт с водителем</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Тормоза мощнее двигателя в 5–10 раз</b>: разгон 0–100 за 8 с, торможение 100–0 за 2.5 с. 1.5 т с 100 км/ч — 580 кДж в тепло за 40 метров: диски раскаляются до 300–600 °C. Гидравлика: педаль → вакуумный усилитель (×4) → главный цилиндр → жидкость (DOT 4, гигроскопична, менять раз в 2 года, иначе закипает) → цилиндры в суппортах → колодки зажимают диск.</li>
+          <li><b>Диски vs барабаны</b>: диск открыт, охлаждается, не боится воды, линейный. Барабан — колодки распирает изнутри в цилиндр: дёшево, самоусиление, защищён от грязи, но перегревается и «плывёт». Сейчас барабаны — только зад бюджеток и, внезапно, электромобилей (VW ID.3: рекуперация тормозит 90% времени, барабаны не ржавеют от простоя).</li>
+          <li><b>ABS</b> (1978): датчики на колёсах, при блокировке — сбрасывает давление 15 раз в секунду. Заблокированное колесо не рулит и тормозит хуже катящегося. <b>ESP</b> (1995): подтормаживает отдельные колёса, когда машина едет не туда, куда повёрнут руль. Снизил одиночные аварии на 30–50%. Обязателен в ЕС с 2014. <b>EBD, BAS, hill-hold</b> — надстройки над той же гидравликой.</li>
+          <li><b>Рулевое</b>: рейка (шестерня на валу крутит зубчатую планку, планка тянет тяги к колёсам). Усилитель: гидро (насос от двигателя, 2–3 л.с. отбирает постоянно) → электрогидро → <b>электро</b> (EPS, мотор на рейке или валу): экономия 0.3 л, программируемое усилие и — основа всех ассистентов, потому что компьютер может рулить сам.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Шины: где вся физика</h3>
+          <table class="t">
+            <tr><th>Параметр</th><th>Смысл</th></tr>
+            <tr><td>205/55 R16 91V</td><td class="d">ширина 205 мм / профиль 55% от ширины / радиальная, диаметр 16" / индекс нагрузки 615 кг / до 240 км/ч</td></tr>
+            <tr><td>Пятно контакта</td><td class="d">~150 см² на колесо; размер задаёт давление: 2.2 бар × площадь = вес на колесо</td></tr>
+            <tr><td>Летняя / зимняя</td><td class="d">резина разная по составу: летняя дубеет ниже +7 °C, зимняя мягкая при −30, но стирается летом за сезон. Ламели зимней — тысячи кромок, цепляющих лёд</td></tr>
+            <tr><td>Шипы vs липучка</td><td class="d">шипы — лёд, голый асфальт хуже и шумнее; фрикционная — снег и мокрое, на льду −20%</td></tr>
+            <tr><td>Давление</td><td class="d">−0.5 бар = +3% расхода, +10% износа краёв, хуже управляемость. Проверять холодными</td></tr>
+            <tr><td>Износ</td><td class="d">индикатор 1.6 мм; аквапланирование резко хуже с 3 мм. Возраст — 6–8 лет, дальше резина твердеет</td></tr>
+            <tr><td>Всесезонка</td><td class="d">компромисс: хуже летней летом и зимней зимой; ок для мягких зим, не для России</td></tr>
+          </table>
+          <p style="margin-top:8px" class="dim">Коэффициент сцепления: сухой асфальт 0.8–1.0, мокрый 0.5–0.7, снег 0.2–0.3, лёд 0.1. Тормозной путь пропорционален 1/μ — на льду в 8 раз длиннее.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 5: РАЗБОР ПО УЗЛАМ ============ -->
+<section class="slide chapter" id="s17">
+  <div class="bgimg"><img src="assets/ch_parts.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5</div>
+    <h1>Разбор по узлам: из чего оно состоит</h1>
+    <p class="lead">Тринадцать систем, по слайду на каждую: что за деталь, зачем она, как работает и как обычно умирает. Не все 30 000 деталей — но всё, что ты услышишь от механика в сервисе.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s18">
+  <div class="content">
+    <div class="kicker">Узлы · топливная система</div>
+    <h2>Топливная система: от бака до форсунки под 350 бар</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_fuel.png" alt=""><div class="pcap">Бак → насос → фильтр → магистраль → рампа → форсунки. Бензин ещё и охлаждает насос: ездить «на лампочке» — греть его.</div></div>
+      <table class="t pt">
+        <tr><th>Деталь</th><th>Что делает</th><th>Как ломается</th></tr>
+        <tr><td>Бак</td><td class="d">пластиковый (полиэтилен, многослойный), 40–70 л, под задним сиденьем — вне зоны удара. Внутри — перегородки от плеска</td><td class="d">почти никогда; трещины после ударов, ржавчина у старых стальных</td></tr>
+        <tr><td><b>Топливный насос</b></td><td class="d">электрический, <b>в баке</b> (погружной), в одном модуле с датчиком уровня и сеткой-фильтром. Крутится постоянно, качает 3–5 бар в рампу, лишнее — обратно в бак через регулятор</td><td class="d">воет, машина не тянет на высоких оборотах, не заводится в жару. Причина — грязный бензин, езда на пустом баке (перегрев). 100–200 тыс. км</td></tr>
+        <tr><td>Топливный фильтр</td><td class="d">бумажный тонкой очистки, 5–10 мкм, под днищем или в баке (тогда «на весь срок»)</td><td class="d">забился → провалы под нагрузкой. Менять 30–60 тыс.</td></tr>
+        <tr><td>Рампа</td><td class="d">трубка-накопитель над форсунками, держит давление одинаковым для всех</td><td class="d">редко; течь по уплотнениям</td></tr>
+        <tr><td><b>Форсунки</b></td><td class="d">электромагнитный клапан с распылителем; ЭБУ открывает на 2–15 мс, доза — время открытия. У GDI/дизеля — пьезо, 200–2700 бар, 5–8 впрысков за такт</td><td class="d">закоксовались → троит, расход, дым. Чистка ультразвуком; у дизеля — только замена ($200–800 шт.)</td></tr>
+        <tr><td>ТНВД (прямой впрыск, дизель)</td><td class="d">насос высокого давления на распредвале: поднимает с 5 бар до 200–2700</td><td class="d">износ плунжера от плохого топлива; на дизелях Bosch CP4 — стружка убивает всю систему</td></tr>
+        <tr><td>Адсорбер (EVAP)</td><td class="d">банка с активированным углём, ловит пары бензина из бака и скармливает двигателю</td><td class="d">клапан продувки заклинил → шипение при открытии бака, Check Engine</td></tr>
+        <tr><td>Регулятор давления</td><td class="d">мембранный клапан, сливает лишнее</td><td class="d">пропускает → тяжёлый запуск после стоянки</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s19">
+  <div class="content">
+    <div class="kicker">Узлы · охлаждение</div>
+    <h2>Система охлаждения: как не расплавить алюминий при 2000 °C внутри</h2>
+    <div class="part rev">
+      <table class="t pt">
+        <tr><th>Деталь</th><th>Что делает</th><th>Как ломается</th></tr>
+        <tr><td><b>Радиатор</b></td><td class="d">алюминиевые трубки с тонкими рёбрами, сверху и снизу пластиковые бачки. Горячий антифриз идёт сверху вниз, воздух — сквозь рёбра. Отдаёт 30% энергии топлива</td><td class="d">забит снаружи пухом и мошкой, изнутри — накипью; трещины бачков; течь по пайке. 10–15 лет</td></tr>
+        <tr><td><b>Помпа</b> (водяной насос)</td><td class="d">центробежная крыльчатка на валу, крутится ремнём ГРМ или навесным; 100–200 л/мин. На новых — электрическая, по команде ЭБУ</td><td class="d">подшипник воет, сальник течёт (следы антифриза под шкивом). Меняют вместе с ГРМ</td></tr>
+        <tr><td><b>Термостат</b></td><td class="d">клапан с восковым элементом: до 85–90 °C закрыт (антифриз крутится по малому кругу, быстрый прогрев), потом открывает большой круг через радиатор</td><td class="d">заклинил закрытым → перегрев за 10 минут; открытым → не греется, расход, холодная печка. $10–30, меняют превентивно</td></tr>
+        <tr><td>Вентилятор</td><td class="d">электрический (реже вискомуфта на шкиве), включается по датчику при 95–105 °C и при включении кондиционера</td><td class="d">не включился в пробке → перегрев; сгорел резистор ступеней; реле</td></tr>
+        <tr><td>Расширительный бачок</td><td class="d">компенсирует расширение жидкости, крышка держит 1.2–1.5 бар (точка кипения +125 °C) и стравливает лишнее</td><td class="d">трещины, мутнеет; крышка не держит давление → кипит при 100 °C</td></tr>
+        <tr><td>Патрубки</td><td class="d">резиновые/силиконовые шланги, 8–10 штук</td><td class="d">дубеют, трескаются, вздуваются. Течь → низкий уровень → перегрев</td></tr>
+        <tr><td>Радиатор печки</td><td class="d">маленький радиатор в салоне: антифриз греет воздух</td><td class="d">забит → печка холодная; течь → сладкий запах и мокрый коврик</td></tr>
+        <tr><td>Антифриз</td><td class="d">вода + этиленгликоль + присадки против коррозии и накипи. G11/G12/G12++/G13 — разные пакеты присадок, не смешивать</td><td class="d">присадки выработались за 3–5 лет → коррозия алюминия. Уровень — только на холодную</td></tr>
+      </table>
+      <div class="pimg"><img src="assets/p_cooling.png" alt=""><div class="pcap">Малый круг (двигатель — печка — помпа) до 90 °C, потом термостат открывает большой — через радиатор. Вентилятор — последний резерв, когда набегающего потока не хватает.</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s20">
+  <div class="content">
+    <div class="kicker">Узлы · смазка</div>
+    <h2>Система смазки: плёнка в 3 микрона, на которой держится всё</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_oil.png" alt=""><div class="pcap">Поддон → маслоприёмник → насос → фильтр → главная магистраль → коленвал → шатуны → распредвалы → стекает обратно. Полный оборот — 5–10 секунд.</div></div>
+      <table class="t pt">
+        <tr><th>Деталь</th><th>Что делает</th><th>Как ломается</th></tr>
+        <tr><td>Поддон (картер)</td><td class="d">стальная или алюминиевая ванна снизу двигателя, 4–6 л масла, сливная пробка</td><td class="d">пробит камнем/бордюром → масло на асфальте за минуту; сорванная резьба пробки</td></tr>
+        <tr><td>Маслоприёмник</td><td class="d">трубка с сеткой на дне поддона</td><td class="d">сетка забита шламом → масляное голодание на холодную</td></tr>
+        <tr><td><b>Масляный насос</b></td><td class="d">шестерёнчатый или роторный, от коленвала или цепи; 3–5 бар на ходу, 1 бар на холостых. На новых — регулируемый, ЭБУ снижает давление для экономии</td><td class="d">износ → низкое давление → лампа масла на холостых. Редко, но фатально</td></tr>
+        <tr><td>Редукционный клапан</td><td class="d">сбрасывает лишнее давление на холодную (густое масло даёт 8–10 бар)</td><td class="d">заклинил → выдавливает сальники или, наоборот, нет давления</td></tr>
+        <tr><td><b>Масляный фильтр</b></td><td class="d">бумажная шторка, 20–40 мкм, внутри — перепускной клапан (если забит — пускает нефильтрованное, лучше грязное, чем никакого) и антидренажный (держит масло на стоянке)</td><td class="d">дешёвый фильтр с плохим антидренажным клапаном → стук гидрокомпенсаторов первые секунды после запуска</td></tr>
+        <tr><td>Масляные каналы и форсунки</td><td class="d">просверленные в блоке и валах ходы; форсунки под поршнями брызгают на днище — охлаждают</td><td class="d">забиваются коксом при перепробеге масла</td></tr>
+        <tr><td>Масляный радиатор / теплообменник</td><td class="d">масло-антифриз теплообменник на блоке, держит масло 90–110 °C</td><td class="d">прокладка → масло в антифризе (эмульсия в бачке)</td></tr>
+        <tr><td>Сальники и прокладки</td><td class="d">коленвала передний/задний, распредвалов, клапанной крышки, поддона</td><td class="d">дубеют → потение, потом течь. Задний сальник — снимать коробку</td></tr>
+        <tr><td>Датчик давления</td><td class="d">лампа-маслёнка при &lt;0.3–0.5 бар</td><td class="d">загорелась на ходу — глушить сразу, дальше 30 секунд — вкладыши</td></tr>
+        <tr><td>Вентиляция картера (PCV)</td><td class="d">отводит прорвавшиеся газы обратно во впуск через маслоотделитель</td><td class="d">забит → давление в картере → выдавливает сальники, масложор</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s21">
+  <div class="content">
+    <div class="kicker">Узлы · ГРМ</div>
+    <h2>Газораспределительный механизм: синхронизация с точностью до градуса</h2>
+    <div class="part rev">
+      <table class="t pt">
+        <tr><th>Деталь</th><th>Что делает</th><th>Как ломается</th></tr>
+        <tr><td><b>Ремень или цепь ГРМ</b></td><td class="d">связывает коленвал с распредвалами в отношении 2:1, чтобы клапаны открывались в нужный момент к положению поршня. Ремень — зубчатый, резина с кордом, тихий, 60–120 тыс. Цепь — стальная, «на весь срок» (150–300 тыс. по факту), шумнее</td><td class="d"><b>обрыв ремня</b> = поршни бьют по открытым клапанам → гнутые клапаны, капремонт ГБЦ. Цепь растягивается → шум, ошибки фаз, перескок</td></tr>
+        <tr><td>Натяжитель и ролики</td><td class="d">держат ремень/цепь в натяге (пружина, гидравлика или автомат)</td><td class="d">подшипник ролика воет; гидронатяжитель цепи не держит на холодную → дребезг при запуске. Меняют комплектом с ремнём и помпой</td></tr>
+        <tr><td>Успокоители/башмаки цепи</td><td class="d">пластиковые направляющие</td><td class="d">крошатся, куски в поддоне</td></tr>
+        <tr><td><b>Распредвал</b></td><td class="d">вал с кулачками: кулачок наезжает на клапан (или рокер/толкатель) и открывает его. Один (SOHC) или два (DOHC — отдельно впуск и выпуск)</td><td class="d">износ кулачков при масляном голодании</td></tr>
+        <tr><td>Фазовращатель (VVT)</td><td class="d">муфта на распредвале: масло под давлением по команде ЭБУ поворачивает вал на ±20–30°, сдвигая фазы</td><td class="d">заклинил → трещотка на запуске, провал тяги, Check Engine. Клапан VVT забит — чистить</td></tr>
+        <tr><td><b>Клапаны</b></td><td class="d">тарелка на стержне; впускные больше, выпускные — из жаростойкой стали (900 °C), иногда с натрием внутри. 2–5 на цилиндр</td><td class="d">прогар (бедная смесь), нагар на впускных при GDI, гнутые после обрыва ремня</td></tr>
+        <tr><td>Пружины и сухари</td><td class="d">возвращают клапан, держат до 7000 циклов/мин</td><td class="d">усталость — редко; зависание клапана на высоких оборотах</td></tr>
+        <tr><td><b>Гидрокомпенсаторы</b></td><td class="d">масляные цилиндрики между кулачком и клапаном, автоматически убирают тепловой зазор. Без них — регулировка шайбами каждые 30–90 тыс.</td><td class="d">стучат первые секунды на холодную (масло стекло) — норма; стучат постоянно — грязное масло или износ</td></tr>
+        <tr><td>Маслосъёмные колпачки</td><td class="d">резиновые сальники на стержнях клапанов</td><td class="d">дубеют → масло в цилиндр → синий дым на запуске, масложор 0.5 л/1000</td></tr>
+      </table>
+      <div class="pimg"><img src="assets/p_timing.png" alt=""><div class="pcap">Метки на шкивах должны совпасть с точностью до зуба. Один зуб мимо — работает, но плохо. Три — не заведётся. Замена ремня — самое ответственное плановое ТО.</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s22">
+  <div class="content">
+    <div class="kicker">Узлы · впуск и выпуск</div>
+    <h2>Впуск и выпуск: дыхание двигателя</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_intake.png" alt=""><div class="pcap">Воздух: фильтр → ДМРВ → дроссель → (турбина → интеркулер) → коллектор → цилиндр. Газы: коллектор → турбина → катализатор → (сажевый) → глушитель.</div></div>
+      <table class="t pt">
+        <tr><th>Деталь</th><th>Что делает</th><th>Как ломается</th></tr>
+        <tr><td>Воздушный фильтр</td><td class="d">бумажная гармошка в коробе; 300–500 м³ воздуха на 1 л бензина</td><td class="d">забит → расход, вялость. 15–30 тыс. км, чаще на пыльных дорогах</td></tr>
+        <tr><td>ДМРВ / MAP</td><td class="d">нагретая нить или плёнка: чем сильнее остывает, тем больше воздуха прошло. ЭБУ по нему считает дозу топлива</td><td class="d">загрязнён → врёт → богатая/бедная смесь, рывки. Чистить только спецочистителем</td></tr>
+        <tr><td><b>Дроссельная заслонка</b></td><td class="d">круглая пластина на оси, электропривод по педали (педаль — просто потенциометр). Регулирует, сколько воздуха войдёт</td><td class="d">нагар от EGR и картерных газов → плавают холостые. Чистка + адаптация</td></tr>
+        <tr><td>Впускной коллектор</td><td class="d">пластиковый «паук», делит воздух по цилиндрам; длина каналов настроена на резонанс. Иногда с заслонками переменной длины</td><td class="d">трещины, заслонки-вихревые отламываются и улетают в цилиндр (дизели VW/BMW)</td></tr>
+        <tr><td><b>Турбина</b></td><td class="d">крыльчатка на выхлопе крутит крыльчатку на впуске, 150–250 тыс. об/мин, 900 °C, вал в масляном подшипнике. Байпас (wastegate) стравливает лишнее давление</td><td class="d">люфт вала → масло во впуск, синий дым, свист. Убивают: резкий глушить после нагрузки, грязное масло, перепробег. $500–2000</td></tr>
+        <tr><td>Интеркулер</td><td class="d">радиатор для сжатого воздуха: турбина греет его до 150 °C, охлаждение до 50 даёт +15% плотности</td><td class="d">течь по патрубкам → шипение, нет наддува; масло внутри — от турбины</td></tr>
+        <tr><td>EGR</td><td class="d">клапан возвращает часть выхлопа во впуск — снижает температуру горения и NOx</td><td class="d">закоксован (особенно дизель) → заклинил → дым, вялость. Чистка или глушение (незаконно)</td></tr>
+        <tr><td>Выпускной коллектор</td><td class="d">чугунный или стальной, собирает газы из цилиндров</td><td class="d">трещины, прогар прокладки → тарахтит на холодную</td></tr>
+        <tr><td><b>Катализатор</b></td><td class="d">керамические соты с Pt/Pd/Rh, дожигает CO, CH, NOx при 400–800 °C</td><td class="d">оплавился (пропуски зажигания), рассыпался (удар, масло) → потеря тяги, запах, ошибка P0420. $300–1500. Пыль керамики затягивает в цилиндры — задиры</td></tr>
+        <tr><td>Сажевый фильтр (DPF/GPF)</td><td class="d">ловит частицы, периодически «регенерация» — прожиг при 600 °C</td><td class="d">забит при городской езде без прогрева → аварийный режим. Ездить по трассе 20 минут в неделю</td></tr>
+        <tr><td>Глушитель, резонатор</td><td class="d">камеры и перфорированные трубы гасят волны давления</td><td class="d">ржавеют изнутри от конденсата; 5–10 лет</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s23">
+  <div class="content">
+    <div class="kicker">Узлы · электрооборудование двигателя</div>
+    <h2>Зажигание, стартер, генератор и навесное</h2>
+    <div class="part rev">
+      <table class="t pt">
+        <tr><th>Деталь</th><th>Что делает</th><th>Как ломается</th></tr>
+        <tr><td><b>Свеча зажигания</b></td><td class="d">два электрода с зазором 0.8–1.1 мм; 20–40 кВ пробивают сжатую смесь — искра. Никель (30 тыс.), платина (60), иридий (100+). «Калильное число» — как быстро отводит тепло</td><td class="d">износ электродов → пропуски, троение, расход. Нагар — диагноз смеси: чёрный — богатая, белый — бедная/перегрев, масляный — колпачки/кольца</td></tr>
+        <tr><td><b>Катушка зажигания</b></td><td class="d">трансформатор 12 В → 30 кВ. Индивидуальная на каждую свечу (COP) или на пару. ЭБУ даёт команду на замыкание/размыкание первички</td><td class="d">пробой изоляции → пропуски под нагрузкой и в сырость. $30–150</td></tr>
+        <tr><td><b>Стартер</b></td><td class="d">электромотор 1–2 кВт с планетарным редуктором и бендиксом — шестерня выдвигается втягивающим реле, зацепляет маховик, крутит 200–300 об/мин, потом отскакивает</td><td class="d">щётки, втягивающее (щёлкает, не крутит), бендикс (крутит, не цепляет — визг). 150–250 тыс.</td></tr>
+        <tr><td><b>Генератор</b></td><td class="d">ротор с обмоткой возбуждения крутится ремнём, в статоре — трёхфазный ток → диодный мост → 13.8–14.4 В. Регулятор напряжения держит уровень. 100–200 А</td><td class="d">подшипник воет, щётки, диодный мост (недозаряд, лампа АКБ), обгонная муфта шкива. 150–250 тыс.</td></tr>
+        <tr><td><b>Аккумулятор 12 В</b></td><td class="d">свинцово-кислотный, 60–75 А·ч, нужен для пуска (300–700 А) и как буфер. AGM/EFB — для start-stop</td><td class="d">4–6 лет. Умирает зимой. Глубокий разряд — минус половина жизни</td></tr>
+        <tr><td>Ремень навесного</td><td class="d">поликлиновой, один на всё: генератор, компрессор кондиционера, насос ГУР, помпа (часто). Натяжитель с роликом</td><td class="d">свист на холодную и сырую, трещины, расслоение. 60–100 тыс. Обрыв — без зарядки и охлаждения через 10 минут</td></tr>
+        <tr><td>Компрессор кондиционера</td><td class="d">поршневой/роторный насос для фреона, включается электромагнитной муфтой</td><td class="d">муфта, подшипник шкива, утечка через сальник; клин → стружка по всей системе, замена всего</td></tr>
+        <tr><td>Насос ГУР (если гидроусилитель)</td><td class="d">лопастной насос 80–120 бар для рулевой рейки</td><td class="d">воет при повороте — низкий уровень или износ</td></tr>
+        <tr><td>Датчики</td><td class="d">ДПКВ, ДПРВ, детонации, температуры, лямбды, давления масла, ДМРВ — глава 6</td><td class="d">ДПКВ — единственный, без которого не заведётся</td></tr>
+      </table>
+      <div class="pimg"><img src="assets/p_ignition.png" alt=""><div class="pcap">Пуск: ключ → втягивающее → стартер крутит маховик → ДПКВ видит обороты → ЭБУ даёт впрыск и искру → двигатель подхватил → бендикс отскочил → генератор взял питание на себя.</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s24">
+  <div class="content">
+    <div class="kicker">Узлы · сцепление и привод</div>
+    <h2>Сцепление, кардан, ШРУС: как момент доезжает до колеса</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_clutch.png" alt=""><div class="pcap">Задний привод: коробка → карданный вал (2 крестовины, подвесной подшипник) → редуктор заднего моста с дифференциалом → полуоси. Передний: коробка → ШРУСы → колёса.</div></div>
+      <table class="t pt">
+        <tr><th>Деталь</th><th>Что делает</th><th>Как ломается</th></tr>
+        <tr><td><b>Маховик</b></td><td class="d">тяжёлый диск на коленвале: сглаживает рывки между рабочими ходами, за него цепляется стартер, к нему прижимается сцепление. <b>Двухмассовый</b> (DMF) — две половины через пружины, гасит вибрации дизелей и турбомоторов</td><td class="d">DMF: стук на холостых и при глушении, люфт. $500–1500, меняют со сцеплением</td></tr>
+        <tr><td><b>Корзина сцепления</b></td><td class="d">нажимной диск с диафрагменной пружиной, прижимает ведомый диск к маховику с силой 500–1000 кг</td><td class="d">пружина устаёт → буксует</td></tr>
+        <tr><td><b>Диск сцепления</b></td><td class="d">стальной диск с фрикционными накладками (как колодки) с двух сторон и демпферными пружинами в центре; шлицами сидит на первичном валу коробки</td><td class="d">стёрлись накладки → буксует, запах, педаль высоко. 100–200 тыс.; в городе с «игрой» педалью — 50</td></tr>
+        <tr><td>Выжимной подшипник</td><td class="d">давит на лепестки корзины, размыкая сцепление. Гидравлический или через вилку</td><td class="d">шум при выжатой педали. Меняют комплектом</td></tr>
+        <tr><td>Главный и рабочий цилиндр сцепления</td><td class="d">гидравлика от педали к выжимному, жидкость общая с тормозной</td><td class="d">течь → педаль проваливается, не выключается</td></tr>
+        <tr><td><b>Карданный вал</b></td><td class="d">полая труба между коробкой и задним мостом; крестовины (карданные шарниры) на концах позволяют углы и ход подвески, шлицевое соединение — изменение длины. Длинный вал — из двух частей с подвесным подшипником</td><td class="d">крестовины: щелчки при трогании, вибрация на скорости. Подвесной: гул. Балансировка после ремонта обязательна</td></tr>
+        <tr><td><b>ШРУС</b> («граната»)</td><td class="d">шарнир равных угловых скоростей: 6 шариков в канавках между внутренней и внешней обоймой, передаёт вращение под углом до 45° без пульсаций (крестовина так не умеет). Наружный — у колеса, внутренний — у коробки, между ними — полуось</td><td class="d">порван пыльник → грязь → хруст в повороте (наружный) или вибрация при разгоне (внутренний). Пыльник — $10, ШРУС — $50–200</td></tr>
+        <tr><td>Редуктор заднего моста</td><td class="d">главная пара (гипоидная, понижение 3–4.5) + дифференциал в чугунном корпусе с маслом</td><td class="d">гул на скорости — подшипники или главная пара; масло 60–100 тыс.</td></tr>
+        <tr><td>Раздатка (4WD)</td><td class="d">делит момент между осями: жёстко (внедорожники), через межосевой дифференциал или муфту Haldex (кроссоверы)</td><td class="d">муфта: перегрев при буксовании, насос. Масло 40–60 тыс.</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s25">
+  <div class="content">
+    <div class="kicker">Узлы · рулевое</div>
+    <h2>Рулевое управление: от баранки до поворотного кулака</h2>
+    <div class="part rev">
+      <table class="t pt">
+        <tr><th>Деталь</th><th>Что делает</th><th>Как ломается</th></tr>
+        <tr><td>Рулевое колесо</td><td class="d">с подушкой, кнопками, датчиком угла поворота (для ESP) и датчиком момента (для ЭУР)</td><td class="d">датчик угла — калибровка после ремонта</td></tr>
+        <tr><td>Рулевая колонка</td><td class="d">вал с двумя карданчиками (чтобы обойти двигатель), складывающаяся при ударе, с регулировкой и замком</td><td class="d">карданчики люфтят → стук в руле</td></tr>
+        <tr><td><b>Рулевая рейка</b></td><td class="d">шестерня на конце вала крутит зубчатую планку, планка двигается влево-вправо. Внутри — гидроцилиндр (ГУР) или электромотор с винтом (ЭУР). Передаточное 14–18:1 — 2.5–3 оборота руля от упора до упора</td><td class="d">стук на кочках (люфт планки), течь сальников (ГУР), закусывание. Ремонт $300–1500</td></tr>
+        <tr><td><b>Рулевые тяги</b></td><td class="d">стержни от рейки к колёсам, с резьбой для регулировки схождения</td><td class="d">люфт внутреннего шарнира</td></tr>
+        <tr><td><b>Рулевые наконечники</b></td><td class="d">шаровые шарниры на концах тяг, крепятся к поворотному кулаку</td><td class="d">люфт → стук, руль «пустой», жрёт резину. 60–100 тыс., $20–60. Самая частая замена в рулевом</td></tr>
+        <tr><td>Поворотный кулак</td><td class="d">литая деталь, на которой ступица; поворачивается на шаровой опоре и опоре стойки</td><td class="d">гнётся при ударе → сбитые углы навсегда</td></tr>
+        <tr><td>ГУР: насос, бачок, шланги</td><td class="d">гидравлика 80–120 бар от ремня, жидкость ATF/PSF</td><td class="d">воет при повороте, течёт. Уходит в прошлое</td></tr>
+        <tr><td><b>ЭУР</b></td><td class="d">электромотор на рейке или колонке, усилие программируемое (в городе легко, на трассе тяжелее). Не отбирает мощность у двигателя. Позволяет ассистентам рулить самим</td><td class="d">датчик момента, блок управления — обычно целиком. Ошибка → руль тяжёлый, но едет</td></tr>
+        <tr><td>Углы установки</td><td class="d">схождение (регулируется тягами), развал и кастор (болтами или не регулируется вообще)</td><td class="d">после любой замены в подвеске/рулевом — сход-развал</td></tr>
+      </table>
+      <div class="pimg"><img src="assets/p_steering.png" alt=""><div class="pcap">Руль → колонка → рейка → тяги → наконечники → кулак → колесо. Люфт в любой точке суммируется — «пустой» руль почти всегда наконечники или рейка.</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s26">
+  <div class="content">
+    <div class="kicker">Узлы · подвеска в деталях</div>
+    <h2>Подвеска: что стучит, гремит и почему сход-развал</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_suspension.png" alt=""><div class="pcap">МакФерсон: стойка держит колесо сверху, нижний рычаг — снизу, стабилизатор связывает с другим бортом. Всё — на резиновых сайлентблоках, которые и стучат первыми.</div></div>
+      <table class="t pt">
+        <tr><th>Деталь</th><th>Что делает</th><th>Как ломается</th></tr>
+        <tr><td><b>Амортизатор</b> (стойка)</td><td class="d">поршень в масле с клапанами гасит колебания; газовый подпор против вспенивания. В МакФерсоне — ещё и несущий элемент</td><td class="d">течёт (мокрый корпус), не держит (раскачка, клевки), стучит. 60–100 тыс. Проверка: качнуть угол — одно колебание</td></tr>
+        <tr><td>Пружина</td><td class="d">витая, несёт вес; жёсткость задаёт клиренс и комфорт</td><td class="d">ломается последний виток (ржавчина + мороз), просаживается</td></tr>
+        <tr><td>Опора стойки (опорный подшипник)</td><td class="d">резинометаллическая подушка + подшипник, на котором стойка поворачивается с колесом</td><td class="d">стук при повороте руля на месте, скрип. Меняют с амортизатором</td></tr>
+        <tr><td><b>Рычаги</b></td><td class="d">штампованные или литые, держат колесо и задают геометрию</td><td class="d">гнутся при ударе; чаще умирают их сайлентблоки</td></tr>
+        <tr><td><b>Сайлентблоки</b></td><td class="d">резинометаллические втулки в шарнирах рычагов — гасят вибрации и дают рычагу качаться</td><td class="d">трескаются, вырываются → стук на мелких кочках, уводит в сторону при торможении. 60–120 тыс.</td></tr>
+        <tr><td><b>Шаровая опора</b></td><td class="d">шар в пластиковом вкладыше, соединяет рычаг с кулаком, даёт поворот и качание</td><td class="d">люфт → стук; критично: вырвало на ходу — колесо ложится. 80–150 тыс.</td></tr>
+        <tr><td>Стабилизатор + стойки + втулки</td><td class="d">торсион между бортами; стойки (линки) — короткие тяги с шарнирами, втулки — резина в креплении к кузову</td><td class="d">стойки — стук на неровностях, 30–60 тыс., $10–30 — самый частый ремонт подвески. Втулки — скрип</td></tr>
+        <tr><td><b>Ступица и подшипник</b></td><td class="d">фланец с болтами колеса на двухрядном шариковом/роликовом подшипнике, часто с датчиком ABS</td><td class="d">гул, растущий со скоростью и меняющийся в повороте; люфт колеса. 100–150 тыс.</td></tr>
+        <tr><td>Подрамник</td><td class="d">рама под двигателем, к которой крепятся рычаги, рейка, опоры двигателя</td><td class="d">ржавеет, гнётся при сильных ударах</td></tr>
+        <tr><td>Опоры (подушки) двигателя</td><td class="d">резинометаллические, иногда гидравлические, 3–4 штуки; гасят вибрацию мотора</td><td class="d">рвутся → вибрация на холостых, удар при трогании, двигатель «прыгает»</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s27">
+  <div class="content">
+    <div class="kicker">Узлы · тормоза в деталях</div>
+    <h2>Тормозная система: от педали до колодки</h2>
+    <div class="part rev">
+      <table class="t pt">
+        <tr><th>Деталь</th><th>Что делает</th><th>Как ломается</th></tr>
+        <tr><td><b>Вакуумный усилитель</b></td><td class="d">большая «тарелка» за педалью: разрежение из впуска (или от насоса) давит на мембрану, умножая усилие ноги в 3–5 раз. Электромобили и гибриды — электрогидравлический (iBooster)</td><td class="d">порвана мембрана/шланг → педаль каменная, шипение. Глохнет двигатель — усилителя хватит на 2–3 нажатия</td></tr>
+        <tr><td><b>Главный тормозной цилиндр</b></td><td class="d">два поршня (два независимых контура: если один потёк — второй тормозит), сверху бачок с жидкостью</td><td class="d">манжеты → педаль медленно проваливается при удержании</td></tr>
+        <tr><td>Тормозная жидкость</td><td class="d">DOT 4/5.1, гликолевая, кипит при 230–260 °C сухая, но гигроскопична: за 2 года набирает 3% воды — кипит при 150 → пар → педаль в пол на спуске</td><td class="d">менять раз в 2 года независимо от пробега</td></tr>
+        <tr><td>Трубки и шланги</td><td class="d">стальные трубки по кузову, гибкие армированные шланги к колёсам</td><td class="d">трубки ржавеют (особенно над задней осью), шланги вздуваются — мягкая педаль</td></tr>
+        <tr><td><b>Суппорт</b></td><td class="d">скоба с гидроцилиндром: поршень выдвигается и прижимает колодки к диску. Плавающий (1–2 поршня, на направляющих) или фиксированный (4–6 поршней, спорт)</td><td class="d">закисли направляющие → колодка не отходит, перегрев, износ с одной стороны. Поршень закис → тормоз не отпускает, диск синеет. Ремкомплект или замена</td></tr>
+        <tr><td><b>Колодки</b></td><td class="d">металлическая пластина с фрикционной смесью (органика, полуметалл, керамика), 10–12 мм новые, 2–3 — замена. Датчик износа — проводок или пластина-скрипун</td><td class="d">30–60 тыс. перед, 60–100 зад; скрип, пыль на дисках, вибрация</td></tr>
+        <tr><td><b>Тормозной диск</b></td><td class="d">чугунный, вентилируемый (два слоя с каналами) спереди, сплошной сзади. Толщина 22–30 мм, минимум выбит на торце</td><td class="d">коробление от перегрева (бьёт педаль), борозды, ржавые кромки. Меняют через раз с колодками</td></tr>
+        <tr><td>Барабан (зад бюджетных)</td><td class="d">колодки-полумесяцы распирает изнутри рабочий цилиндр</td><td class="d">цилиндр течёт, пружины, саморегулятор закис</td></tr>
+        <tr><td><b>Блок ABS/ESP</b></td><td class="d">гидроблок с 8–12 соленоидами и насосом + ЭБУ: сбрасывает/добавляет давление на каждое колесо отдельно по датчикам скорости колёс</td><td class="d">датчик ABS (грязь, обрыв) — самое частое; блок — редко и дорого</td></tr>
+        <tr><td>Стояночный тормоз</td><td class="d">трос к задним колодкам или электромотор на суппорте (EPB) с кнопкой</td><td class="d">трос закис (не отпускает), моторчик EPB, режим обслуживания для замены колодок</td></tr>
+      </table>
+      <div class="pimg"><img src="assets/p_brakes.png" alt=""><div class="pcap">Педаль → усилитель → ГТЦ → два контура → блок ABS → трубки → суппорты. Всё на несжимаемой жидкости: воздух в системе = мягкая педаль, прокачка.</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s28">
+  <div class="content">
+    <div class="kicker">Узлы · климат</div>
+    <h2>Кондиционер и печка: холодильник и калорифер под торпедой</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_climate.png" alt=""><div class="pcap">Компрессор сжимает фреон (горячий газ) → конденсор перед радиатором сбрасывает тепло (жидкость) → осушитель → расширительный клапан (резкий сброс давления — холод) → испаритель в салоне забирает тепло у воздуха → обратно в компрессор.</div></div>
+      <table class="t pt">
+        <tr><th>Деталь</th><th>Что делает</th><th>Как ломается</th></tr>
+        <tr><td><b>Компрессор</b></td><td class="d">насос на ремне (или электрический у EV/гибридов), сжимает фреон R134a/R1234yf до 15–20 бар; включается муфтой</td><td class="d">муфта, подшипник, сальник; клин → металлическая стружка по всей системе — замена всего контура ($1000+)</td></tr>
+        <tr><td>Конденсор</td><td class="d">радиатор перед основным радиатором, фреон отдаёт тепло и конденсируется</td><td class="d">пробит камнем, забит грязью, коррозия — утечка. Самая частая причина «не холодит»</td></tr>
+        <tr><td>Осушитель (ресивер)</td><td class="d">банка с силикагелем, ловит влагу (влага + фреон = кислота)</td><td class="d">менять при каждом вскрытии контура</td></tr>
+        <tr><td>Расширительный клапан (ТРВ)</td><td class="d">дросселирует жидкий фреон → резкое падение давления → испарение → −5 °C</td><td class="d">заклинил → обмерзает или не холодит</td></tr>
+        <tr><td><b>Испаритель</b></td><td class="d">радиатор в салоне за торпедой, воздух проходит сквозь него и остывает; конденсат капает под машину (лужа — норма)</td><td class="d">течь (замена — разбирать торпеду, 8–15 часов работы); плесень → запах при включении. Дренаж забит → вода в салон</td></tr>
+        <tr><td>Радиатор печки</td><td class="d">рядом с испарителем, греется антифризом. Заслонка смешивает потоки через оба — так получается любая температура</td><td class="d">забит → холодная печка; течь → сладкий запах, туман на стекле</td></tr>
+        <tr><td>Вентилятор (мотор печки)</td><td class="d">беличье колесо, 3–7 скоростей через резистор или ШИМ-модуль</td><td class="d">резистор сгорел → работает только максимум; подшипник свистит</td></tr>
+        <tr><td><b>Салонный фильтр</b></td><td class="d">бумага или уголь, перед испарителем</td><td class="d">забит → слабый поток, запах, запотевание. 10–15 тыс. или раз в год</td></tr>
+        <tr><td>Заслонки и сервоприводы</td><td class="d">направляют поток (ноги/лицо/стекло), рециркуляция, смешение</td><td class="d">моторчик щёлкает, заслонка отвалилась — дует не туда</td></tr>
+        <tr><td>Датчики</td><td class="d">температуры салона, наружной, солнечный, испарителя, давления фреона (не даст включить компрессор при утечке)</td><td class="d">датчик давления — «кондиционер не включается» при пустой системе — это защита, не поломка</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s29">
+  <div class="content">
+    <div class="kicker">Узлы · кузов</div>
+    <h2>Кузов: несущая структура и навесное</h2>
+    <div class="part rev">
+      <table class="t pt">
+        <tr><th>Элемент</th><th>Что делает</th><th>Что с ним бывает</th></tr>
+        <tr><td><b>Лонжероны</b></td><td class="d">две продольные балки под днищем и в моторном отсеке — позвоночник. Передние сминаются программируемо при ударе</td><td class="d">после ДТП — «тянутые лонжероны», геометрия уже никогда не заводская. Смотреть швы и герметик в моторном отсеке</td></tr>
+        <tr><td><b>Стойки A / B / C</b></td><td class="d">A — у лобового, B — между дверями (главная в боковом ударе), C — у заднего стекла. Сверхвысокопрочная сталь</td><td class="d">резать/варить нельзя — сталь теряет свойства; после боковых ударов часто под замену «четвертью»</td></tr>
+        <tr><td>Пороги</td><td class="d">коробчатые балки под дверями, держат боковой удар и жёсткость на кручение</td><td class="d">ржавеют изнутри от грязи и соли; вмятины от домкрата</td></tr>
+        <tr><td>Моторный щит, пол, тоннель</td><td class="d">отделяют салон от двигателя; тоннель — жёсткость и место для кардана/выхлопа</td><td class="d">ржавчина под шумоизоляцией при протечках</td></tr>
+        <tr><td>Усилители бамперов</td><td class="d">алюминиевые/стальные балки за пластиком с «крэш-боксами»</td><td class="d">одноразовые: смялся — замена</td></tr>
+        <tr><td>Навесные панели</td><td class="d">капот, крылья, двери, крышка багажника, бампера — на болтах, не несут нагрузку. Крылья и капот часто алюминиевые</td><td class="d">мелкие ДТП: замена без сварки, толщиномер это не поймает — смотреть болты и зазоры</td></tr>
+        <tr><td>Крыша, стёкла</td><td class="d">лобовое — триплекс (два стекла + плёнка), вклеено, несёт до 30% жёсткости; боковые — закалённое, рассыпается в крошку</td><td class="d">лобовое: сколы → трещины от перепада температур; камеры ADAS за ним требуют калибровки после замены</td></tr>
+        <tr><td>Подрамники</td><td class="d">отдельные рамы под двигателем и задней подвеской, на сайлентблоках к кузову</td><td class="d">коррозия, гнутся</td></tr>
+        <tr><td>Уплотнители, замки, петли</td><td class="d">резина дверей, замки с электроприводом, ограничители</td><td class="d">свист на скорости, замёрзший замок, провисшие двери</td></tr>
+        <tr><td>Антикор и ЛКП</td><td class="d">оцинковка, катафорез, герметик швов, антигравий, воск в полостях; краска 100–150 мкм</td><td class="d">сколы → рыжики; кромки арок и дверей; подрамники и швы днища</td></tr>
+      </table>
+      <div class="pimg"><img src="assets/p_body.png" alt=""><div class="pcap">Body-in-white: голый кузов до покраски. Всё жёсткое — стойки, пороги, лонжероны — из горячештампованной стали 1500–2000 МПа; всё мягкое — зоны деформации — из обычной, чтобы сминалось.</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s30">
+  <div class="content">
+    <div class="kicker">Узлы · колёса</div>
+    <h2>Колесо: диск, шина, датчик и почему бьёт руль</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_wheel.png" alt=""><div class="pcap">Шина в разрезе: каркас из текстильного корда, стальной брекер под протектором, боковина, борт с проволочным кольцом. Воздух держит не резина, а корд.</div></div>
+      <table class="t pt">
+        <tr><th>Деталь</th><th>Что делает</th><th>Как ломается</th></tr>
+        <tr><td><b>Колёсный диск</b></td><td class="d">штампованный стальной (дёшево, тяжело, гнётся и правится), литой алюминиевый (легче, красивее, трескается), кованый (лёгкий, прочный, дорогой). Параметры: диаметр, ширина (7J), вылет ET, разболтовка (5×112), центральное отверстие DIA</td><td class="d">яма → «восьмёрка» или трещина; литьё правят с риском. Неверный вылет — нагрузка на подшипник ступицы</td></tr>
+        <tr><td><b>Шина</b></td><td class="d">резиновая смесь + каркас: 2 слоя текстильного корда, 2 стальных брекера, борт с кольцом. Протектор с канавками для воды и ламелями для зимы. Индексы: нагрузка, скорость, DOT-дата</td><td class="d">износ до 1.6 мм (зима — 4 мм); грыжа на боковине (удар) — только замена; порез; возраст 6+ лет — резина твердеет, трещины</td></tr>
+        <tr><td>Вентиль (ниппель)</td><td class="d">резиновый или металлический, с золотником</td><td class="d">трещины резинового — медленная утечка; менять при каждой смене шин</td></tr>
+        <tr><td><b>TPMS</b></td><td class="d">датчик давления в вентиле (прямой, с батарейкой на 7–10 лет) или по датчикам ABS (косвенный — колесо с низким давлением крутится быстрее)</td><td class="d">батарейка села → лампа; после смены комплекта — прописывать датчики</td></tr>
+        <tr><td>Балансировочные грузики</td><td class="d">свинец/цинк/сталь 5–60 г, набивные на кромку или клеевые внутрь: компенсируют неравномерность массы</td><td class="d">отлетел → руль бьёт на 80–120 км/ч. Балансировка при каждой переобувке</td></tr>
+        <tr><td>Ступица и болты/гайки</td><td class="d">фланец с 4–6 шпильками или отверстиями; момент затяжки 100–140 Н·м крест-накрест</td><td class="d">перетянуто пневмогайковёртом → сорванная резьба, повело диск тормоза; недотянуто — отвалится. Секретки теряются</td></tr>
+        <tr><td>Центровочное кольцо</td><td class="d">пластиковое, если DIA диска больше ступицы</td><td class="d">без него — биение</td></tr>
+        <tr><td>Запаска / докатка / ремкомплект</td><td class="d">полноразмерная, узкая докатка (до 80 км/ч), или баллончик с герметиком + компрессор (шину потом часто не восстановить)</td><td class="d">докатка спущена — проверять раз в полгода</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 6: ЭЛЕКТРО ============ -->
+<section class="slide chapter" id="s31">
+  <div class="bgimg"><img src="assets/ch_electric.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6</div>
+    <h1>Электромобиль: 20 деталей вместо 2000</h1>
+    <p class="lead">Нет поршней, клапанов, коробки, сцепления, выхлопа, масла, ремня ГРМ. Есть батарея, инвертор, мотор и редуктор. Всё остальное — та же машина. Разбираем, почему это просто и почему всё-таки сложно.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s32">
+  <div class="content">
+    <div class="kicker">Электро · силовая часть</div>
+    <h2>Батарея → инвертор → мотор → редуктор: цепочка из четырёх звеньев</h2>
+    <div class="dg" style="margin-bottom:16px">
+      <div class="row" style="align-items:stretch">
+        <div class="bx am"><b>Батарея 400/800 В</b><span>50–100 кВт·ч, 300–600 кг, пол машины. Постоянный ток</span></div>
+        <div class="arr">→</div>
+        <div class="bx cy"><b>Инвертор</b><span>IGBT / SiC-транзисторы рубят постоянный ток в трёхфазный переменный нужной частоты 20 000 раз/с. КПД 97–99%</span></div>
+        <div class="arr">→</div>
+        <div class="bx cy"><b>Мотор</b><span>синхронный с магнитами (PMSM) или асинхронный. 100–300 кВт, 15 000–20 000 об/мин, 30–60 кг. КПД 90–97%</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>Редуктор</b><span>одна ступень ~9:1 + дифференциал. Никаких переключений</span></div>
+        <div class="arr">→</div>
+        <div class="bx gr"><b>Колёса</b><span>полный момент с 0 об/мин. Отсюда «выстрел» со светофора</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Почему коробка не нужна</b>: электромотор даёт максимальный момент с нуля оборотов и держит его до ~5000, потом мощность постоянна до 18 000. Диапазон полезных оборотов — в 10 раз шире, чем у ДВС. Одной ступени хватает от 0 до 250 км/ч. Porsche Taycan поставил две — ради 260+ и экономии на трассе; остальные не заморачиваются.</li>
+          <li><b>Рекуперация</b>: мотор в обратную сторону — генератор. Отпустил педаль — он тормозит, качая энергию обратно в батарею. Возвращает 60–70% кинетической энергии в городе (ДВС — ноль, всё в тепло дисков). Колодки на электромобиле живут 150+ тыс. км. «Однопедальное» вождение.</li>
+          <li><b>Два типа моторов</b>: <b>с постоянными магнитами</b> (неодим, диспрозий — Китай контролирует 90%) — КПД выше, компактнее, но магниты дороги и создают сопротивление на выбеге. <b>Асинхронный</b> (Tesla на задней оси до 2017, сейчас на передней) — без магнитов, дешевле, свободно крутится, когда не нужен. Tesla ставит оба: сзади магнитный (основной), спереди асинхронный (подключается по нужде).</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Сравнение силовых установок</h3>
+          <table class="t">
+            <tr><th></th><th>ДВС</th><th>Электро</th></tr>
+            <tr><td>Деталей в силовой части</td><td class="d">~2000 движущихся</td><td class="d">~20</td></tr>
+            <tr><td>КПД бак/батарея → колёса</td><td class="d">20–30%</td><td class="d">77–85%</td></tr>
+            <tr><td>Момент</td><td class="d">пик в узком окне</td><td class="d">максимум с 0 об/мин</td></tr>
+            
+            <tr><td>Расход энергии, кВт·ч/100 км</td><td class="d">60–70 (7 л бензина)</td><td class="d">15–20</td></tr>
+            <tr><td>Цена км (РФ, дом. розетка)</td><td class="d">~5–6 ₽</td><td class="d">~1 ₽ (быстрая зарядка — 4–6 ₽)</td></tr>
+            <tr><td>ТО</td><td class="d">масло, фильтры, ремни, свечи, выхлоп</td><td class="d">салонный фильтр, тормозная жидкость, редукторное масло редко</td></tr>
+            
+            <tr><td>Тепло в салон зимой</td><td class="d">бесплатно (отход)</td><td class="d">за счёт батареи: −15…−30% запаса</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s33">
+  <div class="bgimg"><img src="assets/ch_battery.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Электро · батарея</div>
+    <h2>Литий-ион: химия, деградация и зарядка</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Ячейка</b>: катод (оксид лития с никелем/кобальтом/марганцем — NMC, или литий-железо-фосфат — LFP), анод (графит), между ними — сепаратор и электролит. При зарядке ионы лития перебегают из катода в графит и застревают между его слоями; при разряде — обратно, отдавая электрон во внешнюю цепь. Напряжение 3.2–3.7 В, ёмкость 3–100 А·ч. В машине — 100–7000 ячеек в модулях, модули в пакете, всё под BMS.</li>
+          <li><b>NMC vs LFP</b>: NMC — плотность 250–300 Вт·ч/кг, запас больше, но кобальт дорог и горит охотнее. LFP — 160–200 Вт·ч/кг (тяжелее на 25%), но дёшево, безопасно, 3000+ циклов (втрое больше), можно заряжать до 100% каждый день. Китай — 70% LFP; Tesla Model 3 базовый, BYD Blade. NMC — премиум и дальнобойные.</li>
+          <li><b>Деградация</b>: 1.5–2.5% ёмкости в год, замедляется со временем. Tesla после 300 000 км — 85–90%. Враги: жара (химия быстрее), 100% заряд долго, глубокие разряды до 0, постоянные быстрые зарядки. Друзья: 20–80%, умеренный климат. Гарантия — 8 лет / 160 000 км на 70%. Замена — $5000–15 000, но нужна редко.</li>
+          <li><b>Зарядка</b>: дома 3–11 кВт (ночь, 0–100%). Быстрая DC 50–350 кВт: 10–80% за 18–40 мин, дальше медленно (последние 20% — час). 800-вольтовые платформы (Hyundai E-GMP, Porsche, Xiaomi) — 350 кВт стабильно. BYD 2025 — 1 МВт, 5 минут на 400 км. Кривая зарядки важнее пика: Tesla V3 250 кВт, но держит их 5 минут.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Что реально с запасом хода</h3>
+          <table class="t">
+            <tr><th>Условие</th><th>% от паспортного WLTP</th></tr>
+            <tr><td>Город, лето, 30–60 км/ч</td><td class="d">100–120%</td></tr>
+            <tr><td>Трасса 90 км/ч, лето</td><td class="d">90–100%</td></tr>
+            <tr><td>Трасса 120 км/ч, лето</td><td class="d">65–75% (сопротивление воздуха ∝ v²)</td></tr>
+            <tr><td>Трасса 130 + зима −10 °C</td><td class="d">50–55%</td></tr>
+            <tr><td>Город −20 °C с обогревом</td><td class="d">55–65% (тепловой насос: +10%)</td></tr>
+            <tr><td>Батарея через 8 лет</td><td class="d">× 0.85</td></tr>
+          </table>
+          <p style="margin-top:8px">Паспортные 500 км = 250–300 зимой по трассе. Планировать зарядки — норма жизни. ДВС теряет зимой те же 15–25%, просто бак дозаправить — 3 минуты.</p>
+        </div>
+        <div class="note warn" style="margin-top:12px"><b>Пожары</b>: литий горит сам (тепловой разгон, нельзя потушить, только охлаждать). Но статистика — 25 пожаров на 100 000 EV против 1500 на 100 000 ДВС (США, 2022). Электромобиль горит реже в 60 раз, но когда горит — эффектнее и дольше. LFP почти не горит вообще.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s34">
+  <div class="bgimg"><img src="assets/ch_hybrid.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Электро · гибриды</div>
+    <h2>Гибриды: четыре степени электрификации</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3>Мягкий (MHEV, 48 В)</h3>
+          <p>Стартер-генератор на ремне + маленькая батарея 0.5 кВт·ч. Глушит двигатель на выбеге, помогает при разгоне 10–15 кВт, рекуперирует чуть. Ехать на электричестве не может. −5–10% расхода за $500. Сейчас почти на всех новых ДВС в Европе — ради нормы CO₂.</p>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3 class="cy">Полный (HEV): Toyota Prius, RAV4, Camry Hybrid</h3>
+          <p>Планетарный редуктор (e-CVT) соединяет ДВС и два мотора: один — генератор, второй тянет. ЭБУ каждую секунду решает, откуда брать момент: с места и в пробке — электро, разгон — оба, трасса — ДВС напрямую. Батарея 1–2 кВт·ч, не заряжается от сети. ДВС работает только в оптимальном режиме (цикл Аткинсона, 41% КПД). Расход в городе 4–5 л вместо 8–9. Надёжность — легендарная: такси на Prius по 500 000 км.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Подключаемый (PHEV)</h3>
+          <p>То же + батарея 10–25 кВт·ч с зарядкой от сети: 50–100 км чисто на электричестве, потом как обычный гибрид. Идеален, если заряжать каждый день и ездить &lt;60 км: расход 1–2 л/100. Если не заряжать — тащишь 300 кг батареи как балласт, расход выше обычного. Реальные данные ЕС (2024): средний PHEV ест в 3.5 раза больше паспортного — не заряжают.</p>
+          <p style="margin-top:6px" class="dim">Китай (BYD DM-i, Li Auto) — 40% продаж PHEV: батарея 20–40 кВт·ч + ДВС как генератор (EREV). Для России с расстояниями и морозами — возможно, самая разумная схема.</p>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3 class="gr">Последовательный / Range extender (EREV): Nissan e-Power, Li Auto</h3>
+          <p>Колёса крутит <b>только</b> электромотор. ДВС не связан с колёсами вообще — он генератор, работает на одном режиме, заряжает батарею. Ощущения электромобиля, заправка бензином. КПД цепочки ниже, чем у прямой связи на трассе, но простота и ездовой характер выигрывают.</p>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Водород (FCEV)</b>: Toyota Mirai, Hyundai Nexo — топливный элемент делает электричество из H₂ и воздуха, выхлоп — вода. Заправка 5 минут, 600 км. Но: КПД цепочки электролиз → сжатие → элемент — 25–30% против 80% у батареи; заправок нет; водород дорог. Ниша — грузовики и дальнобой, не легковые.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s35">
+  <div class="content">
+    <div class="kicker">Электро · честное сравнение</div>
+    <h2>ДВС против электро: по пунктам, без агитации</h2>
+    <table class="t" style="font-size:13.5px">
+      <tr><th>Критерий</th><th>ДВС</th><th>Электро (BEV)</th><th>Кто выигрывает</th></tr>
+      <tr><td>Цена покупки</td><td class="d">база</td><td class="d">+20–40% (Европа/США); паритет в Китае с 2023</td><td class="d">ДВС, разрыв тает</td></tr>
+      <tr><td>Стоимость км (энергия + ТО)</td><td class="d">8–10 ₽/км</td><td class="d">2–4 ₽/км</td><td class="d">электро в 2–3 раза</td></tr>
+      <tr><td>Заправка / зарядка</td><td class="d">5 мин, везде</td><td class="d">дома ночью — удобнее; в дороге 20–40 мин, инфраструктура</td><td class="d">зависит от жизни: есть парковка с розеткой — электро</td></tr>
+      <tr><td>Дальность</td><td class="d">600–1000 км</td><td class="d">300–600 паспорт; зимой ×0.6</td><td class="d">ДВС</td></tr>
+      <tr><td>Динамика</td><td class="d">нужна коробка и обороты</td><td class="d">мгновенно; 0–100 за 3–4 с у среднего кроссовера</td><td class="d">электро</td></tr>
+      <tr><td>Надёжность и ТО</td><td class="d">200+ узлов на износ</td><td class="d">почти нечему ломаться в силовой части; электроника и батарея</td><td class="d">электро (статистика Consumer Reports пока против — новизна платформ)</td></tr>
+      <tr><td>Ресурс</td><td class="d">300 тыс. км, потом капремонт</td><td class="d">батарея 300–500 тыс. до 70%; мотор — миллион</td><td class="d">электро</td></tr>
+      <tr><td>Масса</td><td class="d">1300–1600 кг</td><td class="d">+300–500 кг</td><td class="d">ДВС: износ шин, дорог, тяжелее в ДТП для другой стороны</td></tr>
+      <tr><td>Остаточная стоимость</td><td class="d">−50% за 5 лет</td><td class="d">−55–65%: страх батареи, быстрый прогресс</td><td class="d">ДВС пока</td></tr>
+      <tr><td>CO₂ за жизненный цикл</td><td class="d">~45 т (200 тыс. км)</td><td class="d">~20–30 т при среднем миксе ЕС; производство батареи +6–8 т, окупается за 20–40 тыс. км</td><td class="d">электро в 1.5–3 раза, зависит от электростанций</td></tr>
+      <tr><td>Локальный выхлоп</td><td class="d">NOx, частицы, CO в городе</td><td class="d">ноль (частицы шин и тормозов остаются)</td><td class="d">электро</td></tr>
+      <tr><td>Мороз −30</td><td class="d">заводится (не всегда), греет даром</td><td class="d">едет всегда, но −40% хода; предпрогрев с телефона</td><td class="d">ничья</td></tr>
+      <tr><td>Удовольствие</td><td class="d">звук, механика, характер</td><td class="d">тишина, плавность, момент</td><td class="d">вкус</td></tr>
+    </table>
+    <div class="note gold" style="margin-top:14px"><b>Итог без религии</b>: город и своя розетка — электро уже выгоднее; дальние перегоны, село, морозы без гаража — ДВС или PHEV. Через 5–7 лет вопрос закроет экономика, а не идеология.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 7: ЭЛЕКТРОНИКА И БЕЗОПАСНОСТЬ ============ -->
+<section class="slide chapter" id="s36">
+  <div class="bgimg"><img src="assets/ch_electronics.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 7</div>
+    <h1>Мозг и нервы: 100 миллионов строк кода</h1>
+    <p class="lead">В современной машине больше кода, чем в Boeing 787, F-35 и Facebook вместе. Полторы сотни компьютеров, три километра проводов и полсотни датчиков — и это до того, как речь зашла об автопилоте.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s37">
+  <div class="content">
+    <div class="kicker">Электроника · сеть</div>
+    <h2>ЭБУ, CAN-шина и почему машину теперь чинят ноутбуком</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>ЭБУ двигателя</b> (ECU): читает 20–30 датчиков (положение коленвала и распредвала, расход воздуха, лямбда, детонация, температуры, дроссель, педаль) 1000+ раз в секунду и решает: сколько топлива, когда искра, какое давление турбины, какие фазы. Карты калибровки — тысячи таблиц; «чип-тюнинг» — их правка (+20–30% на турбо, минус ресурс).</li>
+          <li><b>Остальные</b>: коробка (TCU), ABS/ESP, подушки, кузов (свет, стёкла, замки), климат, руль, приборка, мультимедиа, камеры, радары, парктроники, сиденья, двери… 50–150 блоков. Каждый — свой микроконтроллер и прошивка. Раньше — провода от каждого к каждому; жгут Mercedes S-класса 1990-х — 4 км и 60 кг.</li>
+          <li><b>CAN-шина</b> (Bosch, 1986): два провода на всех, каждый блок кидает сообщения с ID и приоритетом, все слушают. 1 Мбит/с. Плюс LIN (дёшево, медленно — стеклоподъёмники), FlexRay (шасси), <b>Automotive Ethernet</b> (камеры, 1–10 Гбит). Tesla и китайцы идут к <b>зональной архитектуре</b>: 3–5 мощных компьютеров вместо 100 мелких — минус 1.5 км проводов и 30 кг.</li>
+          <li><b>OBD-II</b> (обязателен с 1996 США / 2001 ЕС) — разъём под рулём: любой сканер за $20 читает коды ошибок и параметры. Диагностика «по компьютеру» — это он. Дилерский софт (VCDS, ISTA) — глубже: кодировки, адаптации, прошивки.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Что читает ЭБУ (главное)</h3>
+          <table class="t">
+            <tr><th>Датчик</th><th>Что даёт</th><th>Если сдох</th></tr>
+            <tr><td>Положения коленвала (ДПКВ)</td><td class="d">обороты и момент искры</td><td class="d">двигатель не заведётся вообще</td></tr>
+            <tr><td>Массового расхода воздуха (ДМРВ) / давления (MAP)</td><td class="d">сколько воздуха вошло → сколько лить</td><td class="d">богатая/бедная смесь, расход, рывки</td></tr>
+            <tr><td>Лямбда-зонд (кислорода)</td><td class="d">состав выхлопа → коррекция смеси</td><td class="d">расход +15%, катализатор умирает</td></tr>
+            <tr><td>Детонации</td><td class="d">пьезо-микрофон на блоке слышит стук</td><td class="d">ЭБУ уходит в безопасное позднее зажигание, −мощность</td></tr>
+            <tr><td>Температуры антифриза</td><td class="d">прогрев, вентилятор, обогащение</td><td class="d">холодный запуск плохой, вентилятор молотит</td></tr>
+            <tr><td>Положения дросселя / педали</td><td class="d">желание водителя (педаль давно электронная)</td><td class="d">аварийный режим, 1500 об/мин</td></tr>
+            <tr><td>Датчики ABS (4 шт.)</td><td class="d">скорость каждого колеса</td><td class="d">ABS, ESP, круиз отключаются; на автомате — жёсткие переключения</td></tr>
+          </table>
+          <p style="margin-top:8px" class="dim">«Check Engine» — не «всё плохо», а «есть код». 40% — лямбда или крышка бензобака. Читать сканером до паники.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s38">
+  <div class="bgimg"><img src="assets/ch_safety.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Электроника · безопасность</div>
+    <h2>Пассивная и активная: как смертность упала в 10 раз</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Физика удара</b>: 50 км/ч в стену = падение с 10 метров. Задача — растянуть остановку с 0 до 100 мс и распределить нагрузку. <b>Зоны деформации</b> (Mercedes, Барени, 1951): перед и зад сминаются программируемо, поглощая энергию; <b>клетка салона</b> — сверхвысокопрочная сталь (1500 МПа, горячая штамповка), не деформируется. Двигатель при ударе уходит под пол, а не в салон. Рулевая колонка складывается.</li>
+          <li><b>Ремень</b> (трёхточечный, Volvo 1959, патент открыт для всех) — самое эффективное устройство в истории автобезопасности: −50% смертей. Преднатяжитель дёргает за 10 мс, ограничитель усилия отпускает, чтобы не сломать рёбра. <b>Подушка</b> — дополнение к ремню, не замена: без ремня она может убить. Раскрывается за 30 мс пиропатроном, 6–10 штук в машине.</li>
+          <li><b>Euro NCAP</b> (1997): фронтальный, боковой, столб, пешеход, ассистенты. Пять звёзд 2010 года — три сегодня: требования ужесточают каждые 2–3 года. Golf II vs Golf VII на краш-тесте — водитель старого погибает, нового отделывается синяками. Смертность в ЕС: 1970 — 165 на млн населения, 2023 — 46.</li>
+          <li><b>Тяжёлые электромобили</b> — новая проблема: 2.5 т Rivian против 1.2 т Yaris — физика на стороне тяжёлого, и это плохо для другой стороны. Плюс тихие — пешеходы не слышат: с 2021 обязательный шум до 20 км/ч.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">ADAS: уровни автономности (SAE)</h3>
+          <table class="t">
+            <tr><th>Уровень</th><th>Кто ведёт</th><th>Примеры</th></tr>
+            <tr><td>0</td><td class="d">человек; машина предупреждает</td><td class="d">парктроник, датчик слепых зон</td></tr>
+            <tr><td>1</td><td class="d">машина — либо руль, либо педали</td><td class="d">адаптивный круиз ИЛИ удержание в полосе</td></tr>
+            <tr><td>2</td><td class="d">руль + педали, человек следит постоянно</td><td class="d">Tesla Autopilot/FSD, GM Super Cruise, все «пилоты» серийных машин</td></tr>
+            <tr><td>3</td><td class="d">машина ведёт в ограниченных условиях, человек готов взять за 10 с</td><td class="d">Mercedes Drive Pilot (пробка до 95 км/ч, юридическая ответственность — Mercedes)</td></tr>
+            <tr><td>4</td><td class="d">полная автономия в зоне, человек не нужен</td><td class="d">Waymo (Финикс, СФ, ЛА — 250 000 поездок в неделю), Baidu Apollo</td></tr>
+            <tr><td>5</td><td class="d">везде и всегда</td><td class="d">нет и не скоро</td></tr>
+          </table>
+          <p style="margin-top:8px"><b>Сенсоры</b>: камеры (дёшево, цвет, знаки; слепнут в дождь и на солнце), радар (расстояние и скорость в любую погоду, плохое разрешение), лидар (точное 3D-облако, дорого — было $75 000, стало $500; Tesla принципиально без него), ультразвук (парковка). Все, кроме Tesla, — фьюжн всего.</p>
+          <p style="margin-top:8px" class="dim">Обязательно в ЕС с 2024: автоторможение, удержание полосы, контроль внимания водителя, ограничитель скорости по знакам, чёрный ящик (EDR).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s39">
+  <div class="bgimg"><img src="assets/ch_aero.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Электроника · кузов и аэродинамика</div>
+    <h2>Кузов: сталь, алюминий, клей и почему форма решает расход</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Материалы</b>: обычная сталь (дёшево, 200–300 МПа) → высокопрочная HSS → сверхвысокопрочная (AHSS/UHSS, горячая штамповка, до 2000 МПа — стойки, пороги, усилители дверей; на 30% тоньше при той же прочности) → алюминий (Audi A8, Tesla, Ford F-150: −40% массы, дороже в 3 раза, сложно ремонтировать) → магний, углепластик (BMW i3/i8, суперкары: −50%, дорого, не чинится).</li>
+          <li><b>Сборка</b>: 4000–6000 точек контактной сварки роботами + лазерная сварка + <b>структурный клей</b> (200 м швов на машине — жёстче сварки, гасит вибрации) + клёпка (алюминий не сварить со сталью). <b>Гигакастинг</b> (Tesla, 2020): вся задняя часть — одна алюминиевая отливка вместо 70 штампованных деталей. −30% на сборке.</li>
+          <li><b>Аэродинамика</b>: сила сопротивления ∝ C<sub>x</sub> × S × v². На 120 км/ч это половина всех потерь. C<sub>x</sub>: кирпич 1.0, Model T 0.8, Golf I 0.42, современный седан 0.25–0.28, Tesla Model 3 0.23, Mercedes EQS 0.20 (рекорд серийных), капля 0.04. Электромобилям аэродинамика важнее вдвое: нет «бесплатного» бензина, каждый 0.01 C<sub>x</sub> — 5–8 км запаса.</li>
+          <li><b>Прижимная сила</b> — обратная задача для спорта: антикрыло и днище-диффузор давят машину к дороге; F1 на 200 км/ч могла бы ехать по потолку. Цена — сопротивление. Активная аэродинамика (спойлер выдвигается на скорости, заслонки радиатора закрываются) — компромисс.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Коррозия: почему машины больше не гниют</h3>
+          <p>1970-е: кузов сквозной за 5–7 лет. Сейчас — гарантия от сквозной коррозии 12 лет. Что изменилось: двусторонняя <b>оцинковка</b> листа (цинк — жертвенный анод, ржавеет вместо железа), <b>фосфатирование + катафорезный грунт</b> (кузов целиком в ванне под током, грунт заходит во все полости), герметик швов, антигравий, воск в скрытых полостях, пластиковые подкрылки.</p>
+          <p style="margin-top:8px">Слабые места остались: кромки дверей и капота (тонкая краска на сгибе), сколы на арках, места контакта разных металлов (алюминий + сталь = гальваническая пара), задние арки над глушителем, точки сварки. Реагенты зимой ускоряют в 5–10 раз — мыть днище.</p>
+          <p style="margin-top:8px" class="dim">Краска: грунт 20 мкм + база (цвет) 15 мкм + лак 40 мкм = толщина волоса. Толщиномер — первый инструмент при покупке б/у: 100–150 мкм заводская, 300+ — красили, 1000+ — шпаклёвка.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 8: ПРАКТИКА ============ -->
+<section class="slide chapter" id="s40">
+  <div class="bgimg"><img src="assets/ch_future.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 8</div>
+    <h1>Практика и будущее</h1>
+    <p class="lead">Что ломается, что проверять, куда идёт индустрия — и почему машина через десять лет будет ближе к смартфону, чем к тому, что стоит у тебя во дворе.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s41">
+  <div class="content">
+    <div class="kicker">Практика · эксплуатация</div>
+    <h2>Что ломается, когда и почему: карта расходников</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="am">По пробегу (ДВС, средняя машина)</h3>
+          <table class="t">
+            <tr><th>Когда</th><th>Что</th></tr>
+            <tr><td>Каждые 10–15 тыс.</td><td class="d">масло + фильтр, салонный и воздушный фильтр</td></tr>
+            <tr><td>30–60 тыс.</td><td class="d">колодки перед (зад — вдвое дольше), свечи (иридий — 100), тормозная жидкость (2 года), стойки стабилизатора</td></tr>
+            <tr><td>60–100 тыс.</td><td class="d">масло АКПП/DSG, антифриз, диски тормозные, амортизаторы, ремень навесного, аккумулятор (4–6 лет)</td></tr>
+            <tr><td>90–150 тыс.</td><td class="d"><b>ремень ГРМ</b> с роликами и помпой (порвётся — гнутые клапаны, капремонт), сайлентблоки, шаровые, ступичные подшипники, сцепление на механике, топливный фильтр</td></tr>
+            <tr><td>150–250 тыс.</td><td class="d">цепь ГРМ (если цепь), турбина, форсунки, катализатор, генератор, стартер, радиаторы, ШРУСы, рулевая рейка, маслосъёмные колпачки</td></tr>
+            <tr><td>250+ тыс.</td><td class="d">поршневые кольца, вкладыши, ГБЦ — или своп двигателя контрактным</td></tr>
+          </table>
+        </div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Аккумулятор 12 В</b> (есть и у электромобилей): свинцово-кислотный, 60–75 А·ч, 4–6 лет. Умирает зимой: при −20 °C отдаёт 50% ёмкости, а стартеру нужно вдвое больше. Признак — медленный стартер утром. AGM/EFB — для start-stop, дороже, живучее. Не путать с тяговой батареей EV.</li>
+          <li><b>Что проверять при покупке б/у</b>: толщиномер по всему кузову; VIN по базам (ДТП, залог, такси, пробег); ошибки сканером (и стёртые — по «freeze frame»); масло на щупе и под крышкой (эмульсия = антифриз в масле); выхлоп при холодном запуске (синий — масло, белый долго — антифриз); коробка на всех режимах; подвеска на кочках; износ руля/педалей/сиденья vs пробег; сервисная история. И — независимый сервис за 3000 ₽ дешевле любой ошибки.</li>
+          <li><b>Мифы</b>: «прогревать 10 минут» — нет; «переключаться на N на светофоре» — нет; «раз в месяц раскрутить до отсечки, чтобы прочистить» — отчасти (прогретый двигатель, нагар на клапанах GDI — да, но это не лечение); «синтетика течёт из старых моторов» — нет, она моет грязь, которая затыкала течи; «АИ-98 в обычный двигатель — больше мощности» — нет, ЭБУ рассчитан на 95, разницы не будет.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s42">
+  <div class="content">
+    <div class="kicker">Практика · будущее</div>
+    <h2>Куда едет автопром: пять трендов</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Software-defined vehicle</b>: машина — компьютер на колёсах с обновлениями по воздуху (OTA). Tesla с 2012 — добавляет функции, чинит баги, ускоряет разгон за деньги (подписка на +50 л.с.). VW потерял годы и миллиарды на софте Cariad. Китайцы (Xiaomi SU7, Huawei) пришли из телефонов — и делают UI лучше немцев. Прибыль смещается от железа к подпискам и данным.</li>
+          <li><b>Китай</b>: за 5 лет — из «копировальщиков» в лидеров: BYD, Geely, Chery, Great Wall, NIO, Xpeng, Li Auto. Полный цикл — от лития до софта. Себестоимость EV на 30% ниже европейской. Экспорт 6 млн, ЕС ввёл пошлины 17–45%, США — 100%. В России — 60% продаж новых машин.</li>
+          <li><b>Твердотельные батареи</b>: твёрдый электролит вместо жидкого — плотность ×1.5–2, не горят, зарядка 10 мин. Toyota обещает с 2008, реально малые серии 2027–28 (Toyota, Samsung SDI, QuantumScape). Натрий-ионные (CATL, 2024) — дёшево, работают в −40, для бюджетных. Литий-серные, литий-воздушные — лаборатория.</li>
+          <li><b>Автономия</b>: робо-такси 4 уровня работают в 5 городах США и 10 Китая. Массовые машины — 2 уровень с камерами и «почти» — ещё 10 лет. Проблема не в 99% ситуаций, а в 0.01%: юрист, страховка, регулятор. Tesla обещает FSD «в следующем году» с 2016.</li>
+          <li><b>Регуляторика</b>: ЕС — запрет продаж новых ДВС с 2035 (пересматривают). Нормы CO₂ 93.6 г/км с 2025 — без EV не выполнить, штрафы миллиарды. США — откат при Трампе. Китай — 50% NEV к 2030 уже перевыполнен. Синтетическое топливо (e-fuel) — дорого, ниша для Porsche 911.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Чего ждать по годам</h3>
+          <table class="t">
+            <tr><th>Год</th><th>Реалистично</th></tr>
+            <tr><td>2026</td><td class="d">800-В платформы в среднем классе; зарядка 10–80% за 15 мин; LFP везде в бюджете; 3-й уровень на трассах в Германии, Японии, Китае</td></tr>
+            <tr><td>2028</td><td class="d">первые серийные твердотельные; паритет цен EV/ДВС в Европе; ДВС только в гибридах у большинства брендов</td></tr>
+            <tr><td>2030</td><td class="d">EV 50%+ продаж в Китае и ЕС, 30% США; робо-такси в 50+ городах; исчезновение механики из массового сегмента</td></tr>
+            <tr><td>2035</td><td class="d">EV 70–80% новых в развитом мире; ДВС — грузовики, ниши, вторичка; уровень 4 на трассах</td></tr>
+            <tr><td>2040+</td><td class="d">парк обновился наполовину; бензоколонки — как телефонные будки; водитель как хобби</td></tr>
+          </table>
+          <p style="margin-top:8px" class="dim">Прогнозы автопрома последние 20 лет сбывались с задержкой в 5–10 лет, кроме китайского роста — он опередил все.</p>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Что не изменится</b>: четыре колеса, шины, подвеска, тормоза, кузов, стёкла, сиденья. 60% машины — та же, что и в 1960-х, только лучше сделанная. Меняется только то, что под капотом и в проводах.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ИТОГИ ============ -->
+<section class="slide" id="s43">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Вся машина на одном слайде</h2>
+    <table class="t" style="font-size:15px">
+      <tr><th>Система</th><th>Задача</th><th>Ключевое число</th><th>Главная слабость</th></tr>
+      <tr><td>ДВС</td><td class="d">сжать, поджечь, толкнуть, выбросить — 50 раз в секунду</td><td class="d">КПД 25–35%; 75% в тепло</td><td class="d">2000 движущихся деталей, масло, узкое окно оборотов</td></tr>
+      <tr><td>Электромотор</td><td class="d">магнитное поле крутит ротор</td><td class="d">КПД 95%; момент с нуля</td><td class="d">батарея: масса, цена, мороз, зарядка</td></tr>
+      <tr><td>Трансмиссия</td><td class="d">согласовать обороты двигателя и колёс</td><td class="d">×14 на 1-й, ×2.8 на 6-й</td><td class="d">потери 5–15%; сложность автоматов</td></tr>
+      <tr><td>Подвеска</td><td class="d">колесо к дороге, кузов в покое</td><td class="d">4 пятна контакта ≈ лист А4</td><td class="d">расходники каждые 60–100 тыс.</td></tr>
+      <tr><td>Тормоза</td><td class="d">580 кДж в тепло за 2.5 с</td><td class="d">в 5–10 раз мощнее двигателя</td><td class="d">жидкость, перегрев; на EV почти не нужны</td></tr>
+      <tr><td>Шины</td><td class="d">единственная связь с дорогой</td><td class="d">μ = 1.0 асфальт, 0.1 лёд</td><td class="d">температура состава; давление; возраст</td></tr>
+      <tr><td>Кузов</td><td class="d">нести всё, спасти при ударе</td><td class="d">C<sub>x</sub> 0.20–0.30; сталь 2000 МПа</td><td class="d">масса растёт; алюминий не чинится</td></tr>
+      <tr><td>Электроника</td><td class="d">100 ЭБУ, 3 км проводов, 100 млн строк</td><td class="d">ЭБУ решает 1000 раз/с</td><td class="d">софт, датчики, стоимость диагностики</td></tr>
+      <tr><td>Безопасность</td><td class="d">растянуть удар до 100 мс; не допустить его</td><td class="d">ремень −50% смертей; ESP −30%</td><td class="d">масса EV; человек за рулём</td></tr>
+    </table>
+    <div class="note">Одна идея под всей главой про ДВС и трансмиссию: <b>двигатель хорош в узком диапазоне, а дорога требует широкого — всё между ними существует, чтобы этот разрыв закрыть</b>. Электромотор закрывает его сам. Поэтому у электромобиля нет коробки, сцепления, турбины, выхлопа — и половины ремонтов.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s44">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <div class="kicker amber">Финал</div>
+    <h1>Тридцать тысяч деталей, одна педаль</h1>
+    <p class="lead">Бензин → впрыск → сжатие → искра → 80 атмосфер на поршень → коленвал → сцепление → шестерни → карданы → дифференциал → ШРУС → колесо → четыре ладони резины → асфальт. Или: батарея → инвертор → мотор → редуктор → колесо. Второй путь короче на две тысячи деталей, и это единственное, что в машине действительно изменилось за сто лет.</p>
+    <p class="lead" style="margin-top:14px">Всё остальное — пружины, амортизаторы, тормоза, руль, кузов, стёкла — Берта Бенц узнала бы. Просто теперь оно сделано так, что ты не думаешь о нём вообще. И это, наверное, и есть главное достижение автопрома: сделать самую сложную вещь, которой владеет обычный человек, невидимой.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- SLIDES_END -->
+
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>

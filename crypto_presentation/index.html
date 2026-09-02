@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Крипта честно: как это работает и где ложь</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #f2a93b; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Crypto deep dive · Гвендолин-ночные-лекции</div>
+    <h1>Крипта честно: как это работает и где ложь</h1>
+    <p class="lead">Полная анатомия: что такое хеш и почему его нельзя развернуть, как 15 000 незнакомых компьютеров договариваются без начальника, что реально происходит при «майнинге», где в этой системе настоящая инженерия, а где — казино, и почему 90% проектов существуют только чтобы забрать твои деньги.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 1: ПРОБЛЕМА ============ -->
+<section class="slide chapter" id="s2">
+  <div class="bgimg"><img src="assets/ch_money.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1</div>
+    <h1>Какую задачу решали</h1>
+    <p class="lead">Деньги — это записи о том, кто кому сколько должен. Тысячи лет эти записи вёл кто-то, кому все верили: храм, король, банк. Биткоин — первая работающая попытка вести их без того, кому верят.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">Проблема · деньги как реестр</div>
+    <h2>Деньги — это база данных, и вопрос только в том, кто её ведёт</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Наличные</b> — единственные деньги без реестра: передал бумажку — сделка закрыта, никто не записывает. Все остальные деньги (95% денежной массы) — <b>записи в базах банков</b>. Твоя зарплата — строка в таблице Сбера. Перевод — банк уменьшил одно число и увеличил другое.</li>
+          <li><b>Проблема доверия</b>: банк может ошибиться, заморозить, обанкротиться (Кипр 2013 — списали 47.5% с депозитов), государство — напечатать (Зимбабве, Венесуэла, Турция) или запретить (санкции, блокировки). Ты не владеешь деньгами в банке — ты владеешь обещанием банка.</li>
+          <li><b>Задача</b>: сделать реестр, который (1) ведут все участники одновременно, (2) никто не может подделать, (3) никто не может заблокировать, (4) не нужно знать друг друга. Компьютерщики бились над этим с 1980-х: DigiCash (Чаум, 1989 — но с центральным сервером), b-money, Hashcash (1997), Bit Gold (2005). Все упирались в одно.</li>
+          <li><b>Двойная трата</b>: файл можно скопировать. Если деньги — файл, я отправлю один и тот же файл двоим. Банк решает это тем, что он один и у него одна база. Как решить без банка — вот и вся сложность. Ответ пришёл 31 октября 2008 года в 9-страничном PDF.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Сатоси Накамото и 9 страниц</h3>
+        <p>«Bitcoin: A Peer-to-Peer Electronic Cash System» — рассылка криптографов, октябрь 2008, через месяц после краха Lehman. Автор неизвестен до сих пор: японское имя, британская орфография, американское время активности. Написал код, вёл проект 2 года, в 2011 исчез. На его кошельках — ~1.1 млн BTC ($100+ млрд), ни одна монета не сдвинулась с 2010 года.</p>
+        <p style="margin-top:8px"><b>Что придумано</b>: ничего нового по частям — хеши (1970-е), цифровая подпись (1976), цепочка блоков с метками времени (Хабер–Сторнетта, 1991), proof-of-work (Hashcash). Новое — <b>сборка</b>: как сделать так, чтобы честно вести реестр было выгоднее, чем врать. Это не криптография, это экономика, вшитая в код.</p>
+        <p style="margin-top:8px" class="dim">Первый блок — 3 января 2009, в нём заголовок Times: «Канцлер на грани второго спасения банков». Первая покупка — две пиццы за 10 000 BTC, 22 мая 2010 ($41 тогда, ~$1 млрд сейчас).</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2: КРИПТОГРАФИЯ ============ -->
+<section class="slide chapter" id="s4">
+  <div class="bgimg"><img src="assets/ch_hash.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2</div>
+    <h1>Два кирпича: хеш и подпись</h1>
+    <p class="lead">Вся крипта стоит на двух математических инструментах, каждому по полвека. Понял их — понял 80% всего остального.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="content">
+    <div class="kicker">Криптография · хеш</div>
+    <h2>Хеш-функция: отпечаток пальца для любых данных</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Что делает</b>: берёт что угодно (байт, «Войну и мир», фильм) и выдаёт число фиксированной длины — у SHA-256 это 256 бит, 64 шестнадцатеричных символа. <b>Всегда одно и то же</b> для одних данных. Поменял одну запятую — хеш другой целиком, не похож на прежний.</li>
+          <li><b>Односторонняя</b>: из хеша данные не восстановить — не «сложно», а информации не хватает (256 бит из мегабайт). Единственный способ узнать, что даёт хеш X, — перебирать входы. Пространство 2²⁵⁶ ≈ 10⁷⁷ — больше атомов в наблюдаемой вселенной (10⁸⁰ — близко, но перебрать нельзя ни за какое время).</li>
+          <li><b>Без коллизий</b> на практике: два разных документа с одним хешем существуют математически (входов бесконечно, выходов конечно), но найти пару — 2¹²⁸ операций. Все компьютеры Земли — миллиарды лет. Для SHA-1 нашли в 2017 (Google, 6500 лет процессорного времени) — поэтому SHA-1 списали.</li>
+          <li><b>Зачем в крипте</b>: (1) адрес кошелька — хеш публичного ключа; (2) блок ссылается на предыдущий его хешем — изменил старый блок — хеш поменялся — цепь сломалась, все видят; (3) майнинг — поиск хеша с нужным числом нулей; (4) дерево Меркла — хеш всех транзакций блока в одном числе, проверка любой за log(n).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Пример: SHA-256 на пальцах</h3>
+        <table class="t" style="font-family:Consolas,monospace;font-size:12.5px">
+          <tr><td style="color:var(--text)">"привет"</td><td class="d">ea7f…b0c3 (64 символа)</td></tr>
+          <tr><td style="color:var(--text)">"Привет"</td><td class="d">3f9a…12e7 — ничего общего</td></tr>
+          <tr><td style="color:var(--text)">"привет "</td><td class="d">c81d…f04a — пробел всё меняет</td></tr>
+          <tr><td style="color:var(--text)">Вся Википедия</td><td class="d">тоже 64 символа</td></tr>
+        </table>
+        <p style="margin-top:10px">Хеш-функция — это идеальная лотерея: выход выглядит случайным, но детерминирован. Невозможно подобрать вход так, чтобы получить желаемый выход, — только перебором. На этом стоит майнинг: «найди такое число, чтобы хеш блока начинался с 19 нулей» — единственный способ найти — пробовать триллионы раз в секунду.</p>
+        <p style="margin-top:8px" class="dim">SHA-256 разработан АНБ (NSA) в 2001. Параноики боятся бэкдора; за 25 лет никто не нашёл. Bitcoin применяет его дважды (SHA-256d) — на всякий случай.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s6">
+  <div class="bgimg"><img src="assets/ch_keys.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Криптография · подпись</div>
+    <h2>Приватный и публичный ключ: доказать, что это ты, не показывая пароль</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Приватный ключ</b> — случайное число из 256 бит. Просто число. Его генерирует твой кошелёк, подбросив 256 монеток. Вероятность, что кто-то сгенерирует такое же, — 1/10⁷⁷: ноль. <b>Кто знает число — владеет монетами.</b> Не «имеет доступ» — владеет. Других механизмов нет.</li>
+          <li><b>Публичный ключ</b> вычисляется из приватного одной операцией на эллиптической кривой (secp256k1): умножение точки на число. Вперёд — миллисекунда. Назад (из публичного получить приватный) — задача дискретного логарифма, 2¹²⁸ операций. Не решена. Квантовый компьютер на 4000 логических кубитов решит — его нет и лет 15 не будет.</li>
+          <li><b>Подпись</b>: берёшь транзакцию («отправить 1 BTC на адрес X»), хешируешь, из хеша и приватного ключа вычисляешь два числа (r, s). Это подпись. <b>Любой</b> с публичным ключом проверит, что подпись сделана владельцем приватного — не зная приватного. Подделать без ключа нельзя. Подпись под другой транзакцией не подойдёт.</li>
+          <li><b>Адрес</b> = хеш публичного ключа (ещё один слой защиты + короче). Ты публикуешь адрес, тебе шлют монеты, ты тратишь их, подписав приватным ключом. Никаких логинов, паролей, восстановления. Забыл ключ — монеты есть, но никто и никогда их не сдвинет. Так потеряно ~20% всех биткоинов.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Seed-фраза: ключ, который можно записать</h3>
+        <p>256 бит запомнить нельзя. BIP-39 (2013): случайное число → 12 или 24 слова из словаря в 2048 слов. «witch collapse practice feed shame open despair creek road again ice least» — это и есть кошелёк. Из фразы детерминированно выводятся <b>все</b> ключи и адреса (BIP-32, иерархия). Одна фраза — тысячи адресов для любых монет.</p>
+        <p style="margin-top:8px" class="rd"><b>Кто видел фразу — забрал всё.</b> Не фотографировать, не хранить в облаке, не вводить на сайтах. «Поддержка» никогда её не спрашивает. 99% краж — не взлом криптографии, а фраза, введённая на фишинговом сайте.</p>
+        <p style="margin-top:8px" class="dim">«Not your keys — not your coins»: монеты на бирже — это запись в базе биржи, как в банке. FTX (2022): $8 млрд клиентских монет просто не было. Биржа — банк без лицензии и без страховки.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 3: БЛОКЧЕЙН ============ -->
+<section class="slide chapter" id="s7">
+  <div class="bgimg"><img src="assets/ch_blockchain.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3</div>
+    <h1>Блокчейн: как договориться без начальника</h1>
+    <p class="lead">Реестр у всех одинаковый, добавлять в него может кто угодно, стирать — никто. Фокус в том, как 15 000 узлов, не доверяя друг другу, приходят к одной версии правды каждые 10 минут.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s8">
+  <div class="content">
+    <div class="kicker">Блокчейн · устройство</div>
+    <h2>Цепочка блоков: что внутри и почему её нельзя переписать</h2>
+    <div class="dg" style="margin-bottom:16px">
+      <div class="row" style="align-items:stretch">
+        <div class="bx cy"><b>Блок №N−1</b><span>хеш предыдущего · время · ~3000 транзакций · nonce · <b>хеш этого блока: 0000000000000000000a3f…</b></span></div>
+        <div class="arr">→</div>
+        <div class="bx am"><b>Блок №N</b><span>хеш блока N−1 ← ссылка · время · транзакции · nonce · хеш: 0000000000000000000c17…</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>Блок №N+1</b><span>хеш блока N ← · … · ищется сейчас</span></div>
+      </div>
+    </div>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Транзакция</b>: «входы» (ссылки на ранее полученные монеты) → «выходы» (кому сколько) + подпись. Не «баланс», а цепочка передач: каждый сатоши можно проследить до момента, когда он был намайнен. Баланс — сумма непотраченных выходов (UTXO) на твоих адресах.</li>
+          <li><b>Блок</b>: пачка транзакций за ~10 минут (1–4 МБ, 2–4 тыс. транзакций), заголовок с хешем предыдущего блока и хешем всех транзакций (корень Меркла). <b>Хеш заголовка — имя блока.</b></li>
+          <li><b>Почему нельзя переписать</b>: изменил транзакцию в блоке 500 000 → хеш блока изменился → блок 500 001 ссылается на старый хеш → цепь порвана → чтобы починить, надо пересчитать блоки 500 001…900 000, а каждый требует найти хеш с нулями — это годы работы всего мира. Проще — чем дальше в прошлое, тем невозможнее. 6 блоков (1 час) — считается окончательным.</li>
+          <li><b>Копий — 15–20 тыс.</b> (полных узлов), у каждого 600+ ГБ всей истории с 2009 года. Любой может скачать и проверить каждую транзакцию с нуля. Нет сервера. Нет офиса. Отключить — только отключив интернет на планете.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Что записано и что нет</h3>
+        <table class="t">
+          <tr><th>Есть в блокчейне</th><th>Нет в блокчейне</th></tr>
+          <tr><td class="d">все транзакции с 2009: адрес → адрес, сумма, время</td><td class="d">имена, паспорта, кто владеет адресом</td></tr>
+          <tr><td class="d">публичные ключи (после первой траты)</td><td class="d">приватные ключи — никогда</td></tr>
+          <tr><td class="d">правила: 21 млн монет, награда за блок, сложность</td><td class="d">цена в долларах — это на биржах</td></tr>
+          <tr><td class="d">произвольные данные (до 80 байт): тексты, картинки (Ordinals)</td><td class="d">ваши монеты «на бирже» — это база биржи</td></tr>
+        </table>
+        <p style="margin-top:8px"><b>Псевдонимность, не анонимность</b>: все переводы видны всем навсегда. Связал адрес с человеком (биржа с KYC, покупка с доставкой) — видна вся его история. Chainalysis ловит так наркоторговцев и хакеров годами позже. Биткоин — худшие деньги для преступника; наличные лучше. Monero и Zcash — для анонимности, за это их выкидывают с бирж.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s9">
+  <div class="bgimg"><img src="assets/ch_mining.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Блокчейн · proof-of-work</div>
+    <h2>Майнинг: лотерея, в которой билеты покупают электричеством</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Задача майнера</b>: собрать транзакции в блок и найти <b>nonce</b> — число, при котором хеш заголовка начинается с N нулей (сейчас ~19 hex-нулей, вероятность попадания одного хеша ~1/10²³). Единственный способ — перебирать nonce и хешировать. Сеть делает <b>~800 экзахешей в секунду</b> — 8·10²⁰ попыток каждую секунду. Первый нашедший рассылает блок, все проверяют за миллисекунду (проверить легко, найти трудно) и начинают искать следующий.</li>
+          <li><b>Награда</b>: новые монеты (сейчас 3.125 BTC за блок, ~$300 тыс.) + комиссии транзакций. Так эмитируются все биткоины — других способов нет. Награда делится вдвое каждые 210 000 блоков (~4 года): 50 → 25 → 12.5 → 6.25 → 3.125 (2024) → … → 0 в 2140. Итого 21 млн, 19.8 млн уже добыто.</li>
+          <li><b>Сложность</b> подстраивается каждые 2016 блоков (2 недели): больше майнеров — больше нулей нужно — всё равно 10 минут на блок. Хоть один ноутбук, хоть вся планета — темп эмиссии не меняется. Это и есть «цифровое золото»: добычу нельзя ускорить.</li>
+          <li><b>Зачем сжигать энергию</b>: чтобы переписать историю, надо переделать работу, которую сделала вся сеть. Атака 51% — контролировать больше половины хешрейта: ~$20 млрд оборудования + 15 ГВт электричества. И даже тогда можно только откатить свежие транзакции, а не украсть чужие монеты (подпись не подделать). Энергия — это стоимость лжи.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="rd">Честные цифры</h3>
+        <table class="t">
+          <tr><td>Потребление сети Bitcoin</td><td class="d">~150–175 ТВт·ч/год — как Польша или Аргентина, 0.6% мирового электричества</td></tr>
+          <tr><td>Оборудование</td><td class="d">ASIC — чип, умеющий только SHA-256. Antminer S21: 200 TH/s, 3.5 кВт, $4000. Ноутбук — 0 шансов с 2013 года</td></tr>
+          <tr><td>Где майнят</td><td class="d">США 38%, Китай ~20% (запрещено с 2021, но майнят), Казахстан, Россия 10%</td></tr>
+          <tr><td>Электричество</td><td class="d">~50% из ВИЭ и попутного газа — майнеры ищут самое дешёвое: ГЭС в паводок, газ, который иначе сжигали бы в факеле</td></tr>
+          <tr><td>Себестоимость BTC</td><td class="d">$40–70 тыс. в зависимости от электричества (2025)</td></tr>
+          <tr><td>Пулы</td><td class="d">одиночка нашёл бы блок раз в 100 лет; объединяются: 2 пула — 55% хешрейта. Централизация, которой боятся</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Аргумент «за»: энергия идёт на защиту $2 трлн без армии и банков; золотодобыча жрёт 250 ТВт·ч, банки — больше. Аргумент «против»: 0.6% электричества планеты на 7 транзакций в секунду. Оба правы.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s10">
+  <div class="bgimg"><img src="assets/ch_pos.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Блокчейн · proof-of-stake</div>
+    <h2>Стейкинг: залог вместо электричества</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Идея</b>: вместо «кто больше сжёг энергии — тот пишет блок» — «кто больше заложил монет — тот с большей вероятностью выбран писать блок». Валидатор вносит залог (Ethereum: 32 ETH ≈ $100 тыс.), сеть случайно выбирает, кто предлагает следующий блок, остальные голосуют. Написал ложь — залог сжигается (слэшинг). Экономика та же: врать дороже, чем быть честным. Электричества — в 1000+ раз меньше.</li>
+          <li><b>Ethereum перешёл</b> 15 сентября 2022 (The Merge) — на ходу, без остановки сети с $200 млрд. Потребление упало на 99.95%. Крупнейшая инженерная операция в крипте.</li>
+          <li><b>Критика</b>: (1) «богатые богатеют» — доход пропорционален залогу; но и в PoW — пропорционален капиталу на ASIC; (2) централизация — Lido держит 28% стейка, Coinbase 10%; (3) «ничего на кону» — залог виртуален, а не реальная энергия; в PoW атака стоит реальных денег снаружи системы; (4) сложнее — больше кода, больше багов.</li>
+          <li><b>Bitcoin остаётся на PoW</b> принципиально: максимально простой протокол, стоимость атаки — в физическом мире. Это два разных ответа на вопрос «что такое доверие»: сожжённая энергия или заложенный капитал.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Как рождается блок: три модели</h3>
+        <table class="t">
+          <tr><th></th><th>PoW (Bitcoin)</th><th>PoS (Ethereum)</th><th>«Быстрые» (Solana, BNB, Tron)</th></tr>
+          <tr><td>Кто пишет блок</td><td class="d">нашедший хеш</td><td class="d">случайный из залогодателей</td><td class="d">небольшой набор валидаторов по расписанию</td></tr>
+          <tr><td>Интервал</td><td class="d">10 мин</td><td class="d">12 с</td><td class="d">0.4–3 с</td></tr>
+          <tr><td>Транзакций/с</td><td class="d">~7</td><td class="d">~15–30 (+ L2: тысячи)</td><td class="d">1000–5000 заявлено</td></tr>
+          <tr><td>Узлов</td><td class="d">~18 000</td><td class="d">~1 000 000 валидаторов / 6000 узлов</td><td class="d">1500 (Solana), 21 (BNB), 27 (Tron)</td></tr>
+          <tr><td>Что нужно для атаки</td><td class="d">51% хешрейта, $20+ млрд</td><td class="d">33–67% стейка, $30+ млрд, залог сгорит</td><td class="d">сговор 8–15 компаний</td></tr>
+          <tr><td>Падения сети</td><td class="d">0 с 2013</td><td class="d">0</td><td class="d">Solana — 7+ остановок в 2022–24</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim"><b>Трилемма</b> (Бутерин): децентрализация, безопасность, скорость — выбери две. Быстрые сети получают скорость, отдавая децентрализацию: 21 валидатор — это консорциум, а не блокчейн в исходном смысле. Что не обязательно плохо — но надо понимать, что покупаешь.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 4: СМАРТ-КОНТРАКТЫ ============ -->
+<section class="slide chapter" id="s11">
+  <div class="bgimg"><img src="assets/ch_ethereum.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4</div>
+    <h1>Ethereum и смарт-контракты: код вместо юриста</h1>
+    <p class="lead">Биткоин умеет одно: переводить биткоины. Виталик Бутерин в 19 лет предложил: а давайте блокчейн будет исполнять любые программы. Получился мировой компьютер — медленный, дорогой, но который никто не может выключить.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s12">
+  <div class="content">
+    <div class="kicker">Смарт-контракты · что это</div>
+    <h2>Программа, которую исполняют все и не может остановить никто</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Смарт-контракт</b> — код, загруженный в блокчейн по адресу. У него есть баланс и состояние (переменные). Любой может вызвать его функцию транзакцией; все узлы исполняют одинаково и записывают результат. Автомат с газировкой: кинул монету — получил банку, договариваться не с кем. «Смарт» и «контракт» — оба слова неточные: это просто программа с деньгами.</li>
+          <li><b>Газ</b>: каждая операция стоит газ, платится в ETH. Защита от бесконечных циклов и спама. В пик (2021) простой перевод стоил $50–200, свап на бирже — $500. Это и породило L2 и конкурентов.</li>
+          <li><b>Токены</b> — самое массовое применение. ERC-20 (2015): стандартный контракт «таблица балансов + функция перевода». Написать — 50 строк, задеплоить — $50. Отсюда 2 млн токенов: USDT, USDC (доллары), UNI, LINK (управление протоколами), и 1.99 млн мусора. ERC-721 (2018) — NFT: токен с уникальным номером и ссылкой на картинку. Сама картинка обычно <b>не</b> в блокчейне.</li>
+          <li><b>Код — закон</b>, и это проблема: баг в контракте = деньги украдены легально, откатить нельзя. The DAO (2016): $60 млн утекли через уязвимость → Ethereum откатил цепь хардфорком → раскол на ETH и ETC. «Неизменяемость» — пока не задело слишком многих.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">L2: как Ethereum масштабируется</h3>
+        <p>Основная сеть (L1) — 15 транзакций в секунду, дорого. Решение — <b>роллапы</b>: транзакции исполняются во «второй сети» (Arbitrum, Optimism, Base, zkSync), а в L1 записывается только сжатый итог + криптодоказательство. L1 — суд последней инстанции, L2 — повседневность. Комиссия $0.01–0.1, тысячи транзакций/с, безопасность — почти как у L1.</p>
+        <p style="margin-top:8px"><b>Два типа</b>: оптимистичные (считаем честным, дают 7 дней на оспаривание) и ZK (доказательство с нулевым разглашением — математически доказывают правильность всех транзакций одним доказательством; проверяется за миллисекунды). ZK — реальная криптографическая инновация 2020-х, выросшая из крипты и уходящая в обычную IT.</p>
+        <p style="margin-top:8px" class="dim">Дорожная карта Ethereum: L1 — только для безопасности и данных, вся активность — на L2. Sharding (Danksharding) — L1 хранит данные для 100 000 транзакций/с суммарно.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s13">
+  <div class="bgimg"><img src="assets/ch_defi.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Смарт-контракты · DeFi</div>
+    <h2>DeFi: банк из кода — биржи, кредиты и доллары без банка</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Стейблкоины</b> — самое полезное, что есть в крипте: токен = $1. USDT (Tether, $140 млрд), USDC (Circle, $60 млрд) — компания держит доллары и облигации в банке, выпускает токены 1:1. Централизованы (могут заморозить адрес — и делают), но: перевод $1 млн в Аргентину за 10 секунд за $0.05, 24/7. 60% всего объёма крипты — стейблкоины. Это уже не спекуляция, это платёжная инфраструктура для стран с плохими валютами. DAI — децентрализованный (залог в ETH ×1.5, контракт сам ликвидирует). UST (Terra) — «алгоритмический», без залога, рухнул в мае 2022 с $40 млрд до нуля за 3 дня.</li>
+          <li><b>DEX — децентрализованная биржа</b> (Uniswap, 2018): не книга заявок, а <b>пул ликвидности</b>: контракт держит пару токенов, цена задаётся формулой x·y = k. Хочешь купить — кладёшь один токен, забираешь другой, цена сдвигается. Кто внёс токены в пул — получает комиссии 0.3%. Никакого оператора, KYC, часов работы. Объём — $2 трлн/год.</li>
+          <li><b>Кредиты</b> (Aave, Compound): заложил ETH — взял стейблкоины под 60% стоимости. Упал ETH ниже порога — контракт продал залог автоматически. Ставки — по спросу, меняются каждый блок. Без проверки кредитной истории: залог всегда больше долга.</li>
+          <li><b>Итого в DeFi</b> заблокировано ~$100 млрд. Работает без единого сотрудника. Взломов и багов — на $10+ млрд за 5 лет.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="rd">Что пошло не так</h3>
+        <table class="t">
+          <tr><th>Кейс</th><th>Что случилось</th><th>Потери</th></tr>
+          <tr><td>The DAO, 2016</td><td class="d">реентерабельность — вызов функции до обновления баланса</td><td class="d">$60 млн, хардфорк</td></tr>
+          <tr><td>Ronin (Axie), 2022</td><td class="d">5 из 9 ключей мультиподписи у одной команды — фишинг разработчика</td><td class="d">$620 млн, КНДР</td></tr>
+          <tr><td>Wormhole, 2022</td><td class="d">баг проверки подписи в мосте между сетями</td><td class="d">$320 млн</td></tr>
+          <tr><td>Terra/UST, 2022</td><td class="d">не баг — дизайн: стейбл без залога, 20% годовых из воздуха</td><td class="d">$40 млрд</td></tr>
+          <tr><td>Bybit, 2025</td><td class="d">подмена интерфейса при подписи мультисига</td><td class="d">$1.5 млрд, КНДР — рекорд</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Мосты между сетями — самое слабое звено: держат миллиарды в одном контракте. КНДР украла $3+ млрд за 5 лет — треть бюджета ракетной программы. Аудит кода не гарантия: аудированные контракты ломали десятки раз.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 5: РЫНОК И СКАМ ============ -->
+<section class="slide chapter" id="s14">
+  <div class="bgimg"><img src="assets/ch_scams.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5</div>
+    <h1>Рынок: где инженерия кончается и начинается казино</h1>
+    <p class="lead">Технология — 10% крипты. Остальные 90% — цены, хайп, мошенничество и психология толпы. Разбираем механизмы, чтобы отличать первое от второго.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s15">
+  <div class="content">
+    <div class="kicker">Рынок · цена</div>
+    <h2>Откуда цена: почему биткоин не пирамида, но и не деньги</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Цена — только спрос и предложение</b>. Нет дивидендов, прибыли, обеспечения. Предложение задано кодом (21 млн, известно на 100 лет), спрос — вера, что завтра купят дороже, плюс реальное использование (переводы, сбережение при 50% инфляции в Аргентине, обход санкций, отмыв). Так же оценивается золото: 90% его цены — не ювелирка, а «все считают его ценным».</li>
+          <li><b>Не пирамида</b> в строгом смысле: пирамида обещает доход и платит старым за счёт новых — тут никто ничего не обещает, кода нет, обмана нет: правила открыты. <b>Но</b> — экономически ранние выигрывают за счёт поздних, как и в любом активе без денежного потока. Это «игра с нулевой суммой минус комиссии»: чтобы ты вышел с прибылью, кто-то должен войти дороже.</li>
+          <li><b>Не деньги</b>: волатильность 60–80% годовых — нельзя назначать зарплаты; 7 транзакций/с; комиссия $1–50; необратимость — ошибся адресом — всё. Как <b>средство сбережения</b> для тех, у кого валюта хуже, и как <b>расчётная сеть</b> для стейблкоинов — работает. Как валюта для покупки кофе — нет, и Сальвадор это подтвердил (отменил статус в 2025).</li>
+          <li><b>Циклы</b>: 2011 ($30→$2), 2013 ($1100→$200), 2017 ($20 000→$3200), 2021 ($69 000→$15 500), 2024–25 ($100 000+). Каждый раз −75–85%, каждый раз новый максимум. Корреляция с халвингами и с ликвидностью ФРС. Не гарантия следующего цикла — но 5 из 5 пока.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Капитализация в перспективе (2025)</h3>
+        <table class="t">
+          <tr><td>Bitcoin</td><td class="d">~$2 трлн (58% всей крипты)</td></tr>
+          <tr><td>Ethereum</td><td class="d">~$400 млрд</td></tr>
+          <tr><td>Стейблкоины</td><td class="d">~$250 млрд</td></tr>
+          <tr><td>Все остальные 20 000 монет</td><td class="d">~$700 млрд, 90% из них — с нулевым использованием</td></tr>
+          <tr><td>Для сравнения: золото</td><td class="d">$20 трлн</td></tr>
+          <tr><td>Apple</td><td class="d">$3.5 трлн</td></tr>
+          <tr><td>Мировые акции</td><td class="d">$120 трлн</td></tr>
+          <tr><td>Bitcoin ETF (с января 2024)</td><td class="d">$130 млрд — BlackRock, Fidelity; самый успешный запуск ETF в истории</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Институционализация 2024–25: ETF, MicroStrategy (600 тыс. BTC), стратегический резерв США (март 2025), банки с кастодией. Крипта стала частью системы, против которой создавалась. Киберпанки в ужасе, цена — нет.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s16">
+  <div class="content">
+    <div class="kicker">Рынок · зоопарк</div>
+    <h2>20 000 монет: кто есть кто</h2>
+    <table class="t" style="font-size:13.5px">
+      <tr><th>Категория</th><th>Примеры</th><th>Что заявляют</th><th>Что на деле</th></tr>
+      <tr><td>Цифровое золото</td><td class="d">BTC</td><td class="d">деньги без государства</td><td class="d">сбережение, расчётный слой; медленно, дорого, зато 16 лет без взлома</td></tr>
+      <tr><td>Платформы контрактов</td><td class="d">ETH, SOL, BNB, TON, AVAX, ADA</td><td class="d">мировой компьютер</td><td class="d">ETH — реальная экосистема; SOL — быстро и падает; ADA — 8 лет обещаний; TON — Telegram, единственный с 1 млрд пользователей рядом</td></tr>
+      <tr><td>Стейблкоины</td><td class="d">USDT, USDC, DAI</td><td class="d">цифровой доллар</td><td class="d">работает; главное реальное применение крипты; риск — резервы Tether никто полностью не аудировал</td></tr>
+      <tr><td>Приватные</td><td class="d">XMR (Monero), ZEC</td><td class="d">анонимные деньги</td><td class="d">работает — поэтому выгнаны с бирж; ~5% даркнета</td></tr>
+      <tr><td>Инфраструктура</td><td class="d">LINK (оракулы), Arbitrum, Optimism</td><td class="d">сервисы для контрактов</td><td class="d">нужны и используются; ценность токена к сервису привязана слабо</td></tr>
+      <tr><td>Мемкоины</td><td class="d">DOGE, SHIB, PEPE, TRUMP, 5 млн на pump.fun</td><td class="d">ничего — и честно</td><td class="d">казино в чистом виде: 98% → 0 за месяц; создатель продаёт первым</td></tr>
+      <tr><td>«Revolutionary blockchain for X»</td><td class="d">тысячи ICO 2017, «Web3 для логистики/медицины/выборов»</td><td class="d">блокчейн решит X</td><td class="d">X решается базой данных; токен — способ собрать деньги без регистрации акций. 95% мертвы</td></tr>
+      <tr><td>Токены бирж</td><td class="d">BNB, FTT, OKB</td><td class="d">скидки, доступ</td><td class="d">акции биржи без прав акционера; FTT — ноль за 3 дня</td></tr>
+      <tr><td>NFT</td><td class="d">CryptoPunks, BAYC, 100 млн картинок</td><td class="d">цифровое владение</td><td class="d">пик $17 млрд (2022) → −95%; ссылка на JPEG в чужом облаке. Осталось: билеты, игровые предметы, домены</td></tr>
+    </table>
+    <div class="note gold" style="margin-top:12px"><b>Тест на смысл</b>: (1) кто держит реестр — если 21 сервер компании, это база данных с лишними шагами; (2) зачем токен — если ответ «для вознаграждения экосистемы», это способ продать тебе воздух; (3) кто платит комиссии и кому — есть ли реальный поток денег, кроме новых покупателей токена. 95% проектов не проходят первый пункт.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s17">
+  <div class="content">
+    <div class="kicker">Рынок · как отбирают деньги</div>
+    <h2>Анатомия скама: восемь схем, которые работают всегда</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="rd">Против розницы</h3>
+          <ul>
+            <li><b>Pump &amp; dump</b>: создатели держат 50–90% монеты, нагоняют хайп (инфлюенсеры за оплату, боты в Telegram), продают на пике. Мемкоины — это оно в промышленном масштабе: pump.fun — 5 млн токенов, 98.6% — ноль.</li>
+            <li><b>Rug pull</b>: контракт с функцией «владелец может вывести всю ликвидность» или запретом продажи (honeypot). Squid Game token (2021): $3.4 млн за 5 минут.</li>
+            <li><b>Фишинг seed-фразы</b>: «поддержка MetaMask», «верификация кошелька», поддельный сайт биржи. 80% краж у частных лиц.</li>
+            <li><b>Approval drain</b>: подписал «разрешить контракту тратить мои токены» на скам-сайте → всё выведено. Читать, что подписываешь.</li>
+            <li><b>«Инвестиционные платформы»</b> с 2% в день: обычная пирамида в крипто-обёртке. PlusToken ($3 млрд), Finiko (Россия, $1 млрд), «Илон Маск удвоит ваши биткоины».</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="rd">Системные</h3>
+          <ul>
+            <li><b>Биржа как банк без надзора</b>: FTX (2022) — $8 млрд клиентских денег ушли в хедж-фонд владельца; Mt.Gox (2014) — 850 тыс. BTC; QuadrigaCX (2019) — основатель «умер» с единственным ключом. Bankman-Fried — 25 лет тюрьмы.</li>
+            <li><b>Wash trading</b>: биржа торгует сама с собой для объёма. Оценка — 70%+ объёма мелких бирж фейк.</li>
+            <li><b>Стейбл без резервов</b>: UST/Luna — 20% годовых из эмиссии, $40 млрд в ноль. До Квон — 15 лет.</li>
+            <li><b>Инсайдерские листинги</b>: сотрудники Coinbase покупали до анонса — уголовное дело 2022.</li>
+          </ul>
+        </div>
+        <div class="note warn" style="margin-top:12px"><b>Правила выживания</b>: доход выше 10% годовых «гарантированно» — скам всегда; seed-фраза — никому, никогда, ни на каком сайте; крупные суммы — только аппаратный кошелёк; на бирже — только то, что торгуешь сейчас; в проект без открытого кода и с анонимной командой — ноль; «успей до листинга» — уже поздно; если не понимаешь, откуда доход — доход это ты.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 6: ПРАКТИКА И ЗАКОН ============ -->
+<section class="slide chapter" id="s18">
+  <div class="bgimg"><img src="assets/ch_wallet.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6</div>
+    <h1>Практика: кошельки, закон, что дальше</h1>
+    <p class="lead">Как хранить, чтобы не потерять, как это регулируется в России и мире, что делают центробанки в ответ — и честный прогноз на десять лет.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s19">
+  <div class="content">
+    <div class="kicker">Практика · хранение</div>
+    <h2>Кошельки: четыре уровня риска</h2>
+    <div class="cols">
+      <div>
+        <table class="t" style="font-size:13.5px">
+          <tr><th>Тип</th><th>Где ключ</th><th>Риск</th><th>Для чего</th></tr>
+          <tr><td>Биржа (Binance, Bybit, OKX)</td><td class="d">у биржи; у тебя логин</td><td class="d">банкротство, взлом, заморозка, санкции; ты — кредитор</td><td class="d">торговля; суммы, которые не жалко</td></tr>
+          <tr><td>Горячий кошелёк (MetaMask, Trust, Phantom, TON Keeper)</td><td class="d">на телефоне/в браузере, зашифрован</td><td class="d">вирус, фишинг, подпись скам-контракта</td><td class="d">DeFi, NFT, повседневные суммы</td></tr>
+          <tr><td>Аппаратный (Ledger, Trezor, Coldcard)</td><td class="d">в чипе устройства, никогда не покидает его; подпись внутри</td><td class="d">потеря seed-фразы, физическое принуждение, поддельное устройство</td><td class="d">сбережения; всё, что больше зарплаты</td></tr>
+          <tr><td>Мультиподпись (2 из 3, Gnosis Safe)</td><td class="d">несколько ключей в разных местах, нужно N из M</td><td class="d">сложность; потеря двух ключей</td><td class="d">компании, крупные суммы, наследство</td></tr>
+        </table>
+        <div class="note" style="margin-top:12px"><b>Seed-фраза</b>: на бумаге или металле (пожар), два экземпляра в двух местах, без фото и облаков. Passphrase (25-е слово) — от физического изъятия. Проверить восстановление на пустом устройстве до того, как положил крупную сумму. Наследники должны знать, где и как — иначе монеты уйдут в те 20% потерянных навсегда.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Транзакция необратима.</b> Проверять адрес целиком (клипборд-вирусы подменяют), первый перевод — тестовый на $1, сеть — та же (USDT в сети Tron ≠ USDT в Ethereum: отправил не в ту — потерял). Адреса контрактов не для переводов.</li>
+          <li><b>Подпись в DeFi</b>: «Approve unlimited» — разрешение контракту тратить всё; revoke.cash — отозвать старые. Подписывать только на сайтах, куда пришёл сам, не по ссылке из Discord.</li>
+          <li><b>Приватность</b>: биржа с KYC знает твои адреса; всё, что ушло с них, привязано к паспорту навсегда. Для приватности — новый адрес на каждый приём (кошельки делают сами), не смешивать.</li>
+          <li><b>Налоги (РФ)</b>: криптовалюта — имущество; с 2025 доход от продажи — НДФЛ 13–15%, майнинг — доход в момент получения, декларация. Расходы на покупку вычитаются — хранить историю сделок. Биржи P2P-переводы не видят, но банки видят движение рублей.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s20">
+  <div class="bgimg"><img src="assets/ch_regulation.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Практика · закон</div>
+    <h2>Регулирование: от запрета к лицензии за 10 лет</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="am">Россия</h3>
+          <ul>
+            <li><b>Закон о ЦФА</b> (2020, в силе с 2021): криптовалюта — имущество, владеть и торговать можно, <b>платить за товары внутри страны — нельзя</b>.</li>
+            <li><b>Майнинг легализован</b> (ноябрь 2024): реестр майнеров, налоги, запрет в энергодефицитных регионах (Иркутск, Дагестан зимой).</li>
+            <li><b>Внешняя торговля</b>: с 2024 разрешены расчёты в крипте с зарубежными контрагентами (санкционный обход) в экспериментальном режиме; ЦБ создаёт инфраструктуру.</li>
+            <li><b>Биржи</b>: российских легальных нет; Binance ушёл (2023), торгуют через Bybit, OKX, P2P и «Garantex» (закрыт США в 2025 за отмыв $96 млрд).</li>
+            <li><b>Цифровой рубль</b>: пилот с 2023, массовое внедрение с сентября 2026. Это не крипта — это база данных ЦБ (см. следующий слайд).</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Мир</h3>
+          <table class="t">
+            <tr><th>Юрисдикция</th><th>Подход</th></tr>
+            <tr><td>США</td><td class="d">2021–24 — война SEC с биржами (Coinbase, Binance, Ripple); 2024 — Bitcoin ETF одобрен; 2025 — разворот: SEC отзывает иски, стратегический резерв BTC, закон о стейблкоинах (GENIUS Act). Из врага — в союзника за год</td></tr>
+            <tr><td>ЕС</td><td class="d">MiCA (2024) — первый полный кодекс: лицензии для бирж, требования к резервам стейблов, защита потребителя. USDT не соответствует — делистинг в ЕС</td></tr>
+            <tr><td>Китай</td><td class="d">полный запрет торговли и майнинга (2021). Гонконг — наоборот, лицензии и ETF. Майнят всё равно</td></tr>
+            <tr><td>Сальвадор</td><td class="d">BTC — законное платёжное средство (2021) → отменено (2025) по требованию МВФ; народ не пользовался</td></tr>
+            <tr><td>ОАЭ, Сингапур, Швейцария</td><td class="d">регуляторные гавани: чёткие правила, лицензии, низкие налоги. Дубай — столица крипто-эмиграции</td></tr>
+            <tr><td>Индия</td><td class="d">30% налог + 1% с каждой сделки — задушили торговлю без запрета</td></tr>
+          </table>
+          <p style="margin-top:8px" class="dim">Тренд единый: не запрещать (не выходит), а лицензировать биржи, требовать KYC, обложить налогом и контролировать стейблкоины — точку контакта с реальными долларами. Сам блокчейн регулировать нельзя; можно — входы и выходы.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s21">
+  <div class="bgimg"><img src="assets/ch_cbdc.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Практика · ответ государств</div>
+    <h2>CBDC: цифровой рубль — это не крипта, а её противоположность</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Что это</b>: третья форма денег от ЦБ — наличные, безнал в банках, и теперь <b>прямой счёт в Центробанке</b> у каждого гражданина. Кошелёк открывается через банк, но деньги лежат в ЦБ. Переводы бесплатно, мгновенно, без банковских комиссий. Оффлайн-платежи — обещают.</li>
+          <li><b>Общего с криптой — слово «цифровой»</b>. Нет блокчейна (одна база ЦБ), нет майнинга, нет анонимности, нет неизменяемости — ЦБ может отменить, заморозить, запрограммировать. Это самая централизованная форма денег в истории.</li>
+          <li><b>Зачем государству</b>: убрать банки-посредники из платежей (комиссии эквайринга — 1–3%, триллион рублей в год), <b>программируемость</b> (детские выплаты — только на детское; субсидии — только на топливо; срок годности денег), полная прозрачность против уклонения и коррупции, трансграничные расчёты без SWIFT и доллара (mBridge: Китай, ОАЭ, Таиланд, Саудовская Аравия).</li>
+          <li><b>Опасения</b>: тотальный контроль (кто, что, где купил — в реальном времени), отключение неугодных одной кнопкой, отрицательные ставки (деньги тают, если не тратишь — невозможно с наличными), конец банков как мы их знаем. ЦБ РФ обещает: «без программирования, без отрицательных ставок» — пока.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Кто где</h3>
+        <table class="t">
+          <tr><th>Страна</th><th>Статус</th></tr>
+          <tr><td>Китай (e-CNY)</td><td class="d">с 2020, 260 млн кошельков, 7 трлн юаней транзакций; интегрирован в WeChat/Alipay; принудительно зарплаты бюджетникам в ряде городов</td></tr>
+          <tr><td>Россия</td><td class="d">пилот 2023–25 (15 банков, 9000 человек), массовый запуск 1 сентября 2026 для крупных банков и ритейла</td></tr>
+          <tr><td>Индия (e-rupee)</td><td class="d">пилот, 5 млн пользователей</td></tr>
+          <tr><td>ЕС (цифровой евро)</td><td class="d">подготовка, запуск не раньше 2028; жёсткие гарантии приватности после протестов</td></tr>
+          <tr><td>США</td><td class="d">запрещён указом Трампа (январь 2025) как угроза свободе; ставка — на частные стейблкоины в долларах</td></tr>
+          <tr><td>Нигерия (eNaira)</td><td class="d">с 2021 — провал: 0.5% населения, народ ушёл в USDT</td></tr>
+          <tr><td>Багамы, Ямайка</td><td class="d">работают, мало кто пользуется</td></tr>
+        </table>
+        <p style="margin-top:8px" class="dim">Ирония: биткоин был создан, чтобы убрать государство из денег, а главный практический результат — государства строят собственные цифровые деньги с контролем, о котором раньше не могли мечтать. И частные стейблкоины в долларах, которые США теперь продвигают как инструмент долларизации мира.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ИТОГИ ============ -->
+<section class="slide" id="s22">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Вся крипта на одном слайде</h2>
+    <table class="t" style="font-size:14.5px">
+      <tr><th>Слой</th><th>Что это</th><th>Работает?</th><th>Главный риск</th></tr>
+      <tr><td>Хеш и подпись</td><td class="d">математика 1970-х: отпечаток данных и доказательство владения ключом</td><td class="d">безупречно 16 лет</td><td class="d">квантовый компьютер (2040+); потеря ключа — 20% монет</td></tr>
+      <tr><td>Блокчейн + PoW</td><td class="d">реестр у всех, менять нельзя, добавлять — сжигая энергию</td><td class="d">Bitcoin: 0 остановок, 0 взломов протокола</td><td class="d">0.6% мирового электричества; 2 пула = 55%</td></tr>
+      <tr><td>PoS и быстрые сети</td><td class="d">залог вместо энергии; меньше узлов — быстрее</td><td class="d">Ethereum — да; «быстрые» — с падениями</td><td class="d">централизация стейка; сложность кода</td></tr>
+      <tr><td>Смарт-контракты, L2, ZK</td><td class="d">программы с деньгами; масштабирование; доказательства без разглашения</td><td class="d">да; ZK — реальная новая криптография</td><td class="d">баг = деньги ушли навсегда; $10 млрд взломов</td></tr>
+      <tr><td>Стейблкоины</td><td class="d">доллар на блокчейне</td><td class="d">да — главное практическое применение, $250 млрд, 60% объёма</td><td class="d">резервы эмитента; заморозка; регулятор</td></tr>
+      <tr><td>DeFi</td><td class="d">биржа, кредит, деривативы кодом</td><td class="d">да, $100 млрд, без сотрудников</td><td class="d">взломы, ликвидации каскадом, отсутствие защиты</td></tr>
+      <tr><td>Bitcoin как актив</td><td class="d">цифровое золото</td><td class="d">$2 трлн, ETF, резервы государств</td><td class="d">−80% каждые 4 года; нет денежного потока</td></tr>
+      <tr><td>Альткоины, мемы, NFT</td><td class="d">20 000 токенов</td><td class="d">5% — да; 95% — нет</td><td class="d">ты — источник дохода создателей</td></tr>
+      <tr><td>Биржи</td><td class="d">банки без лицензии</td><td class="d">удобно</td><td class="d">FTX, Mt.Gox: не твои ключи — не твои монеты</td></tr>
+      <tr><td>CBDC</td><td class="d">деньги ЦБ напрямую</td><td class="d">Китай — да; массово — 2026+</td><td class="d">тотальный контроль; противоположность крипты</td></tr>
+    </table>
+    <div class="note">Одна идея под всем: <b>доверие можно заменить проверяемостью</b> — если правила открыты, а ложь дороже правды. Это работает. Всё остальное — что на этом построили люди — работает ровно настолько, насколько работают люди.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s23">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <div class="kicker amber">Финал</div>
+    <h1>Что останется через десять лет</h1>
+    <p class="lead">Скорее всего: биткоин как золото 2.0 в резервах и ETF — скучный, дорогой, никуда не идущий. Стейблкоины как рельсы для долларов по всему миру — быстрее SWIFT, дешевле Visa. Ethereum и L2 как инфраструктура для токенизации всего: акций, облигаций, недвижимости — Уолл-стрит уже переносит фонды на блокчейн. ZK-доказательства — в паспортах и голосованиях, без слова «крипта». CBDC — у каждого, хочет он или нет.</p>
+    <p class="lead" style="margin-top:14px">И 19 000 монет, о которых никто не вспомнит, как никто не помнит 10 000 доткомов 1999 года. Технология останется. Казино переедет в следующий хайп. Ключи — храни на бумаге.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- SLIDES_END -->
+
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>

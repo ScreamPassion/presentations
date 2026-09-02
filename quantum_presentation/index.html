@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Фотон и вероятность — анатомия квантового мира</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #7b9cff; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Quantum deep dive · Гвендолин-ночные-лекции</div>
+    <h1>Фотон и вероятность</h1>
+    <p class="lead">Полная анатомия квантового мира: как из одной нестыковки с раскалённой печкой выросла теория, в которой частица проходит через две щели одновременно, измерение меняет реальность, а две частицы на разных концах галактики знают друг о друге всё. И почему на ней работает твой телефон.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 1: КРИЗИС ============ -->
+<section class="slide chapter" id="s2">
+  <div class="bgimg"><img src="assets/ch_crisis.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1</div>
+    <h1>1900: физика была закончена</h1>
+    <p class="lead">Кельвин говорил, что осталось уточнить шестой знак после запятой. Оставались две мелочи: печка светилась не так, как положено, и свет выбивал электроны не так, как положено.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">Кризис · чёрное тело</div>
+    <h2>Ультрафиолетовая катастрофа: печка, которая должна была всех убить</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Любое нагретое тело светится. Классика (Рэлей–Джинс) считала так: в полости печки могут стоять электромагнитные волны любой частоты, каждая по принципу равнораспределения несёт по kT энергии. Волн с высокой частотой — бесконечно много. Значит, энергия излучения <b>бесконечна</b>, и любая печка должна мгновенно испарить вселенную ультрафиолетом.</li>
+          <li>Она не испаряет. Реальный спектр растёт, достигает горба и <b>падает</b> на высоких частотах. Формула Вина описывала спад, формула Рэлея — рост, и никто не мог сшить.</li>
+          <li><b>Планк, 14 декабря 1900</b>: «акт отчаяния». Допустим, осциллятор в стенке печки может отдавать энергию <b>не любыми порциями</b>, а только кратными hν. Тогда высокочастотные волны почти не возбуждаются — на них не хватает порции. Спад объяснён, формула совпала идеально.</li>
+          <li>Константа h = 6.626·10⁻³⁴ Дж·с. Планк считал её математическим трюком и десять лет пытался от неё избавиться. Не вышло.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="svgbox">
+          <div class="dg">
+            <div class="lbl mono">Спектр излучения нагретого тела:</div>
+            <svg viewBox="0 0 420 220" style="max-width:100%">
+              <line x1="40" y1="190" x2="400" y2="190" stroke="#223041" stroke-width="2"/>
+              <line x1="40" y1="190" x2="40" y2="20" stroke="#223041" stroke-width="2"/>
+              <path d="M 45 188 C 80 185, 110 120, 140 60 C 170 10, 200 5, 240 2" fill="none" stroke="#ff6b7a" stroke-width="2" stroke-dasharray="6 4"/>
+              <path d="M 45 188 C 90 180, 120 90, 160 70 C 200 50, 240 90, 300 150 C 340 175, 380 185, 400 188" fill="none" stroke="#ffb347" stroke-width="3"/>
+              <text x="200" y="30" fill="#ff6b7a" font-size="11" font-family="Consolas">Рэлей–Джинс → ∞</text>
+              <text x="250" y="120" fill="#ffb347" font-size="11" font-family="Consolas">Планк (реальность)</text>
+              <text x="300" y="208" fill="#55606e" font-size="11" font-family="Consolas">частота →</text>
+              <text x="60" y="208" fill="#55606e" font-size="11" font-family="Consolas">ИК</text>
+              <text x="370" y="208" fill="#55606e" font-size="11" font-family="Consolas">УФ</text>
+            </svg>
+            <div class="cap">Планк: E = hν. Чтобы возбудить волну частоты ν, нужна порция не меньше hν. Для УФ она огромна — статистика Больцмана даёт e<sup>−hν/kT</sup>, экспоненциальный спад. Всё излучение сползает в горб, положение которого зависит только от температуры (закон смещения Вина: 6000 К — жёлтое Солнце, 3000 К — красная лампа, 300 К — ты, в инфракрасном).</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s4">
+  <div class="bgimg"><img src="assets/ch_photoelectric.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Кризис · фотоэффект</div>
+    <h2>Эйнштейн, 1905: свет — это не волна. Это град</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Светишь на металл — вылетают электроны. По волновой теории: ярче свет — больше энергии — быстрее электроны. А если свет слабый, электрону нужно время, чтобы «накопить» энергию, — задержка.</li>
+          <li>Эксперимент (Ленард, 1902) показал наоборот. <b>Яркость</b> меняет только <b>число</b> электронов, а их <b>скорость</b> зависит только от <b>цвета</b>. Красный свет любой яркости не выбивает ничего; слабый ультрафиолет — выбивает мгновенно, без задержки.</li>
+          <li>Эйнштейн взял планковскую порцию всерьёз: свет <b>летит</b> порциями — квантами (фотонами) с энергией hν. Один фотон — один электрон. Если hν меньше работы выхода A — электрон не выбить, сколько фотонов ни кидай. Если больше — избыток идёт в скорость: <b>½mv² = hν − A</b>.</li>
+          <li>За это — Нобелевская премия 1921 (не за относительность!). Милликен 10 лет пытался опровергнуть формулу экспериментально, в итоге подтвердил с точностью 0.5% и получил свою Нобелевку.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Третий гвоздь: эффект Комптона (1923)</h3>
+          <p>Рентген рассеивается на электронах, и рассеянный луч <b>краснеет</b> — теряет частоту. Волна так не может: частота при рассеянии сохраняется. А вот бильярдный шар — может: фотон ударил электрон, отдал часть энергии и импульса, улетел с меньшей hν.</p>
+          <p style="margin-top:8px">Сдвиг длины волны зависит только от угла рассеяния и совпадает с расчётом для столкновения двух частиц, если импульс фотона p = h/λ. Фотон — не просто порция энергии. У него есть <b>импульс</b>. Он толкает.</p>
+          <p style="margin-top:8px" class="dim">Отсюда — солнечный парус, лазерное охлаждение атомов и радиационное давление, которое не даёт звёздам сколлапсировать.</p>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Масса у фотона — ноль.</b> Но энергия и импульс есть: E = pc. Это не противоречие, а следствие релятивистского E² = p²c² + m²c⁴ при m = 0. Фотон не может остановиться — он либо летит со скоростью c, либо его нет.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="content">
+    <div class="kicker">Кризис · атом</div>
+    <h2>Почему атом не схлопывается за 10 пикосекунд</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Резерфорд (1911) показал: атом — крошечное ядро и электроны вокруг. Планетарная модель. Но электрон на орбите — заряд, который ускоряется, а ускоренный заряд <b>излучает</b>. Теряет энергию, падает по спирали. Расчёт: атом водорода живёт ~10⁻¹¹ с. Вселенная, состоящая из атомов, невозможна.</li>
+          <li>Вторая загадка: атомы светят <b>линиями</b>. Нагретый водород даёт не радугу, а четыре узких полоски (серия Бальмера), частоты которых укладываются в формулу с целыми числами: 1/λ = R(1/n² − 1/m²). Целые числа в физике — всегда признак чего-то дискретного.</li>
+          <li><b>Бор, 1913</b>: постулаты. Электрон может быть только на орбитах, где момент импульса кратен ħ = h/2π. На них он <b>не излучает</b> (почему — не спрашивай). Прыгает с орбиты на орбиту — испускает фотон с hν = E<sub>m</sub> − E<sub>n</sub>.</li>
+          <li>Модель дала формулу Бальмера с точностью до 5 знаков, предсказала константу Ридберга через e, m, h — и полностью провалилась на гелии. Правильный ответ пришёл через 12 лет.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="svgbox">
+          <div class="dg">
+            <div class="lbl mono">Уровни водорода и переходы (серия Бальмера — видимые):</div>
+            <svg viewBox="0 0 420 230" style="max-width:100%">
+              <line x1="60" y1="210" x2="290" y2="210" stroke="#8a97a8" stroke-width="2"/><text x="298" y="214" fill="#8a97a8" font-size="11" font-family="Consolas">n=1  −13.6 эВ</text>
+              <line x1="60" y1="90" x2="290" y2="90" stroke="#8a97a8" stroke-width="2"/><text x="298" y="94" fill="#8a97a8" font-size="11" font-family="Consolas">n=2  −3.4</text>
+              <line x1="60" y1="55" x2="290" y2="55" stroke="#8a97a8" stroke-width="1.5"/><text x="298" y="59" fill="#8a97a8" font-size="11" font-family="Consolas">n=3  −1.5</text>
+              <line x1="60" y1="40" x2="290" y2="40" stroke="#8a97a8" stroke-width="1.5"/><text x="298" y="44" fill="#8a97a8" font-size="11" font-family="Consolas">n=4  −0.85</text>
+              <line x1="60" y1="31" x2="290" y2="31" stroke="#8a97a8" stroke-width="1"/><text x="298" y="35" fill="#8a97a8" font-size="11" font-family="Consolas">n=5</text>
+              <line x1="60" y1="20" x2="290" y2="20" stroke="#55606e" stroke-width="1" stroke-dasharray="3 3"/><text x="298" y="24" fill="#55606e" font-size="11" font-family="Consolas">∞  0 эВ</text>
+              <line x1="120" y1="55" x2="120" y2="90" stroke="#ff6b7a" stroke-width="3" marker-end="url(#a)"/><text x="126" y="78" fill="#ff6b7a" font-size="10" font-family="Consolas">656 нм</text>
+              <line x1="180" y1="40" x2="180" y2="90" stroke="#4fd8c8" stroke-width="3"/><text x="186" y="78" fill="#4fd8c8" font-size="10" font-family="Consolas">486</text>
+              <line x1="230" y1="31" x2="230" y2="90" stroke="#7b8cff" stroke-width="3"/><text x="236" y="78" fill="#7b8cff" font-size="10" font-family="Consolas">434</text>
+              <line x1="270" y1="90" x2="270" y2="210" stroke="#c77dff" stroke-width="2" stroke-dasharray="4 3"/><text x="150" y="160" fill="#c77dff" font-size="10" font-family="Consolas">Лайман, УФ 122 нм</text>
+            </svg>
+            <div class="cap">Энергия уровней ∝ −1/n². Расстояния между уровнями сжимаются к нулю — это и есть «зона ионизации»: дал больше 13.6 эВ — электрон свободен. Красная линия 656 нм (переход 3→2) — цвет туманностей и солнечных протуберанцев.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2: ВОЛНА-ЧАСТИЦА ============ -->
+<section class="slide chapter" id="s6">
+  <div class="bgimg"><img src="assets/ch_wave.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2</div>
+    <h1>Дуализм: ни волна, ни частица</h1>
+    <p class="lead">Если свет, который считали волной, оказался градом частиц — может, электрон, который считали частицей, окажется волной? Де Бройль предположил это в диссертации. Через три года это увидели.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s7">
+  <div class="content">
+    <div class="kicker">Дуализм · де Бройль</div>
+    <h2>У всего есть длина волны: λ = h/p</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>1924, Луи де Бройль</b>, диссертация: если у фотона p = h/λ, то симметрии ради у любой частицы с импульсом p есть волна с λ = h/p. Комиссия не знала, что делать, спросила Эйнштейна. Тот ответил: «Он приподнял край великой завесы».</li>
+          <li>Тут же встал на место Бор: орбита разрешена, если на ней укладывается <b>целое число длин волн</b> электрона — иначе волна сама себя гасит. Целые числа в спектрах — это резонанс, как у струны. Не постулат, а стоячая волна.</li>
+          <li><b>1927, Дэвиссон и Джермер</b>: пучок электронов на кристалл никеля — и дифракционная картина, как у рентгена. Длина волны совпала с h/p до процента. Томсон-сын получил Нобелевку за то, что показал: электрон — волна. Томсон-отец — за то, что показал: электрон — частица. Оба правы.</li>
+          <li>Волна есть у всего: у нейтрона, атома, молекулы C₆₀ (дифракцию фуллеренов видели в 1999), у тебя. Но λ ∝ 1/p: у мяча λ ~ 10⁻³⁴ м — меньше чего угодно, никакой дифракции не заметить. Квантовость не выключается на больших масштабах — она становится <b>неизмеримо мелкой</b>.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Длины волн де Бройля</h3>
+          <table class="t">
+            <tr><th>Объект</th><th>λ</th><th>Сравнимо с</th></tr>
+            <tr><td>Электрон, 100 эВ</td><td class="d">0.12 нм</td><td class="d">межатомное расстояние — дифракция на кристалле</td></tr>
+            <tr><td>Электрон в микроскопе, 100 кэВ</td><td class="d">0.004 нм</td><td class="d">в 100 000 раз короче света — видны атомы</td></tr>
+            <tr><td>Тепловой нейтрон</td><td class="d">0.18 нм</td><td class="d">нейтронография, магнитные структуры</td></tr>
+            <tr><td>Атом гелия, 300 К</td><td class="d">0.07 нм</td><td class="d">атомная интерферометрия</td></tr>
+            <tr><td>Молекула C₆₀</td><td class="d">0.003 нм</td><td class="d">ещё видно (Цайлингер, 1999)</td></tr>
+            <tr><td>Пылинка 1 мкг, 1 мм/с</td><td class="d">10⁻²² м</td><td class="d">в миллион раз меньше ядра</td></tr>
+            <tr><td>Ты, идущий</td><td class="d">10⁻³⁶ м</td><td class="d">в 10²¹ раз меньше планковской длины</td></tr>
+          </table>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Электронный микроскоп</b> — прямое следствие: разрешение ограничено длиной волны, а у электрона её можно сделать в 100 000 раз короче, чем у видимого света. Все картинки вирусов и атомных решёток — это дифракция волн де Бройля.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s8">
+  <div class="content">
+    <div class="kicker">Дуализм · главный эксперимент</div>
+    <h2>Две щели: единственная тайна, по Фейнману</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Пускаем электроны на экран с двумя щелями <b>по одному</b> — так, чтобы следующий вылетал, когда предыдущий уже долетел. Каждый оставляет одну точку. Точки ложатся… в <b>интерференционные полосы</b>. Как волна, прошедшая через обе щели.</li>
+          <li>Закрой одну щель — полосы исчезают, остаётся простое пятно. Значит, электрон, летящий <b>один</b>, каким-то образом «знает» об обеих щелях. Спросить «через какую он прошёл» — бессмысленно: он прошёл через обе. Не «половина туда, половина сюда» — весь через обе.</li>
+          <li>Поставь детектор у щели, чтобы <b>узнать</b>, через какую он прошёл. Узнаешь. И полосы <b>исчезнут</b>. Информация о пути уничтожает интерференцию. Не «детектор толкнул электрон» — достаточно, чтобы информация в принципе <b>существовала</b> где-либо во вселенной.</li>
+          <li>Это сделано с электронами (1961, Йёнссон; 1989, Тономура — по одному), с фотонами, атомами, молекулами из 2000 атомов (2019). Работает всегда.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="svgbox">
+          <div class="dg">
+            <div class="lbl mono">Что копится на экране (по одному электрону):</div>
+            <div class="row" style="align-items:stretch">
+              <div class="bx"><b>10 электронов</b><span style="font-family:Consolas;letter-spacing:2px;color:var(--cyan)">·  ·    ·  ·<br>  ·   ·  ·<br> ·      · ·</span><span>случайные точки</span></div>
+              <div class="arr">→</div>
+              <div class="bx"><b>1000</b><span style="font-family:Consolas;letter-spacing:1px;color:var(--cyan)">::  :::  :: :::<br>:::  ::  :::  ::<br>::  :::  ::  :::</span><span>проступают полосы</span></div>
+              <div class="arr">→</div>
+              <div class="bx am"><b>100 000</b><span style="font-family:Consolas;color:var(--amber)">█ ▓ █ ▓ █ ▓ █<br>█ ▓ █ ▓ █ ▓ █<br>█ ▓ █ ▓ █ ▓ █</span><span>чёткая интерференция</span></div>
+            </div>
+            <div class="cap"><b>Каждый электрон — частица</b> (одна точка). <b>Распределение — волна</b> (полосы). Волна не «размазанный электрон» — это волна <b>вероятности</b> того, где он окажется. Один электрон никогда не попадает в тёмную полосу — туда, где две дороги гасят друг друга. Он как будто пробует все пути и суммирует их.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s9">
+  <div class="content">
+    <div class="kicker">Дуализм · волновая функция</div>
+    <h2>Ψ: не волна чего-то, а амплитуда «может быть»</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Шрёдингер, 1926</b>: волны де Бройля подчиняются уравнению — волновому, но с мнимой единицей i и первой производной по времени. Решение — <b>волновая функция Ψ(x, t)</b>. Комплексное число в каждой точке пространства. Не измеримое напрямую ни в каком приборе.</li>
+          <li><b>Борн, 1926</b> (в сноске к статье!): |Ψ|² — это <b>плотность вероятности</b> найти частицу в точке x. Не «где частица», а «с какой вероятностью там окажется, если посмотреть». Всё, что можно знать о системе, — в Ψ; и это знание принципиально статистическое.</li>
+          <li>Почему комплексная? Потому что амплитуды надо <b>складывать до возведения в квадрат</b>. Две дороги через две щели: Ψ = Ψ₁ + Ψ₂, вероятность |Ψ₁ + Ψ₂|² = |Ψ₁|² + |Ψ₂|² + <b>2Re(Ψ₁*Ψ₂)</b>. Последний член — интерференция. Он бывает отрицательным — вот откуда тёмные полосы. Вероятности так не умеют, амплитуды — умеют.</li>
+          <li>Ψ живёт не в нашем пространстве, а в <b>конфигурационном</b>: для двух частиц это функция 6 координат, для N частиц — 3N. Волновая функция стакана воды — функция 10²⁵ переменных. Это не «поле в пространстве». Это что-то другое.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Уравнение Шрёдингера — на пальцах</h3>
+          <div class="dg">
+            <div class="bx" style="text-align:center;font-family:Consolas;font-size:18px;padding:14px"><span style="color:var(--amber);font-size:18px">iħ ∂Ψ/∂t = ĤΨ</span></div>
+            <div class="lbl">Слева — «как Ψ меняется во времени». Справа — оператор энергии Ĥ (кинетическая + потенциальная), применённый к Ψ. Смысл: <b>энергия управляет вращением фазы</b>. Состояние с энергией E крутит фазу с частотой E/ħ — ровно как у Планка, только в обратную сторону: не «частота даёт энергию», а «энергия даёт частоту».</div>
+            <div class="lbl">Уравнение <b>линейное</b> — поэтому суперпозиции решений тоже решения. И <b>детерминированное</b>: зная Ψ сейчас, знаешь Ψ всегда. Вся случайность квантовой механики — не в уравнении. Она в момент измерения (глава 4).</div>
+          </div>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Гейзенберг</b> в 1925 получил то же самое через матрицы, не зная о волнах. Полгода две теории считались разными, потом Шрёдингер доказал эквивалентность. Дирак обобщил обе в абстрактное пространство состояний. Три языка, одна механика.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s10">
+  <div class="content">
+    <div class="kicker">Дуализм · неопределённость</div>
+    <h2>Δx·Δp ≥ ħ/2: не незнание, а свойство</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Волна с <b>одной точной</b> длиной волны — это бесконечная синусоида. Она везде. Точный импульс (λ = h/p) — полная неопределённость положения. Хочешь локализовать частицу — складывай много волн с разными λ; чем уже пакет, тем шире разброс λ, то есть импульса. Это <b>математика Фурье</b>, не физика приборов.</li>
+          <li>Отсюда <b>Δx·Δp ≥ ħ/2</b>. Не «мы не можем измерить одновременно». У частицы <b>нет</b> одновременно точного положения и точного импульса — как у аккорда нет одновременно точного момента и точной ноты. Гейзенберг сам сначала объяснял через «микроскоп, толкающий электрон» — это объяснение неверно, хоть и в учебниках.</li>
+          <li>Следствия: электрон в атоме не падает на ядро, потому что сжать его в точку — значит дать бесконечный импульс, то есть кинетическую энергию. Баланс между притяжением и «давлением неопределённости» — это и есть размер атома, ~0.1 нм. Он выводится из ħ, m и e без единого постулата.</li>
+          <li>Вторая пара: <b>ΔE·Δt ≥ ħ/2</b>. Короткоживущее состояние не имеет точной энергии — спектральные линии имеют ширину. Виртуальные частицы «одалживают» энергию на время ħ/ΔE — на этом стоит вся квантовая теория поля (глава 6).</li>
+        </ul>
+      </div>
+      <div>
+        <div class="svgbox">
+          <div class="dg">
+            <div class="lbl mono">Волновой пакет: узкий по x — широкий по p:</div>
+            <div class="side">
+              <div>
+                <svg viewBox="0 0 200 120" style="max-width:100%">
+                  <path d="M 0 60 Q 20 60 40 60 T 70 58 T 85 30 T 95 90 T 105 30 T 115 90 T 125 40 T 140 62 T 170 60 T 200 60" fill="none" stroke="#4fd8c8" stroke-width="2"/>
+                  <text x="60" y="112" fill="#8a97a8" font-size="10" font-family="Consolas">Δx мало</text>
+                </svg>
+                <svg viewBox="0 0 200 60" style="max-width:100%">
+                  <path d="M 10 55 L 60 55 C 80 55, 90 5, 100 5 C 110 5, 120 55, 140 55 L 190 55" fill="none" stroke="#ffb347" stroke-width="2"/>
+                  <text x="60" y="30" fill="#ffb347" font-size="10" font-family="Consolas">Δp велико</text>
+                </svg>
+              </div>
+              <div>
+                <svg viewBox="0 0 200 120" style="max-width:100%">
+                  <path d="M 0 60 C 10 40, 20 40, 30 60 S 50 80, 60 60 S 80 40, 90 60 S 110 80, 120 60 S 140 40, 150 60 S 170 80, 180 60 S 195 45, 200 60" fill="none" stroke="#4fd8c8" stroke-width="2"/>
+                  <text x="60" y="112" fill="#8a97a8" font-size="10" font-family="Consolas">Δx велико</text>
+                </svg>
+                <svg viewBox="0 0 200 60" style="max-width:100%">
+                  <path d="M 10 55 L 92 55 L 96 5 L 104 5 L 108 55 L 190 55" fill="none" stroke="#ffb347" stroke-width="2"/>
+                  <text x="120" y="30" fill="#ffb347" font-size="10" font-family="Consolas">Δp мало</text>
+                </svg>
+              </div>
+            </div>
+            <div class="cap">Верх — Ψ(x), низ — её же спектр по импульсу. Одно есть преобразование Фурье другого; произведение ширин не может быть меньше ħ/2. Это тождество, а не предел техники.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 3: АТОМ ============ -->
+<section class="slide chapter" id="s11">
+  <div class="bgimg"><img src="assets/ch_atom.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3</div>
+    <h1>Атом: стоячие волны и таблица Менделеева</h1>
+    <p class="lead">Решаем уравнение Шрёдингера для одного электрона и одного протона. Из него, без единого дополнительного постулата, вываливается вся химия.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s12">
+  <div class="content">
+    <div class="kicker">Атом · квантование</div>
+    <h2>Почему энергия дискретна: частица в ящике</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Простейшая задача: частица заперта между двумя стенками. На стенках Ψ = 0 (там её быть не может). Между — стоячая волна. Как на струне: укладывается 1, 2, 3… полуволн. Другие длины волн <b>не удовлетворяют граничным условиям</b> — их просто нет.</li>
+          <li>λ дискретна → p = h/λ дискретен → E = p²/2m дискретна: <b>E<sub>n</sub> = n²h²/8mL²</b>. Квантование — не постулат. Это следствие того, что волна заперта. Свободная частица (без стенок) имеет любую энергию — континуум.</li>
+          <li>Минимальная энергия — <b>не ноль</b>. n = 1 даёт E₁ > 0. Запертая частица не может покоиться — это то самое «давление неопределённости». Гелий не замерзает при 0 К именно поэтому: нулевые колебания не дают атомам сесть в решётку.</li>
+          <li>Чем меньше ящик L, тем больше расстояния между уровнями (∝ 1/L²). Электрон в атоме (0.1 нм) — уровни в электронвольтах, видимый свет. В ядре (10⁻¹⁵ м) — мегаэлектронвольты, гамма. В куске металла (1 см) — уровни слились в непрерывную зону.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="svgbox">
+          <div class="dg">
+            <div class="lbl mono">Три первых состояния в ящике:</div>
+            <svg viewBox="0 0 420 200" style="max-width:100%">
+              <line x1="60" y1="10" x2="60" y2="190" stroke="#8a97a8" stroke-width="3"/><line x1="360" y1="10" x2="360" y2="190" stroke="#8a97a8" stroke-width="3"/>
+              <line x1="60" y1="170" x2="360" y2="170" stroke="#223041"/><path d="M 60 170 C 160 110, 260 110, 360 170" fill="none" stroke="#4fd8c8" stroke-width="2.5"/><text x="370" y="174" fill="#4fd8c8" font-size="11" font-family="Consolas">n=1, E₁</text>
+              <line x1="60" y1="110" x2="360" y2="110" stroke="#223041"/><path d="M 60 110 C 110 60, 160 60, 210 110 C 260 160, 310 160, 360 110" fill="none" stroke="#ffb347" stroke-width="2.5"/><text x="370" y="114" fill="#ffb347" font-size="11" font-family="Consolas">n=2, 4E₁</text>
+              <line x1="60" y1="40" x2="360" y2="40" stroke="#223041"/><path d="M 60 40 C 93 0, 127 0, 160 40 C 193 80, 227 80, 260 40 C 293 0, 327 0, 360 40" fill="none" stroke="#ff6b7a" stroke-width="2.5"/><text x="370" y="44" fill="#ff6b7a" font-size="11" font-family="Consolas">n=3, 9E₁</text>
+            </svg>
+            <div class="cap">У n = 2 есть <b>узел</b> в центре: вероятность найти частицу посередине ящика — ноль. При этом слева и справа — есть. Как она попадает из левой половины в правую, не проходя через середину? Никак: вопрос предполагает траекторию, а её нет. Есть только Ψ.</div>
+          </div>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Квантовые точки</b> в твоём QLED-телевизоре — буквально это. Нанокристалл 2–10 нм — ящик для электрона; размер задаёт расстояние между уровнями, то есть цвет свечения. Меньше кристалл — синее. Нобель по химии 2023.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s13">
+  <div class="content">
+    <div class="kicker">Атом · водород</div>
+    <h2>Орбитали: четыре числа вместо орбит</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Ящик теперь трёхмерный и с кулоновской ямой вместо стенок. Уравнение решается точно (единственный атом, для которого это так). Решения нумеруются <b>тремя целыми числами</b>: n (энергия и размер), l (форма, момент импульса), m (ориентация). Плюс четвёртое — спин (следующий слайд).</li>
+          <li><b>n = 1, 2, 3…</b> — тот же боровский номер, E = −13.6 эВ/n². <b>l = 0…n−1</b> — s, p, d, f: шар, гантель, четырёхлистник. <b>m = −l…+l</b> — 2l+1 ориентаций: одна s, три p, пять d, семь f.</li>
+          <li>Орбиталь — это не путь. Это <b>облако |Ψ|²</b>: где чаще всего окажется электрон при измерении. У 1s максимум плотности — на боровском радиусе 0.053 нм, но электрон бывает и внутри ядра (для s-орбиталей Ψ(0) ≠ 0 — отсюда сверхтонкое расщепление и линия 21 см, по которой картируют галактики).</li>
+          <li>У s-орбитали <b>нет момента импульса</b>. Электрон «вокруг ядра» не крутится. Он просто есть — сферически-симметричным образом. Планетарная картинка мертва окончательно.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Оболочки и ёмкость</h3>
+          <table class="t">
+            <tr><th>n</th><th>Орбитали</th><th>Мест (×2 спин)</th><th>Элементы</th></tr>
+            <tr><td>1</td><td class="d">1s</td><td class="d">2</td><td class="d">H, He</td></tr>
+            <tr><td>2</td><td class="d">2s 2p</td><td class="d">2 + 6 = 8</td><td class="d">Li … Ne</td></tr>
+            <tr><td>3</td><td class="d">3s 3p (3d)</td><td class="d">2 + 6 + 10 = 18</td><td class="d">Na … Ar (+ переходные)</td></tr>
+            <tr><td>4</td><td class="d">4s 4p 4d 4f</td><td class="d">2 + 6 + 10 + 14 = 32</td><td class="d">K … Kr (+ лантаноиды)</td></tr>
+          </table>
+          <p style="margin-top:10px">2, 8, 18, 32 = 2n². Это длины периодов таблицы Менделеева. Менделеев угадал их эмпирически в 1869; Шрёдингер и Паули объяснили в 1926 — из уравнения и одного запрета.</p>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Тонкости:</b> порядок заполнения не строго по n — 4s заполняется раньше 3d, потому что в многоэлектронном атоме электроны экранируют ядро друг от друга, и s-орбитали (которые «ныряют» к ядру) выигрывают. Отсюда переходные металлы и вся их цветная химия.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s14">
+  <div class="bgimg"><img src="assets/ch_spin.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Атом · спин и Паули</div>
+    <h2>Спин: вращение без вращения, и почему ты не проваливаешься сквозь пол</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Штерн и Герлах, 1922</b>: пучок атомов серебра через неоднородное магнитное поле. Если атом — магнитик с произвольной ориентацией, на экране должна быть размазанная полоса. Получилось <b>два пятна</b>. Магнитный момент квантован: либо «вверх», либо «вниз», и ничего между.</li>
+          <li>Это <b>спин</b> — собственный момент импульса электрона, ½ħ. Название от «вращения», но электрон — точка, вращаться нечему; а если бы вращался, его поверхность двигалась бы быстрее света. Спин — не вращение. Это внутренняя степень свободы, у которой <b>два</b> состояния. Как бит.</li>
+          <li>Причудливость: поверни электрон на 360° — его Ψ сменит знак. Нужно 720°, чтобы вернуться. Это не метафора: разница видна в нейтронной интерферометрии (1975). Все частицы с полуцелым спином — <b>фермионы</b> — так устроены.</li>
+          <li><b>Паули, 1925</b>: два фермиона не могут быть в одном состоянии. Иначе их общая Ψ (антисимметричная при обмене) обращается в ноль. Отсюда по два электрона на орбиталь — с противоположными спинами. Отсюда оболочки. Отсюда химия.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Что держит материю</h3>
+          <p>Без запрета Паули все электроны любого атома свалились бы на 1s. Все элементы были бы одинаковыми шариками, никакой химии, никаких молекул. Атом был бы в 100 раз меньше.</p>
+          <p style="margin-top:8px">Когда ты стоишь на полу, электроны твоих ботинок не могут занять состояния электронов пола — те уже заняты. Это не электростатика (она в 10 раз слабее). Это <b>давление вырождения</b>: запрет Паули, работающий как сила. То же держит белые карлики от коллапса (Чандрасекар, 1930).</p>
+          <p style="margin-top:8px" class="dim">Бозоны (целый спин: фотон, атом гелия-4) — наоборот, <b>любят</b> быть в одном состоянии. Отсюда лазер (все фотоны одинаковы), сверхтекучесть, бозе-конденсат.</p>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Спин и МРТ:</b> протон тоже спин-½. В поле 1.5–3 Тл спины «вверх» и «вниз» различаются по энергии на радиочастотный квант. Качаем радиоволной, слушаем ответ, и по времени релаксации различаем воду, жир и опухоль. МРТ — это спектроскопия спинов твоих протонов.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s15">
+  <div class="bgimg"><img src="assets/ch_tunnel.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Атом · туннелирование</div>
+    <h2>Сквозь стену: волна не обязана останавливаться там, где кончается энергия</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Классика: частица с энергией E, барьер высотой U > E — отскок, всегда. Квантово: Ψ внутри барьера не обнуляется, а <b>затухает экспоненциально</b>. Если барьер тонкий, за ним остаётся ненулевой хвост — и частица с некоторой вероятностью оказывается снаружи. Не перепрыгнув, не пробив — просто оказавшись.</li>
+          <li>Вероятность ~ e<sup>−2κd</sup>, где d — толщина, κ ∝ √(m(U−E)). Экспонента жестокая: удвоил толщину — вероятность в квадрате. Поэтому туннелируют лёгкие и через тонкое: электроны через нанометры, протоны через ангстремы. Ты через стену — 10<sup>−10³⁵</sup>, не жди.</li>
+          <li><b>Гамов, 1928</b>: альфа-распад. Альфа-частица в ядре заперта барьером в 25 МэВ, а вылетает с 5 МэВ. Классически — никогда. Квантово — бьётся о стенку 10²¹ раз в секунду, и раз в миллиард лет туннелирует. Формула объяснила, почему периоды полураспада от микросекунд до 10¹⁰ лет: логарифм периода линеен по 1/√E.</li>
+          <li><b>Солнце светит через туннель</b>: два протона должны сблизиться до 10⁻¹⁵ м, отталкивание — сотни кэВ, а у них при 15 млн К — ~1 кэВ. Классически Солнце холодно для синтеза раз в 100. Туннелирование даёт нужную вероятность — маленькую, поэтому Солнце горит 10 млрд лет, а не взрывается.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Туннелирование в железе</h3>
+          <table class="t">
+            <tr><th>Где</th><th>Что туннелирует</th><th>Зачем</th></tr>
+            <tr><td>Флеш-память</td><td class="d">электроны сквозь оксид 7 нм в плавающий затвор</td><td class="d">запись бита; удержание десятилетия</td></tr>
+            <tr><td>Туннельный микроскоп (STM)</td><td class="d">электроны игла ↔ поверхность, зазор 0.5 нм</td><td class="d">ток ∝ e<sup>−2κd</sup>: видны отдельные атомы (Нобель 1986)</td></tr>
+            <tr><td>Туннельный диод</td><td class="d">электроны через p-n-переход</td><td class="d">СВЧ-генераторы, отрицательное сопротивление</td></tr>
+            <tr><td>Джозефсоновский контакт</td><td class="d">куперовские пары через изолятор</td><td class="d">SQUID-магнитометры, кубиты, эталон вольта</td></tr>
+            <tr><td>Транзистор 3 нм</td><td class="d">утечка через затвор — нежелательно</td><td class="d">предел масштабирования кремния</td></tr>
+          </table>
+          <p style="margin-top:10px" class="dim">Ферменты в твоих клетках переносят протоны и электроны туннелированием — часть биохимии не работала бы классически.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 4: ИЗМЕРЕНИЕ ============ -->
+<section class="slide chapter" id="s16">
+  <div class="bgimg"><img src="assets/ch_measure.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4</div>
+    <h1>Измерение: где кончается волна</h1>
+    <p class="lead">Уравнение Шрёдингера детерминировано и никогда не даёт «одну точку на экране». Но мы видим точку. Что происходит между Ψ и щелчком детектора — сто лет спорят, и это не решено.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s17">
+  <div class="content">
+    <div class="kicker">Измерение · суперпозиция и коллапс</div>
+    <h2>Кот Шрёдингера: не парадокс, а обвинение</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Суперпозиция</b>: если Ψ₁ и Ψ₂ — возможные состояния, то aΨ₁ + bΨ₂ — тоже. Электрон не «либо здесь, либо там». Он в состоянии «здесь И там» с амплитудами a и b. Это не незнание — суперпозиция интерферирует, смесь «либо-либо» — нет. Двухщелевой опыт различает их экспериментально.</li>
+          <li><b>Измерение</b>: спросили «где?» — получили <b>одно</b> место с вероятностью |a|² или |b|². После этого система — в том состоянии, которое получили. Суперпозиция исчезла. Это «коллапс» — и его <b>нет в уравнении Шрёдингера</b>. Это второе, отдельное правило (постулат проекции), добавленное руками.</li>
+          <li><b>Шрёдингер, 1935</b>: атом в суперпозиции «распался / не распался» → счётчик → молоток → яд → кот. По линейности уравнения кот тоже в суперпозиции «жив + мёртв». Шрёдингер не утверждал, что так бывает. Он говорил: <b>это абсурд, значит, теория неполна</b>. Где именно граница, на которой суперпозиция превращается в «либо-либо»? Уравнение её не содержит.</li>
+          <li>Это <b>проблема измерения</b>. Не решена. Есть несколько программ, у каждой цена.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Что говорит копенгагенская трактовка</h3>
+          <p>Бор и Гейзенберг, 1927: Ψ — не реальность, а <b>наше знание</b>, инструмент для расчёта вероятностей. Мир делится на квантовую систему и классический прибор. Прибор даёт определённые показания — потому что он классический. Почему? Потому что большой. Где граница? Там, где удобно провести. «Заткнись и считай».</p>
+          <p style="margin-top:8px">Работает безупречно: ни один эксперимент за 100 лет не разошёлся с предсказаниями. Но не отвечает, <b>что происходит</b>. Для инженера — достаточно. Для физика — зуд.</p>
+        </div>
+        <div class="note warn" style="margin-top:12px"><b>«Сознание вызывает коллапс»</b> (фон Нейман–Вигнер) — маргинальная версия, которую путают с копенгагенской. Никаких свидетельств. Фотопластинка засвечивается одинаково, смотрит на неё кто-то или нет. Измерение — это <b>взаимодействие с макроскопической средой</b>, а не с наблюдателем.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s18">
+  <div class="content">
+    <div class="kicker">Измерение · декогеренция</div>
+    <h2>Почему кота никто не видел: среда измеряет всё и всегда</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Це (Zeh), Цурек, 1970–80-е</b>: любая система взаимодействует со средой — воздух, свет, тепловые фотоны. Каждое столкновение <b>запутывает</b> состояние системы с состоянием среды. Информация о том, «здесь или там», утекает в миллиарды степеней свободы окружения.</li>
+          <li>Интерференция требует, чтобы амплитуды Ψ₁ и Ψ₂ имели <b>согласованную фазу</b>. Как только среда «знает» разницу, относительная фаза размазывается — и интерференционный член исчезает. Для наблюдателя, который среду не отслеживает, суперпозиция становится <b>неотличима</b> от классической смеси «либо-либо».</li>
+          <li>Скорость: пылинка 10 мкм в воздухе декогерирует за 10⁻³¹ с. В межгалактическом вакууме — за 10⁻¹⁸ с (от реликтовых фотонов). Кот в ящике — мгновенно. Электрон в вакууме — может держаться секунды. Вот граница между квантовым и классическим: не размер, а <b>изоляция от среды</b>.</li>
+          <li>Декогеренция объясняет, <b>почему мы не видим</b> суперпозиций. Она не объясняет, почему получается <b>именно этот</b> результат, а не тот. Кот из «жив + мёртв» становится «жив ИЛИ мёртв» — но кто выбирает? Тут расходятся интерпретации.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Интерпретации: что каждая покупает и чем платит</h3>
+          <table class="t">
+            <tr><th>Трактовка</th><th>Что говорит</th><th>Цена</th></tr>
+            <tr><td>Копенгаген</td><td class="d">Ψ — знание; коллапс при измерении</td><td class="d">не говорит, что такое измерение</td></tr>
+            <tr><td>Многомировая (Эверетт, 1957)</td><td class="d">коллапса нет; все исходы реальны, наблюдатель расщепляется вместе с котом</td><td class="d">10¹⁰⁰ параллельных версий тебя; откуда вероятности</td></tr>
+            <tr><td>Бомовская (де Бройль–Бом)</td><td class="d">частицы имеют траектории, Ψ — «пилот-волна», ведёт их</td><td class="d">нелокальность явная; не работает с релятивизмом</td></tr>
+            <tr><td>Объективный коллапс (GRW, Пенроуз)</td><td class="d">Ψ сама спонтанно коллапсирует, чем больше масса — чем чаще</td><td class="d">меняет уравнение; проверяемо — ищут, пока не нашли</td></tr>
+            <tr><td>QBism</td><td class="d">Ψ — субъективная степень уверенности агента</td><td class="d">физика становится о нас, не о мире</td></tr>
+          </table>
+          <p style="margin-top:8px" class="dim">Все дают <b>одни и те же</b> предсказания для всех сделанных экспериментов. Выбор — философский. Опрос физиков 2013: копенгаген 42%, многомировая 18%, «не знаю» — остальные.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 5: ЗАПУТАННОСТЬ ============ -->
+<section class="slide chapter" id="s19">
+  <div class="bgimg"><img src="assets/ch_entangle.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5</div>
+    <h1>Запутанность: «жуткое дальнодействие»</h1>
+    <p class="lead">Эйнштейн придумал этот аргумент, чтобы доказать неполноту квантовой механики. Через 30 лет Белл превратил его в проверяемое неравенство. Через 50 — эксперимент показал: Эйнштейн ошибался, и мир действительно так устроен.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s20">
+  <div class="content">
+    <div class="kicker">Запутанность · ЭПР</div>
+    <h2>1935: Эйнштейн ставит ловушку</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Возьмём две частицы, рождённые вместе с суммарным спином 0. Их общая Ψ — <b>одна</b> на двоих: (↑↓ − ↓↑)/√2. У каждой отдельно определённого спина <b>нет</b>. Это и есть запутанность: состояние пары не сводится к состояниям частей. Разнесём их на световой год.</li>
+          <li>Измерим спин первой — получим ↑ (случайно, 50/50). Мгновенно Ψ пары коллапсирует в ↑↓, и вторая — точно ↓. Измерь её — так и будет. Всегда. На любом расстоянии, без задержки.</li>
+          <li><b>Эйнштейн, Подольский, Розен</b>: ничего не может влиять быстрее света. Значит, у второй частицы спин ↓ был <b>заранее</b> — просто квантовая механика об этом не знает. Она <b>неполна</b>: есть «скрытые параметры», которые всё определяют, а Ψ — лишь статистика по ним. Как термодинамика — статистика по молекулам.</li>
+          <li>Бор ответил невнятно. Спор считался философским 30 лет: обе картины давали одинаковые предсказания. Пока один ирландец в отпуске не посчитал.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Почему это не передача информации</h3>
+          <p>Алиса измерила ↑ — Боб получит ↓. Но Алиса <b>не выбирала</b> ↑ — выпало случайно. Боб, глядя на свою частицу, видит случайную последовательность ↑↓↓↑↓… — ровно такую же, как если бы Алисы не было. Корреляцию видно, только когда они <b>сравнят записи</b> — по обычному каналу, не быстрее света.</p>
+          <p style="margin-top:8px">Это <b>теорема о запрете сверхсветовой связи</b>: запутанность даёт корреляции, но не сигнал. Относительность цела. Но корреляции — сильнее, чем допускает любая классическая картина. Насколько сильнее — измерил Белл.</p>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Аналогия с перчатками</b> (одну в Москву, другую в Токио — открыл левую, значит там правая) — это <b>именно то</b>, что предполагал Эйнштейн. И именно это неверно. Разница проявляется, когда измеряют не «левая/правая», а под разными углами. Об этом — следующий слайд.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s21">
+  <div class="content">
+    <div class="kicker">Запутанность · Белл</div>
+    <h2>1964: неравенство, которое природа нарушает</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Джон Белл</b> задал вопрос иначе: пусть у частиц есть <b>любые</b> скрытые параметры, любой сложности, но <b>локальные</b> — результат у Алисы зависит только от её частицы и её прибора, не от выбора Боба. Что тогда можно сказать о корреляциях?</li>
+          <li>Оказалось — можно. Если Алиса и Боб измеряют спин под <b>разными углами</b> (a, a′ у неё, b, b′ у него), то любая локальная теория даёт: <b>|S| ≤ 2</b>, где S — определённая комбинация корреляций (форма CHSH, 1969). Это чистая арифметика: сколько бы ни было параметров, они не могут дать больше.</li>
+          <li>Квантовая механика предсказывает для запутанной пары <b>S = 2√2 ≈ 2.83</b>. Больше двух. Значит, либо квантовая механика неверна в этих предсказаниях, либо <b>никакая</b> локальная теория со скрытыми параметрами невозможна. Эксперимент решает.</li>
+          <li><b>Аспе (1982)</b>: S = 2.70 ± 0.05. Нарушено на 40σ. <b>Цайлингер (1998)</b>: выбор углов — случайно, уже после вылета фотонов, чтобы частицы «не сговорились». <b>2015</b>: три группы закрыли все лазейки одновременно. <b>Нобель 2022</b> — Аспе, Клаузер, Цайлингер.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="svgbox">
+          <div class="dg">
+            <div class="lbl mono">Корреляция спинов vs угол между приборами:</div>
+            <svg viewBox="0 0 420 200" style="max-width:100%">
+              <line x1="40" y1="100" x2="400" y2="100" stroke="#223041" stroke-width="2"/>
+              <line x1="40" y1="20" x2="40" y2="180" stroke="#223041" stroke-width="2"/>
+              <path d="M 40 180 L 220 20 L 400 180" fill="none" stroke="#ff6b7a" stroke-width="2" stroke-dasharray="6 4"/>
+              <path d="M 40 180 C 100 180, 160 20, 220 20 C 280 20, 340 180, 400 180" fill="none" stroke="#4fd8c8" stroke-width="3"/>
+              <text x="44" y="16" fill="#8a97a8" font-size="11" font-family="Consolas">+1 (совпадают)</text>
+              <text x="44" y="194" fill="#8a97a8" font-size="11" font-family="Consolas">−1 (противоположны)</text>
+              <text x="30" y="194" fill="#55606e" font-size="10" font-family="Consolas" text-anchor="end">0°</text>
+              <text x="220" y="194" fill="#55606e" font-size="10" font-family="Consolas" text-anchor="middle">90°</text>
+              <text x="400" y="194" fill="#55606e" font-size="10" font-family="Consolas" text-anchor="end">180°</text>
+              <text x="110" y="125" fill="#ff6b7a" font-size="11" font-family="Consolas">классика: линейно</text>
+              <text x="250" y="80" fill="#4fd8c8" font-size="11" font-family="Consolas">квант: −cos θ</text>
+            </svg>
+            <div class="cap">При 0°, 90°, 180° обе теории совпадают — «перчатки» работают. Разница — на промежуточных углах: квантовая кривая круче. Именно там корреляции сильнее любых возможных «заранее записанных» ответов. Природа выбрала синюю. Значит, либо нет локальности, либо нет предопределённых значений — или ни того, ни другого.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s22">
+  <div class="content">
+    <div class="kicker">Запутанность · что из этого сделали</div>
+    <h2>Телепортация, криптография и запрет копирования</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>Теорема о запрете клонирования (1982)</h3>
+        <p>Нельзя построить машину, копирующую произвольное неизвестное квантовое состояние. Доказательство — три строчки из линейности: если машина копирует |0⟩ и |1⟩, она обязана скопировать их сумму как сумму копий, а не как копию суммы. Противоречие.</p>
+        <p style="margin-top:8px">Следствие: нельзя измерить Ψ одной частицы (одно измерение — один бит, Ψ уничтожена). Нельзя усилить квантовый сигнал (нет репитеров). Нельзя <b>подслушать</b>, не оставив следов.</p>
+      </div>
+      <div class="card">
+        <h3 class="am">Квантовая криптография (BB84, 1984)</h3>
+        <p>Алиса шлёт фотоны в случайных поляризациях, Боб измеряет в случайных базисах. Потом сверяют базисы (открыто) и оставляют совпавшие — это ключ. Ева, перехватив фотон, обязана его измерить — и с вероятностью 25% испортит. Проверив часть ключа, Алиса и Боб <b>увидят</b> вторжение.</p>
+        <p style="margin-top:8px">Безопасность гарантирована не сложностью задачи (как RSA), а законами физики. Коммерческие системы — с 2004; китайский спутник Micius раздал ключ Пекин–Вена в 2017. Ограничение: ~100–500 км по волокну без доверенных узлов.</p>
+      </div>
+      <div class="card">
+        <h3 class="gr">Телепортация (1993 / 1997)</h3>
+        <p>Не перенос материи — перенос <b>состояния</b>. Алиса и Боб делят запутанную пару. Алиса измеряет свою частицу вместе с той, чьё состояние надо передать, — получает 2 классических бита (случайных). Шлёт их Бобу по телефону. Боб делает одну из 4 операций — и его частица оказывается <b>в исходном состоянии</b>. Оригинал у Алисы уничтожен (иначе — клон).</p>
+        <p style="margin-top:8px">Быстрее света не выходит — нужны 2 бита по обычному каналу. Сделано с фотонами на 1400 км (Micius, 2017), с атомами, с ионами. Основа будущего квантового интернета.</p>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:16px"><b>Запутанность — ресурс</b>, как энергия. Её можно создать (нелинейный кристалл делит фотон на два запутанных), хранить, тратить, дистиллировать. Квантовый компьютер — это машина, которая умеет держать в запутанности сотни кубитов и делать над ними операции. Об этом — глава 7.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 6: ФОТОН ============ -->
+<section class="slide chapter" id="s23">
+  <div class="bgimg"><img src="assets/ch_photon.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6</div>
+    <h1>Фотон крупным планом</h1>
+    <p class="lead">Самая изученная частица во вселенной. Без массы, без заряда, без времени в собственной системе отсчёта. Переносчик электромагнитного взаимодействия, единственный участник самой точной теории в истории — и рабочая лошадка лазера.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s24">
+  <div class="content">
+    <div class="kicker">Фотон · паспорт</div>
+    <h2>Что такое фотон на самом деле</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Квант электромагнитного поля.</b> Поле — как гитара с бесконечным числом струн (мод — частот и направлений). Каждая струна квантована, как осциллятор: энергия n·hν. «Один фотон в моде» = струна возбуждена на одну ступеньку. Фотон — не шарик, летящий в поле. Фотон — <b>степень возбуждения поля</b>.</li>
+          <li><b>Масса 0, скорость c</b> — всегда, в любой среде. «Свет замедляется в стекле» — это фотоны поглощаются и переизлучаются атомами (точнее — смешиваются с колебаниями среды в поляритон). Между атомами — c.</li>
+          <li><b>Спин 1</b>, но проекций только две (±1, не 0 — из-за безмассовости): правая и левая круговая поляризация. Линейная поляризация — их суперпозиция. Поляроидные очки — квантовое измерение, которое ты носишь на носу.</li>
+          <li><b>Собственное время — ноль.</b> С точки зрения фотона (формально, у него нет системы покоя) момент испускания и поглощения — один и тот же миг. Фотон от квазара летел 12 млрд лет по нашим часам и ноль — по своим.</li>
+          <li><b>Число не сохраняется.</b> Фотоны рождаются и умирают свободно: любой ускоренный заряд их излучает, любой поглощает. Электрон в атоме прыгнул вниз — родился фотон из ничего. Именно поэтому фотонов больше всего: 10⁹ на каждый барион во вселенной, почти все — реликтовые.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Электромагнитный спектр в фотонах</h3>
+          <table class="t">
+            <tr><th>Диапазон</th><th>Энергия фотона</th><th>Что делает с веществом</th></tr>
+            <tr><td>Радио</td><td class="d">10⁻⁹ эВ</td><td class="d">крутит спины (МРТ), раскачивает антенны</td></tr>
+            <tr><td>Микроволны</td><td class="d">10⁻⁵ эВ</td><td class="d">вращает молекулы воды (СВЧ-печь)</td></tr>
+            <tr><td>Инфракрасное</td><td class="d">0.01–1 эВ</td><td class="d">качает связи в молекулах = тепло</td></tr>
+            <tr><td>Видимое</td><td class="d">1.6–3.3 эВ</td><td class="d">переводит электроны в молекулах: сетчатка, хлорофилл</td></tr>
+            <tr><td>Ультрафиолет</td><td class="d">3–100 эВ</td><td class="d">рвёт химические связи, ДНК → загар и меланома</td></tr>
+            <tr><td>Рентген</td><td class="d">0.1–100 кэВ</td><td class="d">выбивает внутренние электроны, проходит сквозь мягкие ткани</td></tr>
+            <tr><td>Гамма</td><td class="d">&gt;100 кэВ</td><td class="d">из ядер; при 1.02 МэВ рождает пару e⁺e⁻</td></tr>
+          </table>
+          <p style="margin-top:8px" class="dim">Твоя сетчатка регистрирует единичные фотоны (палочки — 1 фотон, порог осознания ~5–10). Ты видишь квантами.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s25">
+  <div class="content">
+    <div class="kicker">Фотон · лазер</div>
+    <h2>Вынужденное излучение: Эйнштейн, 1917 — лазер, 1960</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Возбуждённый атом сам собой падает вниз и испускает фотон — <b>спонтанное излучение</b>, случайное время, случайное направление, случайная фаза. Лампа накаливания, светодиод, Солнце — так.</li>
+          <li><b>Эйнштейн (1917)</b>, из термодинамики: должно быть ещё и <b>вынужденное</b>. Пролетающий фотон с подходящей hν «стряхивает» возбуждённый атом, и тот испускает <b>копию</b>: та же частота, то же направление, та же фаза, та же поляризация. Фотоны — бозоны, они любят быть одинаковыми. Один вошёл — два вышли.</li>
+          <li>Проблема: в обычном веществе атомов внизу больше, чем вверху (Больцман), и фотон скорее поглотится, чем размножится. Нужна <b>инверсия населённости</b> — накачать больше атомов вверх, чем внизу. Делается через третий уровень: накачка → быстрый спад на метастабильный уровень → там копятся.</li>
+          <li>Два зеркала: фотоны бегают туда-сюда, каждый проход — лавина копий. Одно зеркало полупрозрачное — выходит луч. <b>Когерентный</b>: все фотоны в одной моде. Расходимость — дифракционный предел; ширина линии — герцы при частоте 10¹⁴ Гц.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="svgbox">
+          <div class="dg">
+            <div class="lbl mono">Трёхуровневая схема:</div>
+            <div class="row" style="align-items:stretch">
+              <div class="col" style="flex:1">
+                <div class="bx" style="border-color:var(--faint)"><b>3: накачка</b><span>короткоживущий</span></div>
+                <div class="arr" style="text-align:center;color:var(--faint)">↓ быстро, без света</div>
+                <div class="bx am"><b>2: метастабильный</b><span>копится инверсия</span></div>
+                <div class="arr am" style="text-align:center">↓ ЛАЗЕРНЫЙ ПЕРЕХОД</div>
+                <div class="bx cy"><b>1: основной</b><span>сюда падают</span></div>
+              </div>
+              <div class="col" style="flex:1.4;justify-content:center">
+                <div class="lbl"><b style="color:var(--text)">Фотон-затравка</b> → пролетает мимо атома на уровне 2 → атом испускает клон → 2 фотона → 4 → 8 … Между зеркалами за наносекунду — 10¹⁵ одинаковых фотонов.</div>
+                <div class="lbl" style="margin-top:8px"><b style="color:var(--text)">Среда:</b> рубин (первый, Мейман 1960), He-Ne (красная указка старая), Nd:YAG (1064 нм, резка металла), полупроводник (диод: DVD, оптоволокно, указка), CO₂ (10 мкм, хирургия), Ti:сапфир (фемтосекундные импульсы).</div>
+              </div>
+            </div>
+            <div class="cap">Мощность — вопрос концентрации во времени: фемтосекундный лазер даёт петаватты в импульсе 10⁻¹⁵ с при средней мощности в ватты. Этим режут роговицу (LASIK) — испаряя ткань раньше, чем она успевает нагреться.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s26">
+  <div class="bgimg"><img src="assets/ch_qed.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Фотон · КЭД</div>
+    <h2>Квантовая электродинамика: самая точная теория, что у нас есть</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Шрёдингер описывал электрон в заданном поле. Но поле тоже квантово, и электрон его меняет. Нужна теория, где <b>и вещество, и поле — квантованные поля</b>, обменивающиеся квантами. Это <b>КЭД</b> — Дирак, Фейнман, Швингер, Томонага, Дайсон (1927–1949).</li>
+          <li>Картинка Фейнмана: два электрона отталкиваются, <b>обмениваясь виртуальным фотоном</b>. «Виртуальный» — не удовлетворяет E = pc, существует ħ/ΔE — короче, чем его можно поймать. Кулоновская сила = сумма всех способов перекинуть фотоны. Вся электростатика — из обмена.</li>
+          <li><b>Вакуум не пуст.</b> Поле в основном состоянии имеет нулевые колебания (как частица в ящике — не может замереть). Пары электрон–позитрон рождаются и аннигилируют за 10⁻²¹ с. Это <b>измеримо</b>: лэмбовский сдвиг уровней водорода (1947), аномальный магнитный момент электрона, эффект Казимира — две пластины в вакууме притягиваются, потому что снаружи больше мод, чем между ними.</li>
+          <li><b>Точность.</b> Магнитный момент электрона: теория g/2 = 1.001 159 652 181 ; эксперимент 1.001 159 652 180. Совпадение до <b>12 знаков</b>. Как измерить расстояние Москва–Нью-Йорк с точностью до толщины волоса. Ничего точнее человечество не проверяло.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Как Фейнман это считает</h3>
+          <p>Правило одно: <b>амплитуда события = сумма амплитуд по всем способам, которыми оно может произойти</b>. Электрон из A в B — сумма по <b>всем траекториям</b>, включая петли назад во времени, с фазой e<sup>iS/ħ</sup>, где S — действие. Классическая траектория — та, где фазы соседних путей складываются (стационарное действие); остальные гасят друг друга. Классическая механика — <b>предел</b> интерференции путей.</p>
+          <p style="margin-top:8px">Диаграммы — просто бухгалтерия членов этой суммы. Каждая вершина (электрон испустил/поглотил фотон) — множитель α ≈ 1/137. Малость α — почему ряд сходится (почти) и почему можно считать.</p>
+          <p style="margin-top:8px" class="dim">Та же схема с другими полями — Стандартная модель: слабое (W, Z), сильное (глюоны), Хиггс. Гравитацию вписать не удалось — 90 лет.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 7: ТЕХНОЛОГИИ ============ -->
+<section class="slide chapter" id="s27">
+  <div class="bgimg"><img src="assets/ch_tech.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 7</div>
+    <h1>Квантовое железо: что уже работает</h1>
+    <p class="lead">Треть мирового ВВП стоит на квантовой механике: каждый транзистор, каждый лазер, каждый МРТ и каждый спутник GPS. Плюс новая волна — компьютеры, сенсоры, связь, где квантовость уже не побочный эффект, а сам ресурс.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide dense" id="s28">
+  <div class="bgimg"><img src="assets/ch_solid.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Технологии · полупроводники</div>
+    <h2>Зоны: почему медь проводит, стекло нет, а кремний — как попросишь</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Один атом — дискретные уровни. Два атома рядом — каждый уровень расщепляется на два (как связанные маятники). 10²³ атомов в кристалле — уровни расщепляются в 10²³ близких линий: <b>зоны</b>, практически непрерывные, с <b>запрещёнными щелями</b> между ними — куда электрону нельзя, потому что там ни одна волна де Бройля не укладывается в периодическую решётку.</li>
+          <li><b>Металл</b>: верхняя зона заполнена наполовину; электронам есть куда сдвинуться — ток течёт. <b>Изолятор</b>: зона заполнена полностью, до следующей — щель 5–10 эВ; Паули запрещает двигаться. <b>Полупроводник</b>: щель ~1 эВ (кремний 1.1) — при комнатной температуре немногие электроны перескакивают, проводит слабо.</li>
+          <li><b>Легирование</b>: добавь в кремний фосфор (5 валентных электронов) — лишний электрон почти свободен, n-тип. Добавь бор (3) — не хватает электрона, «дырка», p-тип. Сведи p и n — <b>переход</b>, пропускающий ток в одну сторону. Диод. Два перехода с управлением посередине — <b>транзистор</b>. 1947, Бардин–Браттейн–Шокли, Нобель 1956.</li>
+          <li>В твоём процессоре ~10¹⁰ транзисторов с затвором 3–5 нм — 20 атомов. Туннелирование сквозь него — главный враг: ток утечки греет чип, даже когда он «выключен». Кремний упирается в квантовый предел.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Из зон — всё остальное</h3>
+          <table class="t">
+            <tr><th>Устройство</th><th>Квантовый принцип</th></tr>
+            <tr><td>Светодиод / лазерный диод</td><td class="d">электрон падает через щель p-n → фотон с hν = E<sub>щели</sub>; GaN 3.4 эВ = синий (Нобель 2014)</td></tr>
+            <tr><td>Солнечная панель</td><td class="d">фотоэффект наоборот: фотон &gt; щели рождает пару e⁻/дырка, переход разделяет их</td></tr>
+            <tr><td>Камера (CMOS/CCD)</td><td class="d">то же, но считаем электроны в каждом пикселе; квантовая эффективность до 95%</td></tr>
+            <tr><td>Флеш-память</td><td class="d">туннелирование через оксид в плавающий затвор</td></tr>
+            <tr><td>Сверхпроводник</td><td class="d">электроны спариваются (Купер) в бозоны, конденсируются, ноль сопротивления; магниты МРТ, БАК</td></tr>
+            <tr><td>Гигантское магнитосопротивление</td><td class="d">спин-зависимое рассеяние в нанослоях → головки HDD (Нобель 2007)</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s29">
+  <div class="content">
+    <div class="kicker">Технологии · метрология</div>
+    <h2>Атомные часы и GPS: время, отсчитываемое квантовыми переходами</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li>Секунда с 1967 <b>определена</b> квантово: 9 192 631 770 периодов излучения перехода между двумя сверхтонкими уровнями цезия-133. Не вращение Земли, не маятник — частота атомного перехода, одинаковая у каждого атома цезия во вселенной.</li>
+          <li>Цезиевый фонтан: облако атомов подбрасывают лазером, облучают микроволнами, смотрят, сколько перешло. Подстраивают генератор до резонанса. Точность 10⁻¹⁶ — секунда за 300 млн лет. <b>Оптические часы</b> на стронции/иттербии: 10⁻¹⁸ — чувствуют разницу гравитационного замедления на 1 см высоты.</li>
+          <li><b>GPS</b>: 30 спутников с атомными часами шлют время; приёмник по разнице задержек от 4 спутников считает координаты. Ошибка часов в 1 нс — ошибка позиции 30 см. Без поправки на относительность (спутниковые часы уходят на 38 мкс/день) GPS набрал бы 10 км ошибки за сутки. Каждое включение навигатора — проверка Эйнштейна и Планка одновременно.</li>
+          <li><b>Квантовые сенсоры</b> — следующее: магнитометры на дефектах в алмазе видят поле одного нейрона; атомные гравиметры ищут туннели и нефть; интерферометры на холодных атомах — инерциальная навигация без GPS.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Лазерное охлаждение: как остановить атом фотонами</h3>
+          <p>Фотон несёт импульс h/λ. Атом, летящий навстречу лазеру, за счёт Доплера видит частоту чуть выше — настроим лазер чуть ниже резонанса, и поглощать будут только летящие <b>навстречу</b>. Поглотил — получил толчок назад. Переизлучил — в случайную сторону, в среднем ноль. 10⁷ фотонов в секунду — атом останавливается за миллисекунду.</p>
+          <p style="margin-top:8px">Шесть лазеров со всех сторон — «оптическая патока», температура микрокельвины. Добавить магнитную ловушку и испарительное охлаждение — нанокельвины, <b>бозе-конденсат</b> (1995, Нобель 2001): миллион атомов в одной волновой функции, макроскопический квантовый объект размером с волос, который можно сфотографировать.</p>
+          <p style="margin-top:8px" class="dim">Нобель 1997 (Чу, Коэн-Таннуджи, Филлипс). Все современные атомные часы и кубиты на ионах стоят на этом.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s30">
+  <div class="content">
+    <div class="kicker">Технологии · квантовый компьютер</div>
+    <h2>Кубиты: 300 штук — больше состояний, чем атомов во вселенной</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Бит</b> — 0 или 1. <b>Кубит</b> — a|0⟩ + b|1⟩, суперпозиция с комплексными амплитудами. Два кубита — 4 амплитуды, n кубитов — 2ⁿ. 300 кубитов описываются 2³⁰⁰ ≈ 10⁹⁰ числами — больше, чем атомов во вселенной. Классически не смоделировать в принципе.</li>
+          <li><b>Ловушка</b>: при измерении получишь один из 2ⁿ ответов, случайно. Все 2ⁿ амплитуд <b>не прочитать</b>. Квантовый компьютер — не «параллельный перебор». Искусство алгоритма — устроить <b>интерференцию</b> так, чтобы неправильные ответы погасили друг друга, а правильный усилился. Как двухщелевой опыт: тёмные полосы — это уничтоженные неверные пути.</li>
+          <li><b>Шор (1994)</b>: факторизация за полиномиальное время через квантовое преобразование Фурье — RSA мёртв, когда будет ~4000 логических кубитов с коррекцией ошибок. <b>Гровер</b>: поиск в неструктурированной базе за √N. <b>Моделирование молекул</b> — то, для чего Фейнман это и придумал (1981): природа квантова, считай её квантово.</li>
+          <li><b>Декогеренция</b> — главный враг: кубит держит суперпозицию микросекунды (сверхпроводящие) — секунды (ионы). Ошибка на операцию 10⁻³. Нужна коррекция: ~1000 физических кубитов на один логический. Сейчас — 100–1000 физических, шумных. Google 2019 «превосходство» на 53 кубитах — на задаче, придуманной под них.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Из чего делают кубиты</h3>
+          <table class="t">
+            <tr><th>Платформа</th><th>Кубит</th><th>Плюс / минус</th></tr>
+            <tr><td>Сверхпроводящие (Google, IBM)</td><td class="d">ток в кольце с джозефсоновским контактом, 15 мК</td><td class="d">быстрые операции / короткая когерентность, гигантский холодильник</td></tr>
+            <tr><td>Ионы в ловушке (IonQ, Quantinuum)</td><td class="d">уровни иона Yb/Ca, управление лазером</td><td class="d">лучшая точность, все связаны / медленно, сложно масштабировать</td></tr>
+            <tr><td>Нейтральные атомы (QuEra, Pasqal)</td><td class="d">атомы в оптических пинцетах, ридберговские состояния</td><td class="d">1000+ кубитов уже / точность догоняет</td></tr>
+            <tr><td>Фотонные (PsiQuantum, Xanadu)</td><td class="d">поляризация / мода фотона</td><td class="d">комнатная температура / фотоны не взаимодействуют — трудно делать гейты</td></tr>
+            <tr><td>Спины в кремнии (Intel)</td><td class="d">спин электрона в квантовой точке</td><td class="d">совместимо с фабриками чипов / пока мало</td></tr>
+            
+          </table>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Честно на 2026:</b> практических задач быстрее классики пока нет; коррекция ошибок едва заработала (Google Willow, 2024). Шор на RSA-2048 — 10–20 лет при оптимизме. Постквантовая криптография внедряется уже сейчас.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ИТОГИ ============ -->
+<section class="slide" id="s31">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Вся квантовая механика на одном слайде</h2>
+    <table class="t" style="font-size:15px">
+      <tr><th>Принцип</th><th>Что говорит</th><th>Откуда видно</th><th>Что на нём стоит</th></tr>
+      <tr><td>Квантование</td><td class="d">запертая волна — дискретные уровни</td><td class="d">спектральные линии, чёрное тело</td><td class="d">лазер, светодиод, атомные часы, QLED</td></tr>
+      <tr><td>Дуализм</td><td class="d">у всего есть λ = h/p</td><td class="d">двухщелевой опыт, дифракция электронов</td><td class="d">электронный микроскоп, нейтронография</td></tr>
+      <tr><td>Вероятность</td><td class="d">|Ψ|² — не незнание, а закон</td><td class="d">точки на экране складываются в полосы</td><td class="d">генераторы случайных чисел, крипто</td></tr>
+      <tr><td>Неопределённость</td><td class="d">Δx·Δp ≥ ħ/2 — свойство, не прибор</td><td class="d">размер атома, ширина линий</td><td class="d">пределы литографии, нулевые колебания</td></tr>
+      <tr><td>Суперпозиция</td><td class="d">состояния складываются как амплитуды</td><td class="d">интерференция, кубиты</td><td class="d">квантовые компьютеры, СКВИД</td></tr>
+      <tr><td>Туннелирование</td><td class="d">волна проникает под барьер</td><td class="d">альфа-распад, Солнце</td><td class="d">флеш-память, STM, джозефсон</td></tr>
+      <tr><td>Спин + Паули</td><td class="d">фермионы не делят состояние</td><td class="d">Штерн–Герлах, таблица Менделеева</td><td class="d">химия, твёрдость материи, МРТ, HDD</td></tr>
+      <tr><td>Запутанность</td><td class="d">Ψ пары не сводится к частям; нарушение Белла</td><td class="d">Аспе, Цайлингер (Нобель 2022)</td><td class="d">квантовая криптография, телепортация</td></tr>
+      <tr><td>Измерение</td><td class="d">коллапс — вне уравнения; проблема открыта</td><td class="d">кот, декогеренция</td><td class="d">интерпретации; граница квант/классика</td></tr>
+    </table>
+    <div class="note">Одна формула под всем: <b>амплитуда = сумма по всем путям e<sup>iS/ħ</sup></b>. Классическая физика — то, что остаётся, когда S ≫ ħ и все пути, кроме одного, гасят друг друга. Мы живём в этом остатке и ловим квантовость только там, где сумели её изолировать от шума.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s32">
+  <div class="content">
+    <div class="kicker">Итоги · что осталось непонятым</div>
+    <h2>Открытые вопросы — честно</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3 class="rd">Проблема измерения</h3>
+        <p>Что физически происходит при коллапсе, и есть ли он. Декогеренция объясняет, почему мы не видим суперпозиций, но не объясняет, почему выпадает именно этот результат. Интерпретации дают одинаковые предсказания — значит, пока это не физика, а философия. Пока: эксперименты по объективному коллапсу (суперпозиции массивных объектов) идут — если Ψ коллапсирует сама на масштабе 10⁻¹⁴ г, это увидят в 2030-х.</p>
+      </div>
+      <div class="card">
+        <h3 class="am">Квантовая гравитация</h3>
+        <p>Три взаимодействия квантованы, гравитация — нет. Общая относительность и КМ несовместимы на планковском масштабе (10⁻³⁵ м). Струны, петлевая гравитация, голография — 40 лет без единого проверяемого предсказания. Внутри чёрной дыры и в первые 10⁻⁴³ с Большого взрыва мы не знаем, что происходит.</p>
+        <p style="margin-top:8px" class="dim">Есть ли гравитон? Квантуется ли пространство-время? Не знаем.</p>
+      </div>
+      <div class="card">
+        <h3>Почему такие числа</h3>
+        <p>α = 1/137.035 999… — безразмерная сила электромагнетизма. Почему такая? Никто не знает. Фейнман: «все хорошие физики-теоретики пишут это число на стене и беспокоятся». 19 свободных параметров Стандартной модели — массы, углы смешивания — все измерены, ни один не выведен.</p>
+        <p style="margin-top:8px" class="dim">Плюс тёмная материя (85% массы — неизвестно что), тёмная энергия, асимметрия материи/антиматерии. Квантовая механика работает безупречно внутри своих границ — и молчит о том, почему границы именно там.</p>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:16px"><b>Но:</b> ни один эксперимент за 100 лет не разошёлся с квантовой механикой. Ни один. Проверено до 12 знаков в КЭД, на расстояниях от 10⁻¹⁹ м до 1400 км запутанности, при температурах от нанокельвинов до кварк-глюонной плазмы. Мы не понимаем, <b>что она значит</b>. Но мы точно знаем, что она <b>верна</b>.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s33">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <div class="kicker amber">Финал</div>
+    <h1>Мир не сделан из вещей</h1>
+    <p class="lead">Печка → h → фотон → волна де Бройля → Ψ → |Ψ|² → неопределённость → орбитали → Паули → химия → зоны → транзистор → кубит. От одной нестыковки в спектре до трети мировой экономики — за сто лет.</p>
+    <p class="lead" style="margin-top:14px">Под всем этим — не частицы и не волны, а <b>амплитуды</b>: комплексные числа, которые складываются, интерферируют и превращаются в вероятность только тогда, когда кто-то — или что-то — смотрит. Что такое «смотрит» — мы до сих пор не знаем. Но экран засвечивается точками, точки ложатся в полосы, и полосы — ровно там, где сказал Шрёдингер.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- SLIDES_END -->
+
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>
