@@ -15,7 +15,7 @@
 | 5 | [Автомобиль: от искры до колеса](https://screampassion.github.io/presentations/auto_presentation/index.html) | 44 |
 | 6 | [Самолёт: 80 тонн в воздухе и почему это надёжно](https://screampassion.github.io/presentations/aircraft_presentation/index.html) | 26 |
 | 7 | [Оружие и баллистика: современный арсенал](https://screampassion.github.io/presentations/weapons_presentation/index.html) | 67 |
-| 8 | [Ядро: сто тысяч раз меньше, миллион раз сильнее](https://screampassion.github.io/presentations/nuclear_presentation/index.html) | 30 |
+| 8 | [Ядро: в сто тысяч раз меньше, в миллион раз сильнее](https://screampassion.github.io/presentations/nuclear_presentation/index.html) | 30 |
 | 9 | [Фотон и вероятность: анатомия квантового мира](https://screampassion.github.io/presentations/quantum_presentation/index.html) | 33 |
 | 10 | [Вселенная: от Большого взрыва до Вояджера](https://screampassion.github.io/presentations/space_presentation/index.html) | 31 |
 | 11 | [Земля в разрезе: геология как судьба](https://screampassion.github.io/presentations/geology_presentation/index.html) | 38 |
