@@ -6,7 +6,8 @@ window.PRESENTATIONS.push({
  "cover": {
   "title": "Какработает ИИ",
   "lead": "",
-  "img": "img/hero.jpg"
+  "img": "img/hero.jpg",
+  "kicker": ""
  },
  "chapters": [
   {
@@ -153,6 +154,8 @@ window.PRESENTATIONS.push({
    ]
   }
  ],
+ "series": "lectures",
+ "issue": 0,
  "folder": "ai_presentation",
  "entry": "presentation.html"
 });

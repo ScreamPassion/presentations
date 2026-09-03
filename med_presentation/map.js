@@ -6,7 +6,8 @@ window.PRESENTATIONS.push({
  "cover": {
   "title": "Молекула против клетки",
   "lead": "Полная анатомия лекарства: как одна молекула находит свою мишень среди триллионов клеток, почему антибиотик убивает бактерию и не убивает тебя, как из десяти тысяч кандидатов доживает один — и где именно две таблетки, безопасные по отдельности, вместе становятся ядом.",
-  "img": "assets/cover.png"
+  "img": "assets/cover.png",
+  "kicker": "Medicine deep dive · Гвендолин-ночные-лекции"
  },
  "chapters": [
   {
@@ -221,6 +222,8 @@ window.PRESENTATIONS.push({
    "slides": []
   }
  ],
+ "series": "lectures",
+ "issue": 0,
  "folder": "med_presentation",
  "entry": "index.html"
 });

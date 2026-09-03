@@ -6,7 +6,8 @@ window.PRESENTATIONS.push({
  "cover": {
   "title": "ДНК: два метра текста в каждой клетке",
   "lead": "Полная анатомия наследственности: как четыре буквы кодируют человека, как клетка читает и копирует три миллиарда символов без единой ошибки (почти), почему ты похож на родителей ровно наполовину, как за $200 читают геном и за $2000 его правят — и где наука кончается и начинается страх.",
-  "img": "assets/cover.png"
+  "img": "assets/cover.png",
+  "kicker": "Genetics deep dive · Гвендолин-ночные-лекции"
  },
  "chapters": [
   {
@@ -142,6 +143,8 @@ window.PRESENTATIONS.push({
    "slides": []
   }
  ],
+ "series": "lectures",
+ "issue": 0,
  "folder": "dna_presentation",
  "entry": "index.html"
 });

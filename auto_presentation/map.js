@@ -6,7 +6,8 @@ window.PRESENTATIONS.push({
  "cover": {
   "title": "Автомобиль: от искры до колеса",
   "lead": "Полная анатомия машины: что происходит в цилиндре за 10 миллисекунд, зачем коробке передач шесть ступеней и почему их бывает ноль, куда уходят 70% бензина, чем робот отличается от автомата, как электромотор обходится без всего этого — и что осталось от автомобиля 1886 года в твоём.",
-  "img": "assets/cover.png"
+  "img": "assets/cover.png",
+  "kicker": "Auto deep dive · Гвендолин-ночные-лекции"
  },
  "chapters": [
   {
@@ -260,6 +261,8 @@ window.PRESENTATIONS.push({
    "slides": []
   }
  ],
+ "series": "lectures",
+ "issue": 0,
  "folder": "auto_presentation",
  "entry": "index.html"
 });

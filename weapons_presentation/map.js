@@ -6,7 +6,8 @@ window.PRESENTATIONS.push({
  "cover": {
   "title": "Оружие и баллистика: современный арсенал",
   "lead": "От пули до боеголовки в мегатонну: что реально стоит на вооружении прямо сейчас, что только что сняли и что вот-вот поступит. Физика попадания, стрелковка, броня, авиация, флот, ПВО - и отдельно, с цифрами и радиусами, ядерное оружие и триада. Только открытые источники: справочники, SIPRI, FAS, Glasstone, NUKEMAP.",
-  "img": "assets/cover.png"
+  "img": "assets/cover.png",
+  "kicker": "Modern arsenal deep dive · Гвендолин-ночные-лекции"
  },
  "chapters": [
   {
@@ -392,6 +393,8 @@ window.PRESENTATIONS.push({
    "slides": []
   }
  ],
+ "series": "lectures",
+ "issue": 0,
  "folder": "weapons_presentation",
  "entry": "index.html"
 });

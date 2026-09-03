@@ -6,7 +6,8 @@ window.PRESENTATIONS.push({
  "cover": {
   "title": "Человек: 7 миллионов лет от развилки до сегодня",
   "lead": "Полная хронология: от общего предка с шимпанзе до восьми миллиардов, летающих в космос. Что появлялось когда, какие двадцать событий реально всё изменили, кто был первым, кто вымер и почему остались только мы.",
-  "img": "assets/cover.png"
+  "img": "assets/cover.png",
+  "kicker": "Human deep dive · Гвендолин-ночные-лекции"
  },
  "chapters": [
   {
@@ -195,6 +196,8 @@ window.PRESENTATIONS.push({
    "slides": []
   }
  ],
+ "series": "lectures",
+ "issue": 0,
  "folder": "evolution_presentation",
  "entry": "index.html"
 });

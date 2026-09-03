@@ -6,7 +6,8 @@ window.PRESENTATIONS.push({
  "cover": {
   "title": "Ядро: сто тысяч раз меньше, миллион раз сильнее",
   "lead": "Полная анатомия атомного ядра: что держит протоны вместе против отталкивания в сотни ньютонов, почему одни ядра живут дольше вселенной, а другие распадаются за микросекунды, как один нейтрон превращается в мегатонны — и почему Солнце горит десять миллиардов лет вместо того, чтобы взорваться.",
-  "img": "assets/cover.png"
+  "img": "assets/cover.png",
+  "kicker": "Nuclear deep dive · Гвендолин-ночные-лекции"
  },
  "chapters": [
   {
@@ -190,6 +191,8 @@ window.PRESENTATIONS.push({
    "slides": []
   }
  ],
+ "series": "lectures",
+ "issue": 0,
  "folder": "nuclear_presentation",
  "entry": "index.html"
 });

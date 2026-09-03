@@ -6,7 +6,8 @@ window.PRESENTATIONS.push({
  "cover": {
   "title": "Самолёт: 80 тонн в воздухе и почему это надёжно",
   "lead": "Полная анатомия авиалайнера по узлам: что реально держит крыло (не Бернулли), как турбина сжимает воздух в 40 раз и не плавится при 1700 °C, зачем три гидросистемы, кто на самом деле управляет самолётом, что происходит в кабине за 8 часов — и почему это самый безопасный способ добраться куда угодно.",
-  "img": "assets/cover.png"
+  "img": "assets/cover.png",
+  "kicker": "Aviation deep dive · Гвендолин-ночные-лекции"
  },
  "chapters": [
   {
@@ -166,6 +167,8 @@ window.PRESENTATIONS.push({
    "slides": []
   }
  ],
+ "series": "lectures",
+ "issue": 0,
  "folder": "aircraft_presentation",
  "entry": "index.html"
 });

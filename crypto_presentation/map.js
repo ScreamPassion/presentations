@@ -6,7 +6,8 @@ window.PRESENTATIONS.push({
  "cover": {
   "title": "Крипта честно: как это работает и где ложь",
   "lead": "Полная анатомия: что такое хеш и почему его нельзя развернуть, как 15 000 незнакомых компьютеров договариваются без начальника, что реально происходит при «майнинге», где в этой системе настоящая инженерия, а где — казино, и почему 90% проектов существуют только чтобы забрать твои деньги.",
-  "img": "assets/cover.png"
+  "img": "assets/cover.png",
+  "kicker": "Crypto deep dive · Гвендолин-ночные-лекции"
  },
  "chapters": [
   {
@@ -147,6 +148,8 @@ window.PRESENTATIONS.push({
    "slides": []
   }
  ],
+ "series": "lectures",
+ "issue": 0,
  "folder": "crypto_presentation",
  "entry": "index.html"
 });

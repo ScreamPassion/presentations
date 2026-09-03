@@ -6,7 +6,8 @@ window.PRESENTATIONS.push({
  "cover": {
   "title": "От кнопки до процесса",
   "lead": "Полная анатомия запуска компьютера: куда течёт первый ампер, кто исполняет первую инструкцию, как биты становятся рабочим столом — и где именно виртуальная кнопка «Завершить работу» дотягивается до реального транзистора.",
-  "img": "assets/cover.png"
+  "img": "assets/cover.png",
+  "kicker": "Hardware Deep Dive · Гвендолин-ночные-лекции"
  },
  "chapters": [
   {
@@ -239,6 +240,8 @@ window.PRESENTATIONS.push({
    "slides": []
   }
  ],
+ "series": "lectures",
+ "issue": 0,
  "folder": "hwd_presentation",
  "entry": "index.html"
 });

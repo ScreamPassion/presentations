@@ -6,7 +6,8 @@ window.PRESENTATIONS.push({
  "cover": {
   "title": "Мозг: 86 миллиардов нейронов на 20 ваттах",
   "lead": "Как полтора килограмма жира и белка генерируют электрические импульсы со скоростью 120 м/с, хранят 70 лет воспоминаний без единого байта, спят, чтобы промыть себя от мусора, и почему всё это до сих пор не удаётся повторить ни одной нейросети - при том, что нейросети именно с мозга и списаны.",
-  "img": "assets/cover.png"
+  "img": "assets/cover.png",
+  "kicker": "Brain deep dive · Гвендолин-ночные-лекции"
  },
  "chapters": [
   {
@@ -223,6 +224,8 @@ window.PRESENTATIONS.push({
    "slides": []
   }
  ],
+ "series": "lectures",
+ "issue": 0,
  "folder": "brain_presentation",
  "entry": "index.html"
 });

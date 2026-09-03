@@ -6,7 +6,8 @@ window.PRESENTATIONS.push({
  "cover": {
   "title": "Фотон и вероятность",
   "lead": "Полная анатомия квантового мира: как из одной нестыковки с раскалённой печкой выросла теория, в которой частица проходит через две щели одновременно, измерение меняет реальность, а две частицы на разных концах галактики знают друг о друге всё. И почему на ней работает твой телефон.",
-  "img": "assets/cover.png"
+  "img": "assets/cover.png",
+  "kicker": "Quantum deep dive · Гвендолин-ночные-лекции"
  },
  "chapters": [
   {
@@ -201,6 +202,8 @@ window.PRESENTATIONS.push({
    "slides": []
   }
  ],
+ "series": "lectures",
+ "issue": 0,
  "folder": "quantum_presentation",
  "entry": "index.html"
 });

@@ -6,7 +6,8 @@ window.PRESENTATIONS.push({
  "cover": {
   "title": "Базы данных: от страницы на диске до триграмм",
   "lead": "Как СУБД превращает SQL в чтение байтов, почему B-tree живёт 50 лет, чем MVCC Postgres отличается от undo-лога InnoDB, как ClickHouse жмёт данные в 10 раз и читает миллиард строк в секунду, почему Elasticsearch - не база данных, и что за магия в трёх буквах pg_trgm. Ноль воды, максимум кишок.",
-  "img": "assets/cover.png"
+  "img": "assets/cover.png",
+  "kicker": "Databases deep dive · Гвендолин-ночные-лекции"
  },
  "chapters": [
   {
@@ -412,6 +413,8 @@ window.PRESENTATIONS.push({
    "slides": []
   }
  ],
+ "series": "lectures",
+ "issue": 0,
  "folder": "db_presentation",
  "entry": "index.html"
 });

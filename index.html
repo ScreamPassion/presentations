@@ -13,6 +13,13 @@
   h1 { font-size:44px; line-height:1.1; margin-bottom:12px; }
   .lead { color:var(--dim); font-size:18px; max-width:820px; margin-bottom:14px; }
   .stats { color:var(--faint); font-family:Consolas,monospace; font-size:13px; margin-bottom:30px; }
+  .tabs { display:flex; gap:8px; margin-bottom:18px; border-bottom:1px solid var(--line); }
+  .tabs button { background:none; border:none; border-bottom:2px solid transparent; color:var(--dim); padding:10px 18px; font-size:16px; cursor:pointer; margin-bottom:-1px; }
+  .tabs button:hover { color:var(--text); }
+  .tabs button.active { color:var(--text); border-bottom-color:var(--cyan); font-weight:600; }
+  .tabs button.active.svet { border-bottom-color:var(--amber); }
+  .tabs button small { color:var(--faint); font-family:Consolas,monospace; font-size:12px; margin-left:8px; }
+  .tabdesc { color:var(--dim); font-size:14px; margin:-6px 0 18px; }
   .tools { display:flex; gap:12px; margin-bottom:22px; flex-wrap:wrap; }
   .tools input { flex:1; min-width:240px; background:var(--panel); border:1px solid var(--line); color:var(--text); padding:10px 14px; border-radius:10px; font-size:15px; outline:none; }
   .tools input:focus { border-color:var(--cyan); }
@@ -57,6 +64,11 @@
   <h1>Все презентации</h1>
   <p class="lead">Клик по заголовку — раскрывается содержание по главам и слайдам, каждый пункт ведёт прямо на слайд. Список собирается из <code>map.js</code> в папке каждой презентации.</p>
   <div class="stats" id="stats"></div>
+  <div class="tabs">
+    <button id="tab-lectures" data-tab="lectures">Гвендолин · ночные лекции<small id="cnt-lectures"></small></button>
+    <button id="tab-svet" class="svet" data-tab="svet">Свет по звону<small id="cnt-svet"></small></button>
+  </div>
+  <div class="tabdesc" id="tabdesc"></div>
   <div class="tools">
     <input id="q" type="search" placeholder="поиск по названиям глав и слайдов…" autocomplete="off">
     <button id="expand">развернуть все</button>
@@ -85,10 +97,32 @@
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const hl = (s, q) => { if (!q) return esc(s); const i = s.toLowerCase().indexOf(q); return i < 0 ? esc(s) : esc(s.slice(0,i)) + '<mark>' + esc(s.slice(i, i+q.length)) + '</mark>' + esc(s.slice(i+q.length)); };
 
+  // вкладки: обычные лекции и серия «Свет по звону» (поле series пишет gen_maps.py по кикеру титула)
+  const TABDESC = {
+    lectures: 'Плотные лекции по одной теме: факты, цифры, картинки на каждую главу. Один слайд - одна мысль.',
+    svet: 'Не ответы, а структурированные вопросы: вброс, следствие, «а что если нет», и честная граница, где кончается физика. Выпуски ссылаются друг на друга, читать по порядку.'
+  };
+  let tab = 'lectures';
+  try { tab = localStorage.getItem('presTab') || 'lectures'; } catch (e) {}
+  const seriesOf = p => p.series || 'lectures';
+  function setTab(t) {
+    tab = t; try { localStorage.setItem('presTab', t); } catch (e) {}
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === t));
+    document.getElementById('tabdesc').textContent = TABDESC[t] || '';
+    render();
+  }
+  document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => setTab(b.dataset.tab));
+
   function render() {
     const list = document.getElementById('list');
     const q = document.getElementById('q').value.trim().toLowerCase();
-    const items = window.PRESENTATIONS.slice().sort((a, b) => folders.indexOf(a.folder) - folders.indexOf(b.folder));
+    const all = window.PRESENTATIONS.slice();
+    document.getElementById('cnt-lectures').textContent = all.filter(p => seriesOf(p) === 'lectures').length;
+    document.getElementById('cnt-svet').textContent = all.filter(p => seriesOf(p) === 'svet').length;
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    document.getElementById('tabdesc').textContent = TABDESC[tab] || '';
+    // лекции - в порядке папок, серия - по номеру выпуска
+    const items = all.filter(p => seriesOf(p) === tab).sort((a, b) => tab === 'svet' ? (a.issue || 0) - (b.issue || 0) : folders.indexOf(a.folder) - folders.indexOf(b.folder));
     let totalSlides = 0, html = '';
     items.forEach(p => {
       totalSlides += p.slides;
@@ -101,7 +135,7 @@
       html += `<div class="pres${openCls}" data-folder="${esc(p.folder)}" style="--acc:${esc(p.accent)}">
         <div class="head" onclick="this.parentNode.classList.toggle('open')">
           <img src="${esc(p.folder)}/${esc(cover.img || '')}" alt="" loading="lazy">
-          <div><div class="t"><small>${esc(p.folder.replace('_presentation',''))}</small>${hl(p.title, q)}</div><div class="d">${esc(cover.lead || '')}</div></div>
+          <div><div class="t"><small>${tab === 'svet' && p.issue ? 'выпуск ' + p.issue : esc(p.folder.replace('_presentation',''))}</small>${hl(p.title, q)}</div><div class="d">${esc(cover.lead || '')}</div></div>
           <div class="meta">${p.slides} слайдов<br>${p.chapters.length} глав<span class="arrow">⌄</span></div>
         </div>
         <div class="body">
@@ -116,7 +150,8 @@
       </div>`;
     });
     list.innerHTML = html || '<div class="empty">ничего не найдено</div>';
-    document.getElementById('stats').textContent = `${items.length} презентаций · ${totalSlides} слайдов · ${items.reduce((a,p)=>a+p.chapters.length,0)} глав`;
+    const allSlides = all.reduce((a, p) => a + p.slides, 0);
+    document.getElementById('stats').textContent = `всего ${all.length} презентаций · ${allSlides} слайдов · в этой вкладке ${items.length} презентаций, ${totalSlides} слайдов, ${items.reduce((a,p)=>a+p.chapters.length,0)} глав`;
   }
   document.getElementById('q').addEventListener('input', render);
   document.getElementById('expand').onclick = () => document.querySelectorAll('.pres').forEach(p => p.classList.add('open'));

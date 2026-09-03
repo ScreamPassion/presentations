@@ -6,7 +6,8 @@ window.PRESENTATIONS.push({
  "cover": {
   "title": "Анатомия человека: полный разбор тела",
   "lead": "Ты носишь с собой самый сложный известный объект во Вселенной — и, скорее всего, ни разу не открывал его мануал. Разбираем машину по узлам, как автомобиль: каркас, насос, трубы, химзавод, фильтры, проводка и сенсоры. Каждый орган — с картинкой: что, где, откуда и куда.",
-  "img": "assets/cover.png"
+  "img": "assets/cover.png",
+  "kicker": "Body deep dive · Гвендолин-ночные-лекции"
  },
  "chapters": [
   {
@@ -252,6 +253,8 @@ window.PRESENTATIONS.push({
    "slides": []
   }
  ],
+ "series": "lectures",
+ "issue": 0,
  "folder": "anatomy_presentation",
  "entry": "index.html"
 });
