@@ -34,6 +34,8 @@
 |---|--------|---------|
 | 1 | [Эзотерика под микроскопом: где чудо становится механизмом](https://screampassion.github.io/presentations/esoterica_presentation/index.html) | 62 |
 | 2 | [Изобретаем хаос](https://screampassion.github.io/presentations/chaos_presentation/index.html) | 46 |
+| 3 | [Для кого не было. Навсегда](https://screampassion.github.io/presentations/forever_presentation/index.html) | 49 |
+| 4 | [Ничего из ничего. Везде](https://screampassion.github.io/presentations/nothing_presentation/index.html) | 48 |
 
 ## Как это сделано
 

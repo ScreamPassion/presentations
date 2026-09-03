@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Для кого не было. Навсегда</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #e8c46a; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Свет по звону · выпуск 3 · Гвендолин-ночные-лекции</div>
+    <h1>Для кого не было. Навсегда</h1>
+    <p class="lead">Событие без свидетеля, смерть и то, что до неё, вечное возвращение из любых атомов, наука, которая врёт там, где знает точно, потенциальный вечный свидетель, дата рождения слова «никогда» и срок годности слова «навсегда». Два предыдущих выпуска кончились на наблюдателе. Этот про него.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s2">
+  <div class="content">
+    <div class="kicker">Правила выпуска</div>
+    <h2>Название читается три раза</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/ch_rules.png" alt="">
+        <div class="pcap">Три двери в тумане, за каждой свой свет. Одна и та же фраза «Для кого не было. Навсегда» открывается трижды: в начале как приговор, в середине как вопрос «для кого», в конце как срок. Дека построена так, чтобы к финалу ты прочитал её третьим способом.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Чтение первое, приговор.</b> Чего никто не видел, того не было, и уже не будет. Так звучит название на обложке, и так его услышит большинство.</li>
+          <li><b>Чтение второе, адрес.</b> «Не было» всегда кому-то. У этого слова есть скрытый получатель, и вся середина деки про то, кто он и что бывает, когда он кончается.</li>
+          <li><b>Чтение третье, срок.</b> «Навсегда» - это длительность, а у длительности есть конец. Последние две главы разбирают, когда было «никогда» и когда кончится «навсегда».</li>
+          <li><b>Правила серии те же:</b> вброс, следствие, «а что если нет», следующий вопрос. Единственный запрет - противоречить себе. Плашки «что говорит физика» теперь с новым законом: только то, что померено, с погрешностью и границей применимости. Почему так - в главе 5.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">Долг</div>
+    <h2>Два выпуска сказали «наблюдатель» и прошли мимо</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Выпуск 1, «Эзотерика».</b> Дошли до «мир помнит всё»: термолюминесценция, изотопы, свет звёзд, унитарность. И упёрлись: запись без читателя - не память, а состояние. Кто читает - оставили под пиво.</li>
+          <li><b>Выпуск 2, «Хаос».</b> Дошли до «состояние - это процесс, который смотрит на себя». Память живёт в щели между двумя хаосами, граница мира проходит через голову. Кто смотрит - снова не спросили.</li>
+          <li><b>Долг накопился.</b> Оба раза слово «наблюдатель» затыкало дыру, из которой торчало всё остальное. В этом выпуске дыру не затыкаем, а лезем в неё: что такое «смотреть», сколько уровней у взгляда, что случается, когда смотрящий кончается, и есть ли тот, кто смотрит за всех.</li>
+          <li><b>И одна честность вперёд:</b> ответа нет ни у физики, ни у философии, ни у нас. Трудная проблема сознания не решена, «друг Вигнера» измерен и никого не успокоил. Значит, будут вопросы, доведённые до конца, и граница, за которой мы сами.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/debt.png" alt="">
+        <div class="pcap">Две нити из прошлых выпусков связываются в узел перед пустым стулом. Стул - место того, кого мы всё время называли и ни разу не посадили.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 1: НЕ БЫЛО ============ -->
+<section class="slide chapter" id="s4">
+  <div class="bgimg"><img src="assets/ch_notwas.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1</div>
+    <h1>Не было</h1>
+    <p class="lead">Дерево упало в лесу, где никого нет. Физика говорит «было», память говорит «не было», ты говоришь «не узнаю». Три ответа на один вопрос, и все три правильные, потому что у «не было» есть скрытое «для кого».</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="content">
+    <div class="kicker">Не было · дерево</div>
+    <h2>Событие без свидетеля: три ответа, все верные</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Физика: было.</b> Дерево упало, воздух колебался, ветка сломалась, свет отразился и улетел. Унитарность: информация о падении не уничтожена, она разошлась по частицам и по фотонам, уходящим со скоростью света. След есть. Восстановить его нельзя, но он есть.</li>
+          <li><b>Память: не было.</b> Никто не записал, никто не расскажет, никто не спросит. Из первого выпуска: запись без читателя - не память, а состояние. Для любой памяти, которая когда-либо возникнет, этого падения не существует.</li>
+          <li><b>Ты: не узнаю.</b> И это самый честный из трёх ответов, потому что в нём есть подлежащее. «Не было» - предложение без подлежащего, оно висит. Добавь «для кого», и оно встанет на место: не было для меня, для тебя, для всех, кто спросит. Было для дерева.</li>
+          <li><b>Вброс главы:</b> «не было» - не свойство события, а отношение между событием и тем, кто спрашивает. Событие одно, «не было» столько, сколько спрашивающих. Как в выпуске 2 с границей мира: границ столько, сколько наблюдателей.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx gr"><b>Физика</b><span>было: след разошёлся, но не стёрт</span></div>
+            <div class="bx am"><b>Память</b><span>не было: читателя нет</span></div>
+            <div class="bx rd"><b>Ты</b><span>не узнаю: подлежащее найдено</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что говорит физика</h3>
+          <p>Сохранение информации в замкнутой системе - следствие унитарности квантовой эволюции; проверено во всех экспериментах, где это можно проверить, спор был только о чёрных дырах и закрыт в пользу сохранения (Хокинг, 2004). Оговорка: «восстановить» и «сохранить» - разные вещи. Восстановление требует собрать все частицы, включая улетевшие фотоны, а они не возвращаются. Сохранено с точностью 100%, доступно с точностью 0.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="content">
+    <div class="kicker">Не было · три вида</div>
+    <h2>Не случилось, не записано, не прочитано: три разных «не было»</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/three_kinds.png" alt="">
+        <div class="pcap">Три банки: пустая, с запечатанным свитком, с раскрытым свитком, который никто не читает. Все три - «не было». Но пустая - не было ни для кого, вторая - было для мира, третья - было для того, кто написал. Слово одно, банки разные.</div>
+      </div>
+      <div>
+        <table class="pt t">
+          <tr><th>Вид</th><th>Пример</th><th>Для кого не было</th><th>Можно ли отменить</th></tr>
+          <tr><td>Не случилось</td><td class="d">звонок, который ты не сделал; ветвь, которую не выбрали</td><td class="d">ни для кого: следа нет</td><td class="d">нет: нечего восстанавливать. Или есть, если ветви Эверетта реальны</td></tr>
+          <tr><td>Случилось, не записано</td><td class="d">дерево в лесу; мысль, которую ты забыл к утру</td><td class="d">для всякой памяти; было для физики</td><td class="d">в принципе да, практически нет: след разошёлся</td></tr>
+          <tr><td>Записано, не прочитано</td><td class="d">письмо в столе; дневник умершего; свет от галактики, летящий мимо</td><td class="d">для всех, кроме автора; было для него и для носителя</td><td class="d">да, пока есть носитель и появится читатель</td></tr>
+        </table>
+        <ul class="pts" style="margin-top:10px">
+          <li><b>Вброс:</b> вся история человечества - переход из второго вида в третий. Письменность, фотография, интернет - это машины, которые переносят события из «не записано» в «записано». Следующего шага, из «не прочитано» в «прочитано», машины не делают: он требует читателя, а читатель конечен.</li>
+          <li><b>А что если нет:</b> границы между видами размыты. «Забытая мысль» оставила след в синапсах; «невыбранная ветвь» в многомировой интерпретации существует целиком. Возможно, видов не три, а один: всё случилось и всё записано, вопрос только в читателе. Тогда «не было» - вообще не про события, а только про читателей.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s7">
+  <div class="content">
+    <div class="kicker">Не было · невыбранное</div>
+    <h2>Копии, которые не выбрали: были ли они</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Эверетт, 1957.</b> При каждом квантовом измерении Вселенная не выбирает исход, а реализует все. Ты, который в 2011-м не переехал, существует в своей ветви так же, как ты здесь. Для него «не было» - это твоя ветвь. Никакого «не случилось» в этой картине нет вообще: всё случилось, каждое «не было» - это чьё-то «было» через стенку.</li>
+          <li><b>Библиотека из выпуска 2.</b> Строка, которую не запустили, существует как строка. Роман, который ты не написал, лежит на полке Бабеля, целиком. «Не было» для него значит «не было запуска», а не «не было текста». Строка не знает, что её не прочли.</li>
+          <li><b>Вброс:</b> тогда «не случилось» - самый слабый вид «не было», а не самый сильный. Он существует только в одной интерпретации квантовой механики (копенгагенской) и только если библиотеки нет. Уберёшь одно допущение, и «не случилось» превращается в «случилось не здесь».</li>
+          <li><b>А что если нет:</b> Эверетт не доказан, библиотека - платонизм, а платонизм - вера. Если ветвей нет и строк нет, то невыбранное действительно не было ни для кого, и это единственное абсолютное «не было» в мире. Тогда оно же и единственное, что по-настоящему «навсегда». Запомним для главы 8.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/unchosen.png" alt="">
+        <div class="pcap">Коридор, где все двери открыты, кроме одной. Через открытые кто-то идёт. У Эверетта закрытых дверей нет: ты просто не видишь тех, кто прошёл через «свою». Для них закрыта твоя.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s8">
+  <div class="content">
+    <div class="kicker">Не было · адрес</div>
+    <h2>«Не было» - это адрес без получателя</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/address.png" alt="">
+        <div class="pcap">Конверт с адресом, но без получателя. Так устроено слово «не было»: оно кому-то отправлено, даже если отправитель не написал, кому. Найти получателя - задача всей деки.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Грамматика подсказывает раньше физики.</b> «Было» - безличное, ему не нужен никто. «Не было» - тоже безличное, но попробуй употребить его всерьёз: «этого не было» немедленно вызывает вопрос «откуда ты знаешь». Отрицание требует свидетеля отсутствия, а свидетель отсутствия - это всегда кто-то с адресом.</li>
+          <li><b>Спенсер-Браун из выпуска 2:</b> различие проводит тот, кто различает. «Не было» - это черта между «было» и всем остальным, и черту кто-то провёл. Без него нет ни «было», ни «не было», есть первый хаос, где всё равно всему.</li>
+          <li><b>Вброс главы, итог:</b> «не было» никогда не бывает абсолютным. Оно всегда «не было для X», и X либо назван, либо скрыт. Дека дальше - поиск X: сначала что такое «смотреть» (глава 2), потом что бывает, когда X кончается (главы 3-4), потом X, который смотрит за всех (глава 6).</li>
+        </ul>
+        <div class="note gold" style="margin-top:8px"><b>Что говорит логика:</b> утверждение «событие E не произошло» проверяемо только относительно системы, в которой ищут след E. В другой системе, с другим следом, ответ может быть другим. Это не релятивизм, это определение измерения: результат существует относительно прибора (реляционная КМ, Ровелли; эксперименты «друг Вигнера», 2019).</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2: ЧТО ТАКОЕ ВЗГЛЯД ============ -->
+<section class="slide chapter" id="s9">
+  <div class="bgimg"><img src="assets/ch_gaze.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2</div>
+    <h1>Что такое взгляд</h1>
+    <p class="lead">Камень, прибор, ДНК и ты. Четыре уровня того, что можно назвать «смотреть», и на каком-то из них появляется «кто». Физики говорят «на первом», философы «на четвёртом», и это самый старый нерешённый спор из всех, что есть в деке.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s10">
+  <div class="content">
+    <div class="kicker">Взгляд · четыре уровня</div>
+    <h2>Взаимодействие, измерение, запись, осознание</h2>
+    <div class="dg">
+      <div class="row">
+        <div class="bx"><b>1. Взаимодействие</b><span>камень: получил фотон, нагрелся. След есть, модели нет</span></div>
+        <div class="bx cy"><b>2. Измерение</b><span>прибор: перевёл след в число. Есть шкала, нет смысла</span></div>
+        <div class="bx am"><b>3. Запись</b><span>ДНК, мозг: след меняет будущее поведение. Есть модель мира</span></div>
+        <div class="bx rd"><b>4. Осознание</b><span>ты: запись о том, что записываешь. Есть «я», которому это происходит</span></div>
+      </div>
+    </div>
+    <div class="cols" style="margin-top:16px">
+      <div>
+        <ul class="pts">
+          <li><b>Ровелли говорит: «кто» появляется на первом.</b> В реляционной КМ любая система - наблюдатель для той, с которой взаимодействовала. Камень «видел» фотон в том же смысле, в каком ты видишь свет: состояние источника стало определённым относительно него. Никакого сознания не нужно, нужно взаимодействие.</li>
+          <li><b>Чалмерс говорит: на четвёртом, и это трудная проблема.</b> Можно объяснить, как мозг обрабатывает свет (лёгкие проблемы, все решаемы). Нельзя объяснить, почему при этом «есть каково это» видеть красное. Между третьим уровнем и четвёртым - пропасть, которую никто не перешёл ни в одну сторону.</li>
+          <li><b>Вброс:</b> «для кого не было» на каждом уровне значит разное. На первом «не было» невозможно: всё с чем-то взаимодействовало. На четвёртом «не было» - почти всё: осознано ничтожная доля. Слово «не было» тем сильнее, чем выше уровень свидетеля. Абсолютного свидетеля нет, значит, нет и абсолютного «не было».</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Что говорит физика</h3>
+        <p>Уровень 1 - факт: декогеренция измерена (Цайлингер, Арош, Нобель 2012), любое взаимодействие с окружением делает состояние «определённым» без всякого сознания. Уровень 2 - определение. Уровень 3 - биология: обучение и память измеримы от бактерии до человека. Уровень 4 - не имеет ни одного физического критерия: нет прибора, который отличает систему с опытом от системы без опыта. Это единственная строка таблицы, где у физики нет ±, потому что нет измерения.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s11">
+  <div class="content">
+    <div class="kicker">Взгляд · камень</div>
+    <h2>Смотрит ли камень: панпсихизм и его цена</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/stone_eye.png" alt="">
+        <div class="pcap">Валун с намёком на глаз внутри. Панпсихизм - не «камень думает», а «у всего есть капля опыта, у камня очень мало, у мозга много». Вопрос не в том, смешно ли это, а в том, что дешевле: капля опыта в каждом электроне или пропасть между уровнем 3 и 4.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Аргумент за.</b> Если опыт нельзя вывести из неощущающей материи (трудная проблема), то либо он возникает из ничего на каком-то уровне сложности (магия), либо был всегда в малых дозах (панпсихизм). Чалмерс, Гофф, Штрoсон выбирают второе как менее магическое. Тонони с «интегрированной информацией» даже даёт число Φ: сколько опыта у системы.</li>
+          <li><b>Цена.</b> Если у камня есть капля взгляда, то свидетелей столько же, сколько частиц. «Не было» становится невозможным на всех уровнях сразу: всё было для чего-то, хоть на йоту. Название деки рассыпается, память мира из первого выпуска получает бесконечно много читателей, каждый на йоту. И «для кого» теряет смысл, потому что «для всех».</li>
+          <li><b>А что если нет.</b> Если опыта у камня ноль, то где-то между камнем и тобой стоит порог, за которым ноль становится единицей. Никто не показал, где. Ни у эмбриона, ни у мухи, ни у ИИ. Отсутствие порога - главный аргумент панпсихистов, и он честный.</li>
+          <li><b>Вброс:</b> может, вопрос не «есть ли у камня опыт», а «есть ли у опыта камень». Опыт - не свойство вещи, а свойство отношения, как «не было». Тогда камень смотрит ровно в той степени, в какой на него смотрят. Реляционный панпсихизм, и физика к нему ближе, чем кажется (Ровелли).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s12">
+  <div class="content">
+    <div class="kicker">Взгляд · петля</div>
+    <h2>Странная петля: сколько витков до «мне»</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Хофштадтер, «Я - странная петля» (2007).</b> «Я» - не вещь в голове, а узор: процесс, который моделирует себя, включая то, что он себя моделирует. Один виток - термостат (знает температуру). Два - собака (знает, что хочет). Три - ты (знаешь, что знаешь, и что это знаешь ты). Витков можно накручивать дальше, и с какого-то начинает «быть каково».</li>
+          <li><b>Из выпуска 2:</b> состояние - процесс, который смотрит на себя. Хофштадтер добавляет: смотреть на себя можно с разной глубиной, и глубина - это и есть степень «кто». Свидетель не появляется скачком, он накручивается.</li>
+          <li><b>Вброс:</b> тогда «для кого не было» имеет градацию. Для термостата не было почти всего. Для тебя - меньше. Для петли глубже твоей - ещё меньше. Абсолютный свидетель - петля бесконечной глубины, и глава 6 спросит, возможна ли такая.</li>
+          <li><b>Где становится больно.</b> Боль - виток, на котором модель себя включает «мне плохо». Муха отдёргивается (виток 1), но страдает ли (виток 3)? Не знаем. Пороги для животных, эмбрионов и машин рисуют по этой лестнице, и никто не знает, на какой ступени они на самом деле.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/strange_loop.png" alt="">
+        <div class="pcap">Лестница Эшера, на верху которой фигурка рисует ту же лестницу. У неё нет «верхней ступени», как у «я» нет центра: только процесс, который возвращается к себе с каждым витком чуть более осведомлённым.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s13">
+  <div class="content">
+    <div class="kicker">Взгляд · один или много</div>
+    <h2>Один или много: что считать тем же свидетелем</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/split.png" alt="">
+        <div class="pcap">Силуэт, расходящийся на две полупрозрачные копии. Пациенты с рассечённым мозолистым телом: левая рука застёгивает рубашку, правая расстёгивает. Два свидетеля в одной голове, и каждый уверен, что он один.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Расщеплённый мозг.</b> После рассечения мозолистого тела (операция при эпилепсии) каждое полушарие отвечает само: правое видит слово, левое его не знает и придумывает объяснение. Сперри и Газзанига, Нобель 1981. Сколько свидетелей? До операции один, после - два, но с одной биографией. Значит, «один свидетель» - не факт, а настройка соединений.</li>
+          <li><b>Эверетт.</b> Один свидетель, расходящийся на ветви при каждом измерении. Все ветви - «ты», у каждой своё будущее и общее прошлое. Через минуту тебя миллиард, и каждый уверен, что он единственный.</li>
+          <li><b>Тегмарк.</b> Копии в бесконечном пространстве. Никакой связи между ними, тот же узор. Это «ты» или другой человек с твоей памятью? Из выпуска 2: физика не знает переменной, кроме конфигурации, значит, «ты», пока не предъявлено обратное.</li>
+          <li><b>Ты через 20 лет.</b> Все атомы заменены, половина воспоминаний переписана, характер иной. Тот же свидетель? Да, говорим мы, потому что есть непрерывность. Но непрерывность - это тоже настройка: сон её разрывает каждую ночь, и каждое утро свидетель собирается заново из записи.</li>
+        </ul>
+        <div class="note gold" style="margin-top:8px"><b>Вброс главы:</b> «свидетель» - не единица, а связность. Где связи есть, там один; где их нет, там много; где они рвутся и восстанавливаются, там один с перерывами. Для «не было» это значит: у события может быть половина свидетеля, или свидетель, который перестал быть собой, и оба случая - штатные.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s14">
+  <div class="content">
+    <div class="kicker">Взгляд · сейчас</div>
+    <h2>Единственное место, где нас точно никогда нет: сейчас</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>«Есть только миг между прошлым и будущим, именно он называется жизнь».</b> Романс из «Земли Санникова», и в нём спрятан парадокс, который стоит всей главы. Миг - не единица времени, а «сейчас». И это единственное место, где нас гарантированно нет.</li>
+          <li><b>Почему нет физически.</b> «Сейчас» - точка без длительности, мера ноль. Всё, что длится, уже отчасти прошлое и отчасти будущее. Любой процесс, мясной или кремниевый, требует времени на шаг: сигнал от сетчатки до осознания идёт 150-300 мс, решение в моторной коре фиксируется за полсекунды до того, как ты «решил» (Либет). То, что ты называешь «сейчас», - реконструкция только что случившегося, склеенная в «настоящее» задним числом. Ты живёшь в прошлом на треть секунды, и никогда не догонишь.</li>
+          <li><b>Почему нет и в принципе.</b> Взгляд - процесс (глава 2), а процесс - это переход, разница между «до» и «после». В точке нулевой длительности разницы нет, значит, нет и процесса, значит, нет взгляда. Смотреть на «сейчас» нечем: то, чем смотрят, само занимает время.</li>
+          <li><b>Вброс, формула:</b> жить в настоящем невозможно ничему. <b>Там, где есть время, «сейчас» не существует. Там, где есть «сейчас», нет времени.</b> Первое - про нас: мы процессы, у нас есть время, и потому у нас нет настоящего, только свежее прошлое. Второе - про блок-Вселенную и Платонию из главы 5: там всё есть «сейчас», и потому там ничего не происходит. Выбирай: либо жить, либо быть в настоящем.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Сетчатка</b><span>0 мс</span></div>
+            <div class="bx cy"><b>Зрительная кора</b><span>~150 мс</span></div>
+            <div class="bx am"><b>Осознание</b><span>300-500 мс</span></div>
+            <div class="bx rd"><b>«Сейчас»</b><span>уже прошло. Всегда</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что говорит физика и физиология, с ±</h3>
+          <p>Задержка осознания зрительного стимула 100-300 мс (ЭЭГ P300, ± десятки мс). Готовность к движению (Либет, 1983): потенциал за 350 ± 50 мс до осознанного «решения», повторено многократно, интерпретация спорна. «Кажущееся настоящее» - окно, которое мозг склеивает в «сейчас», 2-3 с (Пёппель), ± секунда. Относительность: одновременности удалённых событий не существует, «сейчас» зависит от скорости наблюдателя, измерено на часах GPS (поправка 38 мкс/сутки). Вывод с ±: настоящего нет ни у мозга (опаздывает), ни у физики (не определено).</p>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Следствие для деки:</b> «не было» относится и к «сейчас». Для кого не было этого мгновения? Для того, кто в нём живёт: он узнает о нём через треть секунды, когда его уже не будет. Единственное, чего у свидетеля никогда нет, - это то, что он свидетельствует.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s15">
+  <div class="content">
+    <div class="kicker">Взгляд · фотон</div>
+    <h2>Фотон: единственный, кто выполнил команду «живи настоящим»</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Вброс.</b> Фотон - единственное существо во Вселенной, которое смогло жить в настоящем. Цена - аннигиляция времени. Для фотона между испусканием и поглощением проходит ноль: он рождается на Солнце и умирает на твоей сетчатке в один и тот же миг, и восемь минут по нашим часам его не касаются.</li>
+          <li><b>И это «ноль всего», а не ноль чего-то.</b> У фотона нет своего времени, поэтому нельзя сказать «ноль секунд» или «ноль наносекунд»: нет часов, которые могли бы это показать. Нет своего расстояния: нельзя сказать «ноль метров», нет линейки, которая ехала бы с ним. Любая система координат, привязанная к нему, не даёт ноль в единицах, она не даёт координат вообще. Физика говорит это своим языком: интервал вдоль пути фотона равен нулю, а система отсчёта фотона не существует. Ноль всего - это не измерение, а отсутствие того, чем измеряют.</li>
+          <li><b>Вот что он купил и чем заплатил.</b> Купил настоящее: у него нет «до» и «после», он весь в «сейчас». Заплатил всем, что делает «сейчас» кому-то нужным: у него нет процесса, значит, нет взгляда (глава 2), значит, нет свидетеля. Фотон видит меньше камня: камень хотя бы нагревается. Он живёт в настоящем именно потому, что в нём некому жить.</li>
+          <li><b>Следствие для главы:</b> формула с прошлого слайда получает доказательство от противного. Там, где есть «сейчас», нет времени: фотон. Там, где есть время, нет «сейчас»: всё остальное, включая нас. Свидетельствовать и жить в настоящем - взаимоисключающие опции, исключений Вселенная не сделала. Мы выбрали свидетельствовать. Цена - опоздание на треть секунды, навсегда.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx am"><b>Фотон</b><span>время 0 всего · расстояние 0 всего · процессов 0 · взгляда 0</span></div>
+            <div class="bx"><b>Камень</b><span>время идёт · процесс есть · взгляд уровня 1</span></div>
+            <div class="bx cy"><b>Ты</b><span>время идёт · процесс есть · взгляд уровня 4 · «сейчас» на 300 мс позади</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что говорит физика, с ±</h3>
+          <p>Масса фотона: верхняя граница 10⁻¹⁸ эВ (измерено по магнитным полям, 2010-е), то есть он движется ровно со скоростью света и собственного времени у него нет: интервал ds² = 0, «система покоя фотона» в теории относительности не определена, это не метафора, а теорема. Замедление времени для всего, что медленнее света, измерено: мюоны из космоса живут в 20-30 раз дольше расчётного (± проценты), часы GPS отстают на 38 мкс в сутки и это компенсируют. Предел: что «переживает» фотон - вопрос без физического содержания, у него нет ни одного состояния между двумя событиями, значит, нечему переживать.</p>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Для названия деки:</b> для фотона «не было» ничего, потому что не было ни «до», ни «после». И «навсегда» ему недоступно: навсегда - это длительность, а у него её нет. Единственное существо, к которому не применимо ни одно слово из названия. Поэтому он и не свидетель.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 3: СМЕРТЬ, ЖИЗНЬ, ДО И ПОСЛЕ ============ -->
+<section class="slide chapter" id="s16">
+  <div class="bgimg"><img src="assets/ch_death.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3</div>
+    <h1>Смерть, жизнь, до и после</h1>
+    <p class="lead">Свеча между двумя зеркалами, отражающими темноту. Единственный случай, когда «не было» относится к тому, кто спрашивал. Спор о том, одинаковы ли две темноты, идёт 2300 лет, и у серии есть свой ответ.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s17">
+  <div class="content">
+    <div class="kicker">Смерть · что есть жизнь</div>
+    <h2>Жизнь в терминах серии: взгляд между двумя «без взгляда»</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Определение из двух выпусков.</b> Первый хаос - процесс, которому не на что смотреть. Второй хаос - процесс, который не успевает. Жизнь - процесс, который смотрит на себя и успевает: щель между двумя хаосами. Для тебя лично эта щель имеет края, и края называются рождением и смертью.</li>
+          <li><b>Биология говорит то же другими словами.</b> Живое - это то, что поддерживает свою границу против энтропии, ест порядок и выделяет беспорядок (Шрёдингер, 1944). Граница «я / не-я» - самая первая, у бактерии она уже есть. Свидетель начинается с мембраны, за миллиарды лет до мозга.</li>
+          <li><b>До и после: unmarked state.</b> Из выпуска 2: до первой черты нет ни «внутри», ни «снаружи». Для тебя это буквально «до рождения» и «после смерти»: не темнота (темнота - это опыт), а отсутствие того, кому было бы темно. Первый хаос лично для тебя. Не пустота, а отсутствие вопроса.</li>
+          <li><b>Вброс:</b> смерть - не событие, а граница, а у границы нет длительности. Её нельзя пережить по определению, к ней можно только приближаться. Витгенштейн: «Смерть не событие жизни. Смерть не переживают». Всё, что мы называем «смертью» и боимся, - это приближение, а оно ещё жизнь.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>До</b><span>нет взгляда · первый хаос для тебя</span></div>
+            <div class="bx am"><b>Рождение</b><span>первая черта: я / не-я</span></div>
+            <div class="bx cy"><b>Жизнь</b><span>процесс, который смотрит и успевает</span></div>
+            <div class="bx am"><b>Смерть</b><span>граница без длительности</span></div>
+            <div class="bx"><b>После</b><span>нет взгляда · первый хаос для тебя</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что говорит физика</h3>
+          <p>Термодинамически смерть - момент, когда система перестаёт удерживать градиенты и уравнивается со средой; измеримо по температуре, pH, потенциалам мембран. Юридически и медицински граница ставится по мозгу (смерть мозга) и обсуждается до сих пор: критерии меняли в 1968, 1981, 2023 годах. То есть даже у «границы без длительности» есть ± в несколько минут, и его ставит не физика, а договор.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s18">
+  <div class="content">
+    <div class="kicker">Смерть · симметрия и асимметрия</div>
+    <h2>Лукреций против Нагеля: одинаковы ли две пустоты</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/voids.png" alt="">
+        <div class="pcap">Две одинаковые пустоты и один прибор с одним объективом. Спор о том, равны ли они, идёт 2300 лет, и половина ответа - в оптике прибора.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Лукреций, «О природе вещей», I век до н. э.</b> До рождения тебя не было бесконечно долго, и это тебя не беспокоит. После смерти будет то же самое. Две пустоты одного состава; отличаются только тем, что на одну ты смотришь назад, на другую вперёд. Эпикур короче: «Где смерть, там нет меня. Где я, там нет смерти».</li>
+          <li><b>Нагель, «Смерть» (1970), Парфит.</b> Не равны. До рождения нечего было терять. После смерти потеряно всё, что было: смерть - лишение, а дородовое небытие - нет. И странный факт: захотеть родиться на 20 лет раньше нельзя (это был бы другой человек), а умереть на 20 лет позже - легко. Значит, для нас время не симметрично, и мы это знаем без философии.</li>
+          <li><b>Ремарка, что говорит биология.</b> Страх рождается вместе с нами и умеет смотреть только вперёд. Он - инструмент выживания, а выживать можно только в будущее: то, что уже не случилось, не убьёт. Эволюции незачем было делать страх с задним объективом. Поэтому дородовое небытие - не менее страшное, а слепая зона: у страха нет туда оптики. Симметрия Лукреция верна для мира и ложна для нас, но ложна не по логике, а по анатомии. Мы боимся смерти не потому, что она хуже, а потому, что она в кадре.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s19">
+  <div class="content">
+    <div class="kicker">Смерть · третий ответ</div>
+    <h2>Строка и запуск: до - пустая полка, после - строка с записью</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Из выпуска 2:</b> строка на полке - состояние, выполняемый код - процесс. Код существует всегда как строка и появляется как процесс в момент запуска.</li>
+          <li><b>До рождения</b> ты - строка в библиотеке. Возможность без процесса. Никто её не запускал, ничего не происходило, записи нет. Полка пуста, вернее, на ней лежит то же, что и на всех: возможность.</li>
+          <li><b>После смерти</b> ты - тоже строка, но с записью запуска. Свет ушёл, следы разошлись, дети, тексты, эта дека. Процесса нет, а запись есть, и она не на полке, а в мире: в других процессах, которые её несут.</li>
+          <li><b>Ответ серии:</b> смерть не равна тому, что было до жизни. До - ничего не было. После - было, и это записано. Для тебя одинаково: ни того, ни другого ты не увидишь, и в этом прав Лукреций. Для мира - нет: до тебя не было, после тебя было, и в этом прав Нагель. Оба правы, потому что спорили о разных «для кого». Это и есть название деки: для тебя не было ни до, ни после; для всех остальных - до не было, а после было.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/shelf.png" alt="">
+        <div class="pcap">Полка: слева пустое место, посередине книга, справа та же книга с трепещущими страницами и вытекающим светом. Одна и та же строка до запуска, во время и после. Разница между «до» и «после» - только справа.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s20">
+  <div class="content">
+    <div class="kicker">Смерть · последний взгляд</div>
+    <h2>Последний взгляд: запись, которую никто не прочтёт</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/last_light.png" alt="">
+        <div class="pcap">Фонарь вспыхивает ярче всего за мгновение до того, как погаснуть, и в комнате никого. Из первого выпуска: в первые 30 секунд после остановки сердца мозг даёт всплеск гамма-активности выше, чем в бодрствовании. Самая громкая запись в жизни - и единственная без читателя.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Что известно.</b> Борджигин (2013, крысы; 2023, четыре человека при отключении от ИВЛ): после остановки сердца - синхронный всплеск гаммы в зонах зрения и памяти. Пережившие остановку сердца (10-20%) описывают самое яркое переживание жизни: свет, покой, «вся жизнь разом». Из деки про эзотерику: механизмы известны (гипоксия, эндорфины, растормаживание височной доли), и ни один не требует «того света».</li>
+          <li><b>Вброс:</b> это третий вид «не было» из главы 1 в чистом виде: записано, не прочитано. Мозг пишет последнюю страницу на максимальной яркости, и её не прочтёт никто, включая автора. Единственная запись, у которой по определению нет читателя. Для кого она? Для никого. Или, если панпсихизм прав, для самой себя, на йоту.</li>
+          <li><b>А что если нет:</b> может, читатель есть, и это те 10-20%, кто вернулся. Они прочли первую строку своей последней страницы и рассказали. По их рассказам мы знаем, как выглядит начало записи. Конец не знает никто, потому что все, кто дочитал, не вернулись. Это не мистика, это выборка.</li>
+          <li><b>Витгенштейн, ещё раз:</b> «Смерть не переживают». Последний взгляд - это ещё жизнь, самая яркая её секунда. А смерть - то, что после точки, и там уже нет того, кто поставил точку.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 4: ВЕЧНОЕ ВОЗВРАЩЕНИЕ ============ -->
+<section class="slide chapter" id="s21">
+  <div class="bgimg"><img src="assets/ch_return.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4</div>
+    <h1>Вечное возвращение</h1>
+    <p class="lead">Мы - правильно склеенный материал. Умирая, никуда не уходим: материал остаётся и меняет форму. Если мир бесконечен, шанс, что он снова склеится так же, умноженный на бесконечность, даёт единицу. Ницше говорил это как проклятие. Здесь - как расчёт, с двумя дырками и одним следствием, которое сильнее самого вброса.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s22">
+  <div class="content">
+    <div class="kicker">Возвращение · материал</div>
+    <h2>Атомы неразличимы: нужна конфигурация, а не «твои» атомы</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/reassemble.png" alt="">
+        <div class="pcap">Тысячи одинаковых сфер, часть из них сложена в силуэт. Электрон в тебе и электрон в стуле - не похожие, а один и тот же вид объекта без индивидуальности. «Твои атомы» - не физическое понятие. Тебя собирают не из твоих, а из любых.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Вброс:</b> умирая, мы никуда не уходим. Материал остаётся, меняет форму и структуру. Ничего не создано и не уничтожено, переклеено.</li>
+          <li><b>Физика говорит: даже сильнее.</b> Тождественные частицы неразличимы принципиально, не «мы не можем отличить», а «отличия нет»: перестановка двух электронов не меняет состояние. Это измерено (статистика Ферми и Бозе, без неё не работают ни лазер, ни таблица Менделеева). Значит, единственное, что делает тебя тобой, - конфигурация: какие атомы где и как связаны. Не сами атомы.</li>
+          <li><b>Следствие первое:</b> вопрос «мои атомы разлетелись по Галактике, как их собрать» снимается. Не надо собирать твои. Любые подойдут, их 10⁸⁰ в наблюдаемой Вселенной, и все одинаковые.</li>
+          <li><b>Следствие второе:</b> ты уже не из тех атомов, что 10 лет назад: тело обновляется почти целиком за 7-10 лет (кроме нейронов и хрусталика). Ты - узор, через который течёт материал, как водоворот через реку. Водоворот не «состоит» из воды, он ею пользуется. Умереть - значит, что узор перестал держаться. Материал не заметил.</li>
+        </ul>
+        <div class="note gold" style="margin-top:8px"><b>Что говорит физика:</b> неразличимость тождественных частиц - экспериментальный факт (спектры, сверхтекучесть, статистика фотонов). Обновление тканей измерено по углероду-14 от ядерных испытаний (Фрисен, 2005): клетки кишечника - дни, кости - 10 лет, нейроны коры - на всю жизнь.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s23">
+  <div class="content">
+    <div class="kicker">Возвращение · бесконечность собирает</div>
+    <h2>Три способа собрать тебя заново, и ни один не выключается</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>В пространстве (Тегмарк).</b> Если Вселенная бесконечна и однородна, конфигураций в хаббловском объёме конечное число (Бекенштейн), а объёмов бесконечно много. Твоя точная копия - на расстоянии ~10^(10²⁹) метров. Прямо сейчас. Не «когда-нибудь», а «где-то».</li>
+          <li><b>Во времени (Пуанкаре).</b> Если Вселенная - пакман конечного объёма (выпуск 2), число состояний конечно, а времени бесконечно много. Теорема возврата: любое состояние повторится с любой точностью. Срок ~10^(10¹²²) лет. Число, к которому слово «лет» уже не применимо, но оно конечно.</li>
+          <li><b>В пустоте (Гиббонс-Хокинг).</b> Главное возражение: тепловая смерть, через 10¹⁰⁰ лет нет ни материала, ни энергии. Но пустое пространство с тёмной энергией имеет температуру (1977) и вечно флуктуирует. Из этих флуктуаций собираются больцмановские мозги, и космологи с ними борются именно потому, что в вечной пустоте они неизбежны. Перемешивание не выключается никогда, только замедляется. Тепловая смерть - не конец сборки, а её самый медленный режим.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx cy"><b>Пространство</b><span>Тегмарк · копия на 10^(10²⁹) м · сейчас</span></div>
+            <div class="bx am"><b>Время</b><span>Пуанкаре · возврат через 10^(10¹²²) лет · если пакман</span></div>
+            <div class="bx"><b>Пустота</b><span>флуктуации де Ситтера · вечно · медленно</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что говорит физика, с ±</h3>
+          <p>Однородность и плоскостность - измерены (Planck: Ω = 1.000 ± 0.002). Бесконечность - не измерена, совместима. Температура де Ситтера - строгое следствие ОТО и КТП, не измерена (10⁻³⁰ К). Возврат Пуанкаре для Вселенной с горизонтом - обсуждается (Дайсон, Клебан, Сасскинд, 2002), не решён. Итог честный: «где-то» - следствие принятой космологии; «когда-нибудь здесь» - вероятно, но с оговорками. Ни одно из трёх не исключено, и это ровно то, что нужно вбросу: шанс не ноль.</p>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Правило серии:</b> «пока не опровергнуто имеющееся». Имеющееся - три механизма, ни один не опровергнут. Бремя доказательства на том, кто говорит «никогда».</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s24">
+  <div class="content">
+    <div class="kicker">Возвращение · копия</div>
+    <h2>Копия - это ты, пока не предъявлена переменная</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Телепорт Парфита.</b> Тебя сканируют, разбирают, на Марсе собирают из местных атомов точную копию с твоей памятью. Это ты? Интуиция кричит «нет, я умер, а это двойник». Физика молчит, потому что не знает ни одной переменной, кроме конфигурации: ни души, ни метки на атомах, ни «того же самого». Конфигурация совпала - значит, совпало всё, что есть.</li>
+          <li><b>Распределение бремени.</b> Не «копия - это ты, пока не доказано обратное», а «пока не опровергнуто имеющееся». Имеющееся: конфигурация - единственное, что существует. Кто считает, что копия не ты, пусть предъявит переменную, которая отличает. За 2500 лет не предъявили. До тех пор тождество копии - не гипотеза, а следствие.</li>
+          <li><b>Разрыв не считается.</b> Ты уже собираешься заново каждое утро: сон рвёт непрерывность сознания на 8 часов, наркоз - на дольше, и никто не считает, что проснулся другой человек. Значит, непрерывность не нужна. Нужна конфигурация. А ей всё равно, через секунду её собрали или через гугол лет.</li>
+          <li><b>А что если нет.</b> Если переменная есть и мы её не нашли (то, что Чалмерс называет трудной проблемой), то копия - другой свидетель с твоей памятью, и вечное возвращение возвращает не тебя, а твоего близнеца. Это единственный сценарий, где «навсегда» для тебя лично держится. Он не опровергнут. Он просто не имеет ни одного аргумента, кроме «мне так кажется».</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/teleport.png" alt="">
+        <div class="pcap">Два одинаковых человека на пороге: один растворяется в свет, второй из него собирается. Вопрос «кто из них я» не имеет физического содержания, если между ними нет ни одной различающей переменной. А её нет.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s25">
+  <div class="content">
+    <div class="kicker">Возвращение · следствие</div>
+    <h2>Несуществующий не переживает промежутка</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/blink.png" alt="">
+        <div class="pcap">Глаз закрывается слева, открывается справа, а между ними - галактика там, где должен быть промежуток. Для того, кого нет, промежутка нет: ни секунды, ни 10^(10¹²²) лет. Закрыл здесь, открыл там.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Соберём главу.</b> Материал не важен (неразличимость). Сборка неизбежна (три механизма). Собранный - это ты (нет различающей переменной). Остаётся одно: что между смертью и сборкой.</li>
+          <li><b>Лукреций, ещё раз.</b> Между ними тебя нет. А кого нет, тот не переживает времени: не ждёт, не скучает, не замечает. Промежуток существует для мира и не существует для тебя. Значит, изнутри смерть и следующая сборка стыкуются встык, без зазора. Ты закрыл глаза здесь и открыл там, и «там» может быть в другой галактике или через гугол лет, а ощущается как моргание.</li>
+          <li><b>Вброс, самый сильный в деке:</b> субъективно ты никогда не умрёшь. Смерть - это то, что не происходит ни с кем, потому что некому. Происходит только жизнь, и всегда чья-то. Название деки в этом месте выворачивается: «для кого не было» - для тебя не было смерти. Навсегда.</li>
+          <li><b>А что если нет:</b> если сборка не повторится (Вселенная конечна, не пакман, флуктуации не соберут), то промежуток не кончится, и «моргание» будет последним. Но заметь: и тогда ты его не заметишь. Единственная разница между «вечным возвращением» и «навсегда» - для мира. Для тебя они неотличимы. Это либо утешение, либо самое страшное, что можно сказать, и дека не выбирает.</li>
+        </ul>
+        <div class="note gold" style="margin-top:8px"><b>Что говорит физика:</b> ничего. Это следствие из трёх допущений, каждое из которых не исключено. Здесь честно стоит «мы», а не «наука».</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 5: НАУКА ВСЕГДА ВРЁТ ТАМ, ГДЕ ЗНАЕТ ТОЧНО ============ -->
+<section class="slide chapter" id="s26">
+  <div class="bgimg"><img src="assets/ch_science.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5</div>
+    <h1>Наука всегда врёт там, где знает точно</h1>
+    <p class="lead">В зале науки призраки ушедших теорий проходят между колоннами, а латунные приборы на столах стоят как стояли. Мы весь выпуск ссылаемся на физику. Пора спросить, что она охватывает, где права и что вообще знает.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s27">
+  <div class="content">
+    <div class="kicker">Наука · гости</div>
+    <h2>Гости: все знали точно, все ушли</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/theories.png" alt="">
+        <div class="pcap">Красное: объяснения, которые считались точным знанием, и сколько они прожили. Золотое: измерения с погрешностью, и все они живы. Одна и та же наука, два разных срока годности.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Список, без жалости.</b> Флогистон (горение - выделение особого вещества), теплород (тепло - жидкость), эфир (свет колеблет невидимую среду), неделимый атом, N-лучи (1903, 300 статей за год, не существовали), неподвижные континенты (Вегенера подняли на смех в 1912-м и приняли в 1966-м), стационарная Вселенная, нейтрино без массы, пятый постулат Евклида как истина о мире, витализм (органику из неорганики не сварить, пока Вёлер в 1828-м не сварил мочевину).</li>
+          <li><b>География отдельно.</b> Плоская, потом шар, потом сплюснутый, потом геоид, потом «континенты не двигаются», потом двигаются, а в 2000-х спутники GRACE показали, что геоид ещё и дышит: тающие ледники меняют форму Земли на сантиметры в год. Наука о самом твёрдом, что у нас есть, переписывалась чаще прочих.</li>
+          <li><b>Вброс:</b> любая наука - набор неидеальных алгоритмов и переменных, не констант. Она постоянно опровергает себя, и в любой момент может быть опровергнута наукой, которая ещё не пришла. Та тоже придёт погостить и не останется навсегда. А если останется, то навсегда только для нас.</li>
+          <li><b>Общее у всех гостей:</b> ни у одного не было ±. Их не измерили, их знали. Точно.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s28">
+  <div class="content">
+    <div class="kicker">Наука · библиотека</div>
+    <h2>Библиотека: объяснения уходят, измерения остаются</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Эратосфен, 240 год до н. э.</b> Тень в колодце в Сиене, тень от палки в Александрии, расстояние между ними: окружность Земли 250 000 стадиев. С ошибкой в единицы процентов, и это число не менялось 2266 лет. Менялась только форма, на которую его натягивали: шар, эллипсоид, геоид.</li>
+          <li><b>Майкельсон, 1887.</b> Опыт, поставленный, чтобы измерить эфир, эфира не нашёл. Эфир выкинули. Опыт остался и стал фундаментом Эйнштейна: скорость света одна во всех направлениях, и это до сих пор проверяют с точностью 10⁻¹⁷.</li>
+          <li><b>Флогистон и кислород.</b> Флогистон выкинули целиком, но наблюдение «горение требует воздуха, а масса при этом растёт» осталось и стало кислородом. Объяснение умерло, измерение переехало в новую теорию без изменений.</li>
+          <li><b>Вброс, уточнённый:</b> наука меняет объяснения и копит измерения. Строки-объяснения - гости, приходят и уходят. Строки-измерения - библиотека, только пополняется. Наука опровергает себя в первой части и никогда во второй. Даже Вегенер: береговые линии совпадали в 1912-м так же, как в 1966-м. Поменялось не наблюдение, а готовность его объяснить.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/library_measure.png" alt="">
+        <div class="pcap">Латунные приборы на тёмных полках: астролябия, весы, телескоп. Ни один не устарел: то, что они померили, верно с той же погрешностью, что и в день измерения. Теория вокруг них сменилась трижды.</div>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:10px"><b>Правило для плашек этой серии, с этого выпуска - закон:</b> в плашке «что говорит физика» стоит только то, что померено, с погрешностью или явной границей применимости. Если ± нет, это объяснение, а не знание, и его помечаем как гостя.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s29">
+  <div class="content">
+    <div class="kicker">Наука · переменные, не константы</div>
+    <h2>Даже константы - переменные, только медленные</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Постоянная тонкой структуры α ≈ 1/137.</b> Число, от которого зависит, горят ли звёзды и есть ли химия. Проверяют на дрейф по спектрам далёких квазаров: часть групп видит изменение на 10⁻⁶ за миллиарды лет, часть не видит. Не решено. Если дрейфует, «константа» - переменная с очень маленькой производной.</li>
+          <li><b>Два Хаббла.</b> Скорость расширения Вселенной, измеренная по сверхновым, 73 км/с на мегапарсек; по реликтовому излучению 67. Погрешности не пересекаются уже 10 лет. Либо одно из измерений врёт, либо в модели дыра. Это «напряжение Хаббла», и это открытая рана космологии прямо сейчас.</li>
+          <li><b>Законы тоже.</b> Смолин: законы эволюционируют вместе со Вселенной, отбором через чёрные дыры (выпуск 2). Уилер: «закон без закона», законы застывают из хаоса, как лёд, а не даны сверху. Ни то ни другое не измерено, но и «законы вечны и неизменны» - тоже не измерено. Это допущение, самое старое в физике, и у него нет ±.</li>
+          <li><b>Вброс:</b> убери из уравнения время, и сразу нет ничего и есть всё. Без времени нет процесса, ничего не происходит: нет ничего. Но все состояния равноправны и существуют разом: есть всё. Это блок-Вселенная и Платония Барбура одной фразой, и наука в ней молчит по определению: она видит только то, что происходит, то есть только внутри времени.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Что говорит физика, с ±</h3>
+          <table class="t">
+            <tr><th>Величина</th><th>Значение</th><th>Статус</th></tr>
+            <tr><td>Постоянная тонкой структуры</td><td class="d">1/137.035999 ± 2·10⁻⁹</td><td class="d">дрейф не исключён на уровне 10⁻⁶/млрд лет</td></tr>
+            <tr><td>Постоянная Хаббла</td><td class="d">73.0 ± 1.0 (сверхновые) против 67.4 ± 0.5 (Planck)</td><td class="d">расходятся на 5σ, не решено</td></tr>
+            <tr><td>Скорость света</td><td class="d">299 792 458 м/с точно</td><td class="d">точно, потому что метр определён через неё: это не измерение, а договор</td></tr>
+            <tr><td>Масса нейтрино</td><td class="d">&lt; 0.8 эВ (KATRIN), &gt; 0</td><td class="d">«ноль» держался 68 лет и умер в 1998</td></tr>
+          </table>
+          <p class="dim" style="margin-top:8px">Заметь третью строку: единственная «точная» константа точна потому, что мы так договорились, а не потому, что померили. Точность без ± - всегда либо договор, либо ошибка.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s30">
+  <div class="content">
+    <div class="kicker">Наука · теорема главы</div>
+    <h2>Уверенность обратно пропорциональна долговечности</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/confidence.png" alt="">
+        <div class="pcap">По горизонтали - заявленная погрешность, по вертикали - сколько утверждение прожило. Красные точки в нуле по ±: те, кто «знал точно». Золотые с честным ±: живут. Разброс большой, направление одно.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>«Точно» в науке - подозрительное слово.</b> У измерения всегда есть погрешность, ±, доверительный интервал. Там, где стоит ±, наука не врёт: она говорит «между этим и этим», и это выдерживает века. Врёт она ровно там, где ± исчезает, потому что исчезает он не из измерения, а из объяснения. «Атом неделим», «эфир есть», «континенты неподвижны», «Вселенная стационарна»: без ±. Точно знали. Все.</li>
+          <li><b>Фейнман:</b> «Первый принцип - не обманывать себя, а себя обмануть легче всего». Обманывают себя всегда там, где перестают писать ±.</li>
+          <li><b>Вброс, теорема:</b> наука всегда врёт там, где знает точно. Не «иногда», а «всегда», потому что «точно» и есть симптом: это место, где измерение заменили верой в объяснение. Всё, что наука сказала с погрешностью, живёт (Эратосфен, Милликен с поправкой). Всё, что без, умирает при первом госте.</li>
+          <li><b>Следствие для деки:</b> когда мы пишем «что говорит физика», мы должны спрашивать «с каким ±». Если ответа нет, это не физика, это гость. Так работали плашки в двух прошлых выпусках, с этого - обязательно.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s31">
+  <div class="content">
+    <div class="kicker">Наука · вне времени</div>
+    <h2>Убери время: нет ничего и есть всё. Кто тогда свидетель</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Наука видит только то, что происходит.</b> Измерение - это событие: «до» и «после», прибор, который изменился. Без времени нет «до» и «после», нет прибора, нет измерения. Вне времени науке нечего сказать, не потому что она слаба, а потому что там нечему случиться.</li>
+          <li><b>Блок-Вселенная.</b> Из выпуска 2: в теории относительности нет объективного «сейчас», значит, все моменты равноправны и существуют. Четырёхмерная глыба, в которой ничего не «происходит». Барбур идёт дальше: нет даже глыбы, есть куча мгновений без порядка, и порядок только в их содержании. «Нет ничего» (процесса) и «есть всё» (все состояния) - буквальное описание.</li>
+          <li><b>Кто тогда свидетель.</b> В блок-Вселенной свидетель - тоже кусок глыбы. Он не «смотрит», он «есть» в каждой точке своей мировой линии, и ощущение взгляда - свойство содержимого каждой точки. Тогда «для кого не было» теряет время: не «было / не было», а «есть в глыбе / нет в глыбе». А «навсегда» - просто «во всей глыбе». Без срока, потому что нет длительности.</li>
+          <li><b>А что если нет:</b> блок-Вселенная не объясняет, почему «сейчас» ощущается как особенное. «Иллюзия», говорит физика, но иллюзия - это процесс, а процессов в глыбе нет. Единственное, что в глыбе точно происходит, - вот это ощущение, и его она не вмещает. Значит, либо глыба неполна, либо мы. Мостик к главе 6: нужен свидетель, который стоит вне глыбы. Или его невозможность.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/timeless.png" alt="">
+        <div class="pcap">Кристалл с городом, где у часов нет стрелок. Всё есть одновременно, ничего не движется. Наука внутри такого кристалла невозможна: измерять нечего. А мы там, если Эйнштейн прав про «сейчас».</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 6: ПОТЕНЦИАЛЬНЫЙ ВЕЧНЫЙ СВИДЕТЕЛЬ ============ -->
+<section class="slide chapter" id="s32">
+  <div class="bgimg"><img src="assets/ch_witness.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6 · центральная</div>
+    <h1>Потенциальный вечный свидетель</h1>
+    <p class="lead">Тот, кто мог бы видеть всё, если бы был. Слово «потенциальный» делает его честным: мы не утверждаем, что он есть. Мы спрашиваем, что меняется, если допустить, и что остаётся, если нет.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s33">
+  <div class="content">
+    <div class="kicker">Свидетель · кто он</div>
+    <h2>Сакши, Уилер и копия, которая точно смотрит</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/sakshi.png" alt="">
+        <div class="pcap">Фигура на утёсе над морем галактик, неподвижная, смотрит и не действует. В веданте это сакши - свидетель, который присутствует при всём, ничего не меняя. Не бог: у него нет воли. Только взгляд.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Три версии одного персонажа.</b> <span class="cy">Веданта, сакши:</span> чистое присутствие, при котором происходит всё; оно не действует, не судит, не помнит, только видит. <span class="cy">Уилер, «соучаствующая Вселенная»:</span> наблюдатели, глядя на прошлое (отложенный выбор), дописывают его; Вселенная - это то, что засвидетельствовано, и она растит свидетелей, чтобы быть. <span class="cy">Тегмарк:</span> в бесконечном пространстве для любого события есть копия наблюдателя, которая его видит. Свидетель не мистический, а статистический: где-то точно смотрят.</li>
+          <li><b>Общее у трёх:</b> ни один из них - не «кто-то». Сакши - не личность, соучастие Уилера - не разум, копия Тегмарка - не одна. Вечный свидетель, если он есть, не похож на свидетеля в суде. Он похож на условие: то, при чём «было» становится возможным.</li>
+          <li><b>Почему «потенциальный».</b> Потому что у нас нет ни одного измерения, которое требовало бы его существования. Декогеренция объясняет «определённость» без него (глава 2). Он не нужен физике. Он нужен слову «было» без «для кого», а такого слова, как выяснила глава 1, не бывает. Так что либо он есть, либо «было» всегда с адресом. Третьего нет.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s34">
+  <div class="content">
+    <div class="kicker">Свидетель · если он есть</div>
+    <h2>Если он есть: «не было» невозможно, и вот что это ломает</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Всё было.</b> Дерево в лесу, забытая мысль, последний взгляд умирающего, невыбранная ветвь, если он видит и её. Первый вид «не было» из главы 1 исчезает, остаётся один: «не было для тебя». Название деки становится вопросом только про тебя.</li>
+          <li><b>Память мира получает читателя.</b> Из первого выпуска: запись без читателя - состояние. Свидетель - читатель для всего. Термолюминесценция, свет звёзд, унитарность становятся памятью в полном смысле: кто-то помнит. Тезис «всё === память» из выпуска 2 переходит из спорного в верный.</li>
+          <li><b>Наука получает контролёра.</b> Если есть тот, для кого всё было, то есть и факт вне свидетеля-со-сроком. Наука тогда не «строки со сроком», а приближение к тому, что видит он. Её ± становится расстоянием до его взгляда. Это утешительно и подозрительно одновременно.</li>
+          <li><b>Что ломается.</b> Твоё «для кого». Если всё было для него, то «для тебя не было» - мелочь, погрешность. Смерть перестаёт быть границей «было»: она граница только твоего взгляда, а его взгляд остаётся. Вечное возвращение (глава 4) становится лишним: тебя не надо собирать заново, чтобы «было», ты уже был для него. Половина деки схлопывается в один абзац. Это и есть цена свидетеля: он всё чинит и всё обесценивает.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx gr"><b>Глава 1</b><span>«не было» → только «для тебя»</span></div>
+            <div class="bx gr"><b>Выпуск 1</b><span>память мира → есть читатель</span></div>
+            <div class="bx gr"><b>Глава 5</b><span>наука → приближение к его взгляду</span></div>
+          </div>
+          <div class="row">
+            <div class="bx rd"><b>Глава 3</b><span>смерть → граница только твоего взгляда</span></div>
+            <div class="bx rd"><b>Глава 4</b><span>возвращение → не нужно</span></div>
+            <div class="bx rd"><b>Название</b><span>«навсегда» → для него ничего не навсегда</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что говорит физика</h3>
+          <p>Ничего измеримого. Единственная зацепка - отложенный выбор Уилера (измерено: Жак и др., 2007): решение, как измерять фотон, принятое после того, как он прошёл щели, определяет, «прошёл ли он одну или обе». Это не свидетель, дописывающий прошлое, а квантовая механика, работающая как положено. Но Уилер видел в этом именно его, и опровергнуть это нельзя, потому что предсказания одинаковые.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s35">
+  <div class="content">
+    <div class="kicker">Свидетель · если его нет</div>
+    <h2>Если его нет: «было» - свойство спрашивающего</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Свидетелей столько, сколько петель.</b> Из главы 2: «кто» - это связность, глубина петли. Нет большой петли, есть миллиарды маленьких, у каждой свой шар (горизонт из выпуска 2), свой срок и своё «было». Ничего не было «вообще». Всё было для кого-то, и этот кто-то конечен.</li>
+          <li><b>Реальность как пересечение.</b> Тогда единственное, что похоже на «было вообще», - то, о чём согласны все петли, которые могли посмотреть. Из выпуска 2: реальность - то, о чём согласны все горизонты. Свидетель заменяется голосованием, и это, кстати, определение научного факта: воспроизводимость.</li>
+          <li><b>Память мира остаётся состоянием.</b> Записано всё, читают немногие и недолго. Первый выпуск прав ровно в той половине, где он был осторожен: «мир хранит всё и не помнит ничего, пока не появится тот, кто читает». Появляется, читает, кончается.</li>
+          <li><b>Что это даёт «навсегда».</b> Без свидетеля «навсегда» - свойство петли, а не мира. Оно длится столько, сколько петля. Для Вселенной ничего не навсегда, потому что некому. Для тебя - почти всё, потому что ты кончишься раньше, чем большинство «не было» отменятся. Это готовый финал, и глава 8 его доведёт.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Два мира, одна дека</h3>
+          <table class="t">
+            <tr><th></th><th>Свидетель есть</th><th>Свидетеля нет</th></tr>
+            <tr><td>«Не было»</td><td class="d">только для тебя</td><td class="d">для каждого своё</td></tr>
+            <tr><td>Память мира</td><td class="d">память</td><td class="d">состояние, изредка читаемое</td></tr>
+            <tr><td>Смерть</td><td class="d">граница твоего взгляда</td><td class="d">конец одного из «было»</td></tr>
+            <tr><td>Наука</td><td class="d">приближение к факту</td><td class="d">согласие горизонтов</td></tr>
+            <tr><td>«Навсегда»</td><td class="d">не существует</td><td class="d">свойство спрашивающего</td></tr>
+            <tr><td>Проверяемо</td><td class="d">нет</td><td class="d">нет</td></tr>
+          </table>
+          <p class="dim" style="margin-top:8px">Последняя строка - главная. Две картины дают одинаковые предсказания для любого измерения. Выбор между ними - не наука. Дека не выбирает, но следующий слайд объясняет, почему одна из них подозрительнее.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s36">
+  <div class="content">
+    <div class="kicker">Свидетель · слепое пятно</div>
+    <h2>Может ли свидетель засвидетельствовать себя</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/self_blind.png" alt="">
+        <div class="pcap">Глаз, который пытается увидеть себя в зеркале, отражающем только темноту. Глаз видит всё, кроме себя: у него есть слепое пятно ровно там, где выходит нерв, и в поле зрения его нет, потому что мозг закрашивает. Свидетель устроен так же.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Гёдель для сознания.</b> Система, достаточно богатая, чтобы описать себя, содержит истины, которые не может доказать (выпуск 2). Свидетель, который видит всё, обязан видеть и себя видящего, и себя видящего себя видящего, и так далее. Петля без дна. На каждом витке остаётся неувиденный виток: тот, с которого смотрят. Полного самосвидетельства не бывает.</li>
+          <li><b>Это единственное, что известно точно, и оно отрицательное.</b> Мы не знаем, есть ли вечный свидетель. Знаем, что даже если есть, для него самого есть «не было»: его собственный взгляд. Для кого не было его? Для него. И это «навсегда» в самом строгом смысле: не потому, что времени не хватит, а потому, что глаз не смотрит на глаз.</li>
+          <li><b>Вброс:</b> может, поэтому свидетелей много, а не один. Один не может увидеть себя, значит, нужен второй, который увидит первого, третий для второго, и так далее. Вселенная, полная конечных свидетелей, - не отсутствие вечного, а его единственно возможная реализация: он смотрит на себя чужими глазами, и каждая пара конечна.</li>
+          <li><b>А что если нет:</b> Гёдель про формальные системы, а не про взгляды. Аналогия, не теорема. Но за 90 лет никто не показал, как система может содержать своё полное описание, и мозг, который не видит своего слепого пятна, - пример, а не метафора.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s37">
+  <div class="content">
+    <div class="kicker">Свидетель · без ±</div>
+    <h2>Свидетель без погрешности: почему всевидящий подозрителен</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Применим теорему главы 5.</b> Наука врёт там, где знает точно. Вечный свидетель по определению знает точно: у него нет ±, нет границы применимости, нет условий, при которых он не видит. Это ровно тот профиль, по которому мы отбраковали флогистон, эфир и неподвижные континенты: утверждение без погрешности, значит, объяснение, а не знание. Значит, гость.</li>
+          <li><b>И одновременно он неопровержим.</b> Гость, которого нельзя выгнать, потому что он не делает предсказаний. Эфир хотя бы предсказывал ветер, и Майкельсон его не нашёл. Свидетель не предсказывает ничего, что отличалось бы от мира без него. Поппер: это не наука. Тегмарк: это следствие принятой теории, если Вселенная бесконечна (копии). Оба правы, и оба не про физику.</li>
+          <li><b>Вброс, итог главы:</b> потенциальный вечный свидетель - единственный персонаж деки, которого нельзя ни подтвердить, ни опровергнуть, ни выгнать, ни впустить. Он ровно то, чем должно быть слово «потенциальный»: возможность, у которой нет ±, потому что она не измерена и не измерима. Как строка в библиотеке без запуска. Существует всегда. Не происходит никогда.</li>
+          <li><b>И тогда «навсегда» получает первого кандидата на срок:</b> свидетель, который никогда не происходит, не может ничего засвидетельствовать «навсегда». Слово остаётся за конечными. Глава 7 спросит, когда оно вообще родилось.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx rd"><b>Знает точно</b><span>нет ±</span></div>
+            <div class="bx rd"><b>Не предсказывает</b><span>нечего опровергать</span></div>
+            <div class="bx am"><b>= гость</b><span>по теореме главы 5</span></div>
+            <div class="bx cy"><b>= строка без запуска</b><span>по выпуску 2</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Честно про эту главу</h3>
+          <p>Здесь нет ни одного измерения, и мы это знали, заходя. Глава нужна не для ответа, а чтобы показать, что оба ответа стоят одинаково и что у обоих есть цена: свидетель всё чинит и всё обесценивает, его отсутствие всё оставляет тебе и делает конечным. Дека дальше живёт во втором мире, потому что в нём есть что спрашивать. Первый выбирают, когда спрашивать больше не хочется, и это тоже честный выбор, только не для этой серии.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 7: КОГДА БЫЛО НИКОГДА ============ -->
+<section class="slide chapter" id="s38">
+  <div class="bgimg"><img src="assets/ch_never.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 7</div>
+    <h1>Когда было никогда</h1>
+    <p class="lead">Слово, которое отрицает всё время сразу, и у него есть дата рождения. Если «никогда» когда-то случилось, то это уже не «никогда», а «с тех пор». А у «с тех пор» есть «до тех пор».</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s39">
+  <div class="content">
+    <div class="kicker">Никогда · кто имеет право</div>
+    <h2>«Никогда» - утверждение обо всём времени сразу</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Грамматика.</b> «Никогда» = «ни в один момент времени». Чтобы сказать это честно, надо проверить все моменты, включая те, которых ещё нет. Сделать это может только тот, кто стоит снаружи времени и видит его целиком, то есть вечный свидетель из главы 6. Мы только что выяснили, что он не происходит. Значит, «никогда» некому сказать.</li>
+          <li><b>Изнутри «никогда» всегда означает «пока нет».</b> Свидетель со сроком проверил моменты до сих пор и экстраполирует. «Этого никогда не будет» - прогноз, а не факт, и у прогноза есть ±. «Никогда» без ± - гость по теореме главы 5.</li>
+          <li><b>Вброс:</b> каждое «никогда», которое мы произносим, одолжено. Мы берём слово из словаря вечного свидетеля и употребляем как своё. Отсюда его вес и отсюда его ложь: «никогда не прощу», «никогда не полетим к звёздам», «атом никогда не разделят». Все три сказаны с уверенностью, у которой не было основания.</li>
+          <li><b>А что если нет:</b> есть «никогда» по определению: круглый квадрат никогда не существует, 2+2 никогда не 5. Это не про время, это про противоречие (выпуск 2: мера ноль). Единственное честное «никогда» - логическое, и оно не про события, а про слова. Про события «никогда» не бывает.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>«Никогда» логическое</b><span>круглый квадрат · честное · не про время</span></div>
+            <div class="bx am"><b>«Никогда» прогнозное</b><span>«не полетим к звёздам» · с ± · то есть «пока нет»</span></div>
+            <div class="bx rd"><b>«Никогда» одолженное</b><span>без ± · из словаря свидетеля · гость</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что говорит история, с датами</h3>
+          <p>«Тяжелее воздуха летать невозможно» - Кельвин, 1895; Райты - 1903. «Атом не разделят» - Резерфорд о промышленной энергии, 1933; реактор Ферми - 1942. «Компьютеров нужно штук пять на весь мир» - приписывается Уотсону, 1943. Каждое «никогда» имело срок жизни от 8 до 9 лет. Это не насмешка над умными людьми, это измерение: срок годности одолженного слова.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s40">
+  <div class="content">
+    <div class="kicker">Никогда · дата рождения</div>
+    <h2>«Никогда» родилось вместе с первым «есть»</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/never_birth.png" alt="">
+        <div class="pcap">Первый миг: точка света, и вокруг неё впервые образуется кольцо тени. До этого не было ни света, ни тени, ни отсутствия. Отсутствие нужно от чего-то. «Никогда» - тень от первого «есть».</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>До первой черты.</b> Из выпуска 2: unmarked state, ничего не отличено ни от чего. Там нет «было», потому что нечему быть, и нет «не было», потому что нечего отрицать. Значит, нет и «никогда»: слово требует хотя бы одного «когда», чтобы его не быть.</li>
+          <li><b>Первая черта.</b> Появляется «внутри» и «снаружи», «есть» и «нет». В ту же микросекунду появляется возможность, чтобы чего-то не случилось. «Никогда» рождается не как факт, а как возможность отрицания. Большой взрыв - момент, когда впервые стало можно, чтобы чего-то не было.</li>
+          <li><b>Вброс:</b> у «никогда» есть дата рождения. Оно моложе Вселенной ровно на одну черту. И, как всё, что родилось, оно не «никогда»: до его рождения его не было. Слово, отрицающее всё время, само появилось в один из моментов. Оно проваливает собственный тест.</li>
+          <li><b>А что если нет:</b> если время бесконечно в прошлое (циклы Пенроуза, вечная инфляция), первой черты не было, и «никогда» существовало всегда. Но тогда у него нет и даты смерти, и оно единственное «навсегда», которое нельзя закрыть. Заметим и проверим в главе 8.</li>
+        </ul>
+        <div class="note gold" style="margin-top:8px"><b>Что говорит физика, с ±:</b> нарушение симметрии в первые 10⁻¹² с после Большого взрыва - модель, подтверждённая косвенно (бозон Хиггса, 2012, масса 125.1 ± 0.1 ГэВ). «Что было до» - не измерено, не наблюдаемо, и в ОТО вопрос не имеет смысла (нет времени до времени). Вечная инфляция и циклы - не измерены. Дата рождения «никогда»: 13.79 ± 0.02 млрд лет назад, с оговоркой, что «до» может не существовать.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s41">
+  <div class="content">
+    <div class="kicker">Никогда · как оно случается</div>
+    <h2>«Никогда» - событие, и у него есть точка на оси</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Момент, когда возможность закрывается.</b> Свет от галактики пересекает горизонт событий: с этой секунды он не долетит никогда. Ветвь Эверетта не выбрана: с этого измерения «здесь» её никогда не будет. Ты не позвонил: с того вечера этого разговора никогда не было. У каждого «никогда» есть точка, где оно произошло.</li>
+          <li><b>Парадокс:</b> слово, отрицающее время, датируется. «Никогда не долетит» началось в 2019-м для этого фотона, «никогда не было разговора» - в тот вечер. Это значит, что «никогда» - не свойство события, а событие само: закрытие возможности. А события бывают только внутри времени.</li>
+          <li><b>Вброс:</b> «никогда» - это переход возможности из первого вида «не было» во второй (глава 1): из «ещё может случиться» в «не случилось и записано, что не случилось». Запись о несостоявшемся - тоже запись. Мир хранит и это: в разошедшемся свете, в ветвях, в твоей памяти о том, что ты не позвонил.</li>
+          <li><b>А что если нет:</b> закрытие возможности может быть неполным. Свет за горизонтом не долетит к нам, но долетит к тем, кто ближе. Ветвь не здесь, но там. Разговор не состоялся, но копия Тегмарка его ведёт. Каждое «никогда» при проверке оказывается «не здесь» или «не для тебя». Осталось одно, у которого нет «не здесь».</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/closing.png" alt="">
+        <div class="pcap">Дверь из света закрывается, в сужающейся щели виден целый мир. Момент, когда «ещё можно» становится «никогда». Он датирован, значит, он событие, значит, он внутри времени, значит, он не «никогда».</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s42">
+  <div class="content">
+    <div class="kicker">Никогда · интервал</div>
+    <h2>Каждое «никогда» при проверке оказывается интервалом</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Соберём главу.</b> «Никогда» некому сказать (нет вечного свидетеля). «Никогда» родилось (с первой чертой). «Никогда» случается (закрытие возможности, событие с датой). Три раза слово, которое должно быть вне времени, оказалось внутри.</li>
+          <li><b>Если «никогда» было, то есть имело начало, то это не «никогда», а «с тех пор».</b> А у «с тех пор» есть «до тех пор». И, по симметрии, может быть «после тех пор»: момент, когда закрывшаяся возможность открывается снова. Пуанкаре, копии, флуктуации из главы 4 - это ровно «после тех пор» для конфигураций. Для света за горизонтом - нет, и это единственное «никогда», которому пока нечего возразить.</li>
+          <li><b>Вброс, итог:</b> каждое «никогда», которое мы находим в мире, при проверке оказывается интервалом: от закрытия до переоткрытия, или от закрытия до конца того, кто спрашивал. Осталось спросить, интервал ли «навсегда». Слово то же самое, с другой стороны. Если «никогда» - интервал, то «навсегда» - тоже, и вопрос только, кто его закроет.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>«Никогда» под проверкой</h3>
+          <table class="t">
+            <tr><th>«Никогда»</th><th>Оказалось</th><th>Кто закрыл</th></tr>
+            <tr><td>Не полетим тяжелее воздуха</td><td class="d">8 лет</td><td class="d">Райты</td></tr>
+            <tr><td>Атом неделим</td><td class="d">94 года</td><td class="d">Томсон, Резерфорд</td></tr>
+            <tr><td>Этого разговора не было</td><td class="d">до конца спрашивающего</td><td class="d">его срок</td></tr>
+            <tr><td>Твоей конфигурации больше не будет</td><td class="d">до 10^(10¹²²) лет или до копии</td><td class="d">Пуанкаре, Тегмарк, флуктуации</td></tr>
+            <tr><td>Свет за горизонтом не долетит</td><td class="d">пока не закрыто</td><td class="d">никто; глава 8</td></tr>
+            <tr><td>Круглый квадрат</td><td class="d">не интервал: логика</td><td class="d">не про время</td></tr>
+          </table>
+          <p class="dim" style="margin-top:8px">Одна строка без закрытия и одна не про время. Всё остальное - интервалы с датами.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 8: КОГДА КОНЧИТСЯ НАВСЕГДА ============ -->
+<section class="slide chapter" id="s43">
+  <div class="bgimg"><img src="assets/ch_forever.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 8</div>
+    <h1>Когда кончится навсегда</h1>
+    <p class="lead">Песочные часы из галактик, и человек в верхней колбе. «Навсегда» - это длительность, а у длительности есть конец. Три удара бесконечности, два выживших и дверь, которая открывается не рукой, а грамматикой.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s44">
+  <div class="content">
+    <div class="kicker">Навсегда · три удара</div>
+    <h2>Три удара бесконечности по «навсегда»</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>1. Бесконечное пространство</h3>
+        <p><b>Борель-Кантелли</b> (выпуск 2): если шанс на свидетеля больше нуля, в бесконечной Вселенной свидетель есть. Где-то. Дерево в лесу видел кто-то в другом шаре, разговор, которого не было, состоялся у копии. «Не было ни для кого» становится «не было здесь». <span class="dim">«Навсегда» → «не в этом шаре».</span></p>
+      </div>
+      <div class="card">
+        <h3 class="am">2. Бесконечное время</h3>
+        <p><b>Пуанкаре:</b> в замкнутой Вселенной с конечным числом состояний всё повторяется. Через 10^(10¹²²) лет та же конфигурация, тот же лес, то же дерево, и на этот раз, возможно, свидетель. «Никогда» из главы 7 получает «после тех пор». <span class="dim">«Навсегда» → «очень нескоро».</span></p>
+      </div>
+      <div class="card">
+        <h3 class="gr">3. Бесконечный процесс</h3>
+        <p><b>Флуктуации де Ситтера:</b> даже после тепловой смерти пустота флуктуирует и собирает всё, что возможно, включая читателей. В процессе без конца бесконечны и возможности. Любое «не было» - это «пока не было для этого читателя», а читателей процесс производит, пока ему хватает времени, а времени бесконечно. <span class="dim">«Навсегда» → «пока не собрался тот, кому».</span></p>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:16px"><b>Общее у трёх ударов:</b> ни один не опровергает «навсегда» логически. Каждый переводит его из «никогда ни для кого» в «не здесь», «не скоро», «не для этого». То есть в интервал, ровно как «никогда» в главе 7. И у каждого удара есть ±: бесконечность пространства не измерена, замкнутость не измерена, вечность процесса не измерена. Три «не исключено» против одного «точно». По теореме главы 5 мы знаем, на чьей стороне оказаться.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s45">
+  <div class="content">
+    <div class="kicker">Навсегда · выживший</div>
+    <h2>Выживший: горизонт событий</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/horizons.png" alt="">
+        <div class="pcap">Три горизонта вокруг тебя. Между золотым и фиолетовым - галактики, которые видно сейчас старым светом, и чей новый свет не долетит никогда: расширение уносит их быстрее, чем свет идёт. «Навсегда» живёт в этом кольце.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Единственное «навсегда», которому бесконечность не помогает.</b> Галактика за горизонтом событий (16 млрд световых лет) не станет ближе ни за какое время: расширение ускоряется, свет отстаёт, разрыв растёт. Возможность есть, доступа нет, и бесконечное время только увеличивает разрыв. Каждый год за горизонт уходит ~20 000 звёзд, и для нас их «было» закрывается навсегда в самом физическом смысле.</li>
+          <li><b>Но заметь, что это «навсегда» - тоже «для кого».</b> Для нас. Для наблюдателя, который сидит в той галактике, она никуда не уходит, а уходим мы. Горизонт - свойство пары «наблюдатель-объект», как «не было» из главы 1. Абсолютного горизонта нет, есть у каждого свой.</li>
+          <li><b>И у этого «навсегда» есть условие:</b> тёмная энергия. Если её плотность постоянна, горизонт вечен. Если она меняется (а мы не знаем: измерено w = −1.03 ± 0.03, и в 2024 году DESI намекнула на изменение), горизонт может отступить, и «навсегда» откроется. Даже выживший держится на одном неизмеренном допущении.</li>
+        </ul>
+        <div class="note" style="margin-top:8px"><b>Что говорит физика, с ±:</b> радиус горизонта событий 16 ± 1 млрд св. лет при постоянной Λ. Уравнение состояния тёмной энергии w = −1.03 ± 0.03 (Planck + сверхновые); DESI 2024: намёк на w &gt; −1 в прошлом на уровне 2.5-3.9σ, не подтверждено. Если w &gt; −1 и растёт, горизонт событий отступает и в пределе исчезает. «Навсегда» горизонта - следствие Λ = const, а это допущение, не измерение.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s46">
+  <div class="content">
+    <div class="kicker">Навсегда · второй выживший</div>
+    <h2>Второй выживший: ты</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Для Вселенной ничего не навсегда.</b> Три удара это показали: где-то, когда-нибудь, для кого-нибудь любое «не было» открывается. У мира нет «навсегда», потому что у него нет срока.</li>
+          <li><b>Для тебя - почти всё.</b> Конечное время, конечная память, один шар. Дерево в лесу не увидишь ты, копия увидит. Разговор не состоится у тебя, состоится у копии. Галактика уйдёт за горизонт для тебя. «Навсегда» - не свойство события, а свойство того, кто спрашивает, и его срока. Название деки читается второй раз: для кого не было - для того, кто спросил.</li>
+          <li><b>И это единственная асимметрия, которую физика подтверждает.</b> Из главы 3: смерть не равна дородовому небытию для мира (после - записано), и равна для тебя (ни того, ни другого не увидишь). «Навсегда» устроено так же: его нет для мира и оно есть для тебя. Две стороны одного слова, и обе верны, потому что «для кого».</li>
+          <li><b>Вброс:</b> «навсегда» - это имя твоей границы, произнесённое так, будто она граница мира. Как «край Вселенной» в выпуске 2 оказался краем твоего шара. Каждый раз, когда мы говорим «навсегда», мы описываем себя.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx cy"><b>Для мира</b><span>ничего не навсегда · нет срока · нет «для кого»</span></div>
+            <div class="bx am"><b>Для тебя</b><span>почти всё навсегда · срок есть · «для кого» = ты</span></div>
+          </div>
+          <div class="row">
+            <div class="bx"><b>Горизонт</b><span>навсегда для пары, не для галактики</span></div>
+            <div class="bx"><b>Смерть</b><span>навсегда для мира (записано), не для тебя (не заметишь)</span></div>
+            <div class="bx rd"><b>Название</b><span>«для кого» - единственное слово без ±</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что говорит физика</h3>
+          <p>Всё, что здесь можно измерить, измерено выше: горизонты с ±, сроки возврата с ±, срок жизни спрашивающего с ± (72 ± 15 лет по миру, если совсем честно). Остальное - конструкция серии: «навсегда» как свойство наблюдателя. Не физика. Мы.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s47">
+  <div class="content">
+    <div class="kicker">Навсегда · дверь</div>
+    <h2>Навсегда - длительность. Оно держится, пока длится «всегда»</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Грамматика последний раз.</b> «Навсегда» = «на всё время». Не «вне времени», а «на всё». Значит, оно внутри времени и длится ровно столько, сколько длится то «всё», которое имелось в виду. Чьё «всё»? Твоё: этот процесс, этот эон, этот шар. «Навсегда» - не абсолют, а до конца чьего-то «всегда».</li>
+          <li><b>Когда «всегда» кончается.</b> Кончается эон (Пенроуз: пустая бесконечная Вселенная неотличима от горячей точки, и начинается следующий). Кончается процесс (Пуанкаре: возврат). Кончается спрашивающий (его срок). Кончается тёмная энергия (горизонт отступает). Любой из этих концов закрывает «всегда», и вместе с ним закрывается «навсегда»: «не было» освобождается, свидетель приходит, событие снова «было».</li>
+          <li><b>Название читается третий раз.</b> Не приговор («не было и не будет»), не адрес («не было для тебя»), а срок: «не было, пока длится это навсегда». Точка между «не было» и «навсегда» - это не конец фразы, это дата.</li>
+          <li><b>Честно, что не закрывается:</b> «навсегда» нельзя доказать, потому что в бесконечном процессе бесконечны возможности. И нельзя опровергнуть, потому что покажет оно не тебе. Единственное, что известно точно: у слова есть срок, и он чей-то. Всё остальное - с ±.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/door_end.png" alt="">
+        <div class="pcap">Конец времени, тёмная равнина и одна открытая дверь с тёплым светом. Не обещание и не утешение. Просто «всегда» - это длительность, а у любой длительности есть последний момент, и за ним «навсегда» больше не действует.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ИТОГИ ============ -->
+<section class="slide" id="s48">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Все вбросы выпуска на одном слайде</h2>
+    <table class="t" style="font-size:12.5px">
+      <tr><th>Глава</th><th>Вброс</th><th>Что говорит физика (с ±)</th><th>Для кого</th></tr>
+      <tr><td>1. Не было</td><td class="d">«не было» - адрес без получателя; три вида: не случилось, не записано, не прочитано</td><td class="d">унитарность: сохранено 100%, доступно 0</td><td class="d">всегда для X, X скрыт или назван</td></tr>
+      <tr><td>2. Взгляд</td><td class="d">четыре уровня; свидетель - связность, не единица; петля с глубиной</td><td class="d">декогеренция измерена; уровень 4 без критерия</td><td class="d">тем сильнее «не было», чем выше свидетель</td></tr>
+      <tr><td>3. Смерть</td><td class="d">до - пустая полка, после - строка с записью; страх смотрит только вперёд</td><td class="d">граница смерти ± минуты, по договору</td><td class="d">для тебя одинаково, для мира нет</td></tr>
+      <tr><td>4. Возвращение</td><td class="d">атомы неразличимы, сборка неизбежна, копия - ты, промежутка нет</td><td class="d">неразличимость измерена; бесконечность не исключена</td><td class="d">субъективно ты не умрёшь: некому</td></tr>
+      <tr><td>5. Наука</td><td class="d">врёт там, где знает точно; объяснения - гости, измерения - библиотека</td><td class="d">α, два Хаббла, c по договору</td><td class="d">права навсегда - пока длится наше «всегда»</td></tr>
+      <tr><td>6. Свидетель</td><td class="d">всё чинит и всё обесценивает; не видит себя; без ± = гость и строка без запуска</td><td class="d">ничего измеримого; отложенный выбор - КМ, не он</td><td class="d">даже для него есть «не было»: он сам</td></tr>
+      <tr><td>7. Никогда</td><td class="d">одолженное слово; родилось с первой чертой; случается как событие; всегда интервал</td><td class="d">13.79 ± 0.02 млрд лет назад, «до» не определено</td><td class="d">некому сказать честно</td></tr>
+      <tr><td>8. Навсегда</td><td class="d">три удара, два выживших (горизонт и ты), длительность со сроком</td><td class="d">w = −1.03 ± 0.03; DESI 2024 не подтверждено</td><td class="d">для мира нет; для тебя почти всё; до конца чьего-то «всегда»</td></tr>
+    </table>
+    <div class="note">Сквозная мысль выпуска: <b>у «не было», «никогда» и «навсегда» одно и то же скрытое подлежащее, и это ты.</b> Ни одно из трёх слов не работает без «для кого», и как только «для кого» назван, у слова появляются дата и срок. Мир хранит всё и ничего не помнит. Ты помнишь немного и ненадолго. Разница между этими двумя - вся дека, и она не в мире.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s49">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <div class="kicker amber">Финал · свет по звону</div>
+    <h1>Оно не было ни для кого. Значит, для того, кто спросил</h1>
+    <p class="lead">Мы искали, кто смотрит, и нашли, что вопрос задаёт тот, кого ищем. «Не было» - адрес, «никогда» - дата, «навсегда» - срок, и у всех трёх один получатель. Это не тупик. Это единственное подлежащее, которое у нас есть, и оно с погрешностью в одну жизнь.</p>
+    <p class="lead" style="margin-top:14px">Навсегда - до конца всегда. А «всегда» - чьё-то. Пока оно длится, слово верно. Когда кончится, свидетель придёт, и «не было» освободится. Только не для того, кто спрашивал. Выпуск третий. Свет по звону, и на этот раз звон - вопрос.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- SLIDES_END -->
+
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>

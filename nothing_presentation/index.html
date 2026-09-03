@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ничего из ничего. Везде</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #9ec5ff; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Свет по звону · выпуск 4 · Гвендолин-ночные-лекции</div>
+    <h1>Ничего из ничего. Везде</h1>
+    <p class="lead">Лавуазье взвесил: ничто не возникает и не исчезает. Химия ответила: из тех же атомов - мокрое, солёное, живое и думающее, и ни один атом не изменился. Ничего нового не создано никогда, и всё новое появляется везде. Выпуск про то, из чего было, раз уж прошлый был про то, для кого.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s2">
+  <div class="content">
+    <div class="kicker">Правила выпуска</div>
+    <h2>Три колбы: пустая, с туманом и с галактикой</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/ch_rules.png" alt="">
+        <div class="pcap">Три колбы на одном столе. В первой ничего. Во второй ничего, которое кипит. В третьей из ничего собралось всё. Это три чтения названия, и дека идёт от первой колбы к третьей.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Чтение первое, закон.</b> Ничего из ничего: ex nihilo nihil fit, Лукреций, и через 1800 лет весы Лавуазье. Масса до реакции равна массе после. Не создано ни одного атома. Ни разу.</li>
+          <li><b>Чтение второе, переворот.</b> Ничего из ничего - везде: ничто нестабильно, вакуум кипит, из одних и тех же атомов получается всё, что мы знаем, включая нас. Свойства появляются из ничего в каждой реакции.</li>
+          <li><b>Чтение третье, дно.</b> Из чего состоит то, из чего всё состоит? Каждый ответ оказывался «из чего-то ещё». Дна нет, и посмотреть нельзя. «Везде» в этом чтении - направление: вверх всё из ничего, вниз ничего из чего-то.</li>
+          <li><b>Правила серии:</b> вброс, следствие, «а что если нет». Плашки только с ± и границей применимости (закон с прошлого выпуска). И три главы с вердиктом в названии, как «Для кого не было. Навсегда»: у каждой свой эпиграф.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">Долг</div>
+    <h2>Выпуск 3 нашёл, для кого. Остался вопрос, из чего</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Прошлый выпуск</b> кончился на спрашивающем: у «не было», «никогда» и «навсегда» одно скрытое подлежащее - тот, кто спросил. Свидетель найден. Но он из чего-то сделан, и «правильно склеенный материал» из главы про возвращение так и остался словами.</li>
+          <li><b>Этот выпуск - про клей.</b> Химия, а не физика: не что такое частица, а как из одинаковых частиц получается разное. Физика отвечает на «из чего», химия - на «почему тогда не всё одинаковое». Второй вопрос интереснее.</li>
+          <li><b>И одна честность вперёд, как всегда:</b> здесь больше открытых вопросов, чем в предыдущих трёх. Откуда хиральность, есть ли стрела сложности, где дно у материи, что такое «свойство» до того, как его кто-то ощутил. Ни один не закрыт, и мы не закроем. Только доведём до края.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/debt3.png" alt="">
+        <div class="pcap">Пустой стул из прошлого выпуска. На нём теперь силуэт из дрейфующих атомов. Он есть, и он из чего-то. Из чего - вот выпуск.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 1: ЗАКОН ============ -->
+<section class="slide chapter" id="s4">
+  <div class="bgimg"><img src="assets/ch_law.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1</div>
+    <h1>Закон: ничего из ничего</h1>
+    <p class="lead">Запаянная колба, огонь внутри и весы, которые не шелохнулись. Первый закон химии, старейший в науке и единственный, который она с тех пор не переписала, а только уточнила на десять знаков.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="content">
+    <div class="kicker">Закон · весы</div>
+    <h2>Лавуазье и Ломоносов: масса до равна массе после</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/sealed_flask.png" alt="">
+        <div class="pcap">Запаянная колба на весах, внутри горит. Пламя, дым, окалина, всё осталось внутри, и стрелка не сдвинулась. Так Лавуазье в 1789-м похоронил флогистон: горение ничего не выделяет, оно присоединяет кислород. Ломоносов написал то же в письме Эйлеру в 1748-м.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Формулировка.</b> В замкнутой системе сумма масс веществ до реакции равна сумме масс после. Что бы ни горело, ржавело, растворялось или взрывалось, атомы только меняют соседей. Ни один не появляется, ни один не пропадает.</li>
+          <li><b>Лукреций за 1800 лет до весов:</b> «из ничего ничто не творится» и «в ничто ничто не уходит». Философ угадал закон, химик его взвесил. Между ними - разница между вбросом и плашкой с ±.</li>
+          <li><b>Поправка Эйнштейна.</b> Масса не сохраняется абсолютно: энергия связи имеет массу, и продукты горения легче исходных веществ на E/c², примерно на 10⁻¹⁰. В ядерных реакциях это уже проценты. Закон переписан на «сохранение массы-энергии», и в этой форме не нарушался ни разу.</li>
+          <li><b>Вброс главы:</b> это единственный закон в деке, у которого нет «а что если нет». Всё, что дальше, живёт внутри него. Ничего из ничего - не гипотеза, а рамка, и весь выпуск - о том, как много помещается в рамку, где ничего не создаётся.</li>
+        </ul>
+        <div class="note gold" style="margin-top:8px"><b>Что говорит физика, с ±:</b> сохранение массы в химических реакциях проверено до 10⁻¹⁰ относительной точности (масс-спектрометрия); дефект массы в ядерных реакциях измерен и совпадает с E = mc² до 10⁻⁷ (Рейнвилл и др., 2005). Нарушений сохранения энергии в замкнутых системах не зарегистрировано.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="content">
+    <div class="kicker">Закон · переклейка</div>
+    <h2>Реакция - это не создание, а переклейка соседей</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Что происходит на самом деле.</b> Электроны внешних оболочек перераспределяются между атомами. Связь - это пара электронов, которую два ядра держат вместе. Реакция - когда пара переходит к другим ядрам. Всё. Ядра не трогаются, атомы не меняются, меняется только карта, кто с кем.</li>
+          <li><b>Энергия - тоже переклейка.</b> Горение даёт тепло не потому, что что-то «сгорело», а потому, что связи C-O и H-O крепче, чем C-H и O=O, и при переходе к более крепким разница уходит в тепло. Костёр - это не уничтожение дерева, а переезд электронов в более выгодные квартиры. Разница в аренде - и есть огонь.</li>
+          <li><b>Отсюда вся дека.</b> Если ничего не создаётся, а только переклеивается, то всё разнообразие мира - разнообразие способов склейки одних и тех же деталей. Мокрое, солёное, живое, думающее - это не новые вещества, а новые карты соседства. Вопрос выпуска: откуда тогда берутся свойства, если детали те же.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>До</b><span>CH₄ + 2O₂</span></div>
+            <div class="bx cy"><b>Переклейка</b><span>электроны меняют ядра</span></div>
+            <div class="bx"><b>После</b><span>CO₂ + 2H₂O</span></div>
+            <div class="bx am"><b>Разница аренды</b><span>890 кДж/моль в тепло</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что говорит физика, с ±</h3>
+          <p>Энергии связей табулированы: C-H 413, O=O 498, C=O 799, O-H 467 кДж/моль (± 1-3%). Теплота сгорания метана 890 ± 1 кДж/моль совпадает с разностью сумм связей с точностью до этих ±. То есть «огонь = разница аренды» - не метафора, а арифметика с табличными числами, и она сходится.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2: СКОЛЬКО БЫВАЕТ НИЧЕГО ============ -->
+<section class="slide chapter" id="s7">
+  <div class="bgimg"><img src="assets/ch_nothing.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2</div>
+    <h1>Сколько бывает ничего</h1>
+    <p class="lead">Вакуум, который кипит. Атом, пустой на 99.9999%. Катализатор, который ничего не даёт и без которого ничего не идёт. У программистов ничего бывает пяти видов, и они не равны. У химии примерно так же.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s8">
+  <div class="content">
+    <div class="kicker">Ничего · вакуум</div>
+    <h2>Вакуум: самое населённое место в физике</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Пустота не пустая.</b> Квантовое поле не может быть ровно в нуле: неопределённость запрещает. В каждой точке вакуума рождаются и исчезают пары частица-античастица, за время меньше 10⁻²¹ с. Их нельзя поймать, но их давление можно измерить: две пластины в вакууме притягиваются, потому что снаружи флуктуаций больше, чем между ними (эффект Казимира).</li>
+          <li><b>Вакуум давит на Вселенную.</b> Энергия пустоты - лучший кандидат на тёмную энергию, из-за которой расширение ускоряется. Ничего толкает всё. И тут главная нерешённая задача физики: расчётная энергия вакуума больше измеренной в 10¹²⁰ раз. Самое большое расхождение теории с опытом в истории науки, и оно про ничего.</li>
+          <li><b>Вброс:</b> «ничего из ничего» верно как закон и ложно как описание: ничего непрерывно производит что-то, только на время, короче любого взгляда. Ничего - не отсутствие, а самый быстрый процесс из всех. Мы называем это пустотой, потому что не успеваем посмотреть.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Что говорит физика, с ±</h3>
+          <table class="t">
+            <tr><th>Измерение</th><th>Результат</th></tr>
+            <tr><td>Эффект Казимира (Ламоро, 1997; Мохидин, 1998)</td><td class="d">совпадает с расчётом до 1%</td></tr>
+            <tr><td>Лэмбовский сдвиг (вакуум сдвигает уровни атома)</td><td class="d">1057.8 МГц, до 10⁻⁶</td></tr>
+            <tr><td>Аномальный магнитный момент электрона</td><td class="d">12 знаков, лучшее совпадение теории и опыта вообще</td></tr>
+            <tr><td>Плотность тёмной энергии</td><td class="d">(6.0 ± 0.2)·10⁻¹⁰ Дж/м³</td></tr>
+            <tr><td>Расчёт энергии вакуума из КТП</td><td class="d">больше на 10¹²⁰: «худшее предсказание в физике»</td></tr>
+          </table>
+          <p class="dim" style="margin-top:8px">Первые три строки: вакуум измерен и кипит. Последняя: мы не знаем, почему он кипит так слабо. Первое и последнее ничего - разные ничего.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s9">
+  <div class="content">
+    <div class="kicker">Ничего · внутри атома</div>
+    <h2>Атом пуст на 99.9999999999%, и это ничего держит форму</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/atom_void.png" alt="">
+        <div class="pcap">Собор размером с город, и в центре зёрнышко. Если ядро - горошина на стадионе, электроны - пыль на дальних трибунах, а всё между ними - ничего. Ты состоишь из этого ничего. Стул тоже. И ты на нём не проваливаешься.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Числа.</b> Радиус атома ~10⁻¹⁰ м, ядра ~10⁻¹⁵. По объёму ядро занимает 10⁻¹⁵ атома: одна квадриллионная. Если убрать пустоту из всех атомов человечества, останется кубик со стороной в пару сантиметров, весом 400 миллионов тонн.</li>
+          <li><b>Почему ты не проваливаешься сквозь стул.</b> Не потому, что атомы «твёрдые», а из-за двух ничего: электрического отталкивания оболочек и принципа Паули (два электрона не могут быть в одном состоянии). Твёрдость - это запрет, а не вещество. Ты сидишь на правиле.</li>
+          <li><b>И даже зёрнышко - пустое.</b> Протон на 99% состоит не из кварков, а из энергии их связи (глава 7 разберёт с числами). Из твоего веса на «вещество» приходится около процента. Остальное - возбуждённое ничего.</li>
+          <li><b>Вброс:</b> «ничего» бывает по крайней мере трёх сортов внутри одного атома: пустота между ядром и электронами (там нет ничего, кроме поля), запрет Паули (не вещь, а правило) и энергия связи (не вещь, а разница). Все три весят и держат. Ни одно не вещество.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s10">
+  <div class="content">
+    <div class="kicker">Ничего · катализатор</div>
+    <h2>Катализатор: ничего не даёт, ничего не берёт, без него ничего не идёт</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Определение.</b> Вещество, которое ускоряет реакцию и выходит из неё неизменным. Не расходуется, не входит в продукты, на весах Лавуазье не заметно. Платина в глушителе, железо в синтезе аммиака, фермент в каждой клетке. Формально - ничего: до и после его столько же и он тот же.</li>
+          <li><b>Что он делает на самом деле.</b> Реакция идёт через перевал (энергия активации). Катализатор не толкает, а прокладывает тоннель: даёт другой путь с перевалом ниже. Молекулы, которые без него ждали бы миллион лет, проходят за секунду. Он меняет не «что», а «как быстро», и это оказывается всем.</li>
+          <li><b>Жизнь - это катализ.</b> Ни одна реакция в тебе не идёт сама: ДНК не копируется, глюкоза не горит, белок не складывается без фермента. Ферментов у человека ~5000 видов, и они ускоряют реакции в 10⁶-10¹⁷ раз. Убери катализаторы, и вся химия тела остановится на тысячи лет, не изменив ни одной формулы. Ты - не набор веществ, а набор тоннелей.</li>
+          <li><b>Вброс:</b> самое важное в химии - то, чего на весах нет. Катализатор - «ничего» по балансу и «всё» по результату. Это второй сорт ничего в деке: не отсутствие вещества, а присутствие пути.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/catalyst.png" alt="">
+        <div class="pcap">Металлическая решётка, на которой молекулы приходят, меняются и уходят, а решётка остаётся. Процесс Габера: железо, азот, водород, и хлеб для половины человечества из воздуха. Железо при этом не потратилось ни на атом.</div>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:10px"><b>Что говорит физика, с ±:</b> ускорение ферментами измерено: оротидин-декарбоксилаза ускоряет свою реакцию в 10¹⁷ раз (без неё полураспад субстрата 78 млн лет, с ней 18 мс; Радзицка и Вольфенден, 1995). Катализатор в продуктах отсутствует с точностью аналитики (&lt; 10⁻⁶).</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s11">
+  <div class="content">
+    <div class="kicker">Ничего · инвентарь</div>
+    <h2>Пять сортов ничего, и они не равны, как null и undefined</h2>
+    <div class="cols">
+      <div>
+        <table class="t">
+          <tr><th>Ничего</th><th>Что это на самом деле</th><th>Весит</th><th>Держит</th></tr>
+          <tr><td>Вакуум</td><td class="d">поле в наинизшем состоянии, кипит парами</td><td class="d">да: тёмная энергия</td><td class="d">толкает Вселенную</td></tr>
+          <tr><td>Пустота атома</td><td class="d">поле между ядром и оболочкой</td><td class="d">нет</td><td class="d">форму и объём</td></tr>
+          <tr><td>Запрет Паули</td><td class="d">правило, не вещь</td><td class="d">нет</td><td class="d">твёрдость, стул, звёзды-карлики</td></tr>
+          <tr><td>Энергия связи</td><td class="d">разница, не вещь</td><td class="d">да: 99% массы протона, дефект массы ядер</td><td class="d">ядра, молекулы, тебя</td></tr>
+          <tr><td>Катализатор</td><td class="d">путь, не вещество</td><td class="d">да, но не расходуется</td><td class="d">всю живую химию</td></tr>
+          <tr><td>Инертный газ, растворитель</td><td class="d">присутствует и не участвует</td><td class="d">да</td><td class="d">среду, в которой всё происходит</td></tr>
+        </table>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>В JS</b> пять «ничего»: `null`, `undefined`, `0`, `NaN`, `""`, и `null == undefined` даёт true, а `null === undefined` false. Программисты 30 лет спорят, сколько ничего нужно языку. У химии та же беда: шесть сортов, и ни один не равен другому строго. «Нет вещества» не значит «нет массы», «не участвует» не значит «не нужен», «правило» весит как сталь.</li>
+          <li><b>Вброс главы:</b> «ничего» - не одно понятие, а класс с шестью реализациями, и все они что-то делают. Единственное ничего, которое ничего не делает, - логическое: отсутствие самого вопроса, unmarked state из выпуска 2. Оно в таблицу не входит, потому что его нельзя измерить, и потому что из него, единственного, действительно ничего не получается.</li>
+          <li><b>А что если нет:</b> может, «ничего» вообще не физическое слово, а слово про наши весы: то, что весы не видят, мы называем ничем. Тогда шесть сортов - это шесть слепых пятен одного прибора. Как в прошлом выпуске: «не было» - свойство спрашивающего. «Ничего» - свойство взвешивающего.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 3: СВОЙСТВА ИЗ НИЧЕГО ============ -->
+<section class="slide chapter" id="s12">
+  <div class="bgimg"><img src="assets/ch_props.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3</div>
+    <h1>Свойства из ничего</h1>
+    <p class="lead">Водород не мокрый. Кислород не мокрый. Вода мокрая. Ни один атом не изменился. Химия соблюдает «ничего из ничего» на уровне массы и нарушает его на уровне свойств в каждой реакции. Это и называется эмерджентность, и это главная тема выпуска.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s13">
+  <div class="content">
+    <div class="kicker">Свойства · вода</div>
+    <h2>Мокрое из двух сухих газов</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/ch_props.png" alt="">
+        <div class="pcap">Капля между двумя невидимыми газами. Водород горит, кислород поддерживает горение, вместе они тушат огонь. У капли есть поверхностное натяжение, точка кипения, способность растворять и смачивать. Ни у H, ни у O ничего этого нет.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Откуда мокрость.</b> Молекула воды - уголок 104.5°, с плюсом на водородах и минусом на кислороде. Молекулы цепляются друг за друга водородными связями, и из этого сцепления рождается всё: капля держит форму, лёд легче воды, кипение при 100°, а не при −80°, как положено молекуле такого веса. Свойство есть у толпы, и его нет у одной молекулы: одна молекула воды не мокрая.</li>
+          <li><b>Это и есть эмерджентность.</b> Свойство целого, которого нет ни у одной части и которое не сводится к сумме частей. Не мистика: оно вычисляется из взаимодействий, но не содержится в компонентах. Мокрость - в геометрии угла и в правилах соседства, а не в водороде.</li>
+          <li><b>Вброс:</b> «ничего из ничего» - закон для вещества и не закон для свойств. Свойства возникают из ничего в буквальном смысле: их не было ни в одном атоме, и они есть. Химия - машина, которая производит новое, не создавая ничего. Единственный законный способ нарушить Лавуазье.</li>
+          <li><b>А что если нет:</b> редукционист скажет, что мокрость «была» в уравнении Шрёдингера для H и O с самого начала, просто мы её не видели. Тогда ничего нового не появляется, а только проявляется, как код в выпуске 2. Спор не решён и не решится: он о слове «было», а не о воде.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s14">
+  <div class="content">
+    <div class="kicker">Свойства · соль</div>
+    <h2>Съедобное из двух ядов: NaCl</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Натрий:</b> мягкий металл, взрывается в воде, разъедает кожу. <b>Хлор:</b> жёлто-зелёный газ, оружие Первой мировой. <b>Вместе:</b> соль, без которой нервный импульс не идёт, а суп невкусный. Ни одно свойство соли не является свойством натрия или хлора. Солёность появилась из ничего.</li>
+          <li><b>Почему.</b> Натрий отдал электрон, хлор взял, получились ионы, а ион - не атом: у него другая оболочка, другой размер, другая химия. Кристалл соли - решётка из чередующихся зарядов, и «солёный вкус» - реакция твоего рецептора на ион натрия, которого в металлическом натрии в этом смысле нет.</li>
+          <li><b>Список бесконечен.</b> Углерод: сажа и алмаз, одни атомы, разная склейка. Кислород и озон. Белок: цепочка из 20 одинаковых видов бусин, и в зависимости от порядка - яд кобры или инсулин. Все свойства мира - в порядке, а не в бусинах. Ничего в бусинах, всё в порядке.</li>
+          <li><b>Вброс:</b> тогда «вещество» - неудачное слово. Веществ нет, есть паттерны. Атом - паттерн из трёх частиц, молекула - паттерн атомов, ты - паттерн молекул. «Из чего сделано» - вопрос про нижний уровень паттерна, а свойства живут на каждом уровне отдельно и вниз не передаются. Мокрость не спускается к кислороду. Мысль не спускается к нейрону.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/salt_crystal.png" alt="">
+        <div class="pcap">Кубик соли между призраком металла и призраком газа. Кристалл спокоен и безвреден, родители - нет. Свойство «безвредно» возникло при склейке и исчезнет при разборке.</div>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:10px"><b>Что говорит физика, с ±:</b> энергия решётки NaCl 787 ± 2 кДж/моль, измерена по циклу Борна-Габера, и именно она делает соль стабильной там, где Na и Cl по отдельности не стабильны. Ионный радиус Na⁺ 1.02 Å против атомного 1.86 Å: ион - действительно другой объект, и это измерено рентгеном.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s15">
+  <div class="content">
+    <div class="kicker">Свойства · лестница</div>
+    <h2>Лестница эмерджентности: на каждой ступени новое из ничего</h2>
+    <div class="dg">
+      <div class="row">
+        <div class="bx"><b>Кварки</b><span>нет массы почти, нет цвета в нашем смысле</span></div>
+        <div class="bx"><b>Протон</b><span>масса из ничего: 99% - энергия связи</span></div>
+        <div class="bx cy"><b>Атом</b><span>размер, химия: у ядра их нет</span></div>
+        <div class="bx cy"><b>Молекула</b><span>форма, полярность, запах</span></div>
+        <div class="bx am"><b>Вещество</b><span>мокрость, твёрдость, цвет, вкус</span></div>
+        <div class="bx am"><b>Клетка</b><span>жизнь: у молекул её нет</span></div>
+        <div class="bx rd"><b>Мозг</b><span>«каково это»: ни у одного нейрона</span></div>
+      </div>
+    </div>
+    <div class="cols" style="margin-top:16px">
+      <div>
+        <ul class="pts">
+          <li><b>Правило лестницы.</b> Свойство каждой ступени не содержится в предыдущей и не передаётся вниз. Запах розы - у молекулы, не у атомов. Жизнь - у клетки, не у белков. Нигде на лестнице не добавлено ни одной частицы, и на каждой ступени добавлено свойство.</li>
+          <li><b>Где ступени особенные.</b> Две: протон (масса из энергии, физика это умеет считать) и мозг (опыт из вычисления, никто не умеет). Между ними - химия, которая считает всё: точки кипения, цвета, вкусы, из уравнений. Химия - единственная наука, которая всерьёз умеет эмерджентность, и поэтому выпуск химический.</li>
+          <li><b>Вброс:</b> «везде» из названия - это лестница. Ничего из ничего работает на каждой ступени одинаково: масса вниз, свойство вверх. И вопрос выпуска 3 возвращается ровно на верхней ступени: «каково это» - последнее свойство из ничего, и единственное, для которого нет уравнения.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Что говорит физика, с ±</h3>
+        <p>Точка кипения воды из первых принципов (ab initio молекулярная динамика) воспроизводится с ошибкой ~5-10 K; плотность льда и воды, аномалия при 4°C - воспроизводятся. Цвет золота (релятивистское сжатие 6s-орбитали) рассчитан и совпадает с наблюдаемым спектром. Складывание белка предсказано AlphaFold с точностью ~1 Å для большинства структур (2021). Верхняя ступень: ноль расчётов, ноль ±, ноль критериев. Вся лестница считается, кроме последней.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 4: ЖИЗНЬ ИЗ НИЧЕГО ============ -->
+<section class="slide chapter" id="s16">
+  <div class="bgimg"><img src="assets/ch_life.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4</div>
+    <h1>Жизнь из ничего</h1>
+    <p class="lead">Колба с мутной водой, искры, неделя. И аминокислоты, из которых сделаны все белки на Земле. Никто не добавил ни атома. Самая большая эмерджентность из известных, и три открытых вопроса внутри неё.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s17">
+  <div class="content">
+    <div class="kicker">Жизнь · колба</div>
+    <h2>Миллер и Юри, 1953: кирпичи жизни за неделю из газа и искры</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Опыт.</b> Метан, аммиак, водород, вода (гипотетическая атмосфера ранней Земли), стеклянная петля, разряды вместо молний. Через неделю в колбе - 5 аминокислот. Повторный анализ проб Миллера в 2008 году современными методами нашёл 22. Позже, с другими смесями, получили нуклеотиды, сахара, липиды. Всё, из чего сделана клетка, делается само, если дать энергию и время.</li>
+          <li><b>Что это доказывает и что нет.</b> Доказывает: химия жизни - обычная химия, не нужен ни особый «жизненный» элемент (витализм умер), ни редкие условия. Не доказывает: как из супа получилась первая клетка. Между аминокислотами и жизнью - пропасть, которую за 70 лет сузили, но не перешли.</li>
+          <li><b>Где ещё нашли.</b> В метеоритах (Мурчисон, 1969: 70+ аминокислот, включая внеземные), в межзвёздных облаках (спектры: формальдегид, гликольальдегид, этанол), на Энцеладе и Титане. Кирпичи жизни - самый обычный продукт космической химии. Ничего редкого. Везде.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Что говорит химия, с ±</h3>
+          <table class="t">
+            <tr><th>Что получено абиогенно</th><th>Год · выход</th></tr>
+            <tr><td>Аминокислоты (глицин, аланин...)</td><td class="d">1953 · до 2% углерода, 22 вида (2008)</td></tr>
+            <tr><td>Аденин из HCN</td><td class="d">Оро, 1961 · до 0.5%</td></tr>
+            <tr><td>Нуклеотиды РНК целиком</td><td class="d">Сазерленд, 2009 · десятки %</td></tr>
+            <tr><td>Липидные пузырьки (протоклетки)</td><td class="d">Шостак, 2000-е · самосборка</td></tr>
+            <tr><td>Самокопирующаяся РНК-полимераза</td><td class="d">Джойс, 2009-2021 · копирует себя, с ошибками</td></tr>
+            <tr><td>Живая клетка из неживого</td><td class="d">нет · открыто</td></tr>
+          </table>
+          <p class="dim" style="margin-top:8px">Последняя строка - честная. Все кирпичи есть, здание никто не собрал. Синтетическая клетка Вентера (2010) - пересадка синтезированного генома в живую оболочку, не сборка с нуля.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s18">
+  <div class="content">
+    <div class="kicker">Жизнь · порядок сам</div>
+    <h2>Белоусов и Жаботинский: реакция, которая рисует спирали</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/bz_spirals.png" alt="">
+        <div class="pcap">Спиральные волны в чашке: реакция Белоусова-Жаботинского. Раствор меняет цвет с синего на красный и обратно, десятки раз, волнами. Химия должна идти к равновесию и остановиться. Эта идёт кругами и рисует. Белоусову в 1951-м отказали в публикации: «такого не бывает».</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Почему это шок.</b> Второе начало: всё стремится к равновесию, к однородной серой жиже. А тут из однородной жижи сами возникают узоры, ритмы, волны. Пригожин назвал это диссипативными структурами и получил Нобеля (1977): порядок возникает из беспорядка, если через систему течёт энергия и она далеко от равновесия. Ячейки в кипящем масле, торнадо, ты.</li>
+          <li><b>Автокатализ.</b> Ключ к БЖ и к жизни: продукт реакции ускоряет саму реакцию. Чем больше получилось, тем быстрее получается. Это единственный известный способ, которым химия «размножается» без ДНК, и гипотеза происхождения жизни (Кауфман, Айген) - автокаталитический набор, который сам себя поддерживает. Из выпуска 2: край хаоса.</li>
+          <li><b>Вброс:</b> порядок из ничего - не нарушение второго начала, а его следствие при потоке энергии. Мёртвая химия умеет самоорганизовываться, и ей для этого не нужно ничего, кроме градиента. Жизнь - не исключение из химии, а её самый затянувшийся узор. Глава 6 спросит, кому мы за это должны.</li>
+        </ul>
+        <div class="note gold" style="margin-top:8px"><b>Что говорит физика, с ±:</b> период колебаний БЖ 30-120 с (± секунды, зависит от концентраций), скорость волн ~1 мм/мин; модель «орегонатор» (1974) воспроизводит их количественно. Ячейки Бенара возникают при числе Рэлея 1708 ± 1%, предсказано и измерено.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s19">
+  <div class="content">
+    <div class="kicker">Жизнь · хиральность</div>
+    <h2>Левая закрутка: свойство, которое взялось из ничего и не должно было</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Факт.</b> Аминокислоты бывают левые и правые, зеркальные, с одинаковой химией. В колбе Миллера получается 50 на 50. Во всём живом на Земле - только левые аминокислоты и только правые сахара. Ни одного исключения за 4 миллиарда лет. Правый белок в тебе не работает.</li>
+          <li><b>Почему это проблема «ничего из ничего».</b> Из симметричной смеси симметричными реакциями нельзя получить асимметрию: это теорема. Значит, где-то была затравка, и мы не знаем где. Кандидаты: поляризованный свет звёзд в облаке, где рождалась Солнечная система (в метеоритах найден небольшой перевес левых, 1-15%); слабое взаимодействие (единственная асимметричная сила, но эффект 10⁻¹⁷); случайность, усиленная автокатализом (первая молекула, которая размножилась, была левой, и всё). Все три не исключены, ни одна не подтверждена.</li>
+          <li><b>Вброс:</b> хиральность - самое маленькое свойство из ничего в деке и самое неудобное. Мокрость и солёность выводятся. Левая закрутка не выводится ниоткуда: она либо случайна, либо пришла извне. Если случайна, то на другой планете жизнь правая, и мы это когда-нибудь проверим. Если извне, то первое свойство жизни ей не принадлежит.</li>
+          <li><b>Открытый вопрос №1 выпуска.</b> Без ответа с 1848 года, когда Пастер разделил кристаллы винной кислоты пинцетом и обнаружил, что живое делает только одну из двух.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/chirality.png" alt="">
+        <div class="pcap">Две зеркальные молекулы: одна живая, вторая инертная. Химически они неотличимы. Жизнь выбрала одну и не объяснила почему.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 5: ЭВОЛЮЦИЯ ЕСТЬ ДЕГРАДАЦИЯ ============ -->
+<section class="slide chapter" id="s20">
+  <div class="bgimg"><img src="assets/ch_degrade.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5 · пять вопросов без ответа</div>
+    <h1>Эволюция есть деградация</h1>
+    <p class="lead">Совершенная сфера трескается, и каждый осколок становится чем-то: звездой, кристаллом, листом, рукой. Всё, что мы называем развитием, началось с того, что нечто перестало быть тем, чем было. Заголовок - утверждение. Содержимое - вопросы.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s21">
+  <div class="content">
+    <div class="kicker">Деградация · вопрос 1</div>
+    <h2>Деградация чего? Симметрии</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Тезис.</b> Самое совершенное состояние Вселенной было в первые 10⁻¹² секунды: одно поле, одна сила, ничего не отличено ни от чего. Всё, что случилось потом, - последовательность потерь. Отделилась гравитация, потом сильное взаимодействие, потом электрослабое распалось на два; плазма деградировала в атомы, облако - в звёзды, звёзды - в планеты, химия - в жизнь. На каждом шаге мир переставал быть тем, чем был. Сложность в этой оптике - не приобретение, а осколки.</li>
+          <li><b>Физика называет это нарушением симметрии</b> и считает главным механизмом всего: без него нет массы, нет атомов, нет нас. Слово «нарушение» - честное: симметричное состояние было «выше», и его потеряли.</li>
+          <li><b>Вопрос:</b> есть ли исходное, относительно которого мы деградировали? Или оно - unmarked state из выпуска 2, где нечему было быть, и «деградация» - это просто первая черта, а с неё началось всё, включая слово «деградация»? Если исходного нет, то тезис не имеет точки отсчёта. Если есть, то мы - его руины.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>10⁻⁴³ с</b><span>одна сила, одна симметрия</span></div>
+            <div class="bx"><b>10⁻³⁶ с</b><span>отделилась гравитация</span></div>
+            <div class="bx cy"><b>10⁻¹² с</b><span>Хиггс: масса, электрослабый распад</span></div>
+            <div class="bx cy"><b>380 000 лет</b><span>атомы: плазма «остыла»</span></div>
+            <div class="bx am"><b>10⁹ лет</b><span>звёзды, элементы</span></div>
+            <div class="bx rd"><b>10¹⁰ лет</b><span>химия, жизнь, ты</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что говорит физика, с ±</h3>
+          <p>Электрослабое нарушение симметрии: измерено через бозон Хиггса (масса 125.1 ± 0.1 ГэВ) и массы W и Z (80.4 и 91.2 ГэВ, ± 0.01). Рекомбинация в атомы: 380 000 ± 1000 лет после Большого взрыва, по реликтовому излучению. Великое объединение при 10¹⁶ ГэВ - не измерено, экстраполяция. Всё, что «до», - модель без ±.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s22">
+  <div class="content">
+    <div class="kicker">Деградация · вопрос 2</div>
+    <h2>Почему второе начало производит сложность, если должно её уничтожать</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Тезис.</b> Химически каждая реакция - спуск: к минимуму энергии, вниз по градиенту. Жизнь - не исключение, а ускоритель: она сжигает солнечный градиент быстрее камня и производит энтропию эффективнее костра. С точки зрения второго начала мы - самый эффективный деградатор на планете. Дерево превращает свет в тепло лучше, чем скала; ты лучше, чем дерево; цивилизация лучше всех.</li>
+          <li><b>Данные.</b> На каждый бит порядка, который ты создаёшь (мысль, белок, эта дека), ты выбрасываешь в среду ~10⁴ бит энтропии в виде тепла. Земля получает от Солнца концентрированный свет и излучает в космос рассеянное тепло, 20 фотонов на каждый полученный. Жизнь - это способ Земли деградировать солнечный свет быстрее.</li>
+          <li><b>Вопрос:</b> Пригожин показал, как (диссипативные структуры: при потоке энергии порядок возникает сам, потому что он быстрее рассеивает). Никто не показал, почему: почему из всех способов рассеять градиент Вселенная выбирает те, что выглядят как жизнь и мозг? Гипотеза «максимального производства энтропии» (Свенсон, Дьюар) - не доказана и спорна. Второе начало объясняет, что мы деградируем. Оно не объясняет, почему при этом мы думаем.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Что говорит физика, с ±</h3>
+          <table class="t">
+            <tr><th>Деградатор</th><th>Производство энтропии</th></tr>
+            <tr><td>Голая скала на солнце</td><td class="d">~1 (эталон)</td></tr>
+            <tr><td>Лес</td><td class="d">выше в 1.3-1.5 раза (по температуре поверхности, спутники)</td></tr>
+            <tr><td>Человек, 100 Вт при 310 К</td><td class="d">~0.3 Вт/К; на бит мысли ~10⁴ бит тепла</td></tr>
+            <tr><td>Земля целиком</td><td class="d">получает 1 фотон 6000 К, отдаёт ~20 фотонов 300 К</td></tr>
+          </table>
+          <p class="dim" style="margin-top:8px">Числа с ± в десятки процентов; направление везде одно. Гипотеза максимального производства энтропии - без ±, потому что без общепринятой формулировки.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s23">
+  <div class="content">
+    <div class="kicker">Деградация · вопрос 3</div>
+    <h2>Есть ли стрела к сложности, или пьяный шатается от стенки</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/drunkard.png" alt="">
+        <div class="pcap">Гулд, «Полный дом» (1996): пьяный идёт по тротуару, слева стена, справа открытая дорога. Он не идёт вправо, он шатается случайно, но упереться может только в стену. Со стороны кажется, что он движется от стены. Так и сложность: минимум есть (бактерия), максимума нет, и распределение расползается вправо само, без всякой стрелы.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>За деградацию.</b> Эволюция теряет больше, чем находит. Мы утратили синтез витамина C, две трети обонятельных генов, хвост, шерсть, силу челюстей. Пещерные рыбы теряют глаза за тысячи поколений. Паразиты теряют органы, вплоть до «мешка с яйцами». Домашние животные теряют мозг: у собаки на 20-30% меньше, чем у волка. Специализация - это закрытие дверей: каждая ветвь теряет варианты, не приобретая. Большинство видов, когда-либо живших, вымерло: 99.9%.</li>
+          <li><b>За эволюцию.</b> Информация в геномах измеримо копится: от 10⁶ пар у бактерии до 10⁹ у нас (хотя у лука 10¹⁰, и это ломает аргумент). Кауфман: на краю хаоса сложность растёт сама. Шайссон: плотность потока энергии на грамм растёт от звёзд к мозгу к чипу монотонно, 10⁻⁴ → 10⁴ Вт/кг.</li>
+          <li><b>Вопрос:</b> растёт ли сложность «вообще», или только в глазах того, кто сам сложный и ставит себя в конец шкалы? Бактерии по биомассе, числу и выживаемости - победители эволюции без конкуренции. Если мерить не сложностью, а успехом, стрела показывает на них, а мы - осколок с высокой энтропией. Не решено, и мерить нечем: общепринятой меры сложности нет.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s24">
+  <div class="content">
+    <div class="kicker">Деградация · вопрос 4</div>
+    <h2>Что деградирует через нас, и заметит ли оно</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Тезис.</b> Если жизнь - ускоренная деградация солнечного градиента, то мы - не субъект, а инструмент. Солнце деградирует в тепло через нас, как вода через турбину. Турбина не «хочет» крутиться, она стоит там, где поток. Мы стоим там, где градиент, и потому «стремимся»: к еде, к теплу, к смыслу. Стремление - имя, которое поток дал своему руслу.</li>
+          <li><b>Прецедент: пещерная рыба.</b> Глаза стоят энергии; в темноте это налог без пользы; за 10-20 тысяч поколений глаза исчезают. Никто их не «отнял»: просто рыбы без глаз тратили меньше и оставляли больше потомков. Деградация - это не поломка, а экономия. И «прогресс» - та же экономия в другую сторону: мозг, который окупается.</li>
+          <li><b>Вопрос:</b> кто заметит, когда мы кончимся? Солнце - нет, оно найдёт другое русло или не найдёт, ему всё равно (мёртвая система, глава 6). Следующий деградатор - ИИ, который сжигает градиент быстрее нас (дата-центр на грамм рассеивает больше мозга), - возможно, заметит, но он уже не мы. Вопрос из выпуска 3, «для кого», здесь получает термодинамический вид: для кого деградация, если деградатор сменился.</li>
+          <li><b>А что если нет:</b> «инструмент» - тоже оптика. Турбина не задаёт вопросов о турбинах. Мы задаём, и это либо побочный эффект русла, либо признак, что русло - не всё описание. Панпсихизм из выпуска 3 и здесь стоит в дверях.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/cave_fish.png" alt="">
+        <div class="pcap">Слепая пещерная рыба: глаза были и исчезли, потому что стали стоить дороже, чем приносили. Эволюция не строит, она экономит. Иногда экономия выглядит как прогресс, иногда как это.</div>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:10px"><b>Что говорит биология, с ±:</b> Astyanax mexicanus: потеря глаз за ~20 000 лет (± 10 000), экономия ~15% энергии мозга. Потеря синтеза витамина C у приматов: ген GULO сломан ~61 млн лет назад (± 5). Обонятельные гены человека: ~400 рабочих из ~1000 (у мыши ~1100 рабочих). Мозг собаки против волка: −20-30% по объёму при той же массе тела.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s25">
+  <div class="content">
+    <div class="kicker">Деградация · вопрос 5</div>
+    <h2>Тепловая смерть - деградация для нас. Эволюция для кого</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Вброс.</b> Никто не может отрицать, что тепловая смерть не есть эволюция для тех, кто нас заменит. Отсутствие тепла для кого-то может быть как отсутствие кислорода для анаэробов.</li>
+          <li><b>Прецедент, буквальный.</b> 2.4 млрд лет назад цианобактерии начали выделять кислород. Для всей тогдашней жизни это был яд: кислородная катастрофа, массовое вымирание анаэробов, ржавление океанов. Для нас - единственное условие существования. Одно и то же событие: катастрофа для одних, эволюция для других, разница только в «для кого». Выпуск 3 в чистом виде.</li>
+          <li><b>И у холода есть физика в его пользу.</b> Ландауэр: стереть бит стоит kT·ln2. Чем холоднее, тем дешевле думать. При 300 К бит стоит 3·10⁻²¹ Дж, при 10⁻³ К - в 300 000 раз дешевле. Дайсон (1979): разум, который замедляет мышление вместе с остыванием Вселенной, может думать бесконечно долго на конечной энергии. Тепловая смерть для такого разума - не смерть, а самая дешёвая среда из возможных. Мы, тёплые, для него - шумный и дорогой ранний период, как для нас кипящая плазма.</li>
+          <li><b>Вопрос:</b> кто это будет? Не мы (нам нужно 310 К и градиент). Не ИИ на кремнии (ему тоже нужен градиент, только меньше). Что-то, что мы не умеем себе представить, потому что представляем тёплым. Если кислородная катастрофа - образец, ответ такой: те, кого мы сейчас считаем мусором или помехой. Или те, кого ещё нет, потому что для них ещё слишком тепло.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Что говорит физика, с ±</h3>
+          <table class="t">
+            <tr><th></th><th>Значение</th></tr>
+            <tr><td>Кислородная катастрофа</td><td class="d">2.43 ± 0.03 млрд лет назад, O₂ с 10⁻⁵ до 10⁻² атм</td></tr>
+            <tr><td>Предел Ландауэра при 300 К</td><td class="d">2.9·10⁻²¹ Дж/бит, измерен (Берю, 2012, ± 10%)</td></tr>
+            <tr><td>Температура реликтового фона сейчас</td><td class="d">2.725 ± 0.001 К</td></tr>
+            <tr><td>Через 10¹⁰⁰ лет</td><td class="d">~10⁻³⁰ К; предел де Ситтера ~10⁻³⁰ К не даёт остыть ниже: у Дайсона есть потолок</td></tr>
+            <tr><td>Бесконечное мышление по Дайсону</td><td class="d">возможно без тёмной энергии; с ней - конечное число мыслей (Краусс, Старкман, 2000)</td></tr>
+          </table>
+          <p class="dim" style="margin-top:8px">Вброс держится наполовину: холод правда дешевле, но тёмная энергия ставит пол температуры и потолок мыслям. Сколько именно - зависит от w, а его ± мы обсуждали в прошлом выпуске.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 6: ДОЛГ МЁРТВОЙ СИСТЕМЕ ============ -->
+<section class="slide chapter" id="s26">
+  <div class="bgimg"><img src="assets/ch_debt.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6</div>
+    <h1>Долг мёртвой системе</h1>
+    <p class="lead">Ликвид коллектора: мы живём в долг, но только потому, что отдаём этот долг по частям, а не всей суммой сразу. Реакции существуют, случаются, и вся их система мертва. Из неё мы. Ей мы должны всё, и ей ничего не нужно.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s27">
+  <div class="content">
+    <div class="kicker">Долг · мёртвое строго</div>
+    <h2>Реакция не знает, что происходит</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Что значит «мёртвая система».</b> Кислород не хочет соединиться с водородом. Электрон не выбирает орбиталь. Катализатор не помогает. Ни у одной реакции нет «для кого» внутри: это уровень 1 из выпуска 3, взаимодействие без взгляда. Вся химия - процессы без «кого». Включая ту, из которой мы сделаны.</li>
+          <li><b>Из мёртвого получилось живое, не изменив ни правила.</b> Ни одна реакция в тебе не отличается от той же реакции в пробирке. Ферменты те же законы, что и платина в глушителе. Между костром и клеткой нет ни одной новой силы, ни одного нового закона, ни одной живой молекулы. Есть только порядок, в котором мёртвые реакции стоят друг за другом.</li>
+          <li><b>Вброс:</b> мы должны мёртвой системе всё: тело, мозг, этот текст. И вернуть нечем, потому что ей ничего не нужно. Долг, который невозможно отдать, потому что у кредитора нет счёта. Она не заметила, что дала. Не заметит, что вернули.</li>
+          <li><b>А что если нет:</b> панпсихизм, третий раз в серии. Если у реакции есть капля взгляда, система не мертва, а спит, и долг не долг, а наследство. Проверить нельзя, и в этой главе мы живём в мёртвом варианте, потому что в нём есть что спрашивать.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Реакция</b><span>нет «для кого» · уровень 1</span></div>
+            <div class="bx"><b>Тысяча реакций</b><span>всё ещё нет</span></div>
+            <div class="bx cy"><b>Порядок реакций</b><span>обмен веществ · всё ещё те же законы</span></div>
+            <div class="bx am"><b>Замкнутый порядок</b><span>клетка · «для кого» появляется?</span></div>
+            <div class="bx rd"><b>Ты</b><span>должен всё уровню 1</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что говорит химия, с ±</h3>
+          <p>Ни одна реакция метаболизма не нарушает ни термодинамику, ни кинетику пробирки: константы равновесия и скорости совпадают in vivo и in vitro в пределах ± условий (pH, температура, концентрации). Витализм умер в 1828-м (Вёлер) и не воскресал: ни одного «живого» вещества не найдено за 200 лет поисков.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s28">
+  <div class="content">
+    <div class="kicker">Долг · равновесие</div>
+    <h2>Равновесие - это смерть, и все реакции идут туда</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/equilibrium.png" alt="">
+        <div class="pcap">Пруд без ряби. Ничего не движется, все градиенты выровнены, температура одна, концентрации одни. Это не покой, это равновесие: точка, куда идёт любая реакция, и где больше не идёт ничего. Химическое определение смерти.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Куда идут реакции.</b> К минимуму свободной энергии. Там прямая и обратная скорости равны, и снаружи всё стоит. Труп через несколько дней при комнатной температуре - система, пришедшая в равновесие со средой. Живой организм - система, которая держится от равновесия на расстоянии: температура 310 К при 290 снаружи, калий внутри клетки в 30 раз выше, чем снаружи, pH другой. Каждый градиент стоит энергии каждую секунду.</li>
+          <li><b>Долг в термодинамическом смысле, буквально.</b> Мы берём порядок взаймы (у Солнца, у еды, у градиента) и возвращаем энтропией. Шрёдингер (1944): живое питается отрицательной энтропией. Каждый вдох - платёж по кредиту, который закроется весь и разом, когда платежи остановятся. Мёртвая система терпелива: она получит всё, и ей всё равно когда.</li>
+          <li><b>Вброс:</b> жизнь - не исключение из стремления к равновесию, а его отсрочка. Мы - реакция, которая нашла способ не доходить до конца четыре миллиарда лет, передавая незакрытый долг дальше. Размножение - рефинансирование: старый заёмщик закрывается, новый берёт ту же сумму. И ни на одном шаге система не ожила. Ожил долг.</li>
+        </ul>
+        <div class="note gold" style="margin-top:8px"><b>Что говорит физика, с ±:</b> градиент K⁺ через мембрану 140 мМ внутри / 5 мМ снаружи, на его поддержание уходит ~20-30% энергии покоя (Na/K-АТФаза). Время прихода трупа к температуре среды: ~1°C в час первые 12 часов (± 0.3, судебная медицина). Свободная энергия АТФ при клеточных условиях −50 ± 5 кДж/моль, тратится ~65 кг АТФ в сутки на взрослого: столько весит весь кредит за день.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s29">
+  <div class="content">
+    <div class="kicker">Долг · ликвид коллектора</div>
+    <h2>Дыхание - это горение по частям</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Лавуазье, 1780:</b> «Дыхание - это медленное горение». Он измерил: морская свинка выделяет столько же тепла на единицу CO₂, сколько горящий уголь. Реакция та же: глюкоза плюс кислород дают углекислый газ, воду и 2870 кДж на моль. В костре и в тебе. Число одно.</li>
+          <li><b>Разница только в графике платежей.</b> Костёр отдаёт всю сумму за минуту, одним пламенем при 800°. Ты - за 80 лет, через сорок ферментативных ступеней, по 30 кДж за шаг, при 37°, и каждый шаг заряжает молекулу АТФ, а не греет воздух. Заплатить всей суммой сразу - это и называется сгореть.</li>
+          <li><b>Эпиграф главы, дословно:</b> мы живём в долг, но только потому, что отдаём его по частям, а не всей суммой сразу. Единственная разница между живым и горящим - рассрочка. Мёртвая система принимает и так и так: сумма одинаковая, и она её получит.</li>
+          <li><b>Вброс:</b> тогда обмен веществ - это не «жизнь против энтропии», а энтропия в рассрочку. Мы не сопротивляемся мёртвой системе, мы платим ей помедленнее и на сдачу успеваем подумать. Каждая мысль - процент, который набежал, пока платёж шёл по ступеням. Долг не наш. Проценты - наши.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/installments.png" alt="">
+        <div class="pcap">Одна реакция, две кривые. Красная: горение, вся энергия за минуту. Зелёная: дыхание, та же энергия сорока ступенями. Площадь под кривыми одинаковая. Всё, что мы называем жизнью, - зелёная ломаная, и её ступени - это ты.</div>
+      </div>
+    </div>
+    <div class="note" style="margin-top:10px"><b>Что говорит физика, с ±:</b> ΔH сгорания глюкозы −2803 ± 5 кДж/моль (калориметрия), ΔG −2870; выход в клетке ~30-32 АТФ по ~50 кДж = ~1600 кДж полезной работы, КПД ~35-40% (± 5), остальное тепло, как у костра. Лавуазье измерял с точностью ~10% и получил совпадение, для 1780 года это и есть ±.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 7: НИЧЕГО ДЛЯ ВСЕГО. НАВСЕГДА ============ -->
+<section class="slide chapter" id="s30">
+  <div class="bgimg"><img src="assets/ch_alchemy.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 7</div>
+    <h1>Ничего для всего. Навсегда</h1>
+    <p class="lead">Материя обязана пустоте своим бытием на 100%. Алхимия сбылась: свинец в золото переводят в реакторах штатно, по цене в квадриллион за унцию. Одно и то же ничего перекладывается во всё, и это единственное, что навсегда.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s31">
+  <div class="content">
+    <div class="kicker">Всего · протон</div>
+    <h2>Ты весишь пустотой на 99%</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/proton_mass.png" alt="">
+        <div class="pcap">Из чего масса протона по решёточной хромодинамике: кварки, которым Хиггс дал массу, - 1%. Остальное - кинетическая энергия кварков, энергия глюонного поля и квантовая аномалия. Три четверти твоего веса - это не вещи, а движение и поле внутри ничего.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Эпиграф главы:</b> материя обязана пустоте своим бытием на 100%. Округление на один процент: 99 по измерению, и этот процент - Хиггс. Он даёт массу кваркам и электронам, но не тебе. Тебя весят глюоны, а глюоны - это возбуждённый вакуум, удерживающий три почти невесомых кварка в клетке размером 10⁻¹⁵ м. Клетка тяжелее заключённых в сто раз.</li>
+          <li><b>Почему пустота весит.</b> E = mc² в обратную сторону: энергия связи имеет массу. Сжатое поле, быстрые кварки, сама неопределённость (кварк, запертый в 10⁻¹⁵ м, обязан иметь импульс ~200 МэВ) - всё это масса. Протон - это не три шарика, а ничего, которое удерживает три точки и от этого весит.</li>
+          <li><b>Вброс:</b> «вещество» на 99% состоит из того, что мы в главе 2 назвали ничем. Если убрать пустоту из протона, останется 1%. Если убрать пустоту из атома, останется 10⁻¹⁵. Если убрать и то и другое, от тебя останется меньше пылинки, и она будет ничего не весить. Всё, что весит, - это ничего, которое держит.</li>
+        </ul>
+        <div class="note gold" style="margin-top:8px"><b>Что говорит физика, с ±:</b> масса протона 938.272 ± 0.000006 МэВ; сумма масс кварков u+u+d = 9.4 ± 0.4 МэВ (1%); разложение остатка (Yang и др., PRL 2018, решёточная КХД): кинетика кварков 32%, поле глюонов 36%, аномалия 23%, ± 3-5% каждое. Масса Хиггса даёт «веществу» ~1%. Остальное - энергия. С этими ± эпиграф верен на 99%.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s32">
+  <div class="content">
+    <div class="kicker">Всего · алхимия сбылась</div>
+    <h2>Философский камень найден: это ядерная физика, и он невыгоден</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>1980, Беркли.</b> Гленн Сиборг превратил висмут в золото на ускорителе: несколько тысяч атомов, обнаружены по радиоактивности. Стоимость - порядка квадриллиона долларов за унцию. Алхимики искали 2000 лет и были правы в главном: превращение возможно. Ошибались в масштабе: не колба и огонь, а ядро и 10⁸ эВ.</li>
+          <li><b>Штатно и сегодня.</b> В реакторах ртуть-196 захватывает нейтрон и распадается в золото-197. Свинец в золото - в принципе да, отнять три протона. Золото в свинец - проще, добавить три. Каждый элемент из любого, вопрос только в энергии на ядро и в том, что ядерная реакция даёт продукт по одному атому.</li>
+          <li><b>Кто делает это бесплатно.</b> Звёзды. Водород в гелий, гелий в углерод, дальше до железа в ядрах звёзд; всё тяжелее железа - в сверхновых и слияниях нейтронных звёзд. Золото на твоём пальце выковано при столкновении двух нейтронных звёзд миллиарды лет назад (измерено: килоновая 2017 года дала спектр золота и платины). Мы - продукт алхимии, которая уже прошла.</li>
+          <li><b>Эпиграф, вторая часть: «ничего для всего».</b> Одно и то же ничего (протон = запертая пустота) перекладывается во всё: 90 элементов - это 90 способов сложить одинаковые нуклоны. Алхимия сбылась не в том смысле, что мы делаем золото, а в том, что золото и свинец - одно ничего в разной упаковке. Из ничего всё, из всего ничего.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/gold_atoms.png" alt="">
+        <div class="pcap">Несколько золотых атомов на бархате рядом с весами. Столько получил Сиборг. Философский камень существует, работает, и его выход - пылинка за бюджет лаборатории. Алхимики были правы про «можно» и неправы про «стоит».</div>
+      </div>
+    </div>
+    <div class="note" style="margin-top:10px"><b>Что говорит физика, с ±:</b> Сиборг, 1980: ¹⁰⁹Bi → ¹⁹⁷Au на ускорителе Bevalac, выход ~10⁻¹⁰ г, оценка стоимости ~10¹⁵ $/унция. Килоновая GW170817 (2017): в спектре стронций (подтверждён 2019), оценка выхода золота ~10-100 масс Земли (± порядок). Нуклеосинтез в звёздах: цепочки измерены по изотопным отношениям с точностью процентов.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s33">
+  <div class="content">
+    <div class="kicker">Всего · навсегда</div>
+    <h2>Навсегда: элементы вечны, только упаковка временна</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/star_forge.png" alt="">
+        <div class="pcap">Слияние нейтронных звёзд, золотая пыль наружу. Атом золота, родившийся здесь, прошёл через облако, планету, руду, кольцо, и переживёт кольцо, руку и планету. Ничего из ничего работает и на «в ничего»: атом не уходит.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Что навсегда.</b> Стабильные ядра: 251 изотоп, у которых распад не зарегистрирован (у части - оценённый период больше 10¹⁸ лет, то есть дольше Вселенной в 10⁸ раз). Углерод-12 в тебе существует с момента, как его сварила звезда, и будет существовать после Солнца. Протон, вероятно, вечен: период его распада, если он есть, больше 10³⁴ лет.</li>
+          <li><b>Что временно.</b> Упаковка. Молекулы живут секунды (в реакциях), клетки - дни, ты - десятилетия, горы - миллионы лет, звёзды - миллиарды. Атомы - вне этого списка. Каждый атом кислорода в твоём вдохе побывал в миллионах организмов и вернётся в миллионы. Ты арендуешь их на секунды.</li>
+          <li><b>Вброс, третье слово эпиграфа:</b> «навсегда» в этой главе - единственное «навсегда» из выпуска 3, у которого есть ±, и оно про ничего. Пустота, запертая в протоне, - самое долгоживущее, что есть. Всё, что из неё сложено, временно, кроме неё самой. Материя обязана пустоте бытием на 100% и вечностью на 100%.</li>
+          <li><b>А что если нет:</b> протон может распадаться (все теории Великого объединения это предсказывают), и тогда через 10³⁴⁺ лет пустота выйдет из клетки. «Навсегда» и здесь окажется интервалом, как в прошлом выпуске. Просто очень длинным, и с ± в один порядок.</li>
+        </ul>
+        <div class="note gold" style="margin-top:8px"><b>Что говорит физика, с ±:</b> нижний предел периода полураспада протона 2.4·10³⁴ лет (Super-Kamiokande, 2020, 90% доверия). Стабильных нуклидов 251; ¹²⁸Te, самый долгоживущий из «нестабильных», 2.2·10²⁴ лет. Возраст атомов золота Земли: ~4.6 млрд лет как минимум, происхождение из r-процесса подтверждено спектрами килоновой (± сомнения в доле от сверхновых).</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 8: НИЧЕГО ИЗ ЧЕГО-ТО ============ -->
+<section class="slide chapter" id="s34">
+  <div class="bgimg"><img src="assets/ch_entropy.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 8</div>
+    <h1>Ничего из чего-то</h1>
+    <p class="lead">Ворота ржавеют. Химия умеет и обратно: из порядка в беспорядок, из чего-то в ничего, и это вторая её половина, более сильная. Здесь же лежит время: у него нет собственного механизма, оно едет на тепле.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s35">
+  <div class="content">
+    <div class="kicker">Ничего · распад</div>
+    <h2>Ржавчина, гниение, остывание: реакции, у которых нет обратного хода</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Что происходит с воротами.</b> Железо и кислород становятся оксидом, потому что оксид ниже по энергии. Обратно (руда в железо) тоже возможно, но требует домны и угля: платить приходится больше, чем получил. Ржавчина - самопроизвольна, домна - нет. Асимметрия направлений - это и есть второе начало, и оно не про запрет, а про цену.</li>
+          <li><b>Из чего-то в ничего, буквально.</b> Свеча горела, дала свет и тепло; свет улетел, тепло рассеялось в комнате, комната - в улицу, улица - в космос. Энергия не исчезла (Лавуазье и Эйнштейн правы), но стала бесполезной: ровным теплом, из которого нельзя взять работу. Ничего из чего-то - не уничтожение, а выравнивание. Мир не теряет энергию, он теряет разницу.</li>
+          <li><b>Вброс:</b> «ничего» в этой главе - это отсутствие градиента. Полный бак и пустой бак - «что-то», два одинаково полных бака - «ничего», хотя бензина в них больше. Свойство «полезно» живёт не в веществе, а в разнице, и разница, как все свойства из главы 3, - эмерджентна: её нет ни в одном баке.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Что говорит физика, с ±</h3>
+          <table class="t">
+            <tr><th>Процесс</th><th>Самопроизвольно</th><th>Цена обратного</th></tr>
+            <tr><td>Fe + O₂ → Fe₂O₃</td><td class="d">да, −824 кДж/моль</td><td class="d">домна: кокс + 1500°C, КПД ~30%</td></tr>
+            <tr><td>Горение глюкозы</td><td class="d">да, −2870</td><td class="d">фотосинтез: 8 фотонов на молекулу, КПД ~1-2% от света</td></tr>
+            <tr><td>Тепло 800 К → 300 К</td><td class="d">да</td><td class="d">холодильник: работа не меньше ΔS·T (Карно)</td></tr>
+            <tr><td>Смешение газов</td><td class="d">да, ΔS &gt; 0</td><td class="d">разделение: kT·ln2 на молекулу минимум</td></tr>
+          </table>
+          <p class="dim" style="margin-top:8px">Все обратные ходы возможны и все дороже прямого. Не запрет, а тариф. Единственный «запрет» - на вечный двигатель, и он держится с точностью всех измерений, когда-либо сделанных.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s36">
+  <div class="content">
+    <div class="kicker">Ничего · время едет на тепле</div>
+    <h2>Без тепла время бесполезно: стрела - это градиент</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Вброс.</b> Тепло имеет множество корреляций со временем. Отсюда: нет тепла - время бесполезно, либо симметрично. Но вопрос, в какую сторону, и мы наивно считаем, что их две. Кто подтвердит.</li>
+          <li><b>Физика подтверждает первую половину целиком.</b> Микроскопические законы обратимы: уравнения Ньютона, Максвелла, Шрёдингера одинаково работают вперёд и назад. Фильм про два сталкивающихся шара нельзя отличить от прокрученного задом наперёд. Направление времени появляется только там, где есть градиент энтропии: чашка разбивается, а не собирается, тепло идёт от горячего к холодному. Стрела времени - это и есть «тепло идёт туда». Убери градиент, и стрелы нет.</li>
+          <li><b>В равновесии время симметрично, и это измерено.</b> Флуктуации в равновесной системе статистически одинаковы вперёд и назад (соотношения Онзагера, 1931; теорема о флуктуациях, проверена на микрочастицах в 2002 году). В пруду без ряби нет «раньше» и «позже». Тепловая смерть - не «конец времени», а конец стрелы: время остаётся координатой, как ширина, и перестаёт быть направлением.</li>
+          <li><b>Вторая половина: сколько направлений.</b> Мы считаем, что два, потому что ось. Но если направление даёт градиент, то направлений столько, сколько градиентов, и в равновесии - ноль. А Бэрс (выпуск 2) строит физику с двумя временными измерениями: там «направлений» четыре, и наш мир - их тень. Никто не подтвердит, что их два: мы измеряем только одно, своё, и оно совпадает с направлением, в котором остывает кофе.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Микрозаконы</b><span>обратимы · стрелы нет</span></div>
+            <div class="bx am"><b>Градиент тепла</b><span>стрела появляется</span></div>
+            <div class="bx cy"><b>Равновесие</b><span>стрела исчезает · время как ширина</span></div>
+            <div class="bx rd"><b>Сколько направлений</b><span>0 в равновесии · 1 у нас · 4 у Бэрса · кто подтвердит</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что говорит физика, с ±</h3>
+          <p>Обратимость микрозаконов: единственное исключение - CP-нарушение в распадах каонов и B-мезонов (измерено, 10⁻³), которое по теореме CPT означает и крошечную T-асимметрию (BaBar, 2012, 14σ). Она слишком мала, чтобы дать стрелу времени: стрелу даёт энтропия, и это консенсус. Теорема о флуктуациях (Ван и др., 2002): отношение вероятностей «вперёд/назад» = e^(ΔS/k), проверено на коллоидной частице в ловушке с точностью ±5%. Хокинг в 1985-м предполагал, что в сжимающейся Вселенной стрела развернётся, и в 1988-м отозвал: «моя самая большая ошибка». Направление одно, потому что градиент один. Сколько их могло бы быть - без ±.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s37">
+  <div class="content">
+    <div class="kicker">Ничего · ниже нуля</div>
+    <h2>Ниже нуля: время без вектора, и оно измерено</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Вброс.</b> Тепло рождает время, абсолютный ноль его стирает, а неизвестный минус рождает что-то взамен. Но отрицательное время - не «назад», как в нашем бинарном мире, и не «вперёд». Это время без вектора, похожее на замёрзший мир. Существа там скажут: у нас нет прошлого и будущего, есть только сейчас.</li>
+          <li><b>Отрицательная температура существует, и она не под нулём.</b> Температура - это то, как энтропия растёт с энергией. Если добавить энергии, а энтропия падает (инверсия населённостей: лазер, спины в поле, холодные атомы), температура отрицательна. Такая система не холоднее нуля, а горячее бесконечности: тепло из неё течёт в любую с плюсом. Шкала замкнута в кольцо: +0 → +∞ = −∞ → −0. «Минус» - за бесконечностью, а не под нулём, и стрела там не отменена, а перевёрнута относительно нас.</li>
+          <li><b>Время без вектора тоже есть, и им считают.</b> Поверни ось времени на 90° в комплексной плоскости (виковский поворот), и время станет четвёртой пространственной осью: ни «до», ни «после», как у ширины. Через него считают температуру чёрных дыр и туннелирование, и числа сходятся. Хокинг и Хартл (1983): Вселенная без начала, потому что в мнимом времени «до Большого взрыва» так же бессмысленно, как «южнее Южного полюса».</li>
+          <li><b>Где живут существа из вброса.</b> Не при минусе, а в двух местах: в равновесии (стрелы нет, прошлый слайд) и в мнимом времени. В обоих «до» и «после» не отличаются, значит, единственный момент - сейчас. Это фотон из выпуска 3 изнутри, если бы там было кому. И замёрзший мир: при абсолютном нуле «сейчас» единственное, только некому.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>+0 К</b><span>стрела стёрта · координата без направления</span></div>
+            <div class="bx am"><b>+T</b><span>мы · стрела есть · тепло идёт вниз</span></div>
+            <div class="bx rd"><b>+∞ = −∞</b><span>кольцо замыкается</span></div>
+            <div class="bx cy"><b>−T</b><span>горячее бесконечности · стрела перевёрнута для нас</span></div>
+          </div>
+          <div class="row">
+            <div class="bx"><b>Равновесие</b><span>время без вектора · только «сейчас»</span></div>
+            <div class="bx"><b>Мнимое время</b><span>время как ширина · без начала</span></div>
+            <div class="bx am"><b>Фотон</b><span>ноль всего · «сейчас» · выпуск 3</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что говорит физика, с ±</h3>
+          <p>Отрицательная абсолютная температура измерена: ядерные спины (Парселл и Паунд, 1951) и подвижные атомы в оптической решётке (Браун и др., Science 2013): T = −(нескольких нК), ± 10%. Кольцевая шкала следует из определения 1/T = dS/dE и не спорна. Мнимое время: температура Хокинга ħc³/8πGMk получается виковским поворотом и совпадает с прямым расчётом; предложение Хартла-Хокинга «без границы» - модель, не измерена. Что «переживает» система при T &lt; 0 или в мнимом времени - вопрос без физического содержания, как у фотона: нет свидетеля, нет ±.</p>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Для главы 10:</b> кольцо температур - готовый образ «замкнутого вечного Нуля»: +0 и −0 - одна точка, обойдённая через бесконечность.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 9: ВЕЗДЕ ОДНО И ТО ЖЕ ============ -->
+<section class="slide chapter" id="s38">
+  <div class="bgimg"><img src="assets/ch_everywhere.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 9</div>
+    <h1>Везде одно и то же</h1>
+    <p class="lead">Спектр звезды, туманности, планеты и руки: одни и те же тёмные линии. Девяносто элементов на всю Вселенную, ни одного лишнего, ни одного местного. Ничего уникального нигде, и всё уникальное везде.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s39">
+  <div class="content">
+    <div class="kicker">Везде · спектры</div>
+    <h2>Девяносто элементов на всю Вселенную, и это проверено</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Как узнали.</b> Каждый элемент поглощает свет на своих частотах, и в спектре звезды это тёмные линии, отпечаток пальца. Кирхгоф и Бунзен (1859) прочли Солнце и нашли те же элементы, что в лаборатории. Гелий сначала нашли на Солнце (1868) и только потом на Земле. За 160 лет прочитаны спектры миллионов звёзд, галактик на краю видимой Вселенной, квазаров в 12 миллиардах световых лет: везде водород, гелий, углерод, железо. Те же линии, те же отношения. Ни одного элемента, которого нет в таблице.</li>
+          <li><b>Почему одно и то же.</b> Потому что протон везде одинаковый, а элемент - это число протонов. Химия не зависит от места: вода на Энцеладе - та же H₂O, аминокислоты в метеорите Мурчисон - те же 20 видов плюс десятки экзотических, но из тех же атомов. Мы состоим из того же, из чего Ганимед, разница в порядке.</li>
+          <li><b>Вброс:</b> «везде» из названия - не преувеличение, а результат измерения. Ничего из ничего работает в каждой точке Вселенной одинаково, потому что «ничего» (протон, вакуум, пустота атома) везде одно. Нет ни одного места, где химия другая. Есть бесконечно много мест, где она сложилась по-другому.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Что говорит физика, с ±</h3>
+          <table class="t">
+            <tr><th>Где</th><th>Что нашли</th></tr>
+            <tr><td>Солнце (Кирхгоф, 1859)</td><td class="d">Na, Fe, Mg, Ca... те же линии, что в горелке</td></tr>
+            <tr><td>Квазары, z ~ 6 (12.8 млрд св. лет)</td><td class="d">C, O, Mg, Fe; постоянная тонкой структуры та же с точностью 10⁻⁶</td></tr>
+            <tr><td>Межзвёздные облака</td><td class="d">300+ молекул по радиоспектрам: вода, спирт, формальдегид, гликольальдегид (сахар), фуллерены</td></tr>
+            <tr><td>Метеорит Мурчисон (1969)</td><td class="d">96 аминокислот, из них 14 земных; изотопы подтверждают внеземное происхождение</td></tr>
+            <tr><td>Экзопланеты (JWST, 2023-25)</td><td class="d">H₂O, CO₂, CH₄ в атмосферах; K2-18b: спорный диметилсульфид, 3σ, не подтверждён</td></tr>
+          </table>
+          <p class="dim" style="margin-top:8px">Химия одна на всю Вселенную с точностью до шестого знака в α. Это самая проверенная «однородность» из всех.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s40">
+  <div class="content">
+    <div class="kicker">Везде · те же атомы</div>
+    <h2>Рука и лунный камень: одна решётка, разная склейка</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/same_atoms.png" alt="">
+        <div class="pcap">Рука держит лунный камень, и оба сделаны из одной решётки одинаковых атомов. Кислород, кремний, железо, магний в камне; кислород, углерод, водород, азот в руке. Пересечение - кислород, и он в обоих один и тот же. Ничего уникального ни в камне, ни в руке.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Из чего ты.</b> 65% кислорода, 18% углерода, 10% водорода, 3% азота, остальное кальций, фосфор и ещё 20 элементов в следах. Земная кора: 46% кислорода, 28% кремния, 8% алюминия, 5% железа. Мы - кислородные существа на кислородной планете; разница с камнем в углероде вместо кремния и в порядке.</li>
+          <li><b>Откуда.</b> Водород - из Большого взрыва (13.8 млрд лет). Углерод, кислород, азот - из звёзд массой с Солнце, которые сбросили оболочки. Железо в крови - из сверхновых. Йод в щитовидке - из слияния нейтронных звёзд. В тебе минимум четыре разных источника атомов, и ни один не на Земле. «Мы - звёздная пыль» (Саган) - это не поэзия, а изотопный анализ.</li>
+          <li><b>Вброс:</b> «уникальное» - свойство порядка, не материала. Отпечаток пальца уникален, атомы в нём - самые обычные во Вселенной. Значит, всё уникальное сделано из ничем не уникального, и уникальность - ещё одно свойство из ничего (глава 3), самое высокое на лестнице. Везде одно и то же, и поэтому нигде не повторяется.</li>
+          <li><b>Открытый вопрос №2 выпуска:</b> универсальна ли химия жизни? Углерод и вода - единственный вариант, или на других градиентах кремний, аммиак, метан тоже склеиваются в «кто»? Титан и Энцелад - два эксперимента, которые идут прямо сейчас, и ответ придёт в 2030-х (Dragonfly, 2034).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 10: ЧТО-ТО, ОТКУДА-ТО. НИКОГДА ============ -->
+<section class="slide chapter" id="s41">
+  <div class="bgimg"><img src="assets/ch_regress.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 10</div>
+    <h1>Что-то, откуда-то. Никогда</h1>
+    <p class="lead">Всё, что у нас есть, - бесконечные перестановки «всегда крупных» (потому что всегда будет что-то меньше) элементов внутри одного замкнутого вечного Нуля, который всегда представляется единицей. Вниз - без дна, и посмотреть нельзя.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s42">
+  <div class="content">
+    <div class="kicker">Никогда · лестница вниз</div>
+    <h2>Каждое дно оказывалось полом следующего этажа</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>История.</b> Атом (неделимый, 1803). Электрон в атоме (1897). Ядро (1911). Протон и нейтрон в ядре (1919, 1932). Кварки в протоне (1968), три штуки. Глюоны между ними (1979). Дальше: струны? преоны? петли? Каждый раз, когда находили «дно», под ним было ещё одно, и каждый раз меньшее было проще, а не сложнее: у кварка меньше свойств, чем у атома.</li>
+          <li><b>Эпиграф, первая половина:</b> «всегда крупных» - каждый уровень крупный относительно следующего. Фундаментальных элементов нет, есть «пока самые мелкие». Слово «элементарная частица» в физике означает не «неделимая», а «мы пока не делили». Это честное слово, и оно менялось шесть раз за 200 лет.</li>
+          <li><b>Что известно про кварк.</b> Размер: меньше 10⁻¹⁹ м, верхний предел, реального не знаем. Масса: 2-5 МэВ, ± 20%, потому что свободный кварк не существует, его нельзя взвесить отдельно. Из чего состоит: неизвестно, все теории - без ±. Дно, на котором мы стоим, измерено хуже всех предыдущих.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Атом</b><span>10⁻¹⁰ м · неделим 94 года</span></div>
+            <div class="bx"><b>Ядро</b><span>10⁻¹⁴ м · 1911</span></div>
+            <div class="bx cy"><b>Протон</b><span>10⁻¹⁵ м · 1919</span></div>
+            <div class="bx cy"><b>Кварк</b><span>&lt; 10⁻¹⁹ м · 1968 · из чего - ?</span></div>
+            <div class="bx am"><b>Струна?</b><span>10⁻³⁵ м · без ±</span></div>
+            <div class="bx rd"><b>Планк</b><span>1.6·10⁻³⁵ м · смотреть нечем</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что говорит физика, с ±</h3>
+          <p>Верхний предел размера кварка и электрона: ~10⁻¹⁹ м (LHC, по отсутствию отклонений от точечности, 2020-е). Масса u-кварка 2.16 ± 0.3 МэВ, d-кварка 4.7 ± 0.3 (PDG 2024) - ± в 15%, худшие среди фундаментальных величин. Составные модели кварков (преоны) исключены до масштаба ~10 ТэВ, дальше открыто.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s43">
+  <div class="content">
+    <div class="kicker">Никогда · стена</div>
+    <h2>Планковская стена: чтобы увидеть меньше, нужна энергия, которая делает чёрную дыру</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/regress.png" alt="">
+        <div class="pcap">Чем меньше хочешь увидеть, тем больше энергии нужно на «фонарь»: длина волны должна быть меньше объекта. Золотая линия - предел LHC. Красная - планковский масштаб: там фонарь весит столько, что сам становится чёрной дырой и закрывает то, что освещал.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Почему «никогда», а не «пока».</b> Чтобы разглядеть объект размером L, нужен зонд с длиной волны меньше L, то есть с энергией больше hc/L. Для 10⁻³⁵ м это 10²⁸ эВ, 10¹⁶ раз больше LHC. Но такая энергия, сжатая в 10⁻³⁵ м, по общей теории относительности - чёрная дыра радиусом как раз 10⁻³⁵ м. Зонд проглатывает объект. Это не «ускоритель не построили», а «физика ставит предел на собственный взгляд».</li>
+          <li><b>Эпиграф, вторая половина:</b> базовую сущность мы никогда не узнаем. И это единственное «никогда» из выпуска 3, у которого есть ±: планковская длина известна с точностью 10⁻⁵ (через G, ħ, c), и предел следует из двух проверенных теорий сразу. Не одолженное слово, а вычисленное.</li>
+          <li><b>Связка с выпуском 2:</b> там рекурсия без дна требовала бесконечного объёма (Бекенштейн). Здесь она упирается ещё раньше, в предел разрешения. Дна, возможно, нет. Посмотреть - точно нельзя. Две разные причины, один результат.</li>
+          <li><b>А что если нет:</b> может, ниже планковского масштаба нет «меньше»: пространство дискретно (петлевая гравитация, спиновые сети), и вопрос «из чего» снимается, как «что за краем» в пакмане. Тогда дно есть, и оно не вещество, а зерно самого пространства. Не измерено. Косвенные проверки (дисперсия света от гамма-всплесков) ничего не нашли до 10⁻³⁵.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s44">
+  <div class="content">
+    <div class="kicker">Никогда · Ноль как единица</div>
+    <h2>Замкнутый вечный Ноль, который представляется единицей</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Эпиграф, третья часть.</b> Все перестановки «всегда крупных» элементов происходят внутри одного замкнутого вечного Нуля, который всегда представляется единицей. И у этого есть уравнение.</li>
+          <li><b>Трайон, 1973.</b> Полная энергия Вселенной может быть равна нулю: положительная энергия материи и излучения в точности компенсируется отрицательной гравитационной энергией. В плоской Вселенной (Ω = 1) это выходит строго. Тогда Вселенная - флуктуация вакуума с нулевой ценой: «ничего из ничего» в самом буквальном виде, потому что и в сумме ничего. Мы видим только плюс (материя, свет, себя) и не видим минус (гравитационную яму, в которой всё это лежит). Ноль, разложенный на +1 и −1, и мы живём в единице.</li>
+          <li><b>Замкнутый и вечный.</b> Замкнутый - потому что сумма не меняется: закон сохранения энергии для Вселенной целиком. Вечный - потому что у нуля нет срока: он не может ни кончиться, ни начаться, он всегда ноль. Единица временна (звёзды догорят), ноль нет.</li>
+          <li><b>Вброс, итог главы:</b> вверх по лестнице - всё из ничего (свойства, жизнь, ты). Вниз - ничего из чего-то (протон из пустоты, кварк из неизвестного, стена). А в сумме - ноль, который выглядит как единица, потому что мы стоим на плюсовой половине и минусовую называем «пространством». Единственное, что мы знаем точно про «из чего всё»: в сумме из ничего. С ± 0.002.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/zero_energy.png" alt="">
+        <div class="pcap">Плюс материи, минус гравитации, сумма ноль при Ω = 1. Planck дал 1.000 ± 0.002. Всё, что мы видим, - золотая полоса. Фиолетовую мы называем «падать».</div>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:10px"><b>Что говорит физика, с ±:</b> Ω_total = 1.000 ± 0.002 (Planck 2018 + BAO). Оговорка честная: полная энергия Вселенной в ОТО определена нестрого (нет глобального закона сохранения в искривлённом пространстве-времени), и «ноль» - результат в одном из разумных определений (гамильтониан ОТО равен нулю тождественно). Гут называет это «бесплатным обедом», критики - недоопределённым словом. ± здесь - не только в числе, но и в определении.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 11: ГРАНИЦА ============ -->
+<section class="slide chapter" id="s45">
+  <div class="bgimg"><img src="assets/ch_border.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 11</div>
+    <h1>Граница: середина лестницы</h1>
+    <p class="lead">Лестница вверх уходит в свет, вниз в темноту, и оба конца теряются. Мы стоим на средней ступени, и это не метафора: по масштабу человек ровно посередине между планковской длиной и размером Вселенной. Единственная ступень, на которой есть «кто», чтобы это заметить.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s46">
+  <div class="content">
+    <div class="kicker">Граница · середина</div>
+    <h2>Мы посередине, и вопросы выпуска - список того, что не закрыто</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Арифметика середины.</b> Планковская длина 10⁻³⁵ м, наблюдаемая Вселенная 10²⁷ м. Геометрическая середина - 10⁻⁴ м, доля миллиметра: клетка. Человек на 10⁰ - чуть выше середины, но на шкале в 62 порядка это середина. Вверх и вниз от нас примерно одинаково далеко, и оба конца одинаково недостижимы: вверху горизонт (выпуск 3), внизу стена (глава 10).</li>
+          <li><b>Что из выпуска закрыто.</b> Закон Лавуазье (глава 1) - да, до 10⁻¹⁰. Вакуум кипит (2) - да. Свойства из ничего вычисляются (3) - да, кроме последней ступени. Кирпичи жизни везде (4, 9) - да. Дыхание = горение (6) - да. Протон - пустота на 99% (7) - да. Стрела = градиент (8) - да. Стена (10) - да, из двух теорий сразу.</li>
+          <li><b>Что открыто, честный список:</b>
+            <br>1. Почему вакуум кипит в 10¹²⁰ раз слабее расчёта.
+            <br>2. Откуда хиральность.
+            <br>3. Как из кирпичей собралась первая клетка.
+            <br>4. Почему второе начало производит сложность, а не только уничтожает.
+            <br>5. Есть ли стрела к сложности или пьяный у стены.
+            <br>6. Универсальна ли химия жизни.
+            <br>7. Что ниже кварка, и есть ли дно.
+            <br>8. Равна ли полная энергия Вселенной нулю, и что это слово значит.
+            <br>9. Последняя ступень лестницы: «каково это». Ни уравнения, ни ±.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx rd"><b>10⁻³⁵ м</b><span>стена · «никогда»</span></div>
+            <div class="bx"><b>10⁻¹⁵</b><span>протон · пустота на 99%</span></div>
+            <div class="bx cy"><b>10⁻⁴</b><span>клетка · середина</span></div>
+            <div class="bx am"><b>10⁰</b><span>ты · «кто»</span></div>
+            <div class="bx"><b>10²¹</b><span>галактика</span></div>
+            <div class="bx rd"><b>10²⁷</b><span>горизонт · «навсегда»</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Честно про этот выпуск</h3>
+          <p>Девять открытых вопросов на одиннадцать глав - больше, чем в любом предыдущем, и так и задумано. Химия - наука, которая всё умеет считать и ничего не умеет объяснить до конца: точку кипения воды выводит из первых принципов, а откуда левая закрутка - не знает 180 лет. Это не слабость, это середина лестницы: снизу и сверху одинаково темно, а свет ровно там, где стоим мы. Как в выпуске 2: граница мира проходит через голову. Здесь - через ступень.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ИТОГИ ============ -->
+<section class="slide" id="s47">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Все вбросы выпуска на одном слайде</h2>
+    <table class="t" style="font-size:12.5px">
+      <tr><th>Глава</th><th>Вброс</th><th>Что говорит физика (с ±)</th><th>Открыто</th></tr>
+      <tr><td>1. Закон</td><td class="d">реакция - переклейка соседей, огонь - разница аренды</td><td class="d">масса до 10⁻¹⁰, E=mc² до 10⁻⁷</td><td class="d">ничего: единственная глава без «а что если нет»</td></tr>
+      <tr><td>2. Ничего</td><td class="d">шесть сортов ничего, все что-то делают; «ничего» - слепое пятно весов</td><td class="d">Казимир 1%, тёмная энергия, 10¹²⁰</td><td class="d">почему вакуум кипит так слабо</td></tr>
+      <tr><td>3. Свойства</td><td class="d">веществ нет, есть паттерны; свойства не спускаются вниз</td><td class="d">кипение воды ±5 K, цвет золота, AlphaFold ~1 Å</td><td class="d">верхняя ступень: «каково это»</td></tr>
+      <tr><td>4. Жизнь</td><td class="d">кирпичи везде, здание никто не собрал; порядок сам при потоке</td><td class="d">Миллер 22 аминокислоты, БЖ, Рэлей 1708</td><td class="d">хиральность, первая клетка</td></tr>
+      <tr><td>5. Деградация</td><td class="d">каждый шаг - потеря того, чем было; мы - лучший деградатор; холод - чей-то кислород</td><td class="d">Хиггс 125.1, GULO 61 млн лет, Ландауэр, O₂ 2.43 млрд</td><td class="d">все пять: чего, почему, стрела, для кого, кто следующий</td></tr>
+      <tr><td>6. Долг</td><td class="d">система мертва, мы из неё; жизнь - энтропия в рассрочку; ожил долг, не система</td><td class="d">2870 кДж/моль в костре и в тебе, 65 кг АТФ в сутки</td><td class="d">панпсихизм в дверях</td></tr>
+      <tr><td>7. Ничего для всего. Навсегда</td><td class="d">весим пустотой на 99%; алхимия сбылась и невыгодна; элементы вечны, упаковка нет</td><td class="d">кварки 1%, Сиборг 1980, протон &gt; 10³⁴ лет</td><td class="d">распад протона</td></tr>
+      <tr><td>8. Ничего из чего-то</td><td class="d">мир теряет не энергию, а разницу; без тепла время бесполезно; направлений столько, сколько градиентов</td><td class="d">CP 10⁻³, флуктуационная теорема ±5%, Хокинг отозвал</td><td class="d">сколько направлений у времени</td></tr>
+      <tr><td>9. Везде</td><td class="d">уникальное из неуникального; везде одно и то же, поэтому нигде не повторяется</td><td class="d">α та же до 10⁻⁶ на 12.8 млрд св. лет</td><td class="d">универсальна ли химия жизни</td></tr>
+      <tr><td>10. Что-то, откуда-то. Никогда</td><td class="d">«всегда крупных»; стена из двух теорий; Ноль как единица</td><td class="d">кварк &lt; 10⁻¹⁹, Планк 10⁻⁵, Ω = 1.000 ± 0.002</td><td class="d">дно; смысл «полной энергии»</td></tr>
+      <tr><td>11. Граница</td><td class="d">мы посередине лестницы, единственная ступень с «кто»</td><td class="d">62 порядка, середина 10⁻⁴</td><td class="d">девять вопросов</td></tr>
+    </table>
+    <div class="note">Сквозная мысль выпуска: <b>«ничего из ничего» - закон для массы и нарушается для свойств в каждой реакции.</b> Вверх по лестнице всё из ничего, вниз ничего из чего-то, в сумме ноль, который выглядит как единица. Ни один атом не создан, и всё создано. Везде.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s48">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <div class="kicker amber">Финал · свет по звону</div>
+    <h1>Ни один атом не создан. Всё создано. Везде</h1>
+    <p class="lead">Лавуазье прав: ничто не возникает и ничто не исчезает. Химия права: из тех же атомов - мокрое, солёное, живое, думающее, и это возникло. Оба правы, потому что говорят о разных этажах одной лестницы, и на каждом этаже «ничего из ничего» работает одинаково: масса вниз, свойство вверх.</p>
+    <p class="lead" style="margin-top:14px">Мы стоим посередине, из пустоты на 99%, в долг перед мёртвой системой, которой ничего не нужно, с левой закруткой, которую никто не объяснил, и с девятью вопросами, до которых дошли и не закрыли. Выпуск четвёртый. Свет по звону, и звон на этот раз - весы, которые не шелохнулись.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- SLIDES_END -->
+
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>
