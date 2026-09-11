@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><link rel="icon" href="../favicon.ico" sizes="any"><link rel="icon" type="image/png" href="../favicon.png"><link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Трещина. Психические расстройства: ген, жизнь, удар</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #b8a1e6; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Гвендолин-ночные-лекции</div>
+    <h1>Трещина. Психические расстройства: ген, жизнь, удар</h1>
+    <p class="lead">Каждый четвёртый за жизнь получает диагноз из этой лекции. Откуда он берётся: из наследства, из прожитых лет или от одного удара. Как это лечили ледорубом и как лечат сейчас. Что из этого кино показало честно, а что придумало. И один математик, у которого сошлось всё сразу.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s2">
+  <div class="content">
+    <div class="kicker">Вступление</div>
+    <h2>Три источника поломки, и почему они всегда вместе</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Ген.</b> То, с чем родился. Шизофрения, биполярное расстройство, аутизм наследуются сильнее, чем рост. Но ни одно из них не сидит в одном гене, и ни один ген не гарантирует болезнь. Наследуется не диагноз, а вероятность.</li>
+          <li><b>Жизнь.</b> То, что накапливалось годами без единого события: хронический стресс, одиночество, недосып, алкоголь, возраст. Депрессия, тревога, зависимости, деменции. Здесь наследство даёт меньше половины, остальное дописывает биография.</li>
+          <li><b>Удар.</b> Одно событие, после которого человек уже не тот: война, авария, насилие, детство, в котором не было ни одного надёжного взрослого. Посттравматическое расстройство, диссоциация. Главная загадка: одинаковый удар одного ломает, а другого нет.</li>
+          <li><b>Правило лекции.</b> Ни один диагноз не берётся из одного источника. Ген заряжает, жизнь взводит, удар нажимает. Поэтому вопрос «это генетика или воспитание» в психиатрии считается плохо поставленным. Ответ всегда «да».</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx cy"><b>Ген</b><span>заряжает: уязвимость с рождения</span></div>
+            <div class="arr">+</div>
+            <div class="bx"><b>Жизнь</b><span>взводит: стресс, среда, годы</span></div>
+            <div class="arr">+</div>
+            <div class="bx am"><b>Удар</b><span>нажимает: событие</span></div>
+            <div class="arr rd">→</div>
+            <div class="bx rd"><b>Расстройство</b><span>или нет, если хоть одного звена не хватило</span></div>
+          </div>
+          <div class="cap">Модель «диатез-стресс», 1960-е: уязвимость плюс нагрузка. Она до сих пор лучшая из простых, и вся первая половина лекции - её три слагаемых по очереди.</div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Как устроена лекция</h3>
+          <p>Шесть глав науки: что это, ген, жизнь, удар, мозг, лечение. Потом мост: Джон Нэш, человек, в котором сошлись все три источника и Нобелевская премия. Потом пять глав кино: что фильмы показали честно, что соврали, и зачем. В конце вердикт, мнение, вопрос и одна фраза на латыни.</p>
+          <p>Ни одного совета «как понять, что у тебя». Только механизмы, история и честные края: где измерено, где выведено, где не знаем.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 1: ЧТО ТАКОЕ РАССТРОЙСТВО ============ -->
+<section class="slide chapter" id="s3">
+  <div class="bgimg"><img src="assets/ch_what.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1</div>
+    <h1>Что такое расстройство, если анализа на него нет</h1>
+    <p class="lead">Ни на одну болезнь из этой лекции нет анализа крови, снимка или теста. Диагноз ставится по разговору и по книге, которую переписывают каждые пятнадцать лет. Это не значит, что болезней нет. Это значит, что граница между нормой и диагнозом нарисована людьми, и она двигается.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s4">
+  <div class="content">
+    <div class="kicker">Что это · норма</div>
+    <h2>Норма - это статистика, а не здоровье</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/crowd.png" alt="">
+        <div class="pcap">Толпа на площади. Примерно каждый четвёртый в ней за жизнь получит диагноз из этой лекции, каждый пятый прямо сейчас соответствует критериям какого-нибудь. Они не отличаются на вид. Отличие в том, мешает ли им то, что у них внутри, жить.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Три критерия, по которым нечто становится расстройством:</b> оно мешает жить (работа, отношения, быт), оно причиняет страдание, и оно длится. Грусть после похорон - не депрессия. Та же грусть через восемь месяцев, когда нет сил встать, - уже да. Симптом один, диагноз зависит от контекста и времени.</li>
+          <li><b>Нет ни одной черты,</b> которая была бы только у больных. Голоса слышат 5-10% здоровых людей хотя бы раз в жизни. Навязчивые мысли есть у всех. Панические атаки переживал каждый десятый. Расстройство - это не наличие черты, а её количество и цена.</li>
+          <li><b>Цифры.</b> Точечная распространённость, то есть «прямо сейчас», около 20% взрослых. За жизнь около 25-30%, по некоторым странам до 50%. Депрессия - первая причина нетрудоспособности в мире по данным ВОЗ, впереди болезней сердца.</li>
+          <li><b>Из этого следует главное.</b> Психиатрия - единственная область медицины, где болезнь меняет того, кто должен на неё жаловаться. Депрессия убеждает, что так и надо. Мания убеждает, что всё отлично. Паранойя убеждает, что врач - враг. Поэтому половина людей с диагнозом никогда не дошла до врача.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="content">
+    <div class="kicker">Что это · книга</div>
+    <h2>Граница нарисована в книге, и книгу переписывают</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Две книги.</b> МКБ, международная классификация болезней ВОЗ, сейчас одиннадцатая. И DSM, американское руководство, сейчас пятое. Врач сверяет разговор с пациентом со списком критериев: из девяти симптомов депрессии нужно пять на две недели. Нет пяти - нет диагноза. Это честный способ договориться, но не анализ.</li>
+          <li><b>Граница двигается.</b> Гомосексуальность была в DSM до 1973 года, убрали голосованием. Синдром Аспергера был отдельным диагнозом до 2013-го, влили в спектр аутизма. Игровое расстройство добавили в МКБ в 2018-м. Выгорание в МКБ есть, но помечено как «не болезнь, а фактор». Каждое издание меняет, сколько людей больны, не меняя ни одного человека.</li>
+          <li><b>Это не заговор,</b> это единственный инструмент, который есть. У кардиолога есть ЭКГ, у психиатра есть беседа. Биомаркеры ищут пятьдесят лет: ни один анализ, ни один снимок пока не отличает депрессию от её отсутствия надёжнее, чем разговор.</li>
+          <li><b>Зато надёжность беседы измерена.</b> Два психиатра, независимо опросив одного пациента, сходятся по шизофрении в 80% случаев, по депрессии в 60%, по расстройствам личности хуже. Для сравнения, два рентгенолога по одному снимку лёгких сходятся примерно так же. Медицина вообще менее точна, чем кажется.</li>
+        </ul>
+      </div>
+      <div>
+        <table class="t" style="font-size:13px">
+          <tr><th>Группа</th><th>Примеры</th><th>Сейчас, % взрослых</th><th>Главный источник</th></tr>
+          <tr><td>Тревожные</td><td class="d">паника, фобии, генерализованная тревога</td><td class="d">7-10</td><td class="d">жизнь + ген</td></tr>
+          <tr><td>Аффективные</td><td class="d">депрессия, биполярное</td><td class="d">5-7</td><td class="d">жизнь / ген</td></tr>
+          <tr><td>Зависимости</td><td class="d">алкоголь, никотин, игры</td><td class="d">5-10</td><td class="d">жизнь + ген</td></tr>
+          <tr><td>Травматические</td><td class="d">ПТСР, диссоциация</td><td class="d">3-4</td><td class="d">удар</td></tr>
+          <tr><td>ОКР и родня</td><td class="d">навязчивости, дисморфия</td><td class="d">1-2</td><td class="d">ген + жизнь</td></tr>
+          <tr><td>Психотические</td><td class="d">шизофрения</td><td class="d">0.5-1</td><td class="d">ген</td></tr>
+          <tr><td>Нейроразвитие</td><td class="d">аутизм, СДВГ</td><td class="d">1-5</td><td class="d">ген</td></tr>
+          <tr><td>Пищевые</td><td class="d">анорексия, булимия</td><td class="d">1-2</td><td class="d">жизнь + ген</td></tr>
+          <tr><td>Личностные</td><td class="d">пограничное, антисоциальное</td><td class="d">5-10</td><td class="d">удар + ген</td></tr>
+          <tr><td>Деменции</td><td class="d">Альцгеймер, сосудистая</td><td class="d">5-8 после 65</td><td class="d">жизнь + ген</td></tr>
+        </table>
+        <div class="cap" style="color:var(--faint);font-size:12px;margin-top:6px">Карта всей лекции. Проценты приблизительные, по разным странам разброс вдвое. Последний столбец - то, что дальше разбирается по главам.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="content">
+    <div class="kicker">Что это · история слова</div>
+    <h2>От одержимости до диагноза: четыре версии одного явления</h2>
+    <div class="dg">
+      <div class="row">
+        <div class="bx"><b>Одержимость</b><span>до XVIII века: бес, грех, кара. Лечение - изгнание, цепи, костёр</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>Безумие</b><span>XVIII-XIX: болезнь, но неизлечимая. Лечение - изоляция. Пинель снимает цепи, 1793</span></div>
+        <div class="arr">→</div>
+        <div class="bx cy"><b>Болезнь мозга</b><span>Крепелин, 1899: классификация по течению. Шизофрения и биполярное разведены</span></div>
+        <div class="arr">→</div>
+        <div class="bx am"><b>Расстройство</b><span>DSM-III, 1980: списки критериев, без теории причин. Работает до сих пор</span></div>
+      </div>
+      <div class="cap">Каждая версия не отменяла предыдущую, а добавляла инструмент. Цепи сняли, но изоляция осталась до 1960-х. Критерии ввели, но теории причин так и нет.</div>
+    </div>
+    <div class="cols" style="margin-top:20px">
+      <div>
+        <ul class="pts">
+          <li><b>Крепелин, 1899.</b> Немецкий психиатр, который вместо описания симптомов стал следить за течением болезни годами. Увидел, что одни пациенты деградируют, а другие качаются между полюсами и восстанавливаются. Первых назвал «ранним слабоумием», потом Блейлер переименует в шизофрению. Вторых - маниакально-депрессивным психозом. Это разделение живо через 125 лет.</li>
+          <li><b>Фрейд, параллельно.</b> Другая ветка: не классифицировать, а объяснять. Бессознательное, детство, конфликт. Полвека психиатрия была расколота на «биологов» и «аналитиков», и DSM-III в 1980-м стал перемирием: описываем, что видим, причины не обсуждаем.</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Слово «расстройство»</b> выбрано специально вместо «болезнь». Болезнь предполагает известную причину и механизм. Расстройство - это «набор симптомов, который мешает жить». Честное слово для честного незнания.</li>
+          <li><b>Стигма пережила все четыре версии.</b> Одержимого сжигали, безумного запирали, больного стеснялись, человека с расстройством не берут на работу. Опросы: половина людей не стала бы работать рядом с человеком с шизофренией. Половина людей с шизофренией не опаснее среднего прохожего, и это измерено. Стигма - единственный симптом, который передаётся от здоровых к больным.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2: ГЕН ============ -->
+<section class="slide chapter" id="s7">
+  <div class="bgimg"><img src="assets/ch_gene.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2</div>
+    <h1>Ген: то, с чем родился</h1>
+    <p class="lead">Шизофрения наследуется на 80%, и при этом у большинства больных в семье никого. Оба утверждения верны одновременно, и понять, как это возможно, значит понять, что такое наследственность в психиатрии. Близнецы, сотни генов и один парадокс эволюции.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s8">
+  <div class="content">
+    <div class="kicker">Ген · близнецы</div>
+    <h2>Близнецовый метод: главный инструмент, и что он показал</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/twins.png" alt="">
+        <div class="pcap">Однояйцевые близнецы делят 100% генов, разнояйцевые 50%, и те и другие растут в одной семье. Если у однояйцевых болезнь совпадает чаще, чем у разнояйцевых, разница - это гены. Метод придумал Гальтон в 1875-м, и он до сих пор точнее любого генетического анализа.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Шизофрения.</b> Если болен один однояйцевый близнец, второй болен в 40-50% случаев. У разнояйцевых - в 10-15%. Отсюда наследуемость около 80%. Но заметь: у половины однояйцевых близнецов больного второй здоров, при полностью одинаковых генах. Гены не приговор даже здесь.</li>
+          <li><b>Таблица наследуемости,</b> в порядке убывания: аутизм 80%, шизофрения 80%, биполярное 70%, СДВГ 75%, ОКР 45%, алкоголизм 50%, депрессия 40%, тревожные 30-40%, ПТСР 30%. Чем ниже, тем больше дописывает жизнь. Депрессия - на 60% про биографию.</li>
+          <li><b>Что означает «наследуемость 80%».</b> Не «на 80% из генов у данного человека», а «80% разброса в популяции объясняется генетическими различиями». Рост наследуется на 80% так же, и при этом голод в детстве отнимает 10 сантиметров. Наследуемость - это про то, откуда разница между людьми, а не про то, что предрешено.</li>
+          <li><b>Приёмные дети</b> - второй инструмент. Ребёнок матери с шизофренией, усыновлённый здоровой семьёй, заболевает в 10 раз чаще среднего. Ребёнок здоровой матери, усыновлённый семьёй с шизофренией, - не чаще среднего. Датские исследования 1960-х, и с них началась биологическая психиатрия.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s9">
+  <div class="content">
+    <div class="kicker">Ген · сотни генов</div>
+    <h2>Нет гена шизофрении. Есть триста генов по доле процента</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Ожидание 1990-х:</b> расшифруем геном, найдём ген шизофрении, ген депрессии. Не нашли. Ни у одного расстройства из этой лекции нет «своего» гена. Единственная болезнь мозга с одним геном, Хантингтон, - неврологическая, и она отдельная история.</li>
+          <li><b>Реальность 2014-го.</b> Исследование на 37 тысячах больных нашло 108 участков генома, связанных со шизофренией. К 2022-му их 287. Каждый повышает риск на доли процента. Все вместе объясняют около 10% наследуемости. Остальные 70% размазаны по тысячам вариантов, слишком слабых, чтобы их поймать.</li>
+          <li><b>Полигенный балл.</b> Сложить все известные варианты и получить число. Верхний процент по баллу болеет в 5-8 раз чаще нижнего. Звучит сильно, но из ста человек с самым высоким баллом заболеют пять-шесть. Предсказать конкретного человека нельзя, предсказать популяцию можно.</li>
+          <li><b>Одни и те же гены</b> повышают риск шизофрении, биполярного, депрессии и аутизма одновременно. Генетически это не четыре болезни, а одна размытая уязвимость, которая в разных биографиях оформляется по-разному. Крепелин их развёл по течению, геном обратно свёл по причине.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Хантингтон</b><span>1 ген, 100% пенетрантность. Есть ген - будет болезнь</span></div>
+            <div class="bx cy"><b>Шизофрения</b><span>287 участков, каждый +0.1-1% риска. Есть все - вероятно, не точно</span></div>
+            <div class="bx am"><b>Депрессия</b><span>сотни участков, наследуемость 40%. Гены - меньшая половина</span></div>
+          </div>
+          <div class="cap">Три режима наследования. Психиатрия целиком живёт в среднем и правом, поэтому «у тебя это в генах» - всегда неполная фраза.</div>
+        </div>
+        <div class="note gold" style="margin-top:14px"><b>Редкие сильные варианты.</b> Есть исключения: делеция 22q11, выпадение кусочка хромосомы, даёт риск шизофрении 25%, в 25 раз выше среднего. Такие варианты редки, у 1-2% больных, но они первые, где механизм можно изучать на мышах. И заодно объяснение, почему «в семье никого»: половина таких делеций возникает заново, у ребёнка здоровых родителей.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s10">
+  <div class="content">
+    <div class="kicker">Ген · аутизм</div>
+    <h2>Аутизм: самое наследуемое и самое переименованное</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Наследуемость 80%,</b> выше, чем у шизофрении. Ни одного «гена аутизма», но около сотни редких вариантов с сильным эффектом, и большинство из них возникают заново, не от родителей. Возраст отца повышает риск: мутации в сперматозоидах копятся с годами.</li>
+          <li><b>Не болезнь, а спектр.</b> В 2013-м из DSM убрали синдром Аспергера, детский аутизм и ещё три диагноза, объединив в одно расстройство аутистического спектра с уровнем поддержки от 1 до 3. Одним росчерком число «аутистов» выросло, а число «аспергеров» стало нулём.</li>
+          <li><b>Рост диагнозов в 30 раз</b> за сорок лет: с 1 на 2500 до 1 на 36 в США. Это не эпидемия. Три четверти роста - расширение критериев, осведомлённость и то, что раньше писали «умственная отсталость». Реальный рост, если есть, небольшой и объясняется возрастом родителей.</li>
+          <li><b>Прививки не при чём.</b> Статья 1998 года о связи с вакциной оказалась подделкой: 12 детей, подтасованные данные, автор лишён лицензии. С тех пор проверено на миллионах детей, связи нет. Но идея живёт, и корь вернулась в страны, где её не было.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Парадокс: зачем эволюция это оставила</h3>
+          <p>Шизофрения снижает число потомков примерно вдвое. При наследуемости 80% отбор должен был вычистить эти гены за сотни поколений. Не вычистил. Значит, они что-то дают.</p>
+          <p>Гипотеза с данными: те же варианты, в меньшей дозе, связаны с креативностью. Родственники больных шизофренией чаще в творческих профессиях, и это измерено на Исландии на 86 тысячах человек. Полигенный балл шизофрении у художников и музыкантов выше среднего. Не «гений и безумие», а общий набор генов, который в одной дозе даёт необычное мышление, а в двойной - болезнь.</p>
+          <p>Вторая гипотеза: большинство вариантов возникают заново каждое поколение, и отбор просто не успевает. Обе могут быть верны одновременно.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 3: ЖИЗНЬ ============ -->
+<section class="slide chapter" id="s11">
+  <div class="bgimg"><img src="assets/ch_life.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3</div>
+    <h1>Жизнь: то, что накопилось</h1>
+    <p class="lead">Депрессия, тревога, навязчивости, качели биполярного, зависимости, деменции. Здесь наследство даёт меньше половины, а остальное дописывают годы: стресс, одиночество, недосып, алкоголь, возраст. Самая массовая глава: две трети всех диагнозов планеты.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s12">
+  <div class="content">
+    <div class="kicker">Жизнь · депрессия</div>
+    <h2>Депрессия: не грусть, а отключение</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/hippocampus.png" alt="">
+        <div class="pcap">Гиппокамп, структура размером с мизинец, отвечает за память и за то, чтобы стресс выключался. При долгой депрессии он физически уменьшается на 10-15%, при лечении отрастает. Одно из немногих изменений мозга, которое видно на МРТ и повторяется от исследования к исследованию.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Главный симптом не грусть, а ангедония:</b> ничто не радует. Еда, секс, музыка, друзья становятся плоскими. Плюс сон и аппетит в любую сторону, плюс вина, плюс невозможность решить, что надеть. Пять из девяти на две недели. Каждый шестой человек проходит через это хотя бы раз.</li>
+          <li><b>Стресс как механизм.</b> Кортизол полезен на час и вреден на год. При хроническом стрессе система «включить тревогу» перестаёт выключаться, гиппокамп, который должен её тормозить, повреждается сам, и круг замыкается. Поэтому депрессия чаще после долгой нагрузки, а не после одного плохого дня.</li>
+          <li><b>Наследуемость 40%.</b> Меньшая половина. Остальное: потеря, одиночество, болезнь, бедность, недосып, алкоголь, зима на широте Петербурга. Один из самых сильных предсказателей - изоляция: одинокие люди болеют вдвое чаще, независимо от генов.</li>
+          <li><b>Убийца номер один среди расстройств.</b> Около 700 тысяч самоубийств в год в мире, большинство на фоне депрессии. При этом лечится: комбинация терапии и таблеток помогает двум из трёх. Главная проблема не в том, что не лечится, а в том, что половина не доходит: болезнь убеждает, что идти некуда.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s13">
+  <div class="content">
+    <div class="kicker">Жизнь · тревога</div>
+    <h2>Тревожные: сигнализация, которая срабатывает без пожара</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Тревога - самая полезная эмоция.</b> Кто не боялся, того съели. Миндалина, парный орган размером с миндаль, за миллисекунды до осознания решает «опасно» и запускает сердце, дыхание, пот. Расстройство - это когда она запускает всё это без повода, или повод есть, а масштаб нет.</li>
+          <li><b>Паническая атака:</b> десять минут, в которые тело уверено, что умирает. Сердце 150, воздуха нет, руки немеют, страх сойти с ума. Ни один человек от панической атаки не умер, и это единственное, что стоит знать в её середине. Паническое расстройство - это когда начинаешь бояться следующей атаки, и страх страха запускает атаку.</li>
+          <li><b>Фобии</b> - самые «выученные» из расстройств и самые излечимые. Собаки, лифты, полёты, пауки. Механизм - условный рефлекс, лечение - контролируемая встреча со страхом до тех пор, пока миндалина не переучится. Помогает в 80-90% случаев, часто за несколько сеансов.</li>
+          <li><b>Генерализованная тревога</b> - фон без объекта. Беспокойство обо всём, не выключаемое усилием, месяцами. Наследуемость около 30%, остальное среда: нестабильное детство, хронический стресс, стимуляторы. Самое частое расстройство планеты и самое редко леченное, потому что «я просто такой человек».</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Сигнал</b><span>реальная угроза или её образ</span></div>
+            <div class="arr">→</div>
+            <div class="bx cy"><b>Миндалина</b><span>«опасно» за 30 мс, до сознания</span></div>
+            <div class="arr">→</div>
+            <div class="bx"><b>Тело</b><span>адреналин, сердце, пот</span></div>
+            <div class="arr am">→</div>
+            <div class="bx am"><b>Кора</b><span>через 300 мс: «а опасно ли?»</span></div>
+          </div>
+          <div class="row">
+            <div class="bx dk"><b>Норма</b><span>кора говорит «нет», тело успокаивается</span></div>
+            <div class="bx rd"><b>Расстройство</b><span>кора не слышна, или тело само стало сигналом</span></div>
+          </div>
+          <div class="cap">Тревога устроена так, что тело реагирует раньше, чем разум. Это спасало от тигров. В городе, где тигров нет, та же схема реагирует на письмо от начальника.</div>
+        </div>
+        <div class="note" style="margin-top:14px"><b>Тревога и депрессия</b> в половине случаев идут вместе, и генетически они почти неразличимы. Одна и та же уязвимость: в молодости чаще тревога, с возрастом чаще депрессия. Психиатры всерьёз обсуждают, не одно ли это расстройство в двух фазах.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s14">
+  <div class="content">
+    <div class="kicker">Жизнь · ОКР и биполярное</div>
+    <h2>Навязчивости и качели: два расстройства с самой понятной механикой</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3>ОКР: мысль, которую нельзя не проверить</h3>
+          <ul>
+            <li><b>Обсессия</b> - непрошеная мысль: «я не выключил утюг», «я мог кого-то задавить», «руки грязные». <b>Компульсия</b> - действие, которое на минуту гасит тревогу: проверить, вернуться, вымыть. Облегчение закрепляет действие, и круг сжимается. Мытьё рук по три часа в день - не привычка, а ловушка подкрепления.</li>
+            <li><b>Не про чистоту.</b> Самые мучительные обсессии - агрессивные и кощунственные: «а вдруг я ударю ребёнка», «а вдруг я богохульствую». Человек с ОКР этого никогда не делает, именно поэтому мысль его и терзает. Больной ОКР - самый безопасный человек в комнате.</li>
+            <li><b>Наследуемость 45%,</b> дебют часто в детстве, у части после стрептококковой инфекции, и это редкий случай, когда антибиотик лечит психиатрию. Лечение: экспозиция, то есть запрет на компульсию под контролем, плюс антидепрессанты в высоких дозах. Помогает двум из трёх.</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Биполярное: два полюса, ни один не норма</h3>
+          <ul>
+            <li><b>Мания:</b> неделя без сна, тысяча идей, кредит на бизнес, три новых романа, потом больница. Мания не «хорошее настроение», это двигатель без тормозов, и она разрушает жизнь быстрее депрессии. <b>Депрессия</b> потом - расплата, и в ней риск самоубийства выше, чем при обычной.</li>
+            <li><b>Наследуемость 70%,</b> дебют 18-25 лет, часто первый эпизод депрессивный, и диагноз ставят через 5-10 лет, когда случится мания. Всё это время человека лечат от депрессии, а антидепрессант без стабилизатора может сам запустить манию.</li>
+            <li><b>Литий.</b> Простой металл, третий элемент таблицы, единственное лекарство в психиатрии, которое достоверно снижает самоубийства. Открыт в 1949-м австралийцем, который вводил морским свинкам мочу больных. Механизм не понят до сих пор. Работает 75 лет.</li>
+          </ul>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Кино, забегая вперёд:</b> ОКР в «Лучше не бывает», биполярное в «Мой парень псих». Оба фильма показаны почти без вранья, разбор в третьей части.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s15">
+  <div class="content">
+    <div class="kicker">Жизнь · зависимости</div>
+    <h2>Зависимость: не слабость воли, а урок, выученный слишком хорошо</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Дофамин - это не удовольствие, а «важно».</b> Он помечает, что стоит повторить. Еда, секс, победа дают всплеск. Вещество или игра дают всплеск в 2-10 раз сильнее и без усилий. Мозг честно записывает: вот самое важное в жизни. Дальше он просто выполняет урок.</li>
+          <li><b>Толерантность и ломка</b> - это адаптация. Мозг убавляет собственные рецепторы, чтобы компенсировать внешний поток. Теперь без вещества уровень ниже нормы: всё серое, тревога, боль. Человек употребляет уже не ради кайфа, а чтобы дотянуть до нуля. Это и есть переход от «хочу» к «надо».</li>
+          <li><b>Наследуемость 50%,</b> и это про то, как печень и рецепторы устроены. У части восточноазиатов мутация делает алкоголь тошнотворным, и алкоголизма у них в разы меньше: ген защищает не силой воли, а тошнотой. У других мутация ослабляет ответ на первый бокал, и они пьют больше, пока не почувствуют.</li>
+          <li><b>Среда решает вторую половину.</b> Вьетнам: 20% американских солдат употребляли героин, дома через год продолжали 5%. Та же молекула, тот же мозг, другая жизнь. Крысиный парк 1978-го: крысы в клетке пьют морфин до смерти, крысы в парке с друзьями и норами почти не трогают. Зависимость - это ещё и ответ на то, что больше ничего нет.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Первый раз</b><span>всплеск дофамина ×5, мозг: «запомнить»</span></div>
+            <div class="arr">→</div>
+            <div class="bx cy"><b>Повтор</b><span>всплеск теперь на ожидание, не на вещество</span></div>
+            <div class="arr">→</div>
+            <div class="bx"><b>Адаптация</b><span>рецепторов меньше, без вещества ниже нуля</span></div>
+            <div class="arr rd">→</div>
+            <div class="bx rd"><b>Зависимость</b><span>употребление ради нуля, выбор уже не выбор</span></div>
+          </div>
+          <div class="cap">Четыре шага, от месяцев до лет в зависимости от вещества и человека. Никотин и опиоиды проходят их быстрее всех, алкоголь медленнее, но массовее.</div>
+        </div>
+        <div class="note" style="margin-top:14px"><b>Самая массовая и самая легальная.</b> Алкоголь: 3 миллиона смертей в год, больше, чем все нелегальные вещества вместе. Никотин: 8 миллионов. Ни то, ни другое в этой лекции не запрещено, и оба в первой строке любой таблицы расстройств по ущербу.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s16">
+  <div class="content">
+    <div class="kicker">Жизнь · пищевые и деменции</div>
+    <h2>Два конца жизни: анорексия в пятнадцать, Альцгеймер в семьдесят пять</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3>Анорексия: самая смертельная</h3>
+          <ul>
+            <li>Смертность 5-10% за десять лет, выше, чем у любого другого расстройства в лекции, включая шизофрению. Половина от истощения, половина от самоубийств.</li>
+            <li>Наследуемость 50-60%, и генетически анорексия ближе к ОКР и к метаболическим болезням, чем к депрессии. Это не «мода на худобу», хотя мода решает, у кого сработает уязвимость.</li>
+            <li>Механизм ловушки: голод у большинства людей вызывает тревогу, у людей с анорексией - облегчение. Голодание становится компульсией, как мытьё рук. Плюс искажение восприятия тела, которое видно на экспериментах: больные оценивают ширину своих плеч на 30% больше реальной.</li>
+            <li>Дебют 14-18, девять из десяти - девушки. Лечение долгое, семейная терапия работает лучше всего у подростков.</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Деменции: когда стирается сам носитель</h3>
+          <ul>
+            <li>Альцгеймер: 60-70% всех деменций, 55 миллионов человек в мире, к 2050 году вдвое больше, потому что люди доживают. После 85 лет - каждый третий. Белковые бляшки и клубки в мозге найдены в 1906-м, и до сих пор неясно, причина они или след.</li>
+            <li>Наследуемость: редкая ранняя форма, до 65 лет, - один ген, почти 100%. Обычная поздняя - вариант APOE4, который у носителей двух копий поднимает риск в 10 раз. Но и без него треть случаев, и с ним половина не болеет.</li>
+            <li>Что дописывает жизнь: 40% случаев потенциально предотвратимы, по данным 2020 года. Образование, слух, давление, курение, алкоголь, изоляция, физическая активность. Слуховой аппарат снижает риск больше, чем любая таблетка от Альцгеймера.</li>
+            <li>Первые лекарства, замедляющие болезнь, появились в 2023-м: минус 27% скорости, ценой кровоизлияний у части пациентов. Честный край: ни одно не останавливает.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 4: УДАР ============ -->
+<section class="slide chapter" id="s17">
+  <div class="bgimg"><img src="assets/ch_trauma.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4</div>
+    <h1>Удар: одно событие, после которого человек не тот</h1>
+    <p class="lead">Снарядный шок 1915 года, которого «не было». Диагноз, который признали только после Вьетнама. Детство, в котором не было ни одного надёжного взрослого, и цена этого через сорок лет. И главная загадка главы: одинаковый удар одного ломает, а другого нет.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s18">
+  <div class="content">
+    <div class="kicker">Удар · ПТСР</div>
+    <h2>От снарядного шока до ПТСР: диагноз, которого не было 65 лет</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>1915, Западный фронт.</b> Солдаты без ранений теряют речь, зрение, способность ходить, трясутся, не спят. Врач Майерс называет это «снарядным шоком», думая, что взрыв сотрясает мозг. К 1916-му таких 40% потерь в некоторых частях. Армия объявляет это трусостью: за войну британцы расстреляли 306 человек, часть из них - за симптомы.</li>
+          <li><b>Вторая мировая:</b> «боевое истощение». Американская армия узнала, что после 60 дней боёв ломается 98% солдат, оставшиеся 2% - с психопатическими чертами. Уже не трусость, но всё ещё «слабость». После войны диагноз исчез из книг: мирным людям он вроде не нужен.</li>
+          <li><b>Вьетнам и 1980.</b> Ветераны вернулись в страну, которая не хотела о них слышать, с кошмарами, вспышками ярости, героином. Их врачи десять лет добивались признания, и в DSM-III появилось посттравматическое стрессовое расстройство. Впервые в истории психиатрии диагноз, у которого причина в названии: не «что с тобой», а «что с тобой сделали».</li>
+          <li><b>Оказалось, не только война.</b> Насилие, аварии, катастрофы, болезни. У женщин ПТСР вдвое чаще, чем у мужчин, и главный источник - не фронт, а дом. Три симптома: непрошеные повторы, избегание всего, что напоминает, и тело, которое живёт в режиме тревоги месяцами. Память о событии не «записалась» как прошлое, она воспроизводится как настоящее.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>1915</b><span>снарядный шок, «сотрясение»</span></div>
+            <div class="arr">→</div>
+            <div class="bx rd"><b>1917</b><span>«трусость», трибуналы</span></div>
+            <div class="arr">→</div>
+            <div class="bx"><b>1943</b><span>боевое истощение, 98% за 60 дней</span></div>
+            <div class="arr">→</div>
+            <div class="bx"><b>1952-1968</b><span>диагноза нет в DSM-I и DSM-II</span></div>
+            <div class="arr am">→</div>
+            <div class="bx am"><b>1980</b><span>ПТСР в DSM-III</span></div>
+          </div>
+          <div class="cap">65 лет между первым описанием и диагнозом. Ни одно другое расстройство не ждало признания так долго при таком количестве больных.</div>
+        </div>
+        <div class="note gold" style="margin-top:14px"><b>Кто заболевает.</b> Из переживших тяжёлое событие ПТСР получают 10-20%. Остальные восстанавливаются сами за недели. Предсказатели: не сила события, а что было до и после. Предыдущая травма, отсутствие поддержки после, ощущение беспомощности в момент удара. Тот, кто мог действовать, ломается реже того, кто мог только ждать.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s19">
+  <div class="content">
+    <div class="kicker">Удар · детство</div>
+    <h2>Десять вопросов про детство, которые предсказывают инфаркт</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/child_chair.png" alt="">
+        <div class="pcap">Исследование ACE, 1998: 17 тысяч взрослых пациентов обычной клиники в Калифорнии ответили на десять вопросов про детство до 18 лет. Результат оказался таким, что его перепроверяли двадцать лет. Он не изменился.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Десять вопросов.</b> Били ли. Унижали ли. Было ли сексуальное насилие. Хватало ли еды и чистой одежды. Чувствовал ли, что тебя любят. Разводились ли родители. Били ли мать. Пил ли кто-то в доме. Была ли у кого-то в доме психическая болезнь. Сидел ли кто-то в тюрьме. Каждое «да» - один балл.</li>
+          <li><b>Результат.</b> Две трети ответили «да» хотя бы раз. Каждый восьмой набрал четыре и больше. У них по сравнению с нулём: депрессия в 4.6 раза чаще, попытки самоубийства в 12 раз, алкоголизм в 7 раз, наркотики в 10 раз. И не только психика: болезни сердца в 2.2 раза, рак в 1.9, диабет в 1.6, продолжительность жизни при шести и больше баллах на 20 лет короче.</li>
+          <li><b>Механизм.</b> Детский мозг настраивает систему стресса под среду, в которой растёт. Если среда опасна, система настраивается на постоянную готовность: кортизол выше, миндалина больше, гиппокамп меньше, префронтальная кора, которая тормозит, развивается хуже. Это не поломка, это адаптация к плохому месту, которая потом мешает жить в хорошем.</li>
+          <li><b>Это не приговор.</b> Половина людей с высоким баллом здоровы. Главный защитный фактор один, и он измерен: хотя бы один взрослый, который был на твоей стороне. Не обязательно родитель. Бабушка, тренер, учитель, сосед. Один человек снижает риск почти вдвое.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s20">
+  <div class="content">
+    <div class="kicker">Удар · диссоциация</div>
+    <h2>Диссоциация: когда психика выходит из тела, чтобы выжить</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Нормальная версия.</b> Ты ехал час и не помнишь дороги. Читал страницу и не понял ни слова. Смотрел на себя со стороны в момент аварии. Это диссоциация, и она есть у всех: мозг умеет отключать часть себя, когда целиком слишком много.</li>
+          <li><b>Травматическая версия.</b> Ребёнок, которого бьют, не может убежать. Единственный выход - «уйти» изнутри: это происходит не со мной, я смотрю сверху, я не здесь. Это работает. Проблема в том, что механизм закрепляется и потом включается сам: от крика, от запаха, от прикосновения, через тридцать лет.</li>
+          <li><b>Спектр.</b> От «выпал на минуту» через деперсонализацию, когда собственное тело и мир кажутся ненастоящими неделями, до амнезии на целые годы. На дальнем краю - диссоциативное расстройство идентичности, бывшее «раздвоение личности»: несколько состояний с разной памятью, которые сменяют друг друга.</li>
+          <li><b>Спорный край.</b> ДРИ есть в DSM, и почти у всех пациентов с ним - тяжёлая детская травма. Но часть психиатров считает, что «личности» формируются в терапии, под внушением, и в странах без этой терапии диагноз почти не встречается. Спор идёт с 1980-х и не закрыт. Кино в этом споре сыграло не последнюю роль, разбор в третьей части.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Удар</b><span>невозможно ни убежать, ни бороться</span></div>
+            <div class="arr">→</div>
+            <div class="bx cy"><b>Отключение</b><span>«это не со мной», боль тише</span></div>
+            <div class="arr">→</div>
+            <div class="bx"><b>Выживание</b><span>сработало, запомнено</span></div>
+            <div class="arr rd">→</div>
+            <div class="bx rd"><b>Повтор</b><span>включается от намёка, уже без угрозы</span></div>
+          </div>
+          <div class="cap">Та же логика, что у зависимости и у ОКР: сработало один раз, закрепилось, мешает. Половина расстройств в этой лекции - защиты, которые пережили свою угрозу.</div>
+        </div>
+        <div class="note" style="margin-top:14px"><b>Кто устойчив.</b> Исследования на людях, прошедших одно и то же: Холокост, землетрясения, войну. Устойчивость предсказывают три вещи, и ни одна не гены: возможность действовать в момент, кто-то рядом после, и способность рассказать историю целиком, от начала до конца. Травма, у которой есть рассказ, перестаёт быть настоящим и становится прошлым.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 5: МОЗГ ФИЗИЧЕСКИ ============ -->
+<section class="slide chapter" id="s21">
+  <div class="bgimg"><img src="assets/ch_brain.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5</div>
+    <h1>Мозг физически: что видно, что придумано, что приходит извне</h1>
+    <p class="lead">Лом сквозь голову, после которого человек стал другим. Миф про «химический дисбаланс», в который поверили все, включая врачей. Вирус, паразит и энцефалит, которые меняют личность без единого гена и без единого удара. И единственная хорошая новость главы: мозг перестраивается.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s22">
+  <div class="content">
+    <div class="kicker">Мозг · Гейдж</div>
+    <h2>1848: лом сквозь лобную долю, и «Гейдж больше не Гейдж»</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Финеас Гейдж,</b> 25 лет, бригадир на строительстве железной дороги в Вермонте. Взрыв, и метровый железный лом входит под левую скулу и выходит через темя. Гейдж не теряет сознания, сам садится в повозку, через два месяца на ногах. Левая лобная доля уничтожена.</li>
+          <li><b>Что изменилось.</b> До: ответственный, уравновешенный, лучший бригадир компании. После, по словам его врача: «капризный, непочтительный, грубейшие ругательства, нетерпелив к ограничениям, строит планы и тут же бросает». Друзья сказали: «Гейдж больше не Гейдж». Работу он потерял, кочевал, умер через 12 лет от эпилепсии.</li>
+          <li><b>Почему это важно.</b> Первое доказательство, что характер, самоконтроль и планирование живут в конкретном месте мозга. До Гейджа душа считалась неделимой. После него лобные доли стали «органом личности», и через сто лет из этого вырастет лоботомия, которая будет разрушать их намеренно.</li>
+          <li><b>Честная оговорка.</b> Свидетельств о Гейдже после травмы мало, часть историй преувеличена учебниками. Есть данные, что к концу жизни он частично восстановился и работал кучером в Чили, что требует планирования. Мозг перестраивался даже после лома, и это тоже урок главы.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Что видно на снимке, а что нет</h3>
+          <p><b>Видно:</b> опухоль, инсульт, кровоизлияние, атрофия при деменции, уменьшенный гиппокамп при долгой депрессии, расширенные желудочки при шизофрении в среднем по группе. Всё это - средние отличия групп, а не диагноз одного человека.</p>
+          <p><b>Не видно:</b> сама депрессия, сама тревога, сама шизофрения. Взяв сто снимков, из которых пятьдесят больных, ни один врач и ни один алгоритм не разложит их надёжнее, чем на 60-70%. Разница между больным и здоровым мозгом меньше, чем разница между двумя здоровыми.</p>
+          <p><b>Следствие:</b> «у него на МРТ шизофрения» - фраза из кино. В жизни снимок делают, чтобы исключить опухоль, а не чтобы поставить психиатрический диагноз.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s23">
+  <div class="content">
+    <div class="kicker">Мозг · миф</div>
+    <h2>«Химический дисбаланс»: как реклама стала верой</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Откуда взялось.</b> 1950-е: заметили, что лекарство от давления вызывает депрессию и снижает серотонин, а первые антидепрессанты серотонин повышают. Логичная гипотеза: депрессия - это мало серотонина. В 1990-х фармкомпании сделали из гипотезы слоган: «восстанавливает баланс». Слоган выучили все.</li>
+          <li><b>Что показала проверка.</b> Обзор 2022 года, все исследования за 50 лет: у людей с депрессией серотонин не ниже, чем у здоровых. Снижение серотонина у здоровых депрессию не вызывает. Простой «дисбаланс» не подтвердился ни в одной из шести линий доказательств.</li>
+          <li><b>Но таблетки работают.</b> Это второй, отдельный факт. Антидепрессанты лучше плацебо, эффект небольшой у лёгкой депрессии и заметный у тяжёлой. Работают они через три-четыре недели, хотя серотонин поднимают за часы. Значит, механизм не в уровне серотонина, а в том, что этот уровень запускает потом: рост новых связей, нейропластичность. Лекарство не «восполняет», а «разблокирует».</li>
+          <li><b>Почему это важно сказать.</b> Не потому, что таблетки плохие. А потому, что миф о дисбалансе делал больного «сломанным механизмом», которому только химия и поможет. Реальность сложнее и добрее: мозг, которому надо помочь перестроиться, и таблетка - один из способов, терапия и среда - другие, и они складываются.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx rd"><b>Миф</b><span>мало серотонина → депрессия → таблетка добавляет → норма</span></div>
+          </div>
+          <div class="row">
+            <div class="bx cy"><b>Ближе к правде</b><span>стресс и уязвимость → связи в мозге слабеют → таблетка/терапия/сон/люди → связи отрастают за недели → норма</span></div>
+          </div>
+          <div class="cap">Первая схема объясняет, почему таблетки работают, но не объясняет, почему через месяц. Вторая объясняет и месяц, и почему терапия без таблеток тоже работает, и почему одиночество мешает обоим.</div>
+        </div>
+        <div class="note gold" style="margin-top:14px"><b>Нейропластичность,</b> единственная хорошая новость главы. Мозг взрослого меняет связи всю жизнь: у лондонских таксистов гиппокамп больше, у музыкантов моторная кора шире, у слепых зрительная кора обрабатывает звук. Расстройство - это тоже перестройка, только в плохую сторону. А значит, обратная перестройка возможна, и лечение - это её организация.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s24">
+  <div class="content">
+    <div class="kicker">Мозг · извне</div>
+    <h2>Бешенство и токсоплазма: чужой код, который меняет поведение</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/nerve_virus.png" alt="">
+        <div class="pcap">Вирус бешенства идёт по нервам от укуса к мозгу со скоростью сантиметры в сутки. Дошёл - выключает страх, включает агрессию и спазм при виде воды, чтобы слюна с вирусом не смывалась. Единственная болезнь со 100% смертностью после симптомов. Зомби-канон списан с неё почти дословно.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Бешенство</b> - готовая иллюстрация того, что поведение можно переписать снаружи. Вирусу нужно, чтобы носитель кусал. Он это устраивает: агрессия, гиперактивность, слюна, водобоязнь. Больной не «сходит с ума», его поведением управляет геном другого организма. 59 тысяч смертей в год, почти все от собак, почти все в Азии и Африке.</li>
+          <li><b>Токсоплазма.</b> Паразит из кошачьего лотка, которым заражена треть человечества. Размножаться может только в кошке, поэтому у заражённой крысы отключает страх перед кошачьим запахом: крыса идёт к кошке сама. У людей носительство связано с чуть большим риском аварий, чуть большей импульсивностью и, по некоторым данным, чуть более частой шизофренией. «Чуть» здесь важно: эффект есть в статистике, а не в конкретной голове.</li>
+          <li><b>Летаргический энцефалит, 1917-1927.</b> Эпидемия неизвестного происхождения, миллион больных. Часть умерла, часть выздоровела, а часть застыла: живые, всё понимающие, не способные двинуться, на десятилетия. В 1969-м Оливер Сакс дал им леводопу, и они проснулись на несколько недель, а потом ушли обратно. Об этом «Пробуждение», разбор в третьей части.</li>
+          <li><b>Список длиннее.</b> Нейросифилис, который в XIX веке давал до 20% пациентов психбольниц и лечился малярией, за что дали Нобеля. Опухоли лобной доли, которые дебютируют «сменой характера». Аутоиммунный энцефалит, открытый в 2007-м, который выглядит как острая шизофрения и лечится иммунотерапией. Психиатрия каждые десять лет отдаёт неврологии ещё одну болезнь, у которой нашлась причина.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 6: КАК ЛЕЧИЛИ И ЛЕЧАТ ============ -->
+<section class="slide chapter" id="s25">
+  <div class="bgimg"><img src="assets/ch_treat.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6</div>
+    <h1>Как лечили и как лечат</h1>
+    <p class="lead">Ледоруб через глазницу за десять минут, Нобелевская премия за это, инсулиновые комы, электрический ток без наркоза. Потом 1950-е, две таблетки, и больницы опустели за двадцать лет. Что из старого оказалось не бредом, а что из нового работает по данным.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s26">
+  <div class="content">
+    <div class="kicker">Лечение · до таблеток</div>
+    <h2>Лоботомобиль: 3500 человек лично, ледорубом, за десять минут</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>1935, Лиссабон.</b> Невролог Эгаш Мониш, услышав, что у шимпанзе с удалёнными лобными долями пропала агрессия, начинает резать лобные связи у людей. «Успокаиваются». В 1949-м получает за это Нобелевскую премию, единственную в истории, которую потом просили отозвать.</li>
+          <li><b>Уолтер Фримен,</b> американский психиатр, упрощает метод: ледоруб через глазницу, молоточек, повернуть, десять минут, без операционной и без хирурга. Ездит по стране на фургоне, который пресса назвала «лоботомобиль», и оперирует в больницах штатов по конвейеру. Лично 3500 операций, всего в США около 40 тысяч, в мире больше ста.</li>
+          <li><b>Кого.</b> Не только буйных. Депрессия, тревога, «трудные» жёны, непослушные дети. Розмари Кеннеди, сестре будущего президента, 23 года, сделали лоботомию за перепады настроения, и она осталась с интеллектом двухлетней на 64 года. Смертность 5-15%, а «успех» - это пациент, который больше ничего не хочет.</li>
+          <li><b>Конец.</b> 1954: хлорпромазин делает то же самое таблеткой и обратимо. К 1970-м лоботомия почти исчезла, в СССР её запретили ещё в 1950-м. Фримен провёл последнюю в 1967-м, пациентка умерла на столе. Он до конца жизни объезжал бывших пациентов, чтобы доказать, что им помог.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/lobotomobile.png" alt="">
+        <div class="pcap">Фургон у больницы, 1950-е. Фримен возил в нём инструменты и делал по двадцать пять операций в день. Половина старых психбольниц Америки его принимала. Лоботомия - не средневековье, это хорошо задокументированный XX век, и людям, которым её сделали, сейчас за восемьдесят.</div>
+        <div class="note warn" style="margin-top:10px"><b>Отступление в фантастику, первое.</b> Герберт Уэст из «Реаниматора» с зелёной сывороткой - карикатура на учёного без тормозов, написанная в 1922-м. Через двадцать лет Фримен сделал из пародии практику. Фантастика здесь скромнее истории, подробнее в четвёртой части.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s27">
+  <div class="content">
+    <div class="kicker">Лечение · шок</div>
+    <h2>Инсулин, малярия, ток: три шока, из которых один работает до сих пор</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Малярия, 1917.</b> Австриец Вагнер-Яурегг заражает больных нейросифилисом малярией: лихорадка убивает спирохету. Работает, треть выздоравливает, Нобель 1927. Первое в истории лечение психоза с доказанным эффектом. Отменено пенициллином в 1940-х.</li>
+          <li><b>Инсулиновая кома, 1933.</b> Больному шизофренией вводят инсулин до гипогликемической комы, через час выводят глюкозой. Курс - 50-60 ком. Смертность 1-5%. Механизма никто не знал, выглядело, что помогает. В 1950-х сравнили с плацебо: не помогает. Через это прошёл Нэш в 1961-м, следующая глава.</li>
+          <li><b>Электросудорожная терапия, 1938.</b> Ток через виски, судорожный припадок. До 1950-х без наркоза и без миорелаксантов: переломы позвонков, страх, то самое кино из «Кукушки». С 1950-х под наркозом, две минуты, пациент ничего не чувствует.</li>
+          <li><b>И вот честное:</b> ЭСТ работает. При тяжёлой депрессии, которая не берётся ничем, эффект у 70-80%, быстрее и сильнее любого лекарства. Побочка - потеря памяти на недели вокруг курса. Её боятся больше всего и назначают меньше всего, при том что по данным она эффективнее всего, что есть. Кино этому виновато не меньше медицины.</li>
+        </ul>
+      </div>
+      <div>
+        <table class="t" style="font-size:13.5px">
+          <tr><th>Метод</th><th>Годы</th><th>Работало?</th><th>Судьба</th></tr>
+          <tr><td>Цепи, изоляция</td><td class="d">до 1793</td><td class="d">нет</td><td class="d">Пинель снял цепи; изоляция дожила до 1960-х</td></tr>
+          <tr><td>Малярия при сифилисе</td><td class="d">1917-1945</td><td class="d">да</td><td class="d">заменена пенициллином</td></tr>
+          <tr><td>Инсулиновые комы</td><td class="d">1933-1960</td><td class="d">нет</td><td class="d">отменена после сравнения с плацебо</td></tr>
+          <tr><td>Лоботомия</td><td class="d">1935-1970</td><td class="d">«успокаивала»</td><td class="d">Нобель, потом позор</td></tr>
+          <tr><td>ЭСТ</td><td class="d">1938-сейчас</td><td class="d">да, тяжёлая депрессия</td><td class="d">под наркозом, применяется</td></tr>
+          <tr><td>Аверсивная терапия</td><td class="d">1950-1980</td><td class="d">коротко</td><td class="d">этически запрещена; «Заводной апельсин»</td></tr>
+          <tr><td>Хлорпромазин, литий</td><td class="d">1949-сейчас</td><td class="d">да</td><td class="d">начало современной психиатрии</td></tr>
+        </table>
+        <div class="cap" style="color:var(--faint);font-size:12px;margin-top:6px">Из семи методов до 1950 года по-настоящему работали два, и один из них - заражение малярией. Психиатрия честно перебирала всё, что было, потому что не было ничего.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s28">
+  <div class="content">
+    <div class="kicker">Лечение · 1950-е</div>
+    <h2>Две таблетки, и больницы опустели за двадцать лет</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/pills1950.png" alt="">
+        <div class="pcap">Хлорпромазин, 1952, Париж: искали средство от шока при операциях, заметили, что хирургические пациенты становятся «безразличны к происходящему». Дали психиатрам. Через два года его принимали два миллиона человек. Первый антипсихотик, найден случайно, как и почти всё в этой главе.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Хлорпромазин</b> убирал голоса и бред у половины больных шизофренией, не отключая человека целиком. Впервые буйное отделение стало тихим не от ремней. Механизм поняли через десять лет: блокирует дофаминовые рецепторы. Отсюда «дофаминовая гипотеза» шизофрении, которая, как и серотониновая, оказалась половиной правды.</li>
+          <li><b>Литий,</b> 1949, Австралия. Джон Кейд вводил морским свинкам мочу больных, чтобы найти токсин, использовал литий как растворитель, и свинки стали спокойными. Попробовал на себе, потом на пациентах с манией. Работает. Механизм не понят через 75 лет. Единственное лекарство в психиатрии, которое достоверно снижает самоубийства.</li>
+          <li><b>Деинституционализация.</b> В США в 1955-м в психбольницах 560 тысяч человек, к 1994-му 70 тысяч. Больницы закрывали, потому что можно было лечить дома. А дома не было: деньги на амбулаторную помощь не выделили. Часть вышла на улицу и в тюрьмы. Сегодня в американских тюрьмах больных шизофренией больше, чем в больницах. Хорошая идея, недоделанная наполовину, стала новой бедой.</li>
+          <li><b>Кино этого момента:</b> «Пролетая над гнездом кукушки» вышло в 1975-м, ровно посередине этого исхода, и стало его манифестом. Разбор в третьей части.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s29">
+  <div class="content">
+    <div class="kicker">Лечение · сегодня</div>
+    <h2>Что работает по данным, и таблетки против терапии - ложный спор</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Таблетки.</b> Антидепрессанты: лучше плацебо, эффект небольшой при лёгкой депрессии и заметный при тяжёлой. Антипсихотики: снижают рецидивы шизофрении с 65% до 25% в год. Литий и стабилизаторы: снижают частоту эпизодов биполярного втрое. Бензодиазепины: работают за минуты, вызывают зависимость за недели, слезть тяжелее, чем с героина.</li>
+          <li><b>Терапия.</b> Когнитивно-поведенческая: столько же исследований, сколько у таблеток, эффект такой же при депрессии и тревоге, при фобиях и ОКР лучше таблеток, и эффект держится после окончания, чего у таблеток нет. Экспозиция при ПТСР и фобиях: 60-80%. Психоанализ: работает на некоторых задачах, но доказательств меньше, а времени больше.</li>
+          <li><b>Вместе лучше.</b> При тяжёлой депрессии комбинация обгоняет каждый метод по отдельности. Таблетка возвращает силы дойти до терапии, терапия меняет то, что таблетка не трогает: привычки, людей вокруг, работу. Спор «химия или разговор» - спор из 1970-х, когда обе стороны воевали за бюджет. Данные его закрыли.</li>
+          <li><b>Плацебо в психиатрии - 30-40%.</b> Больше, чем где-либо в медицине. Это не значит «всё внушение». Это значит, что внимание, надежда и структура сами по себе лечат треть больных, и любой метод должен обогнать эту треть, чтобы считаться. Многие старые методы не обогнали, и это единственное, что их отличает от новых.</li>
+        </ul>
+      </div>
+      <div>
+        <table class="t" style="font-size:13px">
+          <tr><th>Расстройство</th><th>Первая линия</th><th>Помогает, %</th><th>Честный край</th></tr>
+          <tr><td>Депрессия</td><td class="d">КПТ + СИОЗС</td><td class="d">60-70</td><td class="d">треть не отвечает; тогда ЭСТ, кетамин</td></tr>
+          <tr><td>Тревога, паника</td><td class="d">КПТ</td><td class="d">70-80</td><td class="d">рецидивы без поддержки</td></tr>
+          <tr><td>Фобии</td><td class="d">экспозиция</td><td class="d">80-90</td><td class="d">самое излечимое в лекции</td></tr>
+          <tr><td>ОКР</td><td class="d">экспозиция + СИОЗС</td><td class="d">60-70</td><td class="d">треть хроники</td></tr>
+          <tr><td>ПТСР</td><td class="d">травма-фокусная терапия</td><td class="d">60-70</td><td class="d">таблетки слабее терапии</td></tr>
+          <tr><td>Биполярное</td><td class="d">литий, стабилизаторы</td><td class="d">70</td><td class="d">пожизненно; отмена = рецидив</td></tr>
+          <tr><td>Шизофрения</td><td class="d">антипсихотики + поддержка</td><td class="d">50 ремиссия</td><td class="d">треть хроники; 20% полное выздоровление</td></tr>
+          <tr><td>Зависимости</td><td class="d">терапия + заместительные</td><td class="d">30-50 за год</td><td class="d">хроническое; рецидив - часть пути</td></tr>
+          <tr><td>Анорексия</td><td class="d">семейная терапия</td><td class="d">50</td><td class="d">самая смертельная</td></tr>
+          <tr><td>Альцгеймер</td><td class="d">профилактика, 2 препарата</td><td class="d">замедление 27</td><td class="d">не останавливается</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 7: НЭШ ============ -->
+<section class="slide chapter" id="s30">
+  <div class="bgimg"><img src="assets/ch_nash.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 7 · мост от науки к кино</div>
+    <h1>Джон Нэш: человек, в котором сошлось всё</h1>
+    <p class="lead">Ген: сын с тем же диагнозом. Жизнь: тридцать лет, классический возраст дебюта. Удар: провал, суд, принудительная госпитализация. Лечение: инсулиновые комы и отказ от таблеток. Ремиссия, которую он описал изнутри. Нобелевская премия. И фильм, который всё это пересказал, соврав ровно там, где нужно было.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s31">
+  <div class="content">
+    <div class="kicker">Нэш · 27 страниц</div>
+    <h2>Принстон, 1950: диссертация, которая через 44 года получит Нобеля</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/ch_nash.png" alt="">
+        <div class="pcap">Призрак Нэша в пустой аудитории Файн-холла, математического корпуса Принстона, где он проведёт следующие шестьдесят лет. Рекомендательное письмо в аспирантуру состояло из одной строки: «Этот человек - гений». Ему было 19. Диссертацию он написал в 21, на 27 страницах, с двумя ссылками, одна из них на самого себя.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Джон Форбс Нэш,</b> 1928, Западная Вирджиния. Сын инженера и учительницы. В школе скучал, в 13 читал Белла «Творцы математики», в 17 поступил в Карнеги на химика, за год перешёл в математику. Странный, надменный, играл в игры, которые сам придумывал, разговаривал редко и свысока.</li>
+          <li><b>Равновесие Нэша.</b> Ситуация, в которой ни одному игроку не выгодно менять стратегию, если остальные не меняют. Каждый делает лучшее из возможного при том, что делают другие. Он доказал, что такое равновесие существует в любой конечной игре. Идея на одну страницу, следствия на весь XX век: аукционы, переговоры, ядерное сдерживание, эволюционная биология, экономика целиком.</li>
+          <li><b>Фон Нейман, отец теории игр, отмахнулся:</b> «Это тривиально, просто теорема о неподвижной точке». Нэш продолжил. За следующие восемь лет он сделал ещё три работы, каждая из которых отдельно тянула на большую премию: вложение многообразий, уравнения в частных производных. Математики считают их сильнее равновесия.</li>
+          <li><b>Характер.</b> Коллеги вспоминают человека, который мог войти в кабинет и сказать «твоя задача решается вот так», не здороваясь. Уверенность на грани. Тот же тип уверенности, который через несколько лет заставит его поверить, что инопланетяне шлют ему сообщения, потому что он их достоин.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s32">
+  <div class="content">
+    <div class="kicker">Нэш · тридцать</div>
+    <h2>1959: лекция о гипотезе Римана, которую никто не понял</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Колумбийский университет, зима 1959.</b> Нэшу 30, он профессор MIT, восходящая звезда, ждут прорыва по гипотезе Римана, главной нерешённой задаче математики. Он выходит и несёт бессвязное. Зал в недоумении. Коллеги списывают на переутомление. Это дебют.</li>
+          <li><b>Дальше быстрее.</b> Письма в посольства о заговоре. Отказ от должности в MIT. Красные галстуки как сигнал от коммунистов. Попытка отказаться от американского гражданства в Европе, депортация. Уверенность, что он император Антарктиды и что New York Times шлёт ему шифровки от пришельцев. Бред не хаотичен, он выстроен, как теорема.</li>
+          <li><b>Его собственное объяснение,</b> данное через 40 лет: «Идеи о сверхъестественных существах приходили ко мне так же, как математические идеи. Поэтому я относился к ним серьёзно». Это лучшее описание психоза изнутри, которое есть у науки: озарение и бред используют один канал, и различить их можно только по последствиям.</li>
+          <li><b>Возраст.</b> Мужская шизофрения дебютирует в 18-25, у Нэша поздно, в 30, что связано с лучшим исходом. Женская - на пять лет позже и мягче, эстроген защищает. Дебют после 40 редок и подозрителен на другую болезнь. Нэш попал ровно в верхнюю границу окна, и это, возможно, одна из причин, почему он вышел.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>1950</b><span>диссертация, 21 год</span></div>
+            <div class="arr">→</div>
+            <div class="bx"><b>1957</b><span>женится на Алисии, студентке-физике</span></div>
+            <div class="arr">→</div>
+            <div class="bx rd"><b>1959</b><span>дебют, 30 лет, Алисия беременна</span></div>
+            <div class="arr">→</div>
+            <div class="bx rd"><b>1961</b><span>инсулиновые комы, Трентон</span></div>
+            <div class="arr">→</div>
+            <div class="bx"><b>1963</b><span>развод</span></div>
+          </div>
+          <div class="row">
+            <div class="bx"><b>1970</b><span>Алисия берёт его назад «квартирантом»; конец лекарств</span></div>
+            <div class="arr">→</div>
+            <div class="bx dk"><b>1970-1990</b><span>призрак Файн-холла</span></div>
+            <div class="arr am">→</div>
+            <div class="bx am"><b>1994</b><span>Нобель</span></div>
+            <div class="arr">→</div>
+            <div class="bx"><b>2001</b><span>второй брак с Алисией</span></div>
+            <div class="arr">→</div>
+            <div class="bx"><b>2015</b><span>Абелевская премия; через 4 дня такси</span></div>
+          </div>
+          <div class="cap">Шестьдесят лет одной строкой. Тридцать из них - болезнь, и Нобелевская премия дана за работу, сделанную за девять лет до неё.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s33">
+  <div class="content">
+    <div class="kicker">Нэш · больница</div>
+    <h2>Трентон, 1961: пятьдесят ком, и жена, которая подписала</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Первая госпитализация, 1959,</b> Маклин под Бостоном, частная клиника, куда его положили коллеги через суд. Он вышел через 50 дней, объявив себя здоровым, и уехал в Европу отказываться от гражданства. Психоз не лечится обещанием.</li>
+          <li><b>Трентонская государственная больница, 1961.</b> Уже не частная. Алисия подписала принудительную госпитализацию, ей 28, сыну два года. Инсулиновая кома: пять раз в неделю, шесть недель, каждый раз до потери сознания. Нэш потом говорил, что эти недели стёрли часть памяти навсегда. Метод из шестой главы, на живом человеке, за год до того, как его признали бесполезным.</li>
+          <li><b>После.</b> Ремиссия на несколько месяцев, работа, потом снова. Торазин, тот самый хлорпромазин, который он ненавидел: «он делает меня тупым». Развод в 1963-м. Мать умирает в 1969-м, и сестра отказывается его принимать. В 1970-м Алисия, уже бывшая жена, берёт его к себе в дом в Принстоне, как она сказала, «квартирантом». С этого года он больше не принимает лекарств.</li>
+          <li><b>Алисия.</b> Физик из Сальвадора, одна из двух женщин на физике в своём выпуске MIT. Развелась, растила сына одна, работала программистом. Взяла его обратно, когда никто не брал, и держала двадцать лет. Сын, Джон Чарльз, тоже математик, тоже с шизофренией, жил с ними же. В фильме из этого осталась половина, и это, пожалуй, главное, что фильм недорассказал.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Ген, внутри главы</h3>
+          <p>Джон Чарльз Нэш, сын Джона и Алисии, родился в 1959-м, в год дебюта отца. Математик, доктор наук, шахматист. Шизофрения, дебют в том же возрасте, что у отца. Госпитализации, лекарства, которые он, в отличие от отца, принимал. Живёт в Принстоне до сих пор.</p>
+          <p>Есть и старший сын, от связи до брака, Джон Дэвид Стир. Нэш отказался признать его и платить алименты, мать растила одна, отношения восстановились только к 1990-м. В фильме его нет вовсе.</p>
+          <p>Одна семья, два поколения, один диагноз с одним возрастом дебюта. Наследуемость 80% из второй главы, в одном абзаце вместо таблицы. И одновременно: Алисия здорова, Стир здоров. Вероятность, не приговор.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s34">
+  <div class="content">
+    <div class="kicker">Нэш · призрак</div>
+    <h2>Призрак Файн-холла: двадцать лет и выход без таблеток</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>1970-1990.</b> Нэш бродит по Принстону в старой куртке, пишет на досках формулы и послания, шепчется сам с собой. Студенты называют его «Призраком Файн-холла», показывают новичкам как достопримечательность. Университет его не выгоняет: неписаное правило, что математический факультет своих не сдаёт.</li>
+          <li><b>Ремиссия.</b> К середине 1980-х голоса и заговоры стихают. Он снова разговаривает с людьми, снова работает, публикует. Без лекарств с 1970 года. И вот его собственные слова о том, как: «Я начал интеллектуально отвергать некоторые линии мышления, на которые влиял бред. Это была диета для ума, как отказ от еды». Он описал ремиссию как решение.</li>
+          <li><b>Спор психиатров,</b> не закрытый до сих пор. Одни: это воля и интеллект, он «выдумал» себя обратно, и это доказательство, что психоз можно пересилить. Другие: у 20-25% больных шизофренией к 50-60 годам болезнь стихает сама, это известно с Крепелина, и Нэш просто попал в эту пятую часть, а его «решение» - рационализация постфактум. Данных, чтобы выбрать, нет. Нэш - выборка из одного.</li>
+          <li><b>Опасность его примера.</b> Если можно выйти без таблеток, зачем таблетки? Ответ: у четырёх из пяти не выходит, а прекращение лекарств повышает рецидив с 25% до 65% в год. Нэш это знал. Именно поэтому в фильме есть фраза, которой в его жизни не было, следующий слайд.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/nash_hall.png" alt="">
+        <div class="pcap">Коридор Файн-холла ночью. Двадцать лет одинокого человека с мелом. Принстон не лечил его, но и не выгнал, и в споре о том, что вылечило Нэша, «место, где тебя терпят» - кандидат не хуже воли и не хуже времени.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s35">
+  <div class="content">
+    <div class="kicker">Нэш · Нобель</div>
+    <h2>1994: комитет спорил, можно ли дать премию сумасшедшему</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/nash_medal.png" alt="">
+        <div class="pcap">Нобелевская премия по экономике 1994 года, вместе с Харшаньи и Зельтеном, за равновесие в некооперативных играх. Работа 1950 года. Абелевская премия 2015 года, высшая математическая, за уравнения в частных производных. Работа 1958 года. Между двумя работами и двумя премиями - вся болезнь.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Комитет колебался всерьёз.</b> Сохранились свидетельства: обсуждали, не сорвёт ли он церемонию, не опозорит ли премию, в состоянии ли понять, что происходит. Решили давать, но без традиционной нобелевской лекции: вместо неё семинар. Он приехал, вёл себя безупречно и дал одну из самых коротких речей в истории.</li>
+          <li><b>Стигма в чистом виде.</b> Работа была признана лучшей в мире, и при этом человека, её сделавшего, обсуждали как риск. Это тот же механизм, что «не взял бы на работу», из первой главы, только на уровне Шведской академии. Премия помогла: после неё Нэш получил кабинет, зарплату и обратно жизнь. Диагноз никуда не делся, изменилось только отношение.</li>
+          <li><b>2001.</b> Второй брак с Алисией, через 38 лет после развода. 2015, май: Абелевская премия в Осло, возвращение, такси из аэропорта в Нью-Джерси, водитель не справился, оба без ремней. Джон 86, Алисия 82. Погибли вместе, через четыре дня после того, как он получил высшую награду в своей науке.</li>
+          <li><b>Для лекции.</b> Ген: есть, сын. Жизнь: дебют в 30, изоляция, отказ семьи. Удар: суд, комы, развод, депортация. Лечение: всё, что было в шестой главе, и отказ от него. Ремиссия: воля или время, неизвестно. И одна вещь, которой нет ни в одной главе: место, где тебя терпят двадцать лет, и человек, который берёт «квартирантом». В таблице лечения этого нет, а в биографии Нэша это половина результата.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s36">
+  <div class="content">
+    <div class="kicker">Нэш · «Игры разума»</div>
+    <h2>Фильм: что попали, что соврали, и одна ложь во спасение</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="gr">Что попали</h3>
+          <ul>
+            <li>Интеллект сохранён при болезни. Нэш в бреду оставался математиком, и фильм это держит от начала до конца, что для 2001 года было редкостью: обычно кино показывало шизофрению как распад.</li>
+            <li>Бред как система, а не хаос. Заговор, шифровки, миссия. Так и было, только про пришельцев и Антарктиду, что для экрана сочли слишком.</li>
+            <li>Алисия как половина результата. Дженнифер Коннелли получила Оскар, и по делу: фильм первым сказал, что ремиссия - это не только пациент.</li>
+            <li>Ремиссия возможна, и она не «выздоровление»: Нэш в финале видит своих призраков, но не разговаривает с ними. Это точнее, чем «вылечился».</li>
+            <li>Инсулиновая кома показана. Коротко, но показана, и зрители 2001 года впервые узнали, что такое существовало.</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="rd">Что соврали</h3>
+          <ul>
+            <li>Галлюцинации Нэша были слуховыми. Чарльз, девочка и Парчер выдуманы: зрителю нужно видеть. Визуальные галлюцинации при шизофрении редки, слуховые - правило. Половина зала после фильма думает наоборот.</li>
+            <li>Сцена с ручками в Принстоне выдумана, такой традиции нет. Сцена в баре, где Нэш объясняет равновесие на примере блондинки, математически не равновесие Нэша: если все идут к подругам, каждому выгодно переметнуться к блондинке.</li>
+            <li>Развод, старший сын, депортация, антисемитский бред, годы в Файн-холле - вырезано или сжато. Двадцать лет призрака уместили в монтаж.</li>
+            <li><b>И одна ложь во спасение.</b> В фильме Нэш говорит, что принимает «новые лекарства». Реальный Нэш не принимал ничего с 1970-го. Фразу вставили по настоянию консультантов: боялись, что зрители с диагнозом бросят таблетки, увидев, что он вышел без них. Кино соврало из осторожности, и это единственный обман в фильме, который врачи одобрили.</li>
+          </ul>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Источник честнее:</b> биография Сильвии Назар «Прекрасный ум», 1998, по которой снят фильм. Там есть всё, что фильм убрал, и она читается как роман.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 8: БОЛЬНИЦА КАК ТЮРЬМА ============ -->
+<section class="slide chapter" id="s37">
+  <div class="bgimg"><img src="assets/ch_prison.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 8 · кино</div>
+    <h1>Больница как тюрьма: четыре фильма об эпохе до таблеток</h1>
+    <p class="lead">«Пролетая над гнездом кукушки», «Остров проклятых», «Пиджак», «Заводной апельсин». Четыре разных сюжета с одной болью: лечение и наказание неразличимы, а пациент не выбирает. Всё это не сценарный штамп, а история шестой главы, снятая для зала.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s38">
+  <div class="content">
+    <div class="kicker">Кино · Кукушка</div>
+    <h2>«Пролетая над гнездом кукушки», 1975: манифест исхода из больниц</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/ch_prison.png" alt="">
+        <div class="pcap">Отделение, пост медсестры за стеклом, ровный свет. Фильм снят в настоящей психбольнице Орегона, директор больницы сыграл главврача, часть пациентов - настоящие. Кен Кизи писал роман, работая ночным санитаром в больнице ветеранов в 1959-м.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Контекст.</b> Роман 1962-го, фильм 1975-го: ровно годы деинституционализации. Америка закрывает психбольницы, и фильм становится обвинительным актом системе, которая уже уходит. Пять главных Оскаров, второй фильм в истории после «Это случилось однажды ночью».</li>
+          <li><b>Что попали.</b> Власть как лечение: сестра Рэтчед не садистка, она убеждена, что порядок и есть терапия, и это самый точный портрет институции, который есть в кино. ЭСТ как наказание за непослушание - было. Лоботомия как окончательное решение для неудобного - было, и Розмари Кеннеди тому свидетель. Пациенты, большинство которых «добровольные» и боятся выйти, - самое честное в фильме.</li>
+          <li><b>Что соврали.</b> Макмёрфи не болен: он симулирует, чтобы уйти из тюрьмы. Фильм про здорового среди больных, и зритель выносит из него, что в больнице сидят здоровые. ЭСТ без наркоза и с судорогами к 1963 году, где действие, уже не делали - анестезия с 1950-х. Лоботомия в 1963-м в Орегоне была редкостью, а не рутиной.</li>
+          <li><b>Цена фильма.</b> Он сделал больше для закрытия больниц, чем любой закон, и одновременно на сорок лет закрепил страх перед ЭСТ, единственным методом из той эпохи, который работает. Психиатры до сих пор объясняют пациентам: «это не как в кино». Кино победило.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s39">
+  <div class="content">
+    <div class="kicker">Кино · Остров проклятых</div>
+    <h2>«Остров проклятых», 2010: год хлорпромазина и спор о лоботомии</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>1954-й выбран не случайно.</b> Год, когда хлорпромазин пришёл в Америку. В фильме на острове спорят три школы: старая, за хирургию, то есть лоботомию; новая, за таблетки; и третья, за разговор и ролевую игру. Этот спор в 1954-м шёл в каждой больнице страны, Скорсезе его не придумал, он его поставил.</li>
+          <li><b>Что попали.</b> Диссоциация после удара: человек, который построил себе другую личность, другую историю и другую миссию, чтобы не помнить, что сделал и что потерял. Четвёртая глава на одном персонаже. Ветеран, освобождавший Дахау, с алкоголем и невылеченным ПТСР, которого тогда не существовало как диагноза. Больница, в которой пациент не отличает лечения от заговора, потому что при психозе они выглядят одинаково.</li>
+          <li><b>Что соврали.</b> Спектакль на всю больницу с переодетым персоналом - терапия, которой не было и быть не могло. Диссоциативная амнезия не «снимается» одним разговором в маяке. Лоботомия за одну неудачу ролевой игры - для 1954-го уже слишком, хотя для 1949-го в самый раз.</li>
+          <li><b>Финальная фраза</b> «что лучше: жить монстром или умереть хорошим человеком» - лучшее, что кино сказало о лоботомии. Пациент, который выбирает операцию, чтобы не помнить, - это не вымысел, таких было много, и Фримен их приводил как доказательство успеха.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/island.png" alt="">
+        <div class="pcap">Маяк на острове, паром, шторм. Больница на острове - историческая правда: лечебницы для «криминально невменяемых» строили в изоляции, и Шаттер-Айленд списан с реальных. Маяк как место операции - вымысел, но операция - нет.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s40">
+  <div class="content">
+    <div class="kicker">Кино · Пиджак</div>
+    <h2>«Пиджак», 2005: рубашка, ящик и эксперименты без согласия</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/jacket.png" alt="">
+        <div class="pcap">Смирительная рубашка и ящик из морга. «Пиджак» - это рубашка, в которой героя, ветерана войны в Заливе с пулей в голове и амнезией, закрывают в ящик на часы «для лечения». Ящик выдуман. То, что с ним происходит в ящике, - нет.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Три удара подряд.</b> Война, черепно-мозговая травма, ложное обвинение в убийстве и признание невменяемым. Четвёртая глава: не сила удара решает, а есть ли кто-то, кто поверит. Герою не верит никто, и это правдивее, чем путешествия во времени.</li>
+          <li><b>Сенсорная депривация - самое реальное в фильме.</b> В 1951-54 в Макгилле студентам платили двойную ставку, чтобы лежать в тишине, темноте, в перчатках, сутками. Никто не выдержал больше нескольких дней: галлюцинации начинались через часы, потом распад мышления. В том же 1954-м Лилли построил изоляционную ванну. Мозг без входа начинает генерировать вход сам. В ящике из морга это и происходит.</li>
+          <li><b>Лечение без согласия.</b> До 1970-х признанный невменяемым пациент был объектом, а не субъектом: инсулиновые комы Нэша, аверсивная терапия, экспериментальные препараты. Информированное согласие как норма появилось на бумаге после Нюрнберга, а на практике после скандалов 1970-х. Доктор Беккер из фильма списан с врачей той эпохи, а не своей.</li>
+          <li><b>Что соврали.</b> Год действия 1992: такие методы юридически уже невозможны. Доктор-экспериментатор как норма - нет. Ну и время, само собой. Фильм честнее про 1950-е, чем про свою эпоху, и вместе с «Островом» составляет пару: два ветерана, две больницы, одна беспомощность.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s41">
+  <div class="content">
+    <div class="kicker">Кино · Заводной апельсин</div>
+    <h2>«Заводной апельсин», 1971: метод Людовико существовал</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Метод Людовико</b> - аверсивная терапия: связать нежелательное с невыносимым, пока рефлекс не закрепится. Алексу колют препарат, вызывающий тошноту, и показывают насилие с распорками в глазах. После курса его тошнит от самой мысли о драке. Он «вылечен» и беззащитен.</li>
+          <li><b>Это применялось.</b> 1950-70-е: аверсивная терапия током и рвотными средствами от алкоголизма, от гомосексуальности, которая тогда была диагнозом, от «отклонений». В Британии, США, СССР. Эффект был коротким, рецидив почти стопроцентным, этика - никакой. К 1980-м метод запрещён везде, кроме лечения алкоголизма, где рвотные препараты дожили до наших дней в мягкой форме.</li>
+          <li><b>Бёрджесс писал книгу как спор с бихевиористами.</b> Роман 1962-го - ответ Скиннеру и его идее переделывать поведение условными рефлексами. В 1971-м Скиннер издал «За пределами свободы и достоинства», где предлагал то же для целого общества, и в тот же год вышел фильм Кубрика. Ответ Бёрджесса: человек, лишённый выбора, перестаёт быть человеком, даже если выбирал зло.</li>
+          <li><b>Что соврали.</b> Дозы, скорость, чистота эффекта. Реальная аверсия работала грязно и недолго. Что попали: вопрос. Психиатрия на него ответила: можно ли лечить от зла, отняв выбор, - нельзя, и это записано в этических кодексах с 1970-х. Фильм успел раньше кодексов.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/orange_chair.png" alt="">
+        <div class="pcap">Кресло, распорки, экран. Единственная выдумка здесь - эстетика. Распорки для век существуют, в офтальмологии. Рвотные препараты существуют. Показ неприятного под препаратом - протокол аверсивной терапии из учебника 1960-х. Кубрик просто поставил свет.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 9: ДИАГНОЗ НА ЭКРАНЕ ============ -->
+<section class="slide chapter" id="s42">
+  <div class="bgimg"><img src="assets/ch_screen.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 9 · кино</div>
+    <h1>Диагноз на экране: шесть фильмов, шесть расстройств</h1>
+    <p class="lead">«Бойцовский клуб» и «Сплит», «Человек дождя», «Джокер», «Лучше не бывает», «Мой парень псих», «Пробуждение». Один фильм создал стереотип на сорок лет, другой показал неврологический симптом точнее учебника, третий оказался документальным. По каждому: что попали, что соврали.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s43">
+  <div class="content">
+    <div class="kicker">Кино · Бойцовский клуб и Сплит</div>
+    <h2>Раздвоение: диагноз, в котором кино виновато больше медицины</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/mirror_faces.png" alt="">
+        <div class="pcap">Диссоциативное расстройство идентичности, бывшее «раздвоение личности». Несколько состояний с разной памятью, разным голосом, иногда разным почерком. Есть в DSM, спорно среди психиатров, и у 90% пациентов - тяжёлая детская травма. Четвёртая глава, дальний край.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>«Бойцовский клуб», 1999.</b> Что попали: бессонница как вход, диссоциация как выход, вторая личность как всё то, чем рассказчик не решается быть. Тайлер - это не болезнь, а защита, и это по четвёртой главе. Что соврали: переключение без травмы в анамнезе, вторая личность, действующая неделями незаметно для первой, и главное - зал вынес отсюда «раздвоение личности». А вынес шизофрению, которую половина людей с тех пор путает с ДРИ. Это разные болезни, и в шизофрении нет никаких «личностей».</li>
+          <li><b>«Сплит», 2016.</b> 23 личности, одна из них сверхчеловек-людоед. Психиатры написали открытые письма: фильм сделал из ДРИ монстра, при том что люди с этим диагнозом - жертвы насилия в детстве, а не хищники. Единственное, что попали: переключение по триггеру и разная физиология личностей, что в редких задокументированных случаях есть.</li>
+          <li><b>Спор о ДРИ.</b> В 1970-х диагнозов было десятки, после книги и фильма «Сибил» 1976-го - тысячи. Потом выяснилось, что «Сибил» частично сфабрикована терапевтом. Часть психиатров с тех пор считает, что личности рождаются в кабинете, под внушением. Другая часть: травма реальна, диссоциация реальна, а «личности» - просто способ её описать. Кино в этом споре - не свидетель, а участник.</li>
+          <li><b>Итог для зала.</b> Шизофрения - это голоса и бред при одной личности. ДРИ - это несколько состояний без бреда. Кино их склеило, и склейка держится тридцать лет.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s44">
+  <div class="content">
+    <div class="kicker">Кино · Человек дождя и Джокер</div>
+    <h2>Стереотип на сорок лет и симптом точнее учебника</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3>«Человек дождя», 1988</h3>
+          <ul>
+            <li><b>Что попали:</b> ритуалы, паника при их нарушении, буквальность, избегание взгляда, привязанность, которая есть, но выражается не так. Хоффман готовился год, и портрет для 1988-го точный.</li>
+            <li><b>Что соврали:</b> один фильм создал формулу «аутист равно гений с зубочистками». Савантов среди людей с аутизмом меньше одного из десяти, а таких, как Рэймонд, единицы на планету. Прототип, Ким Пик, вообще не был аутистом: у него отсутствовало мозолистое тело, врождённая аномалия мозга.</li>
+            <li><b>Цена:</b> сорок лет родители слышали «а что он умеет?», и сорок лет аутизм без суперспособности не вписывался в картинку. Вторая глава: спектр широкий, савантизм - его случайный край.</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">«Джокер», 2019</h3>
+          <ul>
+            <li><b>Что попали:</b> смех, который Артур не контролирует, - псевдобульбарный аффект, реальный неврологический симптом при травмах мозга, инсульте, рассеянном склерозе. Приступы смеха или плача без эмоции, часто в самый неподходящий момент, с карточкой «у меня заболевание» в кармане. Фильм показал его точнее любого учебника, и пациенты с ПБА писали, что впервые увидели себя на экране.</li>
+            <li><b>Что попали ещё:</b> закрытие социальной службы, отмена лекарств, «никому нет дела». Шестая глава про деинституционализацию, снятая как трагедия одного человека.</li>
+            <li><b>Что соврали:</b> «его довели, и он стал убивать». Люди с расстройствами совершают насилие не чаще, а становятся его жертвами в 2-3 раза чаще среднего. Романтизация «сорвавшегося больного» - это первая глава, стигма, только в красивой упаковке. Психиатры фильм хвалили за симптом и ругали за мораль.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s45">
+  <div class="content">
+    <div class="kicker">Кино · Лучше не бывает, Мой парень псих, Пробуждение</div>
+    <h2>Три фильма, где кино почти не соврало</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>«Лучше не бывает», 1997</h3>
+        <p><b>ОКР.</b> Замки, выключатели, мыло по одному разу, не наступать на стыки плитки, своя посуда в ресторане. Всё это компульсии из третьей главы, и они показаны как ловушка, а не как чудачество: Мелвин страдает, а не развлекается.</p>
+        <p><b>Попали:</b> облегчение после ритуала, ярость при его нарушении, невозможность объяснить. Финал, где он наступает на стык ради женщины, - это экспозиция, единственное, что работает.</p>
+        <p><b>Соврали:</b> любовь как лечение. ОКР не проходит от чувства, оно проходит от полугода терапии. И грубость Мелвина - не симптом ОКР, а характер. Зал их склеил.</p>
+      </div>
+      <div class="card">
+        <h3 class="am">«Мой парень псих», 2012</h3>
+        <p><b>Биполярное расстройство.</b> Пэт после больницы: мания, которая выглядит как оптимизм, бессонные ночи, вспышка из-за книги, литий, от которого «мозг в тумане». Тиффани с депрессией и импульсивностью после потери.</p>
+        <p><b>Попали:</b> семья, которая не понимает и боится, стыд, лекарства, которые пациент выбрасывает. Мания как двигатель без тормозов, а не как хорошее настроение. Психиатры называли этот фильм лучшим портретом биполярного на экране.</p>
+        <p><b>Соврали:</b> танцевальный конкурс как терапия и хэппи-энд за два часа. Реальный горизонт - годы, и литий не отменяют ради танца.</p>
+      </div>
+      <div class="card">
+        <h3 class="gr">«Пробуждение», 1990</h3>
+        <p><b>Летаргический энцефалит,</b> пятая глава. Пациенты, застывшие после эпидемии 1920-х на сорок лет. Врач даёт им леводопу, только что открытую для паркинсонизма, и они просыпаются. На недели. Потом уходят обратно.</p>
+        <p><b>Попали:</b> почти всё. Фильм снят по книге Оливера Сакса о его пациентах в Бронксе 1969 года, и события, лекарство, пробуждение, побочные эффекты и откат - документальны. Сакс консультировал, Робин Уильямс играл его самого.</p>
+        <p><b>Соврали:</b> сжатие времени и одна выдуманная любовная линия. Единственный фильм в лекции, который можно показывать как учебный.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 10: ОТСТУПЛЕНИЕ В ФАНТАСТИКУ ============ -->
+<section class="slide chapter" id="s46">
+  <div class="bgimg"><img src="assets/ch_scifi.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 10 · отступление</div>
+    <h1>Отступление в фантастику: Реаниматор, Обитель зла и медицина зомби</h1>
+    <p class="lead">Для фана, но с одним условием: на каждый фильм один реальный факт, который страшнее фильма. Сумасшедший учёный, у которого был прототип с ледорубом. Т-вирус, который существует и называется бешенством. И почему у зомби во всех фильмах отключён именно лобный отдел.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s47">
+  <div class="content">
+    <div class="kicker">Фантастика · Реаниматор</div>
+    <h2>«Реаниматор», 1985: пародия 1922 года, ставшая практикой 1940-х</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/ch_scifi.png" alt="">
+        <div class="pcap">Герберт Уэст и зелёная сыворотка. Лавкрафт написал рассказ в 1922-м как насмешку над Франкенштейном, сам его не любил и называл халтурой ради денег. Фильм 1985-го сделал из халтуры культ: кровь вёдрами, отрубленная голова, которая командует телом, и учёный, которому важен результат, а не пациент.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Формула безумного учёного:</b> знает больше всех, не спрашивает никого, результат важнее человека. Уэст оживляет мёртвых, получает буйных монстров и делает вывод, что нужна свежее сыворотка. Ни разу не «может, не надо».</li>
+          <li><b>Прототип.</b> Уолтер Фримен из шестой главы: 3500 лоботомий лично, ледоруб через глазницу, фургон, конвейер. Получал «успокоенных» пациентов, терял 5-15% на столе, делал вывод, что нужно больше операций. До конца жизни объезжал бывших пациентов, собирая доказательства успеха. Лавкрафт написал пародию в 1922-м, Фримен сделал из неё биографию в 1946-м.</li>
+          <li><b>Разница с фильмом одна:</b> Уэста в конце пожирают его же создания. Фримен умер в 1972-м в своей постели, с почётной пенсией, и лоботомия в США никогда не была запрещена законом, просто вышла из моды.</li>
+          <li><b>Факт страшнее фильма:</b> Нобелевская премия за лоботомию 1949 года не отозвана. Нобелевский комитет отзывать не умеет. Мониш в списке лауреатов по медицине стоит между открывателем ДДТ и открывателями кортизона.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s48">
+  <div class="content">
+    <div class="kicker">Фантастика · Обитель зла</div>
+    <h2>«Обитель зла», 2002-2004: Т-вирус существует, называется бешенство</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Сюжет по канону:</b> корпорация, вирус, лаборатория под городом, утечка, заражённые кусают, укушенные становятся заражёнными, город закрывают. Красная королева, которая всех убивает, чтобы остановить утечку, - единственный разумный персонаж в первой части.</li>
+          <li><b>Реальный Т-вирус.</b> Бешенство из пятой главы. Передаётся укусом. Идёт по нервам в мозг. Дошёл - отключает страх, включает агрессию, спазм при виде воды, чтобы слюна не смывалась, слюноотделение, чтобы вируса в укусе было больше. Вирус переписывает поведение носителя под свою задачу: кусать. Зомби-канон повторяет это почти покадрово, только скорость выдумана: у бешенства инкубация недели, в кино секунды.</li>
+          <li><b>Второй реальный:</b> токсоплазма, паразит, который отключает у крысы страх перед кошкой, чтобы попасть в кошку. Треть человечества носит его в себе. Третий: кордицепс, гриб, который заставляет муравья залезть на лист и умереть там, чтобы прорасти сквозь голову. Это уже «Последние из нас», и там сценаристы честно сказали, откуда взяли.</li>
+          <li><b>Факт страшнее фильма:</b> бешенство - единственная инфекция со 100% смертностью после появления симптомов, за всю историю выжили единицы. 59 тысяч человек в год, почти все дети, почти все от собак. Вакцина существует с 1885 года и работает, если успеть до симптомов. Корпорация не нужна, достаточно непривитой собаки.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/zombie_street.png" alt="">
+        <div class="pcap">Пустой город на рассвете. Утечка из лаборатории - выдумка, но карантин города по инфекции, меняющей поведение, - нет: в 1920-х летаргический энцефалит закрывал больницы, а эпидемии бешенства среди собак закрывали кварталы до Пастера.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s49">
+  <div class="content">
+    <div class="kicker">Фантастика · медицина зомби</div>
+    <h2>Ромеро, «28 дней спустя» и почему у зомби всегда выключен лоб</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Ромеро, 1968, «Ночь живых мертвецов».</b> Медленные, тупые, голодные, без речи, без страха, без узнавания своих. Сценарист не думал о неврологии, но описал точную картину: выключена лобная кора (планирование, самоконтроль, речь), выключена миндалина (страх), выключен гиппокамп (память, узнавание), а ствол мозга, моторика и голод работают. Это карта поражения мозга, а не фантазия.</li>
+          <li><b>«28 дней спустя», 2002: вирус ярости.</b> Быстрые, злые, заражение за секунды. Это бешенство, у которого убрали инкубацию. Дэнни Бойл и сценарист Гарленд прямо говорили, что взяли бешенство и эболу. И честная деталь: заражённые в финале умирают от голода, потому что ярость не умеет есть. Инфекция, которая убивает носителя быстро, не распространяется, и в реальной эпидемиологии это правило.</li>
+          <li><b>Почему именно лоб.</b> Лобные доли - последнее, что созревает у человека, к 25 годам, и первое, что отключает алкоголь, недосып, травма и лоботомия. Финеас Гейдж из пятой главы с ломом в лобной доле - это прото-зомби 1848 года: моторика цела, характер нет. Зомби - это человек, у которого сделали лоботомию, а потом ещё выключили страх и память. Кино интуитивно рисует именно это, потому что именно это зрители видели в жизни: пьяного, контуженого, деменцию у деда.</li>
+          <li><b>Факт страшнее фильма:</b> при деменции последовательность выключения та же: сначала память, потом узнавание близких, потом речь и самоконтроль, моторика и голод дольше всех. Зомби-фильмы - это ускоренная и озлобленная деменция, и часть их страха - оттуда. Из первой главы: 55 миллионов человек прямо сейчас.</li>
+        </ul>
+      </div>
+      <div>
+        <table class="t" style="font-size:13.5px">
+          <tr><th>Функция</th><th>Где в мозге</th><th>У зомби</th><th>В жизни отключает</th></tr>
+          <tr><td>Планирование, речь, тормоза</td><td class="d">лобная кора</td><td class="d">выключено</td><td class="d">алкоголь, лоботомия, травма, деменция</td></tr>
+          <tr><td>Страх</td><td class="d">миндалина</td><td class="d">выключено</td><td class="d">бешенство, токсоплазма, повреждение</td></tr>
+          <tr><td>Память, узнавание</td><td class="d">гиппокамп</td><td class="d">выключено</td><td class="d">Альцгеймер, энцефалит</td></tr>
+          <tr><td>Агрессия, голод</td><td class="d">гипоталамус, ствол</td><td class="d">включено</td><td class="d">бешенство усиливает</td></tr>
+          <tr><td>Ходьба, хватание</td><td class="d">моторная кора, ствол</td><td class="d">работает</td><td class="d">последнее, что отказывает</td></tr>
+        </table>
+        <div class="note" style="margin-top:12px"><b>Итог отступления.</b> Ни один зомби-фильм не советовался с неврологом, и все они нарисовали одну и ту же карту мозга. Потому что зрители и сценаристы видели её в жизни. Фантастика тут не выдумывает, она вспоминает.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 11: КИНО КАК ИСТОЧНИК ДИАГНОЗОВ ============ -->
+<section class="slide chapter" id="s50">
+  <div class="bgimg"><img src="assets/ch_source.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 11 · кино</div>
+    <h1>Кино как источник диагнозов: что зал «знает» и насколько это мимо</h1>
+    <p class="lead">Две трети представлений людей о шизофрении - из фильмов. В фильмах больной опасен в разы чаще, чем в жизни, где он чаще жертва. Одиннадцать фильмов лекции, сведённые в одну таблицу, и три мифа, которые они оставили.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s51">
+  <div class="content">
+    <div class="kicker">Источник · таблица</div>
+    <h2>Одиннадцать фильмов: диагноз, попали, соврали</h2>
+    <table class="t" style="font-size:12.5px">
+      <tr><th>Фильм</th><th>Расстройство</th><th>Попали</th><th>Соврали</th><th>Глава</th></tr>
+      <tr><td>Игры разума, 2001</td><td class="d">шизофрения</td><td class="d">интеллект сохранён, бред как система, роль близких, ремиссия без «выздоровления»</td><td class="d">визуальные галлюцинации вместо слуховых, «принимаю лекарства»</td><td class="d">7</td></tr>
+      <tr><td>Кукушка, 1975</td><td class="d">институция</td><td class="d">власть как терапия, «добровольные», лоботомия для неудобных</td><td class="d">герой здоров, ЭСТ без наркоза в 1963-м</td><td class="d">6, 8</td></tr>
+      <tr><td>Остров проклятых, 2010</td><td class="d">диссоциация, ПТСР</td><td class="d">спор школ 1954-го, защитная личность, выбор лоботомии</td><td class="d">спектакль как терапия</td><td class="d">4, 8</td></tr>
+      <tr><td>Пиджак, 2005</td><td class="d">травма, депривация</td><td class="d">сенсорная депривация, лечение без согласия</td><td class="d">год действия, ящик, время</td><td class="d">4, 8</td></tr>
+      <tr><td>Заводной апельсин, 1971</td><td class="d">аверсивная терапия</td><td class="d">метод существовал, вопрос о выборе</td><td class="d">чистота эффекта</td><td class="d">6, 8</td></tr>
+      <tr><td>Бойцовский клуб, 1999</td><td class="d">диссоциативное расстройство</td><td class="d">диссоциация как защита</td><td class="d">без травмы; зал вынес «шизофрению»</td><td class="d">4, 9</td></tr>
+      <tr><td>Сплит, 2016</td><td class="d">ДРИ</td><td class="d">переключение по триггеру</td><td class="d">больной как монстр</td><td class="d">9</td></tr>
+      <tr><td>Человек дождя, 1988</td><td class="d">аутизм</td><td class="d">ритуалы, буквальность, привязанность</td><td class="d">аутист = савант; прототип не аутист</td><td class="d">2, 9</td></tr>
+      <tr><td>Джокер, 2019</td><td class="d">ПБА, депрессия</td><td class="d">неконтролируемый смех, закрытие соцслужбы</td><td class="d">больной как убийца</td><td class="d">5, 9</td></tr>
+      <tr><td>Лучше не бывает, 1997</td><td class="d">ОКР</td><td class="d">компульсии как ловушка, экспозиция в финале</td><td class="d">любовь как лечение</td><td class="d">3, 9</td></tr>
+      <tr><td>Мой парень псих, 2012</td><td class="d">биполярное</td><td class="d">мания без романтики, литий, семья</td><td class="d">хэппи-энд за два часа</td><td class="d">3, 9</td></tr>
+      <tr><td>Пробуждение, 1990</td><td class="d">энцефалит</td><td class="d">почти всё, документально</td><td class="d">сжатие времени</td><td class="d">5, 9</td></tr>
+    </table>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s52">
+  <div class="content">
+    <div class="kicker">Источник · три мифа</div>
+    <h2>Три мифа, которые кино оставило залу, и цифры против них</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3 class="rd">Миф 1: больной опасен</h3>
+        <p>В фильмах человек с психическим расстройством совершает насилие в 10 раз чаще, чем в жизни. Контент-анализ американского кино: 70% персонажей с диагнозом показаны агрессивными.</p>
+        <p><b>Цифры:</b> люди с тяжёлыми расстройствами совершают 3-5% насильственных преступлений. При этом становятся жертвами насилия в 2.5 раза чаще среднего. Если убрать алкоголь и наркотики, риск от больного шизофренией не выше, чем от соседа.</p>
+        <p><b>Кто виноват:</b> «Психо», «Сияние», «Сплит», «Джокер». И новости, где диагноз упоминают только при преступлении.</p>
+      </div>
+      <div class="card">
+        <h3 class="am">Миф 2: шизофрения - это раздвоение</h3>
+        <p>Опросы: 60-70% людей считают, что при шизофрении «несколько личностей». Ноль процентов психиатров.</p>
+        <p><b>Цифры:</b> шизофрения - одна личность с голосами, бредом и нарушенным мышлением. Диссоциативное расстройство - несколько состояний без голосов и бреда. Разные главы, разные механизмы, разное лечение. Слово «шизо» значит «расщепление», и Блейлер в 1908-м имел в виду расщепление мышления и эмоций, а не личностей.</p>
+        <p><b>Кто виноват:</b> «Бойцовский клуб», «Сибил», «Сплит», и само слово.</p>
+      </div>
+      <div class="card">
+        <h3 class="cy">Миф 3: лечение - это насилие</h3>
+        <p>После «Кукушки» ЭСТ в США упала вчетверо за десять лет. Опросы пациентов: главный источник страха перед ЭСТ - кино, не опыт.</p>
+        <p><b>Цифры:</b> ЭСТ под наркозом с 1950-х, две минуты, 70-80% эффекта при тяжёлой депрессии, лучший результат из всего, что есть. Принудительная госпитализация сегодня - по суду, на дни, с правом обжалования. Лоботомий нет с 1970-х.</p>
+        <p><b>Кто виноват:</b> «Кукушка», «Пиджак», «Остров», «Апельсин». Все четыре честны про свою эпоху и все четыре смотрятся как про сегодня.</p>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:14px"><b>И одно за кино.</b> «Игры разума», «Мой парень псих», «Пробуждение», «Лучше не бывает» после выхода поднимали число обращений к врачу по своим диагнозам. Фильм, который показывает болезнь у человека, а не человека как болезнь, лечит стигму лучше любой брошюры. Кино умеет и то, и другое, вопрос только, что снимать.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 12: ЗАКЛЮЧЕНИЕ ============ -->
+<section class="slide chapter" id="s53">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 12</div>
+    <h1>Вердикт, мнение, вопрос и мораль</h1>
+    <p class="lead">Что наука знает точно, что предполагает, чего не знает. Одно мнение, помеченное как мнение. Один вопрос, на который лекция не отвечает. И одна фраза на латыни, которой две тысячи лет и которая описывает всё, что здесь было.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s54">
+  <div class="content">
+    <div class="kicker">Заключение · вердикт</div>
+    <h2>Научный вердикт: что измерено, что выведено, что не знаем</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>Измерено</h3>
+        <ul>
+          <li>Наследуемость по близнецам и приёмным: от 30% у ПТСР до 80% у шизофрении и аутизма</li>
+          <li>Сотни генетических участков, ни одного «гена болезни»</li>
+          <li>ACE: детство предсказывает депрессию, зависимости, инфаркт и срок жизни</li>
+          <li>Гиппокамп меньше при депрессии, отрастает при лечении</li>
+          <li>Антидепрессанты, антипсихотики, литий, КПТ, экспозиция, ЭСТ - лучше плацебо, с цифрами</li>
+          <li>Инсулиновые комы и лоботомия - не лучше</li>
+          <li>Больные не опаснее, а уязвимее среднего</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Выведено надёжно</h3>
+        <ul>
+          <li>Диатез-стресс: ген заряжает, жизнь взводит, удар нажимает</li>
+          <li>Расстройства как защиты, пережившие угрозу: диссоциация, ОКР, зависимость</li>
+          <li>Нейропластичность как механизм и болезни, и лечения</li>
+          <li>Тревога и депрессия как одна уязвимость в двух фазах</li>
+          <li>Стигма как отдельный фактор исхода, измеримый по трудоустройству и обращаемости</li>
+          <li>Устойчивость к травме: действие, поддержка, рассказ</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="rd">Не знаем</h3>
+        <ul>
+          <li>Ни одного биомаркера ни для одного расстройства</li>
+          <li>Почему антидепрессанты работают через месяц</li>
+          <li>Что делает литий</li>
+          <li>Причина Альцгеймера: бляшки - причина или след</li>
+          <li>Существует ли ДРИ как отдельная болезнь</li>
+          <li>Что вылечило Нэша: воля, время или Принстон</li>
+          <li>Где кончается норма. Определения нет, есть договор</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note" style="margin-top:14px">Правая колонка длиннее, чем в любой другой лекции серии, и это честно: психиатрия - единственная область медицины, где за сто лет не появилось ни одного анализа, и при этом единственная, где половина методов работает. Она знает, что помогает, и не знает, почему.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s55">
+  <div class="content">
+    <div class="kicker">Заключение · мнение</div>
+    <h2>Мнение, помеченное как мнение</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="am">От лектора</h3>
+          <p>Половина расстройств в этой лекции - это защиты, которые сработали. Диссоциация спасла ребёнка, компульсия погасила тревогу, вещество заполнило пустоту, бред Нэша объяснил ему, почему он один. Мозг не ломается, он решает задачу теми средствами, которые есть, и решение остаётся, когда задача кончилась.</p>
+          <p>Отсюда моё мнение: расстройство - это не дефект человека, а отчёт о том, что с ним было. Ген - что было с предками, жизнь - что было с ним, удар - что с ним сделали. Читать этот отчёт как приговор - ошибка, читать как биографию - единственный способ помочь.</p>
+          <p>И второе: в биографии Нэша есть строка, которой нет ни в одной таблице лечения. Место, где его двадцать лет терпели, и женщина, которая взяла квартирантом. По данным этого не измерить. По исходу это половина результата.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="cy">От данных, чтобы мнение не улетело</h3>
+          <p>Мнение выше - не наука. Наука в предыдущем слайде. Но у мнения есть опора: исследование ACE нашло один защитный фактор с эффектом сильнее любого лекарства, и это один взрослый на стороне ребёнка. Исследования устойчивости к травме нашли три, и ни один не гены: действие, поддержка, рассказ. Крысиный парк нашёл, что среда важнее вещества.</p>
+          <p>Всё это про одно: расстройство живёт не только в голове, но и между людьми. Значит, и лечение тоже. Таблетка и терапия - половина, вторая половина не выписывается рецептом.</p>
+          <p>Где мнение может ошибаться: не все расстройства - защиты. Шизофрения, биполярное, деменция - поломки в прямом смысле, с генами и белками, и им нужна химия, а не только люди. Мнение работает на половину лекции. Что честно для мнения.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s56">
+  <div class="content">
+    <div class="kicker">Заключение · вопрос и мораль</div>
+    <h2>Вопрос без ответа и фраза на латыни</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="rd">Вопрос на подумать</h3>
+          <p>Норма - это статистика, и её граница нарисована в книге, которую переписывают. Болезнь меняет того, кто должен на неё жаловаться: депрессия убеждает, что так и надо, мания - что всё отлично, бред - что врач враг. Нэш вышел из психоза, «интеллектуально отвергнув» свои мысли, и никто не знает, было ли это решением или течением болезни.</p>
+          <p><b>Тогда кто решает, что ты здоров?</b> Не ты: тебе болезнь мешает судить. Не врач: у него нет анализа, есть беседа с тобой. Не книга: её перепишут. Не статистика: ты в ней один из ста. Лекция на этот вопрос не отвечает. Она только показала, что все четыре кандидата ненадёжны, и что психиатрия сто лет живёт с этим, не закрывая больницы и не переставая лечить.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Мораль</h3>
+          <p style="font-size:22px;color:#fff;margin:8px 0 6px"><b>Homo sum, humani nihil a me alienum puto.</b></p>
+          <p>«Я человек, и ничто человеческое мне не чуждо». Теренций, комедия «Самоистязатель», 165 год до нашей эры. Реплика старика, который лезет не в своё дело и объясняет, почему имеет право.</p>
+          <p>Для этой лекции точнее фразы нет. Ни один диагноз из двенадцати глав не про «них». Голоса слышал каждый десятый, навязчивые мысли есть у всех, паника была у каждого десятого, детство с баллом выше нуля у двух из трёх, четверть получит диагноз. Разница между залом и пациентом - в дозе, в удаче и в том, был ли рядом один человек.</p>
+          <p>Запасная, с подвохом: <b>mens sana in corpore sano</b>. У Ювенала это не формула, а молитва: «надо просить богов, чтобы был здоровый дух в здоровом теле». Римляне уже знали, что это не гарантируется.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s57">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Вся лекция одной таблицей</h2>
+    <table class="t" style="font-size:12.5px">
+      <tr><th>Глава</th><th>Главная мысль</th><th>Цифра, которую стоит запомнить</th><th>Открыто</th></tr>
+      <tr><td>1. Что это</td><td class="d">норма - статистика, граница в книге, болезнь меняет жалующегося</td><td class="d">каждый четвёртый за жизнь</td><td class="d">определение нормы</td></tr>
+      <tr><td>2. Ген</td><td class="d">наследуется вероятность, не диагноз; сотни генов, ни одного главного</td><td class="d">шизофрения 80%, второй близнец болен в 50%</td><td class="d">зачем эволюция это оставила</td></tr>
+      <tr><td>3. Жизнь</td><td class="d">стресс, среда, годы дописывают большую половину</td><td class="d">депрессия - первая причина нетрудоспособности в мире</td><td class="d">почему таблетки через месяц</td></tr>
+      <tr><td>4. Удар</td><td class="d">одинаковый удар ломает не всех; детство предсказывает инфаркт</td><td class="d">ACE ≥4: самоубийства ×12, срок жизни −20 лет</td><td class="d">существует ли ДРИ</td></tr>
+      <tr><td>5. Мозг</td><td class="d">снимок не ставит диагноз; дисбаланс - миф; поведение переписывается извне</td><td class="d">бешенство: 100% смертность, 59 000 в год</td><td class="d">биомаркеры</td></tr>
+      <tr><td>6. Лечение</td><td class="d">до 1950 работали два метода из семи; сейчас работает половина, механизмы неизвестны</td><td class="d">ЭСТ 70-80% при тяжёлой депрессии</td><td class="d">что делает литий</td></tr>
+      <tr><td>7. Нэш</td><td class="d">все три источника в одном человеке; ремиссия без таблеток; место, где терпят</td><td class="d">27 страниц, 44 года до Нобеля</td><td class="d">воля или время</td></tr>
+      <tr><td>8. Больница как тюрьма</td><td class="d">четыре фильма честны про 1950-е и смотрятся как про сегодня</td><td class="d">ЭСТ упала вчетверо после «Кукушки»</td><td class="d">-</td></tr>
+      <tr><td>9. Диагноз на экране</td><td class="d">один фильм создаёт стереотип на сорок лет, другой показывает симптом точнее учебника</td><td class="d">савантов среди аутистов &lt; 1 из 10</td><td class="d">-</td></tr>
+      <tr><td>10. Фантастика</td><td class="d">безумный учёный имел прототип; Т-вирус называется бешенство; зомби - лоботомия плюс деменция</td><td class="d">Нобель за лоботомию не отозван</td><td class="d">-</td></tr>
+      <tr><td>11. Источник</td><td class="d">две трети знаний зала о шизофрении из кино; три мифа</td><td class="d">70% персонажей с диагнозом агрессивны, в жизни 3-5%</td><td class="d">-</td></tr>
+      <tr><td>12. Заключение</td><td class="d">расстройство как отчёт, не приговор; кто решает, что ты здоров</td><td class="d">один взрослый на стороне ребёнка снижает риск вдвое</td><td class="d">вопрос без ответа</td></tr>
+    </table>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s58">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <h1>Homo sum, humani nihil a me alienum puto</h1>
+    <p class="lead">Ген заряжает, жизнь взводит, удар нажимает. Ни на одно из этого нет анализа, и на половину есть лечение. Кино показало нам больницу как тюрьму, больного как монстра и раздвоение вместо шизофрении, и то же кино показало Нэша, Пэта и пациентов Сакса такими, какие они были.</p>
+    <p class="lead" style="margin-top:14px">Каждый четвёртый в этом зале. Разница в дозе, в удаче и в одном человеке рядом. Я человек, и ничто человеческое мне не чуждо, включая трещину.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- SLIDES_END -->
+
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>
