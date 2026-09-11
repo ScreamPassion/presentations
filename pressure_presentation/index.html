@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><link rel="icon" href="../favicon.ico" sizes="any"><link rel="icon" type="image/png" href="../favicon.png"><link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Давление. От 120 на 80 до горизонта событий</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #8fd0ec; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Гвендолин-ночные-лекции</div>
+    <h1>Давление. От 120 на 80 до горизонта событий</h1>
+    <p class="lead">Одна величина. Её меряют на руке тонометром, ей качают шины, она поднимает воду в секвойе, зажигает алмазный дождь в Нептуне и в конце концов схлопывает звезду в чёрную дыру. Лекция идёт по одной шкале снизу вверх, и человек на ней стоит ровно посередине.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s2">
+  <div class="content">
+    <div class="kicker">Вступление</div>
+    <h2>Три предмета на столе: тонометр, скороварка, насос</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Тонометр</b> показывает 120 на 80. Это не проценты и не баллы, это миллиметры ртутного столба. Ртуть, столб и миллиметры пришли из 1643 года, и мы до сих пор меряем себя прибором семнадцатого века.</li>
+          <li><b>Скороварка</b> варит вдвое быстрее. Не потому, что горячее плита, а потому, что крышка не выпускает пар, давление растёт, и вода кипит при 120 градусах вместо 100. Давление купило время.</li>
+          <li><b>Насос</b> накачивает шину до трёх атмосфер. Столько же, сколько давит на человека в открытом космосе. Точнее, на одну атмосферу меньше, чем в шине, и этого не хватает, чтобы его разорвать.</li>
+          <li><b>Одна величина</b> во всех трёх. Дальше та же самая величина, только числа растут на порядок с каждым слайдом, пока не кончится физика.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Что такое давление физически</h3>
+          <p>Молекулы газа бьют о стенку. Каждый удар - крошечный толчок. Миллиарды ударов в секунду на каждый квадратный миллиметр складываются в ровную силу. Давление - это сила, делённая на площадь: p = F / S.</p>
+          <p>Второе лицо той же величины: энергия, делённая на объём. Паскаль и джоуль на кубометр - одно и то же. Поэтому сжатый газ может толкать поршень, а вакуум, в котором нечему бить, не может ничего.</p>
+          <p>Одна атмосфера: 101 325 паскалей, 760 мм ртути, 10.3 м воды, десять тонн на квадратный метр. Мы это не чувствуем, потому что давит со всех сторон и изнутри тоже.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">Вступление · шкала</div>
+    <h2>Правила лекции: логарифм, и человек посередине</h2>
+    <div class="dg">
+      <div class="row">
+        <div class="bx dk"><b>10⁻²¹ Па</b><span>межгалактическая пустота</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>10⁻¹² Па</b><span>лучший вакуум лаборатории</span></div>
+        <div class="arr">→</div>
+        <div class="bx cy"><b>10⁵ Па</b><span>ты, здесь, одна атмосфера</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>10⁸ Па</b><span>дно Марианской впадины</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>10¹¹ Па</b><span>центр Земли</span></div>
+        <div class="arr">→</div>
+        <div class="bx am"><b>10¹² Па</b><span>алмаз перестаёт быть алмазом</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>10²² Па</b><span>белый карлик</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>10³⁴ Па</b><span>центр нейтронной звезды</span></div>
+        <div class="arr">→</div>
+        <div class="bx rd"><b>10¹¹³ Па</b><span>планковский предел</span></div>
+      </div>
+      <div class="cap">Каждый шаг вправо - умножение на десять. От пустоты между галактиками до планковского предела 134 порядка. Человек стоит примерно на 26-м снизу.</div>
+    </div>
+    <div class="cols" style="margin-top:22px">
+      <div>
+        <ul class="pts">
+          <li><b>Вниз</b> от человека шкала короче, но кончается интереснее: под нулём есть отрицательные давления, и самое главное из них расталкивает Вселенную.</li>
+          <li><b>Вверх</b> каждые несколько порядков ломается очередной уровень вещества: сначала кристаллы, потом атомы, потом ядра, потом само пространство.</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Давление и время</b> пересекаются не только в поговорке. Алмазу нужны оба, скороварка меняет одно на другое, а в общей теории относительности давление буквально замедляет часы. Это середина лекции.</li>
+          <li><b>Честность на краях.</b> Где гипотеза, а где измерение, помечено на каждом слайде. Край шкалы интереснее середины именно потому, что там карта кончается.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 1: ТЕЛО ============ -->
+<section class="slide chapter" id="s4">
+  <div class="bgimg"><img src="assets/ch_body.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1</div>
+    <h1>Тело: давление, которое мы носим в себе</h1>
+    <p class="lead">Сердце качает, уши закладывает, водолаза корёжит, альпинист задыхается. Всё это одна и та же величина, и тело чувствует её разницы лучше любого прибора, а меряет хуже.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="content">
+    <div class="kicker">Тело · 120 на 80</div>
+    <h2>Мы меряем себя прибором семнадцатого века</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/torricelli.png" alt="">
+        <div class="pcap">Трубка Торричелли, 1643: стеклянную трубку с ртутью перевернули в чашку, и столб остановился на 760 миллиметрах. Сверху осталась пустота, первый рукотворный вакуум. С тех пор давление меряют высотой этого столба, в том числе в твоей руке.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>120 на 80</b> - это высота столбика ртути, который уравновесило бы давление в артерии. 120 мм в момент удара сердца, 80 мм в паузе между ударами. В паскалях это 16 и 11 тысяч сверх атмосферы, то есть кровь давит на стенку всего на 16% сильнее, чем воздух снаружи.</li>
+          <li><b>Манжета и звуки.</b> Манжету изобрёл Рива-Роччи в 1896-м, а метод, которым весь мир пользуется до сих пор, придумал в Петербурге в 1905-м военный хирург Николай Коротков: сдавить артерию, отпускать и слушать, когда кровь начинает пробиваться. Звуки Короткова слышны в любой поликлинике планеты.</li>
+          <li><b>Разница в 40</b> между верхним и нижним - пульсовое давление. Она важнее самих чисел: широкая разница значит жёсткие сосуды. Гипертония начинается со 140 на 90, и это не ощущается, поэтому тонометр и лежит в каждом доме.</li>
+          <li><b>Уровень отсчёта.</b> Тонометр меряет не давление, а разницу с атмосферой. Абсолютное давление в артерии около 880 мм ртути. Полкилометра выше в горах тонометр покажет те же 120 на 80, хотя абсолютное упало.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="content">
+    <div class="kicker">Тело · уши</div>
+    <h2>Самолёт: почему закладывает и почему помогает зевок</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>В салоне не одна атмосфера.</b> Кабину держат на давлении высоты примерно 2000-2400 метров, это 0.75-0.8 атмосферы. Полностью наддуть до земли фюзеляж не выдержит по усталости металла. Поэтому на крейсерской высоте ты уже сидишь «в горах».</li>
+          <li><b>Барабанная перепонка</b> - мембрана между наружным воздухом и средним ухом. Пока давление с двух сторон равно, она свободна. Стоит разнице набежать 20-30 мм ртути, перепонка прогибается, и это то самое «заложило». При 100 мм больно, при 400 рвётся.</li>
+          <li><b>Евстахиева труба</b> соединяет среднее ухо с носоглоткой и в покое закрыта. Зевок, глоток и жевание открывают её на долю секунды, давление выравнивается, щелчок. При насморке труба отекает, не открывается, и посадка превращается в пытку.</li>
+          <li><b>Спуск хуже подъёма.</b> На подъёме лишний воздух из уха выходит сам, труба работает как клапан наружу. На спуске воздух надо загнать внутрь, а клапан в эту сторону не пускает. Отсюда совет: жевать при снижении, а не при взлёте.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Земля</b><span>760 мм, перепонка ровная</span></div>
+            <div class="arr">→</div>
+            <div class="bx cy"><b>Набор высоты</b><span>снаружи 570 мм, внутри 760, перепонка выпирает наружу</span></div>
+            <div class="arr">→</div>
+            <div class="bx"><b>Труба открылась</b><span>щелчок, 570 = 570</span></div>
+          </div>
+          <div class="row">
+            <div class="bx"><b>Снижение</b><span>снаружи растёт до 760, внутри 570, перепонку вдавливает</span></div>
+            <div class="arr am">→</div>
+            <div class="bx am"><b>Зевок, глоток</b><span>труба открылась внутрь, воздух зашёл</span></div>
+            <div class="arr am">→</div>
+            <div class="bx"><b>Посадка</b><span>760 = 760, слух вернулся</span></div>
+          </div>
+          <div class="cap">Уши - барометр с чувствительностью 20 мм ртути. Ни один прибор в доме, кроме тонометра, столько не различает.</div>
+        </div>
+        <div class="note gold" style="margin-top:14px"><b>Лифт в высотке</b> делает то же самое в миниатюре: 100 этажей это 40 мм ртути, и уши на скоростном лифте закладывает по той же причине.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s7">
+  <div class="content">
+    <div class="kicker">Тело · глубина</div>
+    <h2>Водолаз: азот, который растворяется, и время, которое лечит</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Каждые десять метров - плюс атмосфера.</b> На 30 метрах водолаз дышит воздухом под четырьмя атмосферами, иначе лёгкие не раздуть против воды. Кислорода хватает, но азот, которого в воздухе 78%, при таком давлении растворяется в крови и тканях вчетверо сильнее, чем на поверхности. Закон Генри.</li>
+          <li><b>Всплытие</b> снимает давление, и растворённый азот выходит обратно. Медленно - через лёгкие. Быстро - пузырьками прямо в крови и суставах, как в открытой бутылке газировки. Это кессонная болезнь, и в 1870-х она калечила строителей мостов, работавших в кессонах под давлением.</li>
+          <li><b>Таблицы Холдейна, 1908.</b> Физиолог Джон Холдейн посчитал, сколько азота набирает ткань за время на глубине и как быстро отдаёт, и составил таблицы «глубина × время → остановки на всплытии». Водолазные таблицы - это буквально таблица давления и времени, и ошибка в любой клетке убивает.</li>
+          <li><b>Глубже 40 метров</b> азот сам становится наркотиком: «азотный наркоз», как пара бокалов на пустой желудок. Глубже 60 - уже кислород под таким парциальным давлением ядовит и вызывает судороги. Поэтому на глубину дышат гелием, и рекорд на аквалангах 332 метра: 15 минут вниз, 13 часов вверх.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/diver.png" alt="">
+        <div class="pcap">Тяжёлый водолаз в медном шлеме. Скафандр не защищает от давления, он только даёт дышать. Давление воды приходит в лёгкие через шланг целиком, и вместе с ним азот.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s8">
+  <div class="content">
+    <div class="kicker">Тело · высота</div>
+    <h2>Эверест: треть атмосферы, и вода кипит тёплой</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/everest.png" alt="">
+        <div class="pcap">Гребень под вершиной. Воздух здесь тот же, 21% кислорода, просто его втрое меньше на каждый вдох. Тело это не понимает: рецепторы меряют не проценты, а давление.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>На вершине 8849 м</b> давление около 250 мм ртути, треть от уровня моря. Кислорода в каждом вдохе тоже треть. Гемоглобин на такой высоте насыщается на 60-70% вместо 98, и мозг работает как у сильно пьяного: ошибки в простых решениях, галлюцинации, «зона смерти» выше 8000, где тело не восстанавливается, а только тратится.</li>
+          <li><b>Вода кипит при 70°C.</b> Кипение - это когда давление пара сравнялось с внешним. Чем ниже внешнее, тем раньше. На Эвересте чай тёплый, яйцо не сваришь, рис не разваривается. На высоте 19 километров, линия Армстронга, вода кипит при 37°C, то есть при температуре тела. Без скафандра кровь не закипает, её держат сосуды, но слюна и слёзы кипят.</li>
+          <li><b>Акклиматизация</b> - это тело меняет число эритроцитов, а не привыкает. Три недели на 5000 метрах, и крови становится на 20% больше по клеткам. Шерпы за десять тысяч лет получили генетическую версию того же: их гемоглобин не растёт, а сосуды работают эффективнее.</li>
+          <li><b>Кислородный баллон</b> не добавляет давления, он добавляет проценты. Маска даёт 60-80% кислорода вместо 21, и на треть атмосферы это как спуститься на 3000 метров. Половина восходителей без него не вернулась бы.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2: АТМОСФЕРА ============ -->
+<section class="slide chapter" id="s9">
+  <div class="bgimg"><img src="assets/ch_atmo.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2</div>
+    <h1>Атмосфера: десять тонн на квадратный метр</h1>
+    <p class="lead">Шестнадцать лошадей не смогли разорвать медный шар. Насос не смог поднять воду выше десяти метров. Барометр предсказал дождь. Всё это одно и то же открытие: воздух имеет вес, и этот вес давит.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s10">
+  <div class="content">
+    <div class="kicker">Атмосфера · Магдебург</div>
+    <h2>1654: шестнадцать лошадей против пустоты</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Отто фон Герике,</b> бургомистр Магдебурга, сложил два медных полушария диаметром полметра, откачал изнутри воздух своим насосом и впряг по восемь лошадей с каждой стороны. Лошади рвали, шар держался. Потом он открыл краник, и полушария распались в руках.</li>
+          <li><b>Кто держал шар?</b> Не пустота внутри, ей нечем держать. Воздух снаружи: на полметра диаметра это две тонны силы на каждое полушарие. Шестнадцать лошадей - примерно столько и есть, поэтому опыт был на грани, и для публики его показывали с запасом.</li>
+          <li><b>Десять тонн на квадратный метр</b> давят на любой стол, любую крышу и на тебя. Не замечаем, потому что давит со всех сторон, и изнутри тоже: в лёгких, в кишечнике, в тканях те же 760 мм. Убери воздух снаружи, и разница станет заметной сразу. Присоска на стекле держится на том же принципе.</li>
+          <li><b>Первая настоящая демонстрация вакуума</b> в истории. Через 11 лет после Торричелли, но Торричелли показал столбик, а Герике показал лошадей. Публика поняла лошадей. С тех пор это самый копируемый школьный опыт про давление.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/hemispheres.png" alt="">
+        <div class="pcap">Магдебургские полушария с насосом. Оригинал хранится в Немецком музее в Мюнхене. Внутри, когда откачано, остаётся примерно двадцатая часть атмосферы: насос семнадцатого века лучше не мог, и лошадям всё равно не хватило.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s11">
+  <div class="content">
+    <div class="kicker">Атмосфера · десять метров</div>
+    <h2>Почему насос не поднимет воду выше десяти метров</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Флорентийские колодезники,</b> 1630-е. Герцог заказал всасывающий насос для глубокого колодца, и вода отказалась подниматься выше 10 метров. Насос был исправен. Обратились к Галилею. Галилей ответил в духе Аристотеля: природа боится пустоты, но, видимо, боится её только до десяти метров. Это был не ответ.</li>
+          <li><b>Торричелли, ученик Галилея,</b> перевернул задачу. Не пустота тянет воду вверх, а воздух давит на воду в колодце и заталкивает её в трубу, где давления нет. Толкает столько, сколько весит сам воздух: столб в 10.3 метра воды или 76 сантиметров ртути. Выше - нечем.</li>
+          <li><b>Проверка Паскаля, 1648.</b> Если давит воздух, то на горе, где воздуха над головой меньше, столбик ртути должен быть ниже. Паскаль послал зятя с барометром на Пюи-де-Дом, 1465 метров, и столбик упал на 8 сантиметров. Спор закрыт: воздух весит, и «боязнь пустоты» отправлена в архив вместе с Аристотелем.</li>
+          <li><b>Следствие на каждой стройке.</b> Любой всасывающий насос, от колодезного до топливного, ограничен этими десятью метрами. Глубже воду не тянут, а толкают: насос опускают вниз и он давит снизу. Скважинные насосы - это Торричелли, перевёрнутый ещё раз.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx rd"><b>Аристотель</b><span>природа боится пустоты, пустота тянет</span></div>
+            <div class="arr rd">→</div>
+            <div class="bx"><b>Галилей</b><span>боится, но только до 10 м</span></div>
+            <div class="arr">→</div>
+            <div class="bx cy"><b>Торричелли</b><span>ничего не тянет, воздух толкает</span></div>
+            <div class="arr">→</div>
+            <div class="bx am"><b>Паскаль</b><span>на горе столбик ниже, доказано</span></div>
+          </div>
+          <div class="cap">Четыре имени, пятнадцать лет, и одна перевёрнутая формулировка: не «пустота тянет», а «воздух давит». Все остальные слайды этой главы - следствия.</div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Числа</h3>
+          <p>Атмосфера уравновешивает 10.33 м воды, 76 см ртути (ртуть в 13.6 раза тяжелее), 8.5 км воздуха плотности у поверхности. Именно поэтому барометр ртутный, а не водяной: водяной был бы высотой с трёхэтажный дом. Такой построили в Магдебурге для зрелища.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s12">
+  <div class="content">
+    <div class="kicker">Атмосфера · погода</div>
+    <h2>Барометр предсказывает дождь, ураган живёт на разнице в 13%</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/hurricane.png" alt="">
+        <div class="pcap">Глаз урагана с орбиты. В центре давление 900-950 гектопаскалей против нормальных 1013 у соседей. Воздух со всех сторон сваливается в эту яму и закручивается вращением Земли. Вся мощь урагана - из разницы в один слабый вдох.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Норма 1013 гПа.</b> Воздух течёт из высокого давления в низкое, как вода с горки. Где давление падает, туда стягивается воздух, поднимается, остывает, и вода из него выпадает дождём. Поэтому стрелка барометра «на дождь» - это не примета, а прямое следствие: падает давление, значит, идёт циклон.</li>
+          <li><b>Антициклон</b> наоборот: воздух опускается, нагревается, влага не конденсируется. Ясно, тихо, зимой мороз, летом жара. Питерская серость - это когда над Балтикой один циклон сменяет другой и стрелка не поднимается неделями.</li>
+          <li><b>Ураган пятой категории:</b> в центре 0.87-0.9 атмосферы. Разница всего 10-13%, но на площади в сотни километров эта разница разгоняет ветер до 250 км/ч и поднимает море: каждый гектопаскаль недостачи приподнимает воду на сантиметр, и в глазу урагана океан стоит на полметра выше нормы ещё до всякого ветра.</li>
+          <li><b>Рекорд</b> - тайфун Тип, 1979: 870 гПа, самое низкое давление, измеренное на уровне моря. Разница с нормой как между землёй и высотой полтора километра. Тело такое чувствует: перед грозой голова у метеозависимых болит по той же причине, что и в самолёте, только медленнее.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s13">
+  <div class="content">
+    <div class="kicker">Атмосфера · главный обман</div>
+    <h2>Вакуум ничего не тянет. Толкает всегда снаружи</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Давление - это удары молекул.</b> Где молекул нет, там и ударов нет: ноль, а не минус. Пустота не может тянуть, ей нечем. Всё, что мы называем всасыванием, это атмосфера, которая давит туда, где ей перестали сопротивляться.</li>
+          <li><b>Трубочка в стакане.</b> Ты не тянешь сок ртом. Ты убираешь давление сверху, и атмосфера, давящая на поверхность в стакане, сама заталкивает сок вверх. Поэтому через трубочку длиннее десяти метров не напьёшься, как ни старайся: воздуху не хватит веса.</li>
+          <li><b>Пылесос</b> не втягивает пыль. Он создаёт в шланге область пониженного давления, а комната вдувает в неё пыль. Присоска на кафеле держится не потому, что «присосалась», а потому, что снаружи на неё давят десять тонн на квадратный метр, а изнутри нечему.</li>
+          <li><b>Отсюда всё дальнейшее.</b> Если ноль - это дно обычного давления, то вниз от него дороги нет. Или есть? Есть, и в следующей главе выяснится, что настоящее отрицательное давление живёт не в вакууме, а в деревьях, тросах и в самом пространстве.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/straw.png" alt="">
+        <div class="pcap">Столбик в трубочке стоит выше уровня в стакане. Его держит не рот, а воздух над стаканом. Вынь трубочку из жидкости, и атмосфера сравняется с двух сторон, столбик упадёт.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 3: НИЖЕ НУЛЯ ============ -->
+<section class="slide chapter" id="s14">
+  <div class="bgimg"><img src="assets/ch_vacuum.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3</div>
+    <h1>Ниже нуля: вакуум, который не тянет, и минус, который тянет</h1>
+    <p class="lead">Вниз по шкале от одной атмосферы: орбита, межпланетная пустота, лаборатория, где вакуум лучше космического. Потом ноль. А под нулём деревья, стальные тросы и тёмная энергия, у которых давление с настоящим знаком минус.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s15">
+  <div class="content">
+    <div class="kicker">Ниже нуля · вниз по шкале</div>
+    <h2>Сколько бывает пустоты: от орбиты до пустоты между галактиками</h2>
+    <table class="t" style="font-size:14px">
+      <tr><th>Где</th><th>Давление</th><th>Молекул в см³</th><th>Что это значит</th></tr>
+      <tr><td>Уровень моря</td><td>10⁵ Па</td><td class="d">2.5 × 10¹⁹</td><td class="d">каждая молекула пролетает до соседки 70 нанометров</td></tr>
+      <tr><td>Лампочка накаливания</td><td>~1 Па</td><td class="d">10¹⁴</td><td class="d">достаточно, чтобы нить не сгорела; бытовой «вакуум»</td></tr>
+      <tr><td>Низкая орбита, 400 км</td><td>10⁻⁵ Па</td><td class="d">10⁹</td><td class="d">МКС всё ещё тормозит об атмосферу и раз в месяц поднимает орбиту</td></tr>
+      <tr><td>Лучшая лаборатория</td><td>10⁻¹² Па</td><td class="d">~300</td><td class="d">сверхвысокий вакуум ускорителей; лучше, чем в межпланетном пространстве</td></tr>
+      <tr><td>Межпланетное пространство</td><td>10⁻¹¹ Па</td><td class="d">~5</td><td class="d">солнечный ветер: не пустота, а очень редкий газ, который дует</td></tr>
+      <tr><td>Межзвёздное</td><td>10⁻¹⁵ Па</td><td class="d">~1</td><td class="d">один атом на кубик; молекула летит до столкновения годами</td></tr>
+      <tr><td>Межгалактическое</td><td>10⁻²¹ Па</td><td class="d">10⁻⁶</td><td class="d">один атом на кубометр, самое пустое известное место</td></tr>
+    </table>
+    <div class="note gold" style="margin-top:14px"><b>Ноль не достигается нигде.</b> Даже между галактиками есть атом на кубометр, и даже в идеальной пустоте есть квантовые флуктуации, но их «давление» - тема последнего слайда главы. Ниже 10⁻²¹ шкала обычного давления упирается в дно. Дальше только со знаком минус.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s16">
+  <div class="content">
+    <div class="kicker">Ниже нуля · человек в космосе</div>
+    <h2>В открытом космосе не разрывает. Разница - меньше, чем в шине</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Кино врёт.</b> Глаза не вылетают, тело не взрывается. Разница между внутренним давлением тела и пустотой - одна атмосфера. Велосипедная шина держит три, автомобильная две с половиной, кожа и сосуды одну держат без труда. Кровь не закипает: её удерживают стенки сосудов и сердце.</li>
+          <li><b>Что происходит на самом деле.</b> За 10-15 секунд кончается кислород в крови и человек теряет сознание. Вода на языке, в глазах и в лёгких закипает при температуре тела, слюна пузырится. Тело раздувается примерно вдвое, как в скафандре, но кожа держит. Смерть через полторы-две минуты, от удушья, а не от давления.</li>
+          <li><b>Проверено на людях,</b> к сожалению. 1965, вакуумная камера НАСА: у испытателя порвался шланг, 15 секунд в вакууме, потерял сознание, последнее, что помнил - как закипела слюна на языке. Откачали, выжил без последствий. 1960, Джозеф Киттингер, прыжок с 31 км: разгерметизировалась перчатка, кисть раздулась вдвое, через час после приземления пришла в норму.</li>
+          <li><b>Главное правило</b> в аварийных инструкциях: выдохнуть. Если задержать дыхание, воздух в лёгких расширится и порвёт их изнутри, это единственный настоящий механический риск. Тот же самый, что у водолаза на резком всплытии, только в другую сторону по шкале.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Шина велосипеда</b><span>+3 атм сверх наружного</span></div>
+            <div class="bx"><b>Шина машины</b><span>+2.3 атм</span></div>
+            <div class="bx cy"><b>Тело в космосе</b><span>+1 атм сверх наружного</span></div>
+            <div class="bx"><b>Бутылка шампанского</b><span>+5-6 атм</span></div>
+          </div>
+          <div class="cap">Перепад, который «разрывает космонавта» в кино, втрое меньше того, что держит велосипедная камера из резины толщиной в миллиметр.</div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Обратный случай: глубина</h3>
+          <p>Под водой перепады другие. На 30 метрах давление втрое выше внутреннего, и ныряльщик без акваланга живёт только потому, что тело почти целиком из воды, а вода не сжимается. Сжимаются только полости: лёгкие, уши, пазухи. Рекорд фридайвинга 214 м: лёгкие сжаты до размера кулака, и это выживаемо.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s17">
+  <div class="content">
+    <div class="kicker">Ниже нуля · деревья</div>
+    <h2>Секвойя поднимает воду на 100 метров. Насос может на 10</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/tree_xylem.png" alt="">
+        <div class="pcap">Сосуды древесины, ксилема: тысячи капилляров толщиной в сотые доли миллиметра, по которым вода не толкается снизу, а тянется сверху. Столб висит на испарении с листьев, и давление в нём ниже нуля.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Загадка.</b> Атмосфера поднимает воду на 10 метров, и это предел для любого насоса. Самое высокое дерево, секвойя Гиперион, 116 метров, и вода доходит до верхних листьев. Корневого давления хватает на пару метров. Чем оно поднимается?</li>
+          <li><b>Ответ: натяжением.</b> Листья испаряют воду, и каждая испарившаяся молекула подтягивает соседнюю снизу за счёт сил сцепления между молекулами воды, тех же, что держат каплю. Вся нитка воды от листа до корня - один сплошной тянущийся столб. В нём не давление, а растяжение: минус 10, минус 20 атмосфер на верхушке. Настоящий знак минус.</li>
+          <li><b>Вода в этом состоянии метастабильна,</b> как перегретая. Достаточно пузырька, и столб рвётся: кавитация. Разрыв слышен: в засуху микрофон на стволе ловит щелчки, дерево «трещит» изнутри ультразвуком. Порванный сосуд не восстанавливается, дерево растит новые. Засуха убивает дерево не жаждой, а разрывом трубопровода.</li>
+          <li><b>В лаборатории</b> воду растягивали до минус 1400 атмосфер, запаяв в кварцевые микрополости и остужая. Это давление, отрицательное по модулю больше, чем на дне Марианской впадины положительное. Просто у растянутой воды нет ударов о стенку, есть только тяга.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s18">
+  <div class="content">
+    <div class="kicker">Ниже нуля · натяжение</div>
+    <h2>Трос, стекло, кость: минус - это просто давление с другим знаком</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Стальной трос</b> под грузом - это отрицательное давление вдоль оси. Физика называет это напряжением растяжения, но величина та же: сила на площадь. Трос лифта держит 1500 атмосфер «со знаком минус» и рвётся около 16 000. Растянутое тело - это сжатое с обратным знаком, и уравнения одни.</li>
+          <li><b>Кость</b> держит 1700 атмосфер на сжатие и 1300 на растяжение. Бетон: 300 на сжатие и всего 30 на растяжение, поэтому в него кладут арматуру: сталь берёт на себя минус, бетон плюс. Каждый мост - это спор двух знаков давления.</li>
+          <li><b>Закалённое стекло</b> экрана телефона хитрее: его поверхность заранее сжата, а сердцевина растянута. Царапина должна сначала преодолеть встроенный плюс, чтобы добраться до минуса. Когда добирается, стекло рассыпается целиком: запасённое натяжение выходит разом. Капля принца Руперта - тот же принцип, и её не разбить молотком, но хвостик ломается пальцами.</li>
+          <li><b>Итог главы пока такой:</b> отрицательное давление - обычная инженерная величина, оно в каждом тросе и каждой кости. Вакуум к нему отношения не имеет. Но есть одно место, где вакуум и минус встречаются по-настоящему.</li>
+        </ul>
+      </div>
+      <div>
+        <table class="t" style="font-size:13.5px">
+          <tr><th>Материал</th><th>Сжатие, атм</th><th>Растяжение, атм</th></tr>
+          <tr><td>Бетон</td><td class="d">300</td><td class="d">30</td></tr>
+          <tr><td>Кость</td><td class="d">1 700</td><td class="d">1 300</td></tr>
+          <tr><td>Сталь тросовая</td><td class="d">~16 000</td><td class="d">16 000</td></tr>
+          <tr><td>Паутина</td><td class="d">-</td><td class="d">10 000</td></tr>
+          <tr><td>Вода в ксилеме</td><td class="d">-</td><td class="d">10-30, метастабильно</td></tr>
+          <tr><td>Вода в кварцевой полости</td><td class="d">-</td><td class="d">1 400, рекорд</td></tr>
+          <tr><td>Углеродная нанотрубка</td><td class="d">-</td><td class="d">600 000, расчёт и микрообразцы</td></tr>
+        </table>
+        <div class="note" style="margin-top:12px">Нижняя строка - это почему космический лифт вообще обсуждают: тросу с Земли до геостационарной орбиты нужно выдержать около 500 000 атмосфер растяжения. Сталь рвётся в тридцать раз раньше.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s19">
+  <div class="content">
+    <div class="kicker">Ниже нуля · дно шкалы</div>
+    <h2>Тёмная энергия: вакуум с минусом, который расталкивает Вселенную</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>1998 год.</b> Две команды измеряли, как замедляется разбегание галактик под собственной гравитацией, по сверхновым на краю видимости. Оказалось, не замедляется, а ускоряется. Нобелевская премия 2011. Что-то расталкивает Вселенную, и это что-то составляет 68% всей её энергии.</li>
+          <li><b>Это давление самого пространства.</b> У вакуума есть энергия, и эта энергия ведёт себя как жидкость с отрицательным давлением: расширяешь объём - энергии становится больше, а не меньше. В уравнениях Эйнштейна гравитацию создаёт не только масса, но и давление, и когда давление отрицательное и по модулю больше трети плотности энергии, гравитация меняет знак. Отталкивает.</li>
+          <li><b>Цифра смешная:</b> минус 6 × 10⁻¹⁰ паскаля. В миллион миллиардов раз слабее ветерка. Но оно есть в каждом кубометре, включая пустоту между галактиками, и на масштабах в миллиарды световых лет эта пылинка минуса перевешивает притяжение всех галактик разом.</li>
+          <li><b>Вот дно шкалы.</b> Обычный вакуум, который «тянет», не тянет вовсе. А тот вакуум, о котором никто в быту не думает, тянет всю Вселенную на разрыв. И это единственное место, где слово «отрицательное давление» и слово «вакуум» стоят рядом по праву.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/dark_energy.png" alt="">
+        <div class="pcap">Галактики разбегаются, и расстояние между ними растёт всё быстрее. Не они летят сквозь пространство, а пространство между ними растягивается. Двигатель - отрицательное давление пустоты, минус на самом дне шкалы.</div>
+        <div class="note gold" style="margin-top:10px"><b>Граница знания:</b> измерено косвенно, по сверхновым, реликтовому излучению и скоплениям галактик, все три метода сходятся. Что это такое физически, неизвестно. Расчёт энергии вакуума из квантовой теории даёт число в 10¹²⁰ раз больше измеренного, самое большое расхождение в истории физики.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 4: ДАВЛЕНИЕ И ВРЕМЯ ============ -->
+<section class="slide chapter" id="s20">
+  <div class="bgimg"><img src="assets/ch_time.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4</div>
+    <h1>Давление и время</h1>
+    <p class="lead">«Время давит» - поговорка. Но алмазу нужны оба, скороварка покупает одно другим, водолазная таблица сводит их в одну клетку, а общая теория относительности говорит, что давление в буквальном смысле замедляет часы. Середина лекции и её сердце.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s21">
+  <div class="content">
+    <div class="kicker">Давление и время · алмаз</div>
+    <h2>Алмаз: давление без времени не работает, и наоборот</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/diamond_deep.png" alt="">
+        <div class="pcap">Алмаз в кимберлите. Рос на глубине 150-200 км, под 50 000 атмосфер, при 1000-1300 градусах. Наверх его поднял кимберлитовый взрыв со скоростью десятков километров в час, иначе по дороге он успел бы превратиться обратно в графит.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Графит и алмаз - один углерод.</b> На поверхности выгоден графит, атомы лежат слоями. Под 50 000 атмосфер выгоден алмаз, атомы упакованы в тетраэдры плотнее на 55%. Давление решает, какая упаковка выживет.</li>
+          <li><b>Но давление только разрешает.</b> Чтобы атомы перестроились, им надо двигаться, а в холодном камне они почти не двигаются. Природные алмазы росли от миллиона до трёх миллиардов лет. Самый старый датирован 3.5 миллиардами, старше кислорода в атмосфере.</li>
+          <li><b>Лаборатория обменивает время на температуру.</b> Метод HPHT, 1954: 55 000 атмосфер, 1500 градусов, металл-катализатор, и алмаз растёт за дни. Те же условия по давлению, что в мантии, но в тысячу раз горячее по движению атомов. Природа не торопилась, потому что ей не надо было.</li>
+          <li><b>Обратный путь тоже требует времени.</b> На поверхности алмаз нестабилен и «должен» стать графитом. Но при комнатной температуре на это уйдёт больше возраста Вселенной. Бриллиант в кольце - это вещество, которое медленно разваливается, просто слишком медленно, чтобы кто-то дожил.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s22">
+  <div class="content">
+    <div class="kicker">Давление и время · размен</div>
+    <h2>Скороварка, автоклав и горы: давление покупает время</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Скороварка.</b> Клапан держит лишнюю атмосферу, вода кипит при 120 градусах, а скорость варки удваивается на каждые 10 градусов. Гуляш на два часа готов за сорок минут. Ты не добавил тепла, ты запретил воде убегать паром, и она согласилась быть горячее.</li>
+          <li><b>Автоклав</b> - та же скороварка для медицины: 121 градус, 2 атмосферы, 15 минут, и споры бактерий, которые в кипятке живут часами, мертвы. Половина хирургии XX века стоит на этом размене: давление вместо времени, которого у раненого нет.</li>
+          <li><b>Горы делают то же самое, только наоборот.</b> Глина под слоем осадков за миллионы лет и 2000 атмосфер становится сланцем, под 5000 - слюдяным сланцем, под 10 000 - гнейсом. Метаморфизм: ни один атом не пришёл извне, порода просто перепаковалась. Мрамор - это известняк, которому дали давление и много времени.</li>
+          <li><b>Общее правило:</b> у любого превращения есть цена в паре «давление × время». Можно заплатить одним, можно другим. Природа платит временем, потому что оно у неё бесплатное. Человек платит давлением, потому что у него нет времени. Вся промышленная химия - это покупка времени давлением: аммиак, полиэтилен, бензин из угля.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Кастрюля</b><span>1 атм, 100°C, 2 часа</span></div>
+            <div class="arr am">→</div>
+            <div class="bx am"><b>Скороварка</b><span>2 атм, 120°C, 40 минут</span></div>
+          </div>
+          <div class="row">
+            <div class="bx"><b>Кипячение</b><span>1 атм, 100°C, споры живы</span></div>
+            <div class="arr am">→</div>
+            <div class="bx am"><b>Автоклав</b><span>2 атм, 121°C, 15 минут, стерильно</span></div>
+          </div>
+          <div class="row">
+            <div class="bx"><b>Глина</b><span>поверхность, миллионы лет ничего</span></div>
+            <div class="arr am">→</div>
+            <div class="bx am"><b>Гнейс</b><span>10 000 атм, те же миллионы лет</span></div>
+          </div>
+          <div class="row">
+            <div class="bx"><b>Азот + водород</b><span>1 атм, не реагируют никогда</span></div>
+            <div class="arr am">→</div>
+            <div class="bx am"><b>Аммиак, Габер 1909</b><span>200 атм, 450°C, секунды; кормит половину людей</span></div>
+          </div>
+          <div class="cap">Четыре размена, одна валюта. Правая колонка всегда дороже по железу и дешевле по часам.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s23">
+  <div class="content">
+    <div class="kicker">Давление и время · одна клетка</div>
+    <h2>Водолазная таблица и барокамера: где ошибка в клетке убивает</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Таблица</b> Холдейна и её наследники: строки - глубина, столбцы - время на дне, в клетке - сколько и на каких глубинах стоять при всплытии. Это единственный документ, где давление и время буквально перемножены в каждой клетке, и цена опечатки - пузырёк азота в спинном мозге.</li>
+          <li><b>Ткани разные.</b> Кровь насыщается азотом за минуты, жир за часы, суставные хрящи ещё дольше. Поэтому таблица считает не одно «тело», а пять-шестнадцать условных тканей с разными постоянными времени, и ограничивает всплытие самая медленная. Современный компьютер на руке водолаза делает это в реальном времени.</li>
+          <li><b>Барокамера</b> лечит тем же, чем калечит: кессонника снова сажают под давление, пузырьки растворяются, и потом сбрасывают давление уже медленно, по таблице. Время, которого не хватило на всплытии, добавляют в камере. Иногда сутками.</li>
+          <li><b>Отсюда две поговорки водолазов.</b> «Всплывать медленнее своих пузырей», то есть не быстрее 10 метров в минуту, и «глубина прощает, время нет». Обе про то, что давление само по себе не опасно, опасна скорость его изменения. Тело не боится атмосфер, оно боится производной.</li>
+        </ul>
+      </div>
+      <div>
+        <table class="t" style="font-size:13.5px">
+          <tr><th>Глубина</th><th>Без остановок</th><th>С остановками (пример)</th></tr>
+          <tr><td>12 м</td><td class="d">без лимита по азоту</td><td class="d">-</td></tr>
+          <tr><td>18 м</td><td class="d">56 минут</td><td class="d">70 мин: остановка 3 м на 3 мин</td></tr>
+          <tr><td>30 м</td><td class="d">20 минут</td><td class="d">40 мин: 6 м 3 мин + 3 м 15 мин</td></tr>
+          <tr><td>40 м</td><td class="d">9 минут</td><td class="d">30 мин: 9 м, 6 м, 3 м - суммарно 40 мин</td></tr>
+          <tr><td>50 м</td><td class="d">6 минут</td><td class="d">не рекреационная глубина</td></tr>
+        </table>
+        <div class="note warn" style="margin-top:12px"><b>Полёт после дайвинга</b> - та же клетка. Самолёт снижает давление до 0.75 атм, и азот, который на земле сидел тихо, в салоне выходит пузырьками. Правило: 18-24 часа между последним погружением и взлётом. Люди, нарушившие его, попадали в барокамеру прямо из аэропорта.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s24">
+  <div class="content">
+    <div class="kicker">Давление и время · ОТО</div>
+    <h2>Давление само создаёт гравитацию. Поэтому звезду нельзя подпереть</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/clock_gravity.png" alt="">
+        <div class="pcap">Гравитационная яма и часы на дне. В общей теории относительности яму роет не только масса, но и давление: в уравнениях Эйнштейна источник гравитации - плотность энергии плюс утроенное давление. Чем сильнее вещество сопротивляется сжатию, тем сильнее оно себя притягивает.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>По Ньютону</b> гравитацию создаёт масса, и только она. Давление - это сопротивление, оно против гравитации. Логика простая: чем сильнее газ давит наружу, тем лучше он держит звезду от коллапса.</li>
+          <li><b>По Эйнштейну</b> давление входит в источник гравитации со знаком плюс: ρ + 3p/c². На Земле и на Солнце добавка ничтожна, давление там в миллионы раз меньше плотности энергии массы. Но в нейтронной звезде давление сравнимо с ρc², и тут начинается ловушка.</li>
+          <li><b>Ловушка Толмена, Оппенгеймера и Волкова, 1939.</b> Сжимаем звезду, растёт давление, оно должно её удержать. Но оно же усиливает гравитацию, которая сжимает ещё. При некоторой массе любое давление, даже бесконечное, проигрывает: оно себя же и топит. Это предел ТОВ, около 2.2-2.3 массы Солнца, и выше него у вещества нет способа устоять.</li>
+          <li><b>Отсюда чёрные дыры неизбежны.</b> Не потому, что вещество слабое, а потому, что сопротивление сжатию само весит. Идея «сверхпрочного ядра, которое всё выдержит» запрещена не прочностью, а геометрией. Единственная величина в физике, которая борется с гравитацией и при этом её же кормит.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s25">
+  <div class="content">
+    <div class="kicker">Давление и время · часы</div>
+    <h2>Давление замедляет часы. «Время давит» - это уравнение</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Гравитация замедляет время.</b> Это не метафора и не теория, это поправка в каждом GPS-приёмнике: часы на спутниках на высоте 20 000 км уходят вперёд на 45 микросекунд в сутки относительно земных, потому что гравитация там слабее. Без поправки навигатор врал бы на 10 километров к вечеру.</li>
+          <li><b>Цепочка.</b> Давление входит в источник гравитации. Гравитация замедляет часы. Значит, давление замедляет часы, буквально, через уравнения Эйнштейна. На Земле вклад давления в это замедление ничтожен, а на поверхности нейтронной звезды время идёт на 20-30% медленнее, чем у нас, и заметная часть этого - давление её недр.</li>
+          <li><b>На Солнце</b> часы отстают от земных на 66 секунд в год. В центре Солнца, где давление 250 миллиардов атмосфер, ещё чуть медленнее, и здесь давление уже даёт вклад, который можно посчитать, хотя и не измерить.</li>
+          <li><b>Итог главы.</b> Начали с поговорки. Кончили тем, что давление и время связаны на трёх этажах сразу: в химии как размен, в физиологии как одна клетка таблицы, в гравитации как уравнение. Дальше по шкале часы будут идти всё медленнее, и на самом верху, у горизонта, для внешнего наблюдателя остановятся.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx cy"><b>Давление p</b><span>сопротивляется сжатию</span></div>
+            <div class="arr">→</div>
+            <div class="bx"><b>ρ + 3p/c²</b><span>источник гравитации по Эйнштейну</span></div>
+            <div class="arr">→</div>
+            <div class="bx"><b>Гравитационная яма</b><span>глубже</span></div>
+            <div class="arr am">→</div>
+            <div class="bx am"><b>Часы на дне</b><span>идут медленнее</span></div>
+          </div>
+          <div class="cap">Три стрелки, и «время давит» превращается из поговорки в вывод. Каждая стрелка измерена отдельно: первая в нейтронных звёздах, вторая и третья на спутниках GPS.</div>
+        </div>
+        <table class="t" style="font-size:13.5px; margin-top:14px">
+          <tr><th>Где часы</th><th>Замедление относительно далёкого наблюдателя</th></tr>
+          <tr><td>Поверхность Земли</td><td class="d">7 × 10⁻¹⁰, 22 мс в год</td></tr>
+          <tr><td>Спутник GPS</td><td class="d">на 45 мкс в сутки быстрее земных</td></tr>
+          <tr><td>Поверхность Солнца</td><td class="d">2 × 10⁻⁶, 66 с в год</td></tr>
+          <tr><td>Поверхность белого карлика</td><td class="d">~10⁻⁴, часы за год теряют час</td></tr>
+          <tr><td>Поверхность нейтронной звезды</td><td class="d">20-30%, год за девять месяцев</td></tr>
+          <tr><td>Горизонт чёрной дыры</td><td class="d">для внешнего наблюдателя остановка</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 5: ПЛАНЕТЫ ============ -->
+<section class="slide chapter" id="s26">
+  <div class="bgimg"><img src="assets/ch_planets.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5</div>
+    <h1>Планеты: от дна океана до алмазного дождя</h1>
+    <p class="lead">Тысяча атмосфер на дне впадины, три миллиона в центре Земли, металлический водород в Юпитере и планета, которая греет себя тонущими алмазами. Шкала идёт вверх, и на каждой ступени вещество ведёт себя так, как на поверхности не умеет.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s27">
+  <div class="content">
+    <div class="kicker">Планеты · дно</div>
+    <h2>Марианская впадина: 1100 атмосфер и рыбы без пузыря</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/mariana.png" alt="">
+        <div class="pcap">Батискаф на дне Бездны Челленджера, 10 935 метров. Снаружи 1100 атмосфер, на каждый квадратный сантиметр иллюминатора давит тонна. Сфера для людей - титан или сталь толщиной 9-13 см, и всё равно на дне она сжимается на пару миллиметров.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>1960, «Триест».</b> Жак Пикар и Дон Уолш спустились за 5 часов, пробыли 20 минут, всплыли за 3. Иллюминатор из плексигласа треснул на 9000 метрах, но выдержал. Следующий человек побывал там через 52 года: Джеймс Кэмерон, 2012, один. С 2019 года туда возят туристов за полмиллиона долларов.</li>
+          <li><b>Жизнь есть.</b> На 8 километрах живёт морской слизень, рыба без чешуи и без плавательного пузыря: пузырь с газом на такой глубине сжался бы в точку. Тело рыбы почти целиком из воды, и вода на 1100 атмосферах сжимается всего на 5%. Давление ей не страшно, страшно его изменение.</li>
+          <li><b>Предел для рыб - около 8200 метров,</b> и он химический. Глубже белки перестают складываться правильно, вода вдавливается внутрь молекул. Рыбы защищаются веществом ТМАО, которое стабилизирует белки, но его концентрация растёт с глубиной, и на 8200 её столько, что осмос пошёл бы в обратную сторону. Глубже 8200 рыб нет ни одной, хотя вода ещё три километра.</li>
+          <li><b>Для сравнения:</b> подводная лодка проекта 941 «Акула» - предельная глубина 500 м, 50 атмосфер. Кашалот ныряет на 2000 м, 200 атмосфер, и лёгкие у него при этом схлопнуты полностью, воздух загнан в трахею. Он единственное млекопитающее, которое сознательно живёт на пятой части пути ко дну.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s28">
+  <div class="content">
+    <div class="kicker">Планеты · недра Земли</div>
+    <h2>Центр Земли: горячее поверхности Солнца и всё равно твёрдый</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>3.6 миллиона атмосфер</b> в центре. Давление растёт с глубиной, потому что каждый слой держит вес всех верхних. Кольская сверхглубокая дошла до 12 км из 6371 и остановилась: на 180 градусах и тысяче атмосфер порода течёт и закрывает скважину за буром.</li>
+          <li><b>Ядро железное и горячее:</b> 5400-5700 градусов, как поверхность Солнца. При таком жаре железо должно кипеть. Но давление сдвигает точку плавления: чем сильнее сжато, тем выше надо греть, чтобы расплавить. Внешнее ядро под 1.4 миллиона атмосфер жидкое, внутреннее под 3.3 миллиона твёрдое при почти той же температуре. Разница только в давлении.</li>
+          <li><b>Открыла это Инге Леман в 1936-м,</b> по сейсмограммам: волны от землетрясений отражались от чего-то твёрдого внутри жидкого ядра. Женщина-сейсмолог из Дании, одна, с картотекой в коробках из-под овсянки. Твёрдое ядро растёт до сих пор, на миллиметр в год, потому что Земля остывает и граница застывания ползёт наружу.</li>
+          <li><b>Отсюда магнитное поле.</b> Жидкое железо вокруг твёрдого ядра течёт, вращение Земли закручивает потоки, получается динамо. Компас, полярные сияния и защита от солнечного ветра - следствие того, что на одной глубине железо жидкое, а на другой, чуть глубже, давление сделало его твёрдым.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/earth_core.png" alt="">
+        <div class="pcap">Разрез Земли. Белое внутреннее ядро твёрдое не потому, что холоднее, оно горячее. Оно твёрдое, потому что придавлено сильнее. Точка плавления железа под давлением ядра - около 6000 градусов, чуть выше фактических.</div>
+        <table class="pt" style="margin-top:10px">
+          <tr><th>Слой</th><th>Давление, атм</th><th>Состояние</th></tr>
+          <tr><td>Кора, 12 км</td><td>3 000</td><td>твёрдая, но течёт</td></tr>
+          <tr><td>Мантия, 660 км</td><td>240 000</td><td>твёрдая, ползёт см/год</td></tr>
+          <tr><td>Внешнее ядро</td><td>1.4 млн</td><td>жидкое железо</td></tr>
+          <tr><td>Внутреннее ядро</td><td>3.3-3.6 млн</td><td>твёрдое железо</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s29">
+  <div class="content">
+    <div class="kicker">Планеты · Юпитер</div>
+    <h2>Юпитер: океан металлического водорода</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/jupiter_metal.png" alt="">
+        <div class="pcap">Разрез Юпитера. Под облаками газ без границы густеет в жидкость, а на глубине, где давление переваливает за миллион атмосфер, водород становится жидким металлом: серебристым, проводящим, с оторванными электронами. Этого слоя больше, чем всей Земли, в сотни раз.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Водород - металл.</b> В таблице Менделеева он стоит над литием и натрием не случайно: один электрон на внешней оболочке, как у щелочных металлов. На Земле ему не хватает давления, чтобы электроны стали общими. В Юпитере на глубине 15 000 км, при 1-2 миллионах атмосфер и 10 000 градусах, хватает. Водород превращается в жидкий металл, похожий на ртуть.</li>
+          <li><b>Отсюда магнитное поле</b> в 20 000 раз мощнее земного по полному моменту. Металлический океан течёт, планета вращается за 10 часов, и получается самое большое динамо в Солнечной системе. Магнитосфера Юпитера - крупнейший объект в системе после Солнца: с Земли она заняла бы на небе площадь пяти Лун.</li>
+          <li><b>На Земле металлический водород ищут с 1935 года.</b> Предсказан Вигнером и Хантингтоном, обещан «через несколько лет» каждое десятилетие. В 2017 Гарвард заявил, что получил его в алмазной наковальне при 4.9 миллиона атмосфер. Образец пропал при попытке измерить, результат не воспроизведён. Спор открыт.</li>
+          <li><b>Почему это важно не только для Юпитера.</b> Если металлический водород метастабилен, то есть остаётся металлом после снятия давления, как алмаз остаётся алмазом, это сверхпроводник при комнатной температуре и ракетное топливо втрое лучше любого. Гипотеза. Но ради неё наковальни сжимают водород уже 90 лет.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s30">
+  <div class="content">
+    <div class="kicker">Планеты · парадокс</div>
+    <h2>Нептун тратит больше тепла, чем зарабатывает</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Бухгалтерия.</b> Планета получает от Солнца столько-то ватт на квадратный метр и должна отдавать в космос примерно столько же, иначе она бы грелась или остывала. Юпитер отдаёт в 1.7 раза больше полученного: он ещё сжимается после рождения, и это понятно. Сатурн 1.8, тоже понятно.</li>
+          <li><b>Нептун отдаёт в 2.6 раза больше,</b> чем получает. Он в полтора раза дальше Урана, света там вдвое меньше, и печка внутри должна быть серьёзной. Уран, его близнец по размеру, массе и составу, отдаёт 1.06, то есть ничего. Две почти одинаковые планеты, у одной теневой доход, у другой нет.</li>
+          <li><b>Радиоактивность не подходит.</b> Земля греется распадом урана, тория и калия-40. Но Нептун на 80% состоит из «льдов»: воды, метана и аммиака. Водород, углерод, азот, кислород. Распадаться нечему. Название планеты Уран - единственный уран в этой истории.</li>
+          <li><b>Гравитационное сжатие тоже не подходит:</b> Нептун слишком мал, он успел бы сжаться и остыть за первые сто миллионов лет. Остаётся искать источник, который работает четыре с половиной миллиарда лет, не радиоактивен и есть у Нептуна, но почему-то не у Урана.</li>
+        </ul>
+      </div>
+      <div>
+        <table class="t" style="font-size:14px">
+          <tr><th>Планета</th><th>Излучает / получает</th><th>Источник</th></tr>
+          <tr><td>Земля</td><td class="d">1.0002</td><td class="d">радиоактивность, 47 ТВт, незаметно на фоне Солнца</td></tr>
+          <tr><td>Юпитер</td><td class="d">1.7</td><td class="d">сжатие после рождения, ещё не закончилось</td></tr>
+          <tr><td>Сатурн</td><td class="d">1.8</td><td class="d">сжатие + гелий тонет в водороде, как дождь</td></tr>
+          <tr><td>Уран</td><td class="d">1.06 ± 0.08</td><td class="d">ничего. Или закупорено</td></tr>
+          <tr><td>Нептун</td><td class="d">2.6</td><td class="d">?</td></tr>
+        </table>
+        <div class="note gold" style="margin-top:14px"><b>Подсказка в третьей строке.</b> У Сатурна часть тепла даёт гелий: он не растворяется в водороде при его температуре, собирается в капли и тонет к ядру, отдавая энергию падения. Тяжёлое тонет в лёгком и греет. Если у Нептуна есть что-то тяжёлое, что может тонуть, парадокс решается.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s31">
+  <div class="content">
+    <div class="kicker">Планеты · алмазный дождь</div>
+    <h2>Метан разваливается на алмаз и водород, и алмаз тонет</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/ch_planets.png" alt="">
+        <div class="pcap">Нептун в разрезе. Поверхности нет: газ густеет в горячую жидкость, а на глубине тысяч километров это уже раскалённая каша из воды, метана и аммиака под миллионами атмосфер. В ней рождаются кристаллы алмаза и оседают к ядру. Не с неба на землю, а сквозь жидкость, как муть в стакане.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Марвин Росс, 1981.</b> Метан CH₄ под давлением в сотни тысяч атмосфер и при тысячах градусов невыгоден: углерод отделяется от водорода. Углерод при таком давлении - алмаз. Водород лёгкий, всплывает. Алмаз тяжёлый, тонет. Тонущий кристалл отдаёт энергию падения в тепло, mgh из школы, а треть массы планеты - это метан. Плюс сам распад идёт с выделением тепла.</li>
+          <li><b>Проверено в 2017-м на ускорителе SLAC.</b> Полистирол, тот же углерод с водородом, сжали лазером до 1.5 миллиона атмосфер и 5000 градусов, и рентгеном увидели, как за наносекунды в нём рождаются нанокристаллы алмаза. Условия недр Нептуна воспроизведены, алмазы получены.</li>
+          <li><b>Самоподдержка.</b> Чем горячее, тем быстрее распадается метан, тем больше алмазов тонет, тем горячее. Положительная обратная связь. Не детонация: фронт не бежит быстрее звука, это медленный процесс на миллиарды лет, но он сам себя подстёгивает.</li>
+          <li><b>Внизу, у ядра,</b> температура такая, что алмаз, возможно, сам плавится. Есть модель, где там океан жидкого углерода, а по нему плавают твёрдые алмазы, как льдины, потому что твёрдый углерод легче жидкого. Красиво, не проверено, помечено как гипотеза.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s32">
+  <div class="content">
+    <div class="kicker">Планеты · Уран</div>
+    <h2>Почему Уран холодный: кончился запас или закупорен ударом</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Если алмазный дождь идёт в обеих планетах,</b> почему Уран не греется? Первый ответ: у него всё уже было. Процесс прошёл раньше и быстрее, тепло рассеялось за миллиарды лет, а Нептун ещё в середине. Уран, возможно, просто старше по внутренним часам.</li>
+          <li><b>Второй ответ: закупорен.</b> Уран единственная планета, лежащая на боку: ось наклонена на 98 градусов. Считается, что в юности его ударило тело размером с Землю. Такой удар мог перемешать недра в слоистый пирог, где тёплое не всплывает и холодное не тонет, конвекция заперта, и тепло сидит внутри, не доходя до поверхности. Тогда Уран не холодный, а плотно закрытый.</li>
+          <li><b>Третий ответ: удар выбил тепло сразу,</b> в первые миллионы лет, и планета стартовала уже остывшей. Все три варианта совместимы с данными «Вояджера-2», единственного аппарата, который там был, в 1986-м, пролётом, за шесть часов.</li>
+          <li><b>Граница знания.</b> Ни одного зонда к Урану и Нептуну с тех пор не летало. Миссия к Урану стоит первой в приоритетах НАСА на 2030-е. До неё парадокс Нептуна остаётся парадоксом, а алмазный дождь - лучшей из непроверенных на месте гипотез.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Метан на глубине</b><span>сотни тысяч атм, тысячи градусов</span></div>
+            <div class="arr">→</div>
+            <div class="bx cy"><b>Распад</b><span>CH₄ → C + 2H₂, с выделением тепла</span></div>
+          </div>
+          <div class="row">
+            <div class="bx"><b>Водород</b><span>лёгкий, всплывает</span></div>
+            <div class="bx am"><b>Алмаз</b><span>тяжёлый, тонет, отдаёт mgh</span></div>
+            <div class="arr am">→</div>
+            <div class="bx am"><b>Тепло</b><span>ускоряет распад: петля</span></div>
+          </div>
+          <div class="row">
+            <div class="bx"><b>Нептун</b><span>петля крутится, 2.6</span></div>
+            <div class="bx dk"><b>Уран</b><span>кончилось / закупорено / выбито</span></div>
+          </div>
+          <div class="cap">Одна и та же схема на двух близнецах даёт разный ответ, и это главный аргумент, что разница не в химии, а в истории: Уран что-то пережил, чего Нептун не переживал.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 6: ВЕЩЕСТВО ЛОМАЕТСЯ ============ -->
+<section class="slide chapter" id="s33">
+  <div class="bgimg"><img src="assets/ch_matter.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6</div>
+    <h1>Вещество ломается: кристаллы, атомы, ядра</h1>
+    <p class="lead">Дальше по шкале каждые несколько порядков рушится очередной этаж. Сначала алмаз перестаёт быть алмазом. Потом раздавлены электронные оболочки и все элементы становятся одинаковыми. Потом электроны вдавлены в протоны. Потом ядерная паста. Лестница, у которой есть последняя ступень.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s34">
+  <div class="content">
+    <div class="kicker">Вещество · лестница углерода</div>
+    <h2>Графит, алмаз, BC8: три упаковки одного атома</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Графит, до 20 000 атм.</b> Слои шестиугольников, между слоями почти ничего. Мягкий, чёрный, проводит ток. Карандаш пишет, потому что слои сползают друг с друга.</li>
+          <li><b>Алмаз, до 10 миллионов атм.</b> Каждый атом связан с четырьмя соседями в тетраэдр. Самое твёрдое вещество на поверхности Земли, прозрачное, изолятор. Та же таблица, тот же углерод, другая карта соседства.</li>
+          <li><b>BC8, выше 10 миллионов атм.</b> Тетраэдры становятся невыгодны, атомы перестраиваются в объёмно-центрированную ячейку с восемью атомами, плотнее алмаза на несколько процентов. Это не «сверхалмаз», это другой кристалл, как лёд-VII не сверхлёд. Для кремния такая фаза получена ещё в 1960-х. Для углерода предсказана расчётом, и получить пока не удалось: нужны миллион градусов и десять миллионов атмосфер одновременно, в 2024 году рассчитали, как её поймать при ударном сжатии.</li>
+          <li><b>Выше 30 миллионов</b> предсказана простая кубическая решётка, потом ещё несколько. Кончается это тем, что решётки становятся неважны: к миллиарду атмосфер ломаются не связи между атомами, а сами атомы. Следующий этаж.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/carbon_ladder.png" alt="">
+        <div class="pcap">Слева направо: слои графита, тетраэдры алмаза, плотная ячейка BC8. Ни один атом не изменился. Изменилось только, с кем он рядом. Давление - это не сила, которая ломает, а сила, которая переставляет.</div>
+        <div class="note" style="margin-top:10px">Где BC8 есть на самом деле: в ядрах углеродных суперземель, планет с массой от 5 Земель, и, возможно, в оболочках белых карликов. В Нептуне его нет: там максимум 7-8 миллионов атмосфер, до порога не дотягивает.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s35">
+  <div class="content">
+    <div class="kicker">Вещество · лаборатория</div>
+    <h2>Алмазная наковальня: миллионы атмосфер между двумя бриллиантами</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/ch_matter.png" alt="">
+        <div class="pcap">Два алмаза со сточенными вершинами, между ними образец меньше пылинки. Сила от простого винта, площадь площадки - сотые доли миллиметра. Давление равно силе на площадь, и площадь здесь делает всю работу. Прибор помещается в ладонь.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Принцип - обратная сторона Магдебурга.</b> Там маленькая сила на большой площади не разрывала шар. Тут маленькая сила на микроскопической площади даёт миллионы атмосфер. Алмаз выбран не за красоту: он самый твёрдый и прозрачный, сквозь него светят лазером и рентгеном, чтобы видеть, что происходит с образцом.</li>
+          <li><b>Рекорды.</b> Обычная ячейка - до 3-4 миллионов атмосфер. Двухступенчатая, где на алмазах ещё микроалмазы, - до 10 миллионов, порог BC8. Выше наковальни не идут: сам алмаз начинает течь. Дальше только удар: лазеры установки NIF сжали алмаз до 50 миллионов атмосфер на наносекунды, рекорд для твёрдого вещества.</li>
+          <li><b>Что в ней открыли.</b> Металлический водород (спорно), лёд-VII и лёд-X, которые есть в недрах спутников, сверхпроводники при почти комнатной температуре под 2 миллиона атмосфер (гидриды лантана, 2019, 250 К). Половина того, что мы знаем о недрах планет, получена на образцах размером с пылинку.</li>
+          <li><b>Внутри Земли и Юпитера побывать нельзя,</b> но в ладони можно воспроизвести давление их центра. Это единственная область физики, где лаборатория обгоняет космос: центр Земли 3.6 миллиона, наковальня 10. Дальше в этой главе только объекты, которые в ладонь не влезают.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s36">
+  <div class="content">
+    <div class="kicker">Вещество · химия кончается</div>
+    <h2>Миллиард атмосфер: оболочки раздавлены, элементы одинаковы</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Что делает элементы разными?</b> Электронные оболочки. Число протонов задаёт, сколько электронов и как они лежат, а от раскладки внешних электронов зависит всё: металл или газ, реагирует или нет, какого цвета. Химия - это наука про внешние оболочки.</li>
+          <li><b>Выше сотни миллионов атмосфер</b> давление начинает вдавливать оболочки друг в друга. Электроны отрываются от своих атомов и становятся общим морем, в котором плавают голые ядра. Углерод, кислород, железо перестают отличаться: у всех одинаковое электронное море и разные ядра, которые в этом море почти ничего не решают.</li>
+          <li><b>Таблица Менделеева перестаёт работать.</b> Не отменяется, а теряет смысл: свойства вещества теперь задаёт плотность электронов, а не номер элемента. Это режим Томаса и Ферми, 1927, и он описывает недра белых карликов и ядра массивных планет одной формулой на все элементы.</li>
+          <li><b>Давление держат электроны,</b> и держат не отталкиванием зарядов, а квантовым запретом: два электрона не могут быть в одном состоянии, и чтобы сжать их плотнее, надо загнать их на более высокие уровни энергии. Это давление вырождения, и оно не зависит от температуры. Остынь звезда до нуля, оно останется.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>До 10⁷ атм</b><span>атомы целые, химия работает, кристаллы перестраиваются</span></div>
+            <div class="arr">→</div>
+            <div class="bx cy"><b>10⁸-10⁹ атм</b><span>внешние оболочки смяты, элементы сближаются по свойствам</span></div>
+            <div class="arr">→</div>
+            <div class="bx am"><b>10¹⁰ и выше</b><span>все оболочки сорваны, море электронов, голые ядра</span></div>
+          </div>
+          <div class="cap">Три ступени, и на третьей вся химия сводится к одному числу: сколько электронов в кубическом сантиметре.</div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Что это значит для лекции</h3>
+          <p>До этой ступени мы говорили «алмаз», «железо», «водород». Дальше слова теряют смысл: белый карлик не «из углерода» в химическом смысле, там нет углерода как вещества, есть ядра углерода в электронном газе. Всё, что выше по шкале, описывается не химией, а плотностью.</p>
+          <p>И заодно ответ на вопрос «может ли давление превращать элементы». Нет: ядра остаются теми же, меняется только то, что вокруг них. Пока. На следующем этаже давление доберётся и до ядер.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s37">
+  <div class="content">
+    <div class="kicker">Вещество · белый карлик</div>
+    <h2>Белый карлик: Солнце, сжатое до размера Земли</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Что это.</b> Звезда вроде Солнца, у которой кончилось топливо. Оболочка сброшена, остался горячий огарок из углерода и кислорода массой с Солнце и размером с Землю. Плотность - тонна на кубический сантиметр. Спичечный коробок такого вещества весит как грузовик.</li>
+          <li><b>Что его держит.</b> Не тепло, оно уходит. Давление вырожденных электронов с прошлого слайда, 10²² паскалей в центре, сто тысяч миллиардов атмосфер. Оно не зависит от температуры, поэтому карлик может остывать миллиарды лет и не сжиматься. Самые старые уже остыли до нескольких тысяч градусов.</li>
+          <li><b>«Алмаз размером с Землю»</b> - заголовок 2004 года про карлик BPM 37093, прозванный Люси. Правда в том, что при остывании ядра углерода и кислорода выстраиваются в кристалл. Неправда в том, что это алмаз: решётка там объёмно-центрированная из голых ядер в электронном море, кулоновский кристалл. Алмаз кончился на четыре этажа ниже.</li>
+          <li><b>Предел Чандрасекара.</b> Электроны удерживают карлик только до 1.44 массы Солнца. Выше давление вырождения проигрывает гравитации, и тут срабатывает та самая ловушка ОТО из четвёртой главы: давление кормит гравитацию. Карлик либо взрывается как сверхновая, либо проваливается на следующий этаж.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/white_dwarf.png" alt="">
+        <div class="pcap">Сириус B, ближайший белый карлик, спутник самой яркой звезды неба. Масса как у Солнца, диаметр как у Земли, температура поверхности 25 000 градусов. Обнаружен в 1862-м по тому, как он раскачивает Сириус. Его существование объяснили только через 60 лет, когда появилась квантовая механика.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s38">
+  <div class="content">
+    <div class="kicker">Вещество · нейтронизация</div>
+    <h2>Электрон вдавлен в протон: чайная ложка весит миллиард тонн</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Выше предела Чандрасекара</b> электронам становится энергетически «дешевле» исчезнуть, чем занимать всё более высокие уровни. Электрон вдавливается в протон, получается нейтрон и нейтрино. Нейтрино улетает, нейтрон остаётся. Вещество нейтронизуется: атомов больше нет, ядер больше нет, есть нейтроны.</li>
+          <li><b>Это не абстракция, это взрыв.</b> Когда у массивной звезды кончается топливо, её железное ядро за секунду проваливается с размера Земли до 20 километров, нейтронизуясь по дороге, а оболочка падает на него и отскакивает. Сверхновая. Вспышка ярче галактики, и в центре остаётся нейтронная звезда.</li>
+          <li><b>Плотность ядра атома.</b> 20 километров в поперечнике, полторы массы Солнца, 10¹⁷ кг на кубометр. Чайная ложка - около миллиарда тонн. Сила тяжести на поверхности в 100 миллиардов раз больше земной: гора высотой в миллиметр там уже рекорд, а упавший с метра предмет достигает поверхности со скоростью 2000 км/с.</li>
+          <li><b>Что держит от коллапса</b> теперь: давление вырождения нейтронов плюс их взаимное отталкивание на сверхмалых расстояниях. Центральное давление 10³⁴ паскалей, сто миллиардов миллиардов миллиардов атмосфер. Самый высокий уровень давления, который мы наблюдаем в природе напрямую, по массам и радиусам звёзд.</li>
+        </ul>
+      </div>
+      <div>
+        <table class="t" style="font-size:13.5px">
+          <tr><th>Объект</th><th>Масса</th><th>Радиус</th><th>Что держит</th></tr>
+          <tr><td>Солнце</td><td class="d">1</td><td class="d">700 000 км</td><td class="d">тепло от термоядерных реакций</td></tr>
+          <tr><td>Белый карлик</td><td class="d">до 1.44</td><td class="d">~6 000 км</td><td class="d">вырожденные электроны</td></tr>
+          <tr><td>Нейтронная звезда</td><td class="d">1.2-2.3</td><td class="d">10-13 км</td><td class="d">вырожденные нейтроны + ядерные силы</td></tr>
+          <tr><td>Чёрная дыра</td><td class="d">от ~2.3</td><td class="d">горизонт 7 км на массу Солнца</td><td class="d">ничего. Ничего не держит</td></tr>
+        </table>
+        <div class="note gold" style="margin-top:12px"><b>Тяжелейшая измеренная нейтронная звезда:</b> 2.35 массы Солнца, пульсар J0952-0607, 2022. Предел ТОВ по расчётам 2.2-2.3, и она стоит на самом краю. Одна десятая массы Солнца сверху, и следующая строка таблицы.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s39">
+  <div class="content">
+    <div class="kicker">Вещество · ядерная паста</div>
+    <h2>Ядерная паста: клёцки, спагетти, лазанья</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/nuclear_pasta.png" alt="">
+        <div class="pcap">Нижняя кора нейтронной звезды в разрезе. Ядерное вещество, сжатое почти до плотности ядра, принимает формы, которые физики честно назвали по итальянскому меню: шарики, нити, пласты, трубки, пена. Толщина слоя - сотни метров, и в нём самое прочное вещество из известных.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Между корой и ядром</b> нейтронной звезды давление растёт так, что отдельные ядра уже невыгодны, а сплошная нейтронная жидкость ещё не выгодна. Ядра сливаются в сгустки, сгустки вытягиваются в нити, нити слипаются в пласты, пласты продырявливаются. Расчёт 1983 года, и с тех пор список форм только рос: ньокки, спагетти, лазанья, букатини, швейцарский сыр.</li>
+          <li><b>Прочность.</b> Моделирование 2018 года: ядерная паста в 10 миллиардов раз прочнее стали. Ей можно приписать «горы» на поверхности нейтронной звезды высотой в сантиметры, и этих сантиметров при её гравитации хватает, чтобы звезда излучала гравитационные волны, которые ищут детекторы.</li>
+          <li><b>Глубже пасты</b> - сплошная нейтронная жидкость, сверхтекучая, с примесью протонов и электронов. Она, судя по всему, тоже сверхпроводник. Пульсары иногда «дёргаются», скачком ускоряя вращение, и это объясняют тем, что сверхтекучая жидкость внутри проскальзывает относительно коры.</li>
+          <li><b>Граница знания.</b> Ни паста, ни сверхтекучее ядро не наблюдались напрямую. Но масса, радиус и остывание нейтронных звёзд, измеренные телескопом NICER и по слиянию 2017 года, совпадают с моделями, где всё это есть, и не совпадают с моделями, где нет. Косвенно, но сильно.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s40">
+  <div class="content">
+    <div class="kicker">Вещество · кварки</div>
+    <h2>Кварковая материя: гипотеза о том, что нейтроны тоже ломаются</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Нейтрон не элементарен.</b> Три кварка, связанные глюонами. При обычной плотности кварки заперты в нейтронах намертво: их нельзя вытащить поодиночке, это свойство сильного взаимодействия. Но если нейтроны сжать так, что они начнут перекрываться, граница между ними теряет смысл. Кварки становятся общими, как электроны на четвёртом этаже.</li>
+          <li><b>Где это может быть.</b> В центрах самых тяжёлых нейтронных звёзд, при плотности в 5-10 раз выше ядерной. Расчёты дают «может быть», данные пока не различают: звезда с кварковым ядром и без него при той же массе имеют почти одинаковый радиус. Разница в сотни метров, точность измерений сейчас около километра.</li>
+          <li><b>Странная материя.</b> Есть гипотеза, что кварковая материя с примесью странных кварков стабильнее обычного ядерного вещества, и тогда некоторые «нейтронные звёзды» на самом деле кварковые целиком, а капля такой материи, попав в обычное вещество, переработала бы его в себя. Никаких свидетельств. Ни за, ни против.</li>
+          <li><b>Честная отметка.</b> Это первый этаж лестницы, у которого нет ни одного прямого подтверждения. Всё ниже измерено или надёжно выведено. Всё здесь - расчёт и ожидание следующего поколения детекторов гравитационных волн, которые по форме сигнала при слиянии двух нейтронных звёзд смогут отличить «мягкое» ядро от «жёсткого».</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Кора</b><span>ядра железа в решётке, электроны</span></div>
+            <div class="arr">→</div>
+            <div class="bx"><b>Ядерная паста</b><span>ядра слиплись в нити и пласты</span></div>
+            <div class="arr">→</div>
+            <div class="bx cy"><b>Нейтронная жидкость</b><span>сверхтекучая, 10³⁴ Па</span></div>
+            <div class="arr am">→</div>
+            <div class="bx dk"><b>Кварковое ядро?</b><span>гипотеза, не отличима по данным</span></div>
+          </div>
+          <div class="cap">Разрез нейтронной звезды снаружи внутрь. Пунктирная ячейка - граница, за которой лекция перестаёт цитировать измерения и начинает цитировать расчёты.</div>
+        </div>
+        <div class="note" style="margin-top:14px"><b>Что уже отсеяно.</b> Слияние двух нейтронных звёзд 2017 года, GW170817, показало по гравитационным волнам, насколько звёзды деформировались перед столкновением. Слишком «мягкие» модели вещества, где кварки появляются рано, не прошли. Слишком «жёсткие», где предел массы выше 2.5 Солнц, тоже. Коридор сузился, но кварки в нём помещаются.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 7: ПРЕДЕЛ ============ -->
+<section class="slide chapter" id="s41">
+  <div class="bgimg"><img src="assets/ch_limit.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 7</div>
+    <h1>Предел: где давление перестаёт спасать</h1>
+    <p class="lead">Лестница кончается не потому, что вещество слабое. Она кончается потому, что сопротивление сжатию само весит, и в какой-то момент любое давление, даже бесконечное, топит того, кого держит. Следующая фаза после материи - отсутствие материи.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s42">
+  <div class="content">
+    <div class="kicker">Предел · ТОВ</div>
+    <h2>Предел Толмена, Оппенгеймера и Волкова: давление, которое себя топит</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Возвращаемся к четвёртой главе.</b> В уравнениях Эйнштейна гравитацию создаёт ρ + 3p/c². Пока давление мало по сравнению с энергией массы, добавка не видна. В нейтронной звезде давление того же порядка, что ρc², и добавка становится равноправной.</li>
+          <li><b>Мысленный эксперимент.</b> Возьмём звезду чуть тяжелее предела и попробуем удержать её «идеальным» веществом, у которого давление растёт с плотностью сколь угодно круто. Сжимаем, давление растёт, но растёт и его гравитационный вклад. Оппенгеймер и Волков в 1939-м посчитали: при массе выше предела кривая давления никогда не догоняет кривую гравитации. Никакое уравнение состояния не помогает.</li>
+          <li><b>Число.</b> Для реалистичного вещества 2.2-2.3 массы Солнца. Даже для несжимаемого вещества, физически невозможного, предел конечен: около 3 масс. Это самая жёсткая граница в лекции, потому что она не про то, из чего сделана звезда, а про геометрию пространства.</li>
+          <li><b>Что происходит на пределе.</b> Звезда проваливается внутрь своего горизонта событий за миллисекунды. Снаружи это выглядит как исчезновение: свет от поверхности краснеет и гаснет, часы на ней для нас останавливаются. Внутри - никто не знает. Уравнения ведут к точке бесконечной плотности, и физики единодушны, что это знак не бесконечности, а конца применимости уравнений.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Ньютон</b><span>гравитация ← масса; давление против неё</span></div>
+            <div class="arr rd">≠</div>
+            <div class="bx rd"><b>Эйнштейн</b><span>гравитация ← масса + 3 давления; давление за неё</span></div>
+          </div>
+          <div class="row">
+            <div class="bx"><b>Сжатие</b><span>плотность растёт</span></div>
+            <div class="arr">→</div>
+            <div class="bx cy"><b>Давление растёт</b><span>сопротивляется</span></div>
+            <div class="arr rd">→</div>
+            <div class="bx rd"><b>Гравитация растёт</b><span>из-за того же давления</span></div>
+            <div class="arr rd">→</div>
+            <div class="bx dk"><b>Сжатие</b><span>петля замыкается</span></div>
+          </div>
+          <div class="cap">Ниже предела петля затухает: давление выигрывает. Выше предела петля расходится: чем сильнее вещество упирается, тем сильнее его вдавливает.</div>
+        </div>
+        <div class="note gold" style="margin-top:14px"><b>Ирония лекции.</b> Мы прошли 30 порядков вверх, и на каждом давление было тем, что держит: шину, дерево, планету, звезду. На последней ступени оно становится тем, что топит. Одна и та же величина, и у неё есть предел, выше которого она работает против себя.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s43">
+  <div class="content">
+    <div class="kicker">Предел · горизонт</div>
+    <h2>Горизонт событий: следующая фаза после материи - её отсутствие</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/ch_limit.png" alt="">
+        <div class="pcap">Тень чёрной дыры и кольцо света вокруг. Снимок 2019 года, галактика M87, кольцо из горячего газа, изогнутое гравитацией. Внутри чёрного круга давление, плотность и время не определены: не потому, что их не измерили, а потому, что уравнения там не работают.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Что известно точно.</b> Радиус горизонта: 3 километра на каждую массу Солнца. Снаружи чёрная дыра - обычный гравитирующий объект, вокруг неё летают звёзды и газ, их видно. На горизонте для внешнего наблюдателя время останавливается: последняя стрелка из таблицы четвёртой главы.</li>
+          <li><b>Что известно про внутри.</b> Ничего измеренного. Общая теория относительности говорит: всё падает к центру за конечное собственное время, и в центре плотность и давление бесконечны. Квантовая механика говорит: бесконечностей не бывает. Две лучшие теории физики противоречат друг другу ровно в этой точке, и объединить их не удаётся сто лет.</li>
+          <li><b>Кандидаты.</b> Квантовая гравитация в разных версиях предлагает вместо сингулярности «планковскую звезду», отскок в другую область пространства, туман из петель. Ни одно не проверяемо сейчас. Единственный сигнал изнутри, о котором есть теория, это излучение Хокинга, и оно так слабо, что ни одна чёрная дыра во Вселенной ещё не успела бы заметно испариться.</li>
+          <li><b>Для шкалы.</b> Верхний край обычного давления - центр нейтронной звезды, 10³⁴ паскалей. Дальше по шкале есть числа, но нет вещества, которое бы их выдерживало. Горизонт - это не самое высокое давление, это место, где вопрос «какое давление» перестаёт иметь ответ.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s44">
+  <div class="content">
+    <div class="kicker">Предел · Планк</div>
+    <h2>10¹¹³ паскалей: граница не вещества, а теории</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Планковские единицы</b> собраны из трёх констант: скорости света, постоянной Планка и гравитационной постоянной. Из них можно сложить длину, время, массу и давление. Планковское давление - 4.6 × 10¹¹³ паскалей. Это не давление где-то, это давление, при котором квантовые эффекты и гравитация одинаково важны.</li>
+          <li><b>Что это значит физически.</b> Если попытаться сжать что угодно до такого давления, энергия в сжатом объёме создаст чёрную дыру размером с сам объём. Измерение станет невозможным не из-за прибора, а по существу: чтобы увидеть меньше, нужна энергия, которая закроет то, что смотришь, горизонтом.</li>
+          <li><b>Единственное место,</b> где такое давление, возможно, было, - первые 10⁻⁴³ секунды после Большого взрыва. Ни одна теория не описывает этот момент. Ни одна не претендует. Всё, что раньше, называется «планковская эпоха», и это название честно означает «здесь мы не знаем».</li>
+          <li><b>Верх шкалы.</b> Между центром нейтронной звезды и планковским пределом 79 порядков, и на них нет ни одного объекта. Шкала обычного давления, которая начиналась с одного атома на кубометр между галактиками, кончается там, где само понятие «давление» упирается в предел описания. 134 порядка, и человек на 26-м.</li>
+        </ul>
+      </div>
+      <div>
+        <table class="t" style="font-size:13.5px">
+          <tr><th>Ступень</th><th>Давление, Па</th><th>Что ломается</th><th>Статус</th></tr>
+          <tr><td>Графит → алмаз</td><td class="d">10⁹</td><td class="d">упаковка кристалла</td><td class="d">измерено, делается в цеху</td></tr>
+          <tr><td>Алмаз → BC8</td><td class="d">10¹²</td><td class="d">упаковка кристалла</td><td class="d">предсказано, не получено</td></tr>
+          <tr><td>Оболочки раздавлены</td><td class="d">10¹³-10¹⁴</td><td class="d">атом, химия</td><td class="d">измерено в белых карликах</td></tr>
+          <tr><td>Нейтронизация</td><td class="d">10²⁷-10²⁸</td><td class="d">ядро, протон</td><td class="d">наблюдается в сверхновых</td></tr>
+          <tr><td>Ядерная паста</td><td class="d">10³²-10³³</td><td class="d">отдельные ядра</td><td class="d">косвенно, по остыванию и массам</td></tr>
+          <tr><td>Кварковая материя</td><td class="d">10³⁴-10³⁵</td><td class="d">нейтрон</td><td class="d">гипотеза</td></tr>
+          <tr><td>Горизонт</td><td class="d">-</td><td class="d">само вещество</td><td class="d">снаружи измерено, внутри неизвестно</td></tr>
+          <tr><td>Планк</td><td class="d">10¹¹³</td><td class="d">теория</td><td class="d">граница описания</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s45">
+  <div class="content">
+    <div class="kicker">Предел · симметрия</div>
+    <h2>Два края шкалы: на одном схлопывает вещество, на другом расталкивает Вселенную</h2>
+    <div class="dg">
+      <div class="row">
+        <div class="bx rd"><b>−6 × 10⁻¹⁰ Па</b><span>тёмная энергия: расталкивает галактики</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>−10⁶ Па</b><span>вода в секвойе, натяжение</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>0</b><span>пустота, которая не тянет</span></div>
+        <div class="arr">→</div>
+        <div class="bx cy"><b>10⁵ Па</b><span>ты. 120 на 80 сверх этого</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>10¹¹ Па</b><span>центр Земли</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>10²² Па</b><span>белый карлик</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>10³⁴ Па</b><span>нейтронная звезда</span></div>
+        <div class="arr">→</div>
+        <div class="bx rd"><b>горизонт</b><span>схлопывает вещество</span></div>
+      </div>
+      <div class="cap">Вся лекция на одной строке. Красные ячейки на концах - два края, и оба гравитационные: слева давление со знаком минус гонит пространство врозь, справа давление со знаком плюс топит само себя.</div>
+    </div>
+    <div class="cols" style="margin-top:20px">
+      <div>
+        <ul class="pts">
+          <li><b>Левый край.</b> Ничтожное отрицательное давление вакуума, минус доли нанопаскаля, но в каждом кубометре Вселенной. Оно создаёт отталкивающую гравитацию, и галактики разбегаются с ускорением. Конец этого сценария - «большой разрыв» или вечное остывание, и это тоже граница знания.</li>
+          <li><b>Правый край.</b> Гигантское положительное давление, которое должно держать звезду, само становится источником гравитации и топит её. Конец сценария - горизонт, за которым вопросов больше, чем внутри планковской эпохи.</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Общий закон обоих краёв</b> один: в общей теории относительности давление гравитирует. Отрицательное отталкивает, положительное притягивает. Этой единственной строчкой из уравнений Эйнштейна объясняются оба конца света, и ни одна другая величина не работает на обоих краях сразу.</li>
+          <li><b>Середина.</b> Между двумя гравитационными краями лежат 134 порядка, и человек с тонометром стоит примерно на 26-м снизу. Не в центре шкалы, а там, где давление ещё измеряют столбиком ртути, и этого хватает, чтобы дожить до следующей лекции.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ИТОГИ ============ -->
+<section class="slide" id="s46">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Вся шкала одной таблицей</h2>
+    <table class="t" style="font-size:12.5px">
+      <tr><th>Глава</th><th>Диапазон</th><th>Главная мысль</th><th>Что измерено</th><th>Что открыто</th></tr>
+      <tr><td>1. Тело</td><td class="d">0.3-4 атм</td><td class="d">тело чувствует разницы, а не абсолют; таблицы водолазов = давление × время</td><td class="d">Коротков 1905, Холдейн 1908, кабина 0.75 атм</td><td class="d">-</td></tr>
+      <tr><td>2. Атмосфера</td><td class="d">0.87-1 атм</td><td class="d">вакуум не тянет, воздух толкает; десять тонн на квадратный метр</td><td class="d">Торричелли 1643, Паскаль 1648, Герике 1654</td><td class="d">предсказание погоды дальше 10 дней</td></tr>
+      <tr><td>3. Ниже нуля</td><td class="d">10⁻²¹ Па … −10⁸ Па</td><td class="d">настоящий минус в деревьях, тросах и в самом пространстве</td><td class="d">ксилема −20 атм, вода −1400 атм, ускорение 1998</td><td class="d">что такое тёмная энергия, расхождение 10¹²⁰</td></tr>
+      <tr><td>4. Давление и время</td><td class="d">-</td><td class="d">размен в химии, одна клетка в физиологии, уравнение в гравитации</td><td class="d">GPS 45 мкс/сутки, HPHT 1954, предел ТОВ</td><td class="d">-</td></tr>
+      <tr><td>5. Планеты</td><td class="d">10³-10⁷ атм</td><td class="d">твёрдое от давления, а не от холода; тяжёлое тонет и греет</td><td class="d">Леман 1936, SLAC 2017, Вояджер 1986</td><td class="d">почему Уран холодный, металлический водород</td></tr>
+      <tr><td>6. Вещество ломается</td><td class="d">10⁷-10²⁹ атм</td><td class="d">кристаллы, потом атомы, потом ядра; химия кончается на миллиарде</td><td class="d">наковальня 10⁷, Чандрасекар 1.44, J0952 2.35 M☉</td><td class="d">BC8 не получен, паста косвенно, кварки гипотеза</td></tr>
+      <tr><td>7. Предел</td><td class="d">10³⁴ Па … 10¹¹³ Па</td><td class="d">давление кормит гравитацию и топит себя; дальше нет вещества</td><td class="d">снимок M87 2019, GW170817</td><td class="d">внутри горизонта, планковская эпоха</td></tr>
+    </table>
+    <div class="note" style="margin-top:12px">Сквозная мысль: <b>давление - одна величина на 134 порядка, и она держит всё от шины до звезды, пока на последней ступени не начинает держать против себя.</b> Два края шкалы, минус и плюс, объясняются одной строчкой из Эйнштейна: давление гравитирует.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s47">
+  <div class="content">
+    <div class="kicker">Итоги · граница</div>
+    <h2>Честно про края: что измерено, что выведено, что придумано</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>Измерено</h3>
+        <ul>
+          <li>Давление крови, кабины, глубины, высоты - приборами, ежедневно</li>
+          <li>Отрицательное давление в ксилеме и в микрополостях воды</li>
+          <li>Ускорение расширения Вселенной, три независимых метода</li>
+          <li>Замедление часов гравитацией: GPS, каждый день</li>
+          <li>Твёрдое ядро Земли, металлический слой Юпитера по магнитному полю</li>
+          <li>Алмазы из углеводорода при 1.5 млн атм, SLAC 2017</li>
+          <li>Массы и радиусы белых карликов и нейтронных звёзд</li>
+          <li>Тень чёрной дыры, 2019</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Выведено надёжно</h3>
+        <ul>
+          <li>Тепловой баланс Нептуна и Урана: измерен, механизм выведен</li>
+          <li>Алмазный дождь как источник тепла Нептуна: модель + лабораторное подтверждение условий</li>
+          <li>Раздавленные оболочки в белых карликах: теория Томаса-Ферми, совпадает с наблюдениями</li>
+          <li>Нейтронизация: сверхновые видны, нейтрино от SN1987A пойманы</li>
+          <li>Ядерная паста: косвенно по остыванию и по GW170817</li>
+          <li>Предел ТОВ 2.2-2.3: рассчитан, самая тяжёлая звезда 2.35 на краю</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="rd">Гипотеза или неизвестно</h3>
+        <ul>
+          <li>Что такое тёмная энергия физически; расхождение с расчётом 10¹²⁰</li>
+          <li>Металлический водород на Земле: одна заявка, не воспроизведена</li>
+          <li>BC8 для углерода: предсказан, не синтезирован</li>
+          <li>Океан жидкого углерода у ядра Нептуна</li>
+          <li>Почему именно Уран холодный: три версии, зонда не было с 1986-го</li>
+          <li>Кварковая материя и странные звёзды</li>
+          <li>Что внутри горизонта, и была ли планковская эпоха тем, чем мы её называем</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s48">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <h1>Тонометр на столе и чёрная дыра за окном - один закон</h1>
+    <p class="lead">Сила на площадь. Энергия на объём. Удары молекул о стенку, которых в пустоте нет, а в звезде столько, что они весят сами по себе. Мы начали с ртутного столбика 1643 года и дошли до места, где столбик поставить некуда.</p>
+    <p class="lead" style="margin-top:14px">Между двумя краями 134 порядка. На одном давление со знаком минус гонит галактики врозь, на другом со знаком плюс топит звезду. Человек стоит на 26-м порядке снизу, меряет себя ртутью и, в общем, правильно делает: на этой ступени давление ещё то, что держит.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- SLIDES_END -->
+
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>
