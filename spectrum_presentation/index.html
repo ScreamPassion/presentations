@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><link rel="icon" href="../favicon.ico" sizes="any"><link rel="icon" type="image/png" href="../favicon.png"><link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Спектр. Всего, ощущений и мысли</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #7fd1c8; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Гвендолин-ночные-лекции</div>
+    <h1>Спектр. Всего, ощущений и мысли</h1>
+    <p class="lead">Ньютон нарезал радугу на семь цветов, потому что семь нот и семь планет. В радуге нет ни одной границы. Лекция о том, что почти всё в мире не «да или нет», а больше-меньше: свет, звук, состав звёзд, цвет, боль, характер, ум, сознание. И об одном месте, где природа сама рисует границы там, где мы их не ждали.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s2">
+  <div class="content">
+    <div class="kicker">Вступление</div>
+    <h2>1666: Ньютон, дырка в ставне и семь цветов, которых нет</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/newton.png" alt="">
+        <div class="pcap">Кембридж, чума, университет закрыт, Ньютону 23. Он пробивает в ставне дырку, ставит призму и получает на стене полосу в двадцать раз длиннее, чем должна быть по тогдашней оптике. Белый свет - смесь, призма её разбирает. Это первое в истории разложение в спектр.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Семь цветов.</b> Красный, оранжевый, жёлтый, зелёный, голубой, синий, фиолетовый. Ньютон сначала насчитал пять, потом добавил оранжевый и индиго, чтобы стало семь: как нот в октаве и планет на небе. Он сам писал, что границы «нечёткие». Три с половиной века школа учит семь.</li>
+          <li><b>В полосе нет ни одной границы.</b> Длина волны меняется непрерывно от 400 до 700 нанометров. Где кончается жёлтый и начинается зелёный, решает не свет, а глаз и язык. У разных народов в радуге от двух до двенадцати цветов, и все правы.</li>
+          <li><b>Слово «спектр»</b> Ньютон взял из латыни: spectrum - призрак, видение. Ему казалось, что цвета возникают из ничего, как привидение. Слово прижилось и разошлось по всей науке: спектр звука, спектр масс, спектр аутизма. Везде один смысл: непрерывная линейка вместо ящиков.</li>
+          <li><b>Правило лекции.</b> Три этажа снизу вверх: спектр всего, то есть физика; спектр ощущений, то есть как тело режет непрерывное; спектр мысли, то есть как режем мы. На каждом этаже один вопрос: где здесь настоящая ступенька, а где её нарисовали.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">Вступление · карта</div>
+    <h2>Три этажа, один вопрос</h2>
+    <div class="dg">
+      <div class="row">
+        <div class="bx cy"><b>Спектр всего</b><span>свет, линии звёзд, звук, спектр как метод. Природа непрерывна?</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>Спектр ощущений</b><span>глаз, ухо, вкус, боль, язык. Тело режет непрерывное на куски</span></div>
+        <div class="arr">→</div>
+        <div class="bx am"><b>Спектр мысли</b><span>нейроразнообразие, характер, ум, сознание. Мы режем сами</span></div>
+        <div class="arr rd">→</div>
+        <div class="bx rd"><b>Край</b><span>где спектр кончается, и кто там рисует границы</span></div>
+      </div>
+      <div class="cap">Снизу физика, сверху психология, в конце атом. Латинская фраза в финале, и у неё будет подвох.</div>
+    </div>
+    <div class="cols" style="margin-top:22px">
+      <div>
+        <ul class="pts">
+          <li><b>Что такое спектр технически.</b> Разложение сложного сигнала на простые составляющие и подсчёт, сколько какой. Свет по длинам волн, звук по частотам, вещество по массам молекул, характер по чертам. Инструмент один, области разные.</li>
+          <li><b>Что такое спектр как идея.</b> Утверждение, что между двумя «ящиками» есть всё промежуточное, и ящики - это наша разметка, а не устройство мира. Это утверждение верно чаще, чем кажется, и неверно в одном месте, о котором в конце.</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Связь с прошлой лекцией.</b> В «Трещине» граница между нормой и диагнозом была нарисована в книге, и книгу переписывают. Здесь то же самое, но на всех этажах сразу: от радуги до политики. Спектр аутизма из той лекции появится и в этой, уже как один из многих.</li>
+          <li><b>Честность на краях.</b> Где измерено, где выведено, где не знаем, помечено на слайдах. У этой темы край особенно интересный, потому что на нём сама идея спектра ломается.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 1: СВЕТ ============ -->
+<section class="slide chapter" id="s4">
+  <div class="bgimg"><img src="assets/ch_light.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1 · спектр всего</div>
+    <h1>Свет: одна октава из восьмидесяти</h1>
+    <p class="lead">Радуга Ньютона - крошечный кусок полосы, которая тянется от радиоволн длиной в километры до гамма-квантов короче ядра атома. Мы видим из неё меньше процента. Всё остальное - тот же свет, только глаз для него не вырос.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="content">
+    <div class="kicker">Свет · вся полоса</div>
+    <h2>Электромагнитный спектр: от километров до ядра атома</h2>
+    <table class="t" style="font-size:13.5px">
+      <tr><th>Диапазон</th><th>Длина волны</th><th>Кто излучает</th><th>Что мы с этим делаем</th></tr>
+      <tr><td>Радио</td><td class="d">от км до 10 см</td><td class="d">галактики, пульсары, молнии, всё тёплое</td><td class="d">связь, радиоастрономия, чёрная дыра M87 снята именно в радио</td></tr>
+      <tr><td>Микроволны</td><td class="d">10 см - 1 мм</td><td class="d">реликтовое излучение Вселенной, 2.7 К</td><td class="d">Wi-Fi, печь, GPS, снимок Вселенной в возрасте 380 000 лет</td></tr>
+      <tr><td>Инфракрасное</td><td class="d">1 мм - 700 нм</td><td class="d">всё тёплое: тело, дом, планеты, пыль</td><td class="d">тепловизор, пульт, телескоп Уэбб видит сквозь пыль</td></tr>
+      <tr><td><b>Видимое</b></td><td class="d"><b>700 - 400 нм</b></td><td class="d">Солнце в максимуме, лампы, звёзды</td><td class="d">глаз; одна октава, от красного до фиолетового ровно вдвое по длине волны</td></tr>
+      <tr><td>Ультрафиолет</td><td class="d">400 - 10 нм</td><td class="d">Солнце, горячие звёзды</td><td class="d">загар, озон, стерилизация; птицы и пчёлы видят</td></tr>
+      <tr><td>Рентген</td><td class="d">10 - 0.01 нм</td><td class="d">газ у чёрных дыр, короны звёзд</td><td class="d">снимок кости, досмотр, Чандра</td></tr>
+      <tr><td>Гамма</td><td class="d">короче 0.01 нм</td><td class="d">ядра, сверхновые, гамма-всплески</td><td class="d">лучевая терапия, самые яркие взрывы во Вселенной</td></tr>
+    </table>
+    <div class="note gold" style="margin-top:12px"><b>Границ между строками нет.</b> Радио плавно переходит в микроволны, микроволны в инфракрасное. Названия даны по тому, кто и когда открыл, а не по физике: волна длиной 1 мм - это одновременно «микроволна» для радиоинженера и «дальний инфракрасный» для астронома. Первая таблица лекции, и уже вся из нарисованных линий.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="content">
+    <div class="kicker">Свет · невидимое</div>
+    <h2>Что видно за краями: Гершель, термометр и тепловизор</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>1800, Уильям Гершель</b> ставит термометры в разные цвета солнечного спектра и один, контрольный, за красным краем, где света «нет». Контрольный нагревается сильнее всех. За красным есть свет, который греет, но не виден. Инфракрасный открыт за одну неделю с помощью градусника.</li>
+          <li><b>1801, Риттер,</b> прочитав про Гершеля, ставит за фиолетовым краем бумажку с хлоридом серебра. Темнеет быстрее, чем на свету. Ультрафиолет. Оба края видимого раздвинуты за два года, и с тех пор полоса растёт в обе стороны: рентген 1895, радио 1888, гамма 1900.</li>
+          <li><b>Тепловизор</b> показывает мир в том свете, который излучает всё тёплое. Человек светится на 10 микронах, как лампочка, только не видимая. Змеи видят это ямками на морде и ловят мышь в полной темноте. Комар находит тебя по тому же. Ты светишься всегда, просто не для себя.</li>
+          <li><b>Телескоп Уэбб</b> смотрит в инфракрасном не для красоты: свет самых далёких галактик за 13 миллиардов лет растянулся из видимого в инфракрасный, и пыль, которая закрывает рождение звёзд, для длинных волн прозрачна. Половина Вселенной видна только за красным краем.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/infrared.png" alt="">
+        <div class="pcap">Тот же лес, два спектра. Слева то, что видит глаз ночью: ничего. Справа то, что видит тепловизор: олень, тёплая тропа, остывающие камни. Ни один фотон не добавлен. Просто взяли соседнюю октаву.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2: ЛИНИИ ============ -->
+<section class="slide chapter" id="s7">
+  <div class="bgimg"><img src="assets/ch_lines.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2 · спектр всего</div>
+    <h1>Линии: как прочли состав звёзд, не выходя из комнаты</h1>
+    <p class="lead">Философ написал, что мы никогда не узнаем, из чего сделаны звёзды. Через 24 года два химика прочли состав Солнца по тёмным чёрточкам в его свете. Гелий нашли на Солнце раньше, чем на Земле. Вся астрофизика с тех пор - чтение спектров.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s8">
+  <div class="content">
+    <div class="kicker">Линии · Конт и Кирхгоф</div>
+    <h2>1835: «никогда не узнаем». 1859: узнали</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/bunsen.png" alt="">
+        <div class="pcap">Гейдельберг, 1859. Бунзен придумал горелку с бесцветным пламенем, Кирхгоф поставил перед ней призму. Каждый элемент в пламени даёт свой набор ярких линий, как штрих-код. Натрий - две жёлтые, всегда одни и те же. Литий - красную. Потом навели прибор на Солнце.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Огюст Конт, 1835,</b> основатель позитивизма, приводит пример знания, недоступного принципиально: химический состав звёзд. До них не долететь, кусочек не отщипнуть. Значит, никогда. Логично, и через четверть века неверно.</li>
+          <li><b>Фраунгофер</b> ещё в 1814-м увидел в солнечном спектре сотни тёмных линий, пронумеровал их буквами и не понял, что это. Кирхгоф в 1859-м заметил, что тёмная линия D в спектре Солнца стоит ровно там, где яркая линия натрия в пламени. Холодный газ поглощает те же длины волн, которые горячий излучает. Тёмные линии - это подпись элементов в атмосфере Солнца.</li>
+          <li><b>За несколько лет</b> в Солнце нашли натрий, железо, магний, кальций, водород. Звезда оказалась из тех же элементов, что Земля. Конт умер в 1857-м и не успел узнать, что ошибся на два года.</li>
+          <li><b>1868, гелий.</b> В спектре солнечной короны при затмении - жёлтая линия, которая не совпадает ни с одним известным элементом. Назвали по Солнцу: гелиос. На Земле нашли только в 1895-м, в урановой руде. Первый элемент, открытый на расстоянии в 150 миллионов километров.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s9">
+  <div class="content">
+    <div class="kicker">Линии · что ещё читается</div>
+    <h2>Скорость, температура, планеты и возраст Вселенной: всё из линий</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Скорость.</b> Если источник удаляется, все его линии сдвигаются к красному, как гудок поезда понижается. Хаббл в 1929-м измерил сдвиг у десятков галактик: все убегают, и чем дальше, тем быстрее. Вселенная расширяется. Один факт про спектры перевернул космологию.</li>
+          <li><b>Температура.</b> Форма спектра, где горб, говорит температуру: красные звёзды 3000 градусов, жёлтые как Солнце 6000, голубые 30 000. Отсюда классы O-B-A-F-G-K-M, и Солнце - скромная G2. По линиям же читают давление, магнитное поле, вращение, химию. Звезда - это открытая книга, если знаешь азбуку.</li>
+          <li><b>Планеты у других звёзд.</b> Когда планета проходит перед своей звездой, крошечная часть света идёт сквозь её атмосферу и приносит линии: вода, метан, углекислый газ. Так в 2023-м Уэбб нашёл воду и облака на планете за 700 световых лет. Атмосферу экзопланеты никто не видел, её прочли.</li>
+          <li><b>Реликтовое излучение.</b> Спектр самого старого света во Вселенной измерен в 1990-м с точностью, лучше которой в физике нет ничего: идеальный тепловой спектр при 2.725 К. Эта одна кривая - главное доказательство Большого взрыва.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/redshift.png" alt="">
+        <div class="pcap">Галактики и их спектры. Чем дальше галактика, тем сильнее её линии сдвинуты к красному. Расстояние читается по цвету, скорость по сдвигу, состав по положению линий. Ни одной из этих галактик никто не касался.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 3: ЗВУК ============ -->
+<section class="slide chapter" id="s10">
+  <div class="bgimg"><img src="assets/ch_sound.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3 · спектр всего</div>
+    <h1>Звук: почему рояль и скрипка на одной ноте - разные</h1>
+    <p class="lead">Одна нота - это не одна частота. Это столб обертонов, и его состав - тембр. Фурье в 1822-м доказал, что любой звук раскладывается в такой столб. С тех пор на этом стоит запись музыки, узнавание речи, сжатие MP3 и Shazam.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s11">
+  <div class="content">
+    <div class="kicker">Звук · обертоны</div>
+    <h2>Ля первой октавы: 440 герц и всё, что над ними</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Струна колеблется целиком</b> на 440 Гц, и одновременно половинками на 880, третями на 1320, четвертями на 1760. Все эти частоты звучат вместе. Основной тон задаёт высоту, остальные - обертоны - задают, как это звучит. Одна нота - это спектр.</li>
+          <li><b>Тембр - это профиль спектра.</b> У флейты почти один основной тон и слабые обертоны: чистый, «пустой» звук. У скрипки сильны нечётные и чётные вместе: насыщенно. У кларнета чётные подавлены из-за закрытой трубки: «деревянно». Рояль добавляет удар молоточка и негармоничность толстых струн. Ухо слышит сумму и сразу знает инструмент.</li>
+          <li><b>Фурье, 1822.</b> Любая периодическая волна - сумма синусоид. Доказано для теплопроводности, применено ко всему. Быстрое преобразование Фурье 1965 года - алгоритм, который выполняется чаще любого другого на планете: каждый звонок, каждая картинка JPEG, каждый MP3, каждый Wi-Fi пакет через него проходят.</li>
+          <li><b>Октава</b> - это удвоение частоты, 440 и 880. Их обертоны совпадают наполовину, поэтому они звучат как «та же нота выше». Это единственный интервал, который все культуры планеты слышат одинаково. Остальное - квинта, терция, строй - договорённости, и они у всех разные.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx cy"><b>440 Гц</b><span>основной тон: высота</span></div>
+            <div class="bx"><b>880</b><span>октава</span></div>
+            <div class="bx"><b>1320</b><span>квинта над ней</span></div>
+            <div class="bx"><b>1760</b><span>две октавы</span></div>
+            <div class="bx"><b>2200</b><span>большая терция</span></div>
+            <div class="bx dk"><b>…</b><span>до 20 000</span></div>
+          </div>
+          <div class="cap">Натуральный ряд одной струны. Громкость каждого столбика - это и есть тембр. Поменяй пропорции - получишь другой инструмент на той же ноте.</div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Почему рояль не строит идеально</h3>
+          <p>Толстая жёсткая струна колеблется не совсем как идеальная нить: её обертоны чуть выше кратных, негармоничность. Поэтому настройщик растягивает строй: верхние октавы чуть выше, нижние чуть ниже, чтобы обертоны басов совпали с верхами. Идеально настроенный по частотомеру рояль звучит фальшиво. Ухо слышит спектр, а не число.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s12">
+  <div class="content">
+    <div class="kicker">Звук · спектрограмма</div>
+    <h2>Речь, Shazam и MP3: три способа читать звуковой спектр</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/spectrogram.png" alt=""><div class="pcap">Спектрограмма голоса: время по горизонтали, частота по вертикали, яркость - громкость. Гласные видны как полосы-форманты, согласные как шум. По такой картинке можно прочесть слово, не слыша его, и глухие лингвисты это умеют.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Речь.</b> Гласные различаются не высотой, а формой спектра: положением двух-трёх горбов, формант. «А» и «И» на одной ноте - разные форманты, потому что рот другой. Распознавание речи в телефоне - это спектрограмма плюс статистика, какая форма за какой идёт.</li>
+          <li><b>Shazam.</b> Строит спектрограмму, находит на ней самые яркие точки, соединяет пары точек в «отпечатки» и ищет их в базе из сотен миллионов отпечатков. Работает при шуме бара, потому что шум размазан, а пики песни стоят на месте. Двенадцать секунд, потому что столько нужно, чтобы набрать пару десятков совпадений.</li>
+          <li><b>MP3.</b> Раскладывает звук в спектр и выбрасывает то, что ухо не услышит: тихие частоты рядом с громкими маскируются, выше 16 кГц у взрослых пусто. Файл в десять раз меньше, и большинство не слышит разницы. Сжатие построено на карте того, где ухо глухое, следующая глава.</li>
+          <li><b>Тот же метод везде.</b> Сейсмологи читают спектр землетрясения, чтобы отличить взрыв от сдвига плит: у взрыва больше высоких. Врачи читают спектр сердца на ЭКГ. Инженеры - спектр вибрации мотора, чтобы поймать подшипник до поломки. Разложить и посмотреть, сколько чего.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 4: СПЕКТРЫ ВЕЗДЕ ============ -->
+<section class="slide chapter" id="s13">
+  <div class="bgimg"><img src="assets/ch_everywhere.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4 · спектр всего</div>
+    <h1>Спектры везде: один метод на всю науку</h1>
+    <p class="lead">Масса молекул, звёзды по классам, радиочастоты как товар, который продают с аукциона. Спектр - это не про свет, это про способ мышления: разложить сложное на простое и посчитать, сколько какого. Где это работает, и где линейка врёт.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s14">
+  <div class="content">
+    <div class="kicker">Спектры везде · четыре примера</div>
+    <h2>Масс-спектр, звёзды, эфир и землетрясения</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3>Масс-спектрометр</h3>
+          <p>Молекулы разгоняют в электрическом поле и разводят магнитом по массе: тяжёлые поворачивают меньше. На выходе спектр масс: столбики, сколько молекул какого веса. Так нашли изотопы, так проверяют допинг у спортсменов, так «Кьюриосити» нюхает марсианский грунт. Спектр без единого фотона.</p>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3 class="am">Классы звёзд</h3>
+          <p>O-B-A-F-G-K-M, от голубых гигантов при 40 000 градусов до красных карликов при 3000. Буквы в таком порядке, потому что классификацию гарвардских «вычислительниц» 1900-х годов сначала делали по алфавиту по силе линий водорода, а потом переставили по температуре и буквы оставили. Между классами нет границ, и Солнце - G2, то есть на две десятых в сторону K.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="cy">Радиочастоты как товар</h3>
+          <p>Эфир - тоже спектр, и он поделён государствами на полосы: этот кусок армии, этот телевидению, этот сотовым. Полосы для 5G в 2021-м в США продали с аукциона за 81 миллиард долларов. Спектр, у которого нет ни границ, ни хозяина по физике, стал самым дорогим ресурсом, у которого есть и то, и другое по закону.</p>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3 class="rd">Землетрясение или взрыв</h3>
+          <p>Сейсмические волны раскладывают в спектр. У взрыва больше высоких частот и нет сдвиговых волн, у разлома наоборот. Так международная сеть отличает ядерное испытание от землетрясения за минуты, и договор о запрете испытаний держится на чтении спектров.</p>
+        </div>
+      </div>
+    </div>
+    <div class="note" style="margin-top:14px"><b>Итог первого этажа.</b> Свет, звук, массы, звёзды, эфир, землетрясения: везде непрерывная линейка, на которую мы наносим деления по своей нужде. Границы между «радио» и «микроволнами», между классами G и K, между полосой армии и полосой оператора - нарисованы. Пока что ни одной настоящей ступеньки. Второй этаж: как эту линейку режет тело.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 5: ГЛАЗ ============ -->
+<section class="slide chapter" id="s15">
+  <div class="bgimg"><img src="assets/ch_eye.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5 · спектр ощущений</div>
+    <h1>Глаз: цвет - изобретение мозга, а не свойство света</h1>
+    <p class="lead">В свете есть длина волны. Цвета в нём нет. Три типа колбочек сжимают бесконечный спектр в три числа, а мозг из трёх чисел рисует всё, что мы называем цветом, включая один, которого в спектре нет вообще. Птицы, пчёлы и креветки живут в других мирах на том же свете.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s16">
+  <div class="content">
+    <div class="kicker">Глаз · три числа</div>
+    <h2>Три колбочки: как бесконечность сжали до трёх чисел</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>В сетчатке три типа колбочек,</b> чувствительных к длинным, средним и коротким волнам. Грубо: красные, зелёные, синие. Каждая выдаёт одно число: сколько света поймала. Любой спектр, сколь угодно сложный, на выходе глаза превращается в три числа. Всё остальное отброшено.</li>
+          <li><b>Отсюда метамерия:</b> два совершенно разных спектра дают одни и те же три числа и выглядят одинаково. Жёлтый лазер на 580 нм и смесь красного с зелёным на экране - для физики разные вещи, для глаза один жёлтый. Вся цветная техника, от телевизора до печати, стоит на этом обмане: три источника имитируют любой цвет.</li>
+          <li><b>Цвет - не в свете.</b> Ньютон это написал сам: «лучи не окрашены». Цвет - это ответ мозга на пропорцию трёх чисел. Один и тот же свет при разном окружении выглядит по-разному, серый квадрат на белом темнее, чем на чёрном. Мозг не измеряет, он интерпретирует.</li>
+          <li><b>Дальтонизм</b> - когда одного типа колбочек нет или он сдвинут: 8% мужчин, 0.5% женщин, ген на X-хромосоме. Мир не чёрно-белый, просто два числа вместо трёх, и красное с зелёным сливаются. А есть тетрахроматы, женщины с четвёртым типом колбочек: около 1%, и часть из них различает оттенки, которых остальные не видят. Один свет, четыре разных объёма цвета у людей одного вида.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Спектр</b><span>бесконечно много длин волн</span></div>
+            <div class="arr rd">→</div>
+            <div class="bx cy"><b>Сетчатка</b><span>три числа: L, M, S</span></div>
+            <div class="arr">→</div>
+            <div class="bx am"><b>Мозг</b><span>цвет, с учётом соседей и памяти</span></div>
+          </div>
+          <div class="cap">Бесконечность в три числа - самое большое сжатие данных в теле. Всё, что мы называем цветом, происходит справа от красной стрелки.</div>
+        </div>
+        <table class="t" style="font-size:13px;margin-top:14px">
+          <tr><th>Кто</th><th>Типов рецепторов</th><th>Что видит сверх нашего</th></tr>
+          <tr><td>Собака</td><td class="d">2</td><td class="d">меньше: красное и зелёное слиты</td></tr>
+          <tr><td>Человек</td><td class="d">3</td><td class="d">-</td></tr>
+          <tr><td>Тетрахромат</td><td class="d">4</td><td class="d">оттенки между красным и зелёным</td></tr>
+          <tr><td>Пчела</td><td class="d">3, со сдвигом</td><td class="d">ультрафиолет, посадочные полосы на цветах; не видит красного</td></tr>
+          <tr><td>Птицы</td><td class="d">4</td><td class="d">ультрафиолет; оперение самцов светится для них</td></tr>
+          <tr><td>Гремучая змея</td><td class="d">3 + ямки</td><td class="d">инфракрасное: тепло мыши в темноте</td></tr>
+          <tr><td>Креветка-богомол</td><td class="d">12-16</td><td class="d">от УФ до дальнего красного плюс поляризация</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s17">
+  <div class="content">
+    <div class="kicker">Глаз · чужие миры</div>
+    <h2>Креветка-богомол и птицы: тот же свет, другие цвета</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/mantis_shrimp.png" alt="">
+        <div class="pcap">Рак-богомол, или креветка-богомол. Шестнадцать типов зрительных рецепторов против наших трёх, включая ультрафиолет и поляризацию света. Парадокс: различает оттенки хуже нас. Её глаз не смешивает каналы в мозгу, а читает каждый отдельно, как штрих-код. Другая архитектура, не «лучше».</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Птицы видят четырьмя,</b> четвёртый в ультрафиолете. Для них оперение самцов, которое нам кажется одинаково серым, горит узорами. Синица выбирает партнёра по ультрафиолетовой шапочке, которую человек не видел никогда. Половина птичьей красоты для нас в принципе недоступна.</li>
+          <li><b>Пчела не видит красного,</b> зато видит ультрафиолет, и цветы это знают: у многих есть «посадочные полосы» к нектару, невидимые нам. Цветок, который нам кажется однотонно жёлтым, для пчелы - мишень с центром. Растения рисовали для пчёл, а не для нас.</li>
+          <li><b>Собака</b> видит двумя, как человек с дальтонизмом, и мяч красный на зелёной траве для неё почти невидим. Синий - видит хорошо. Игрушки для собак красные, потому что их покупают люди.</li>
+          <li><b>Вывод главы.</b> Одна и та же физика, тот же спектр от 300 до 800 нанометров, и на нём десятки разных «видимых миров». Ни один не настоящий. Наш - один из вариантов, случайно доставшийся приматам, которым надо было различать спелые плоды на фоне листвы. Цвет - это не про свет, это про того, кто смотрит.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s18">
+  <div class="content">
+    <div class="kicker">Глаз · пурпурный</div>
+    <h2>Цвет, которого нет в спектре: мозг замкнул линию в круг</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>В спектре нет пурпурного.</b> Пройди радугу от красного до фиолетового: розового, малинового, маджента нигде нет. Нет такой длины волны. Пурпурный возникает, когда одновременно возбуждены «красные» и «синие» колбочки без «зелёных», то есть когда свет пришёл с двух концов спектра сразу.</li>
+          <li><b>Мозг решает задачу,</b> которой у физики нет: как обозначить «красный плюс синий». Он изобретает цвет и вставляет его между концами, замыкая линию спектра в круг. Цветовой круг, которым пользуются художники, - это спектр плюс один придуманный сегмент. Ньютон, кстати, первым его и нарисовал, и придуманный сегмент тоже.</li>
+          <li><b>Отсюда «дополнительные цвета».</b> Напротив зелёного на круге стоит пурпурный, и после зелёного пятна на белой стене видишь пурпурное: уставшие «зелёные» колбочки молчат, остальные две кричат. Послеобраз - это мозг показывает тебе цвет, которого не существует.</li>
+          <li><b>Для лекции.</b> Первая настоящая «ступенька», и она не в природе, а в голове: мозг взял непрерывную линию и дорисовал к ней кусок, чтобы сделать удобную для себя фигуру. Это будет повторяться на каждом следующем этаже: где спектр неудобен, восприятие его достраивает.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/magenta.png" alt="">
+        <div class="pcap">Цветовой круг с подсвеченным сегментом между красным и фиолетовым. Это единственный участок круга, у которого нет длины волны. Всё, что здесь, - изобретение зрительной коры для замыкания фигуры.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 6: УХО ============ -->
+<section class="slide chapter" id="s19">
+  <div class="bgimg"><img src="assets/ch_ear.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6 · спектр ощущений</div>
+    <h1>Ухо: клавиатура длиной три сантиметра</h1>
+    <p class="lead">Улитка внутреннего уха - это спектроанализатор, свёрнутый в спираль: у входа ловятся высокие частоты, в глубине низкие. От 20 до 20 000 герц, и верхний край уезжает с каждым годом жизни. Собаки, слоны и летучие мыши слышат в тех же воздухе и воде совсем другую музыку.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s20">
+  <div class="content">
+    <div class="kicker">Ухо · улитка</div>
+    <h2>Как ухо делает преобразование Фурье механически</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Улитка</b> - спиральная трубка длиной 35 мм с мембраной внутри. Мембрана у входа узкая и жёсткая, в глубине широкая и мягкая. Высокие частоты раскачивают её у входа, низкие - в конце. Каждая точка мембраны отвечает за свою частоту. Это клавиатура, только клавиши - волосковые клетки, 3500 штук в ряд.</li>
+          <li><b>Ухо не слышит волну, оно слышит спектр.</b> Звук приходит одной сложной волной, а мозг получает уже разложение: какие клетки качнулись и насколько. Фурье в 1822-м вывел на бумаге то, что улитка делает механически десятки миллионов лет. Поэтому мы слышим аккорд как три ноты, а не как одну кривую.</li>
+          <li><b>Диапазон: 20 - 20 000 Гц у ребёнка.</b> К тридцати верх около 16 000, к шестидесяти около 10 000. Волосковые клетки у входа изнашиваются первыми, и не восстанавливаются. Отсюда «писк, который слышат только подростки», и отсюда MP3 режет всё выше 16 кГц: взрослому покупателю всё равно.</li>
+          <li><b>Громкость тоже спектр,</b> и тоже логарифмический: децибелы. Каждые 10 дБ - в 10 раз больше энергии, а на слух «вдвое громче». От шёпота до болевого порога - 12 порядков по энергии, триллион раз. Ни один прибор в теле не имеет такого динамического диапазона. Он есть только потому, что шкала логарифмическая.</li>
+        </ul>
+      </div>
+      <div>
+        <table class="t" style="font-size:13px">
+          <tr><th>Кто</th><th>Диапазон, Гц</th><th>Зачем</th></tr>
+          <tr><td>Слон</td><td class="d">14 - 12 000</td><td class="d">инфразвук через землю на километры; стадо переговаривается ногами</td></tr>
+          <tr><td>Человек</td><td class="d">20 - 20 000</td><td class="d">речь живёт в 300-3000, остальное - тембр и пространство</td></tr>
+          <tr><td>Собака</td><td class="d">65 - 45 000</td><td class="d">ультразвуковой свисток; и шум пылесоса для неё на октаву выше</td></tr>
+          <tr><td>Кошка</td><td class="d">45 - 65 000</td><td class="d">писк мыши</td></tr>
+          <tr><td>Летучая мышь</td><td class="d">до 200 000</td><td class="d">эхолокация: чем короче волна, тем мельче видит</td></tr>
+          <tr><td>Дельфин</td><td class="d">до 150 000</td><td class="d">эхолокация в воде, «видит» плавательный пузырь рыбы сквозь неё</td></tr>
+          <tr><td>Голубь</td><td class="d">от 0.5</td><td class="d">инфразвук гор и океана; возможно, навигация</td></tr>
+        </table>
+        <div class="note" style="margin-top:12px"><b>Тот же воздух, разные окна.</b> Собака слышит вдвое выше нас, слон вдвое ниже. Ни у кого нет «полного» слуха: слух настроен на то, что важно виду. Наш - на речь, поэтому самая чувствительная зона 2-4 кГц, где согласные.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s21">
+  <div class="content">
+    <div class="kicker">Ухо · октава и слух</div>
+    <h2>Почему октава одна на всех, а всё остальное - договор</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/bat_night.png" alt="">
+        <div class="pcap">Летучая мышь читает пещеру звуком на 100 000 Гц. Для неё это не «слух», а зрение: она различает толщину проволоки в полмиллиметра по эху. Один орган, другой участок спектра, другое чувство.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Октава</b> - удвоение частоты. Половина обертонов верхней ноты совпадает с обертонами нижней, поэтому ухо слышит «ту же ноту, только выше». Это единственный музыкальный интервал, который узнают все культуры планеты, младенцы и, судя по опытам, обезьяны. Он не договор, он из физики струны.</li>
+          <li><b>Всё остальное - договор.</b> Сколько ступеней в октаве: 12 в Европе, 22 в Индии, 5 в пентатонике, 24 в арабской музыке. Где ровно стоит терция: чистый строй, темперация Баха, современный равномерный, все три разные, и «фальшь» одного - норма другого. Спектр частот непрерывен, лады - нарисованные на нём деления.</li>
+          <li><b>Абсолютный слух</b> - способность назвать ноту без опоры. Один на десять тысяч в Европе, и почти у всех носителей тональных языков, где высота меняет смысл слова. Не дар, а раннее обучение: окно закрывается к шести-семи годам. Кто выучил, тот слышит ноты как цвета, кто нет, тот слышит интервалы. Оба слышат тот же спектр.</li>
+          <li><b>Тон и шум</b> - тоже не два ящика. Между чистым синусом и белым шумом непрерывная линейка: колокол, тарелка, дождь. Ухо проводит границу «нота/не нота» само, по тому, есть ли в спектре ряд обертонов. Барабан имеет высоту, если его правильно настроить. Спросите литавриста.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 7: ОСТАЛЬНЫЕ ЧУВСТВА ============ -->
+<section class="slide chapter" id="s22">
+  <div class="bgimg"><img src="assets/ch_senses.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 7 · спектр ощущений</div>
+    <h1>Вкус, боль, тепло и синестезия: линейки без делений</h1>
+    <p class="lead">Пять вкусов, которых на самом деле бесконечно. Шкала боли от нуля до десяти, которой нельзя верить. Рецептора «тепло» не существует, есть два других и их разница. И люди, у которых спектры протекают друг в друга: буквы имеют цвет, а звуки - форму.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s23">
+  <div class="content">
+    <div class="kicker">Чувства · вкус и температура</div>
+    <h2>Пять вкусов, два датчика тепла и ни одной границы</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3>Вкус</h3>
+          <ul>
+            <li><b>Пять базовых:</b> сладкое, солёное, кислое, горькое, умами. Пятый признали только в 2002-м, когда нашли рецептор глутамата, хотя японцы описали его в 1908-м. Карта языка «кончик - сладкое, края - кислое» из учебников - ошибка перевода 1901 года, все рецепторы есть везде.</li>
+            <li><b>Вкус - это спектр из пяти чисел,</b> как цвет из трёх. Любое блюдо - точка в пятимерном пространстве. Плюс запах, который даёт 80% того, что мы называем вкусом: с зажатым носом яблоко не отличить от лука. Плюс температура, текстура, острота, которая вообще не вкус, а боль.</li>
+            <li><b>Острое - это боль.</b> Капсаицин перца бьёт по рецептору, который отвечает за «горячо», температура выше 43 градусов. Мозг честно сообщает: обжёгся. Ментол бьёт по рецептору «холодно». Ни то, ни другое не меняет температуру во рту. Ощущение есть, стимула нет.</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Температура</h3>
+          <ul>
+            <li><b>Рецептора «тепло» нет.</b> Есть рецепторы холода, работающие до 15 градусов, и рецепторы жара, от 43. Между ними мозг вычисляет температуру из соотношения двух сигналов, как цвет из трёх. Спектр из двух точек, и весь комфорт живёт между ними.</li>
+            <li><b>Иллюзия трёх вёдер.</b> Одна рука в горячей воде, другая в холодной, потом обе в тёплую: одной тепло, другой холодно, вода одна. Датчики меряют не температуру, а её изменение. Тело чувствует не «сколько градусов», а «теплее или холоднее, чем было».</li>
+            <li><b>Ниже 15 и выше 43</b> сигнал переходит в боль, и это единственные границы, которые тело проводит само: там, где начинается повреждение. Всё между - непрерывное «комфортно, прохладно, жарко» без единого деления, и на ту же воду в 25 градусов один говорит «тепло», другой «холодно», и оба правы.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:12px"><b>Общий принцип второго этажа.</b> Тело нигде не измеряет спектр целиком. Оно ставит на нём несколько датчиков, два, три, пять, и достраивает всё между ними. Цвет из трёх точек, вкус из пяти, температура из двух. Восприятие - это интерполяция.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s24">
+  <div class="content">
+    <div class="kicker">Чувства · боль и синестезия</div>
+    <h2>Шкала боли, которой нельзя верить, и люди с протекающими спектрами</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/pain_scale.png" alt="">
+        <div class="pcap">Шкала боли от 0 до 10: единственный медицинский измерительный прибор, показания которого нельзя проверить. Врач спрашивает число, пациент называет. Никакой линейки за этим нет, и при этом это лучший инструмент, который у медицины есть.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Боль - не датчик повреждения,</b> а оценка угрозы, которую мозг выносит из всего сразу: сигнала с места, ожидания, страха, контекста. Солдат с раной может не чувствовать боли до конца боя, а человек с фантомной болью чувствует ногу, которой нет. Одна и та же травма - от «2» до «9» у разных людей, и это не ложь, это разные мозги.</li>
+          <li><b>Шкала 0-10</b> работает не как линейка, а как разница: у одного человека «было 7, стало 4» надёжно, а «7» у двоих несравнимы. Медицина это знает и всё равно пользуется, потому что ничего лучше нет. Попытки измерить боль по МРТ дают 80% точности, не лучше, чем спросить.</li>
+          <li><b>Синестезия:</b> у 2-4% людей спектры протекают друг в друга. Буквы имеют цвет, всегда один и тот же для этого человека. Звуки имеют форму или вкус. Числа стоят в пространстве. Это не метафора и не воображение: цвет буквы у синестета проверяется тестами через годы, и он не меняется. Скрябин писал музыку по цветам, Набоков жаловался, что его буквы не того цвета, что у жены.</li>
+          <li><b>Для лекции.</b> Синестезия показывает, что «спектр звука» и «спектр цвета» - не две разные вещи в мозге, а два выхода одной машины, у которых иногда перепутаны провода. Чувства - это не пять ящиков. Это одна линейка, которую тело режет на пять, а у некоторых нож соскальзывает.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 8: ЯЗЫК ============ -->
+<section class="slide chapter" id="s25">
+  <div class="bgimg"><img src="assets/ch_language.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 8 · спектр ощущений</div>
+    <h1>Язык режет спектр: у Гомера не было синего</h1>
+    <p class="lead">«Винноцветное море», «фиалковые овцы», «зелёный мёд». Гомер называл цвета так, что учёные XIX века решили, что греки были дальтониками. Не были. У них просто не было слова. Где язык проводит границу, там глаз начинает её видеть.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s26">
+  <div class="content">
+    <div class="kicker">Язык · слова для цвета</div>
+    <h2>От двух цветов до двенадцати: как языки нарезают радугу</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>1858, Гладстон,</b> будущий премьер Британии, перечитывает Гомера и замечает: моря «винноцветные», небо «бронзовое», а слова «синий» нет ни разу. Решает, что греки не различали синего. Через 20 лет то же находят в Ветхом Завете, в Ведах, в исландских сагах: синий появляется в языках последним.</li>
+          <li><b>Берлин и Кей, 1969.</b> Сравнили 98 языков и нашли порядок: если в языке два слова для цвета, это «тёмное» и «светлое». Три - добавляется красный. Потом зелёный или жёлтый, потом синий, потом коричневый, потом остальные. Ни один язык не добавляет синий раньше красного. Радугу все режут по одной последовательности, просто останавливаются на разном месте.</li>
+          <li><b>Химба в Намибии</b> не имеют отдельного слова для синего, зато имеют несколько для зелёного. В опыте они не сразу находили синий квадрат среди зелёных, а нашу «одинаковую» зелень различали мгновенно. Глаз тот же. Разметка другая, и она влияет на скорость.</li>
+          <li><b>Русский</b> - один из немногих языков с двумя обязательными синими: голубой и синий. Русскоязычные различают оттенки на границе голубого и синего на 10% быстрее англоязычных, у которых это один blue. Слово не создаёт цвет, но ставит на спектре засечку, и мозг вокруг засечки становится острее.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>2 слова</b><span>тёмное / светлое</span></div>
+            <div class="arr">→</div>
+            <div class="bx rd"><b>3</b><span>+ красный</span></div>
+            <div class="arr">→</div>
+            <div class="bx"><b>4-5</b><span>+ зелёный, жёлтый</span></div>
+            <div class="arr">→</div>
+            <div class="bx cy"><b>6</b><span>+ синий</span></div>
+            <div class="arr">→</div>
+            <div class="bx"><b>7-11</b><span>+ коричневый, фиолетовый, розовый, оранжевый, серый</span></div>
+          </div>
+          <div class="cap">Порядок Берлина и Кея. Один и тот же для всех языков планеты, разная глубина. Гомер стоял примерно на ступени 4-5.</div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Почему синий последний</h3>
+          <p>В природе почти нет синего, который можно взять в руки: нет синих плодов, синих животных почти нет, синий краситель в древности стоил дороже золота. Небо и море - не предметы, их не покупают и не едят. Слово появляется, когда нужно отличить одну вещь от другой, а не когда цвет есть. Египтяне назвали синий первыми, потому что первыми сделали синюю краску.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s27">
+  <div class="content">
+    <div class="kicker">Язык · платье</div>
+    <h2>2015: одно платье, два мозга, и оба правы</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Фотография платья,</b> выложенная в феврале 2015-го, за сутки разделила интернет: половина видит сине-чёрное, половина бело-золотое. Не «кто-то ошибается». Люди смотрели на один и тот же файл и видели разное, и никого нельзя было переубедить.</li>
+          <li><b>Причина - освещение, которого не видно.</b> Снимок пересвечен, и мозг должен угадать, какой был свет: голубоватый дневной или тёплый лампы. Угадав «дневной», он вычитает синеву, и платье становится бело-золотым. Угадав «лампу», вычитает жёлтое, и платье сине-чёрное. Цвет - это не пиксели, это пиксели минус предположение о свете.</li>
+          <li><b>Кто что видел.</b> Исследования показали: «жаворонки», проводящие больше времени при дневном свете, чаще видели бело-золотое. «Совы» - сине-чёрное. Мозг подставлял то освещение, к которому привык. Пятнадцать миллионов человек за неделю поучаствовали в самом массовом эксперименте по восприятию в истории.</li>
+          <li><b>Итог второго этажа.</b> Свет непрерывен, глаз сжимает его в три числа, мозг вычитает из трёх чисел свою догадку, язык ставит на результате засечки. К тому моменту, когда ты говоришь «синий», от спектра остались одни интерпретации. И это не поломка, это единственный способ видеть быстро. Третий этаж: то же самое, но про ум.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/dress.png" alt="">
+        <div class="pcap">Платье под двумя светами. Реальное было сине-чёрным. Но фотография не содержит информации о том, каким был свет, и мозг дописывает его сам. Кто дописал дневной, видит золото. Спор был не о цвете, а о невидимой лампе.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 9: НЕЙРОРАЗНООБРАЗИЕ ============ -->
+<section class="slide chapter" id="s28">
+  <div class="bgimg"><img src="assets/ch_neuro.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 9 · спектр мысли</div>
+    <h1>Нейроразнообразие: «нормальный» - это точка, а не область</h1>
+    <p class="lead">Аутизм стал спектром в 2013 году одним росчерком. СДВГ, дислексия, диспраксия - тоже. Мост из прошлой лекции: там граница между нормой и диагнозом была нарисована в книге. Здесь вопрос, есть ли она вообще, и что такое «нейротипичный», если каждый мозг разный.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s29">
+  <div class="content">
+    <div class="kicker">Мысль · аутизм</div>
+    <h2>Один росчерк 2013 года: четыре диагноза стали одной линейкой</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>До 2013-го</b> было четыре ящика: детский аутизм, синдром Аспергера, атипичный аутизм, дезинтегративное расстройство. Между ящиками шли споры, куда положить конкретного ребёнка, и от ящика зависело, какую помощь он получит. DSM-5 убрала ящики и оставила одну линейку: расстройство аутистического спектра, уровень поддержки 1, 2 или 3.</li>
+          <li><b>Что это изменило.</b> Ничего в детях и всё в бумагах. Слово «аспергер» исчезло из диагнозов, но осталось в самоназваниях: люди, которым его ставили, не захотели переезжать в общий ящик. Линейка оказалась честнее, а ящик - удобнее для идентичности. Обе стороны правы.</li>
+          <li><b>Черты аутизма есть у всех.</b> Опросник AQ, 50 вопросов, даёт распределение в общей популяции без разрыва: колокол, у которого правый хвост называется «аутизм». Математики и инженеры в среднем правее, гуманитарии левее, и никакой ступеньки между «есть» и «нет». Диагноз ставится там, где черты мешают жить, и это граница по последствиям, а не по мозгу.</li>
+          <li><b>Спектр не значит «линейка от лёгкого к тяжёлому».</b> Это самая частая ошибка. Человек может быть без речи и с феноменальной памятью, или с блестящей речью и невозможностью выйти из дома. Спектр аутизма - это не одна ось, а десяток: сенсорика, речь, ритуалы, социальное, моторика. Каждый в своей точке на каждой. «Тяжёлый аутист» и «лёгкий» - это снова попытка сжать десять чисел в одно.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx dk"><b>До 2013</b><span>4 ящика с границами и спорами на границах</span></div>
+            <div class="arr am">→</div>
+            <div class="bx am"><b>После</b><span>1 спектр, 3 уровня поддержки, десяток осей</span></div>
+          </div>
+          <div class="cap">Та же логика, что с радугой Ньютона: ящики удобны для разговора, линейка ближе к реальности, и десять линеек ещё ближе, но их уже нельзя произнести.</div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Нейроразнообразие как идея</h3>
+          <p>Термин 1998 года: мозги различаются, как различаются лица, и часть различий мы назвали болезнями только потому, что мир построен под большинство. Дислексия - беда в мире текста и ничто в мире устной речи. СДВГ - беда в классе и преимущество в охоте. Аутизм - беда на вечеринке и норма в дата-центре.</p>
+          <p>Честный край идеи: она работает для мягкой части спектра и не работает для тяжёлой. Человек без речи и с самоповреждением не «просто другой», ему нужна помощь, и слово «разнообразие» её не заменяет. Спектр в обе стороны: и от диагноза к норме, и от нормы к диагнозу.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 10: ЧЕРТЫ И УМ ============ -->
+<section class="slide chapter" id="s30">
+  <div class="bgimg"><img src="assets/ch_traits.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 10 · спектр мысли</div>
+    <h1>Характер и ум: колокол, а не два лагеря</h1>
+    <p class="lead">Интроверт или экстраверт, умный или глупый, лидер или исполнитель. Психология измеряет это семьдесят лет и каждый раз получает одно и то же: колокол без разрыва посередине. Типов личности не существует. Существуют шкалы, и большинство людей стоит около середины каждой.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s31">
+  <div class="content">
+    <div class="kicker">Мысль · черты</div>
+    <h2>Большая пятёрка против шестнадцати типов: почему шкалы работают, а ящики нет</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Тест на 16 типов,</b> самый популярный в мире, 50 миллионов прохождений: интроверт или экстраверт, логик или этик, и так четыре пары. Проблема: распределение по каждой паре - колокол с горбом посередине, и тест режет его пополам. Человек на 51% интроверт получает букву I, на 49% - букву E, и это «разные типы». Половина людей при повторе через месяц получает другой тип.</li>
+          <li><b>Большая пятёрка,</b> к которой пришла наука после полувека факторного анализа: открытость, добросовестность, экстраверсия, доброжелательность, нейротизм. Пять шкал, не пять ящиков. Результат - пять чисел, а не буква. Повторяемость через годы высокая, предсказывает работу, здоровье, разводы. Никто её не любит, потому что «ты на 62-м процентиле по экстраверсии» - не то, что хочется написать в профиле.</li>
+          <li><b>Почему ящики популярнее.</b> Тип - это история про себя: «я INTJ». Число на шкале - это измерение. Люди хотят историю. Гороскоп работает по той же причине, и тесты на тип - это гороскоп с опросником. Обидно, но измерено: точность предсказаний у 16 типов не выше, чем у знака зодиака.</li>
+          <li><b>Черты - тоже спектр по времени.</b> Экстраверсия падает с возрастом, добросовестность растёт, нейротизм снижается после тридцати. Один человек за жизнь проезжает по каждой шкале заметный кусок. «Я такой» - это «я сейчас здесь».</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Интроверт</b><span>левый хвост</span></div>
+            <div class="bx cy"><b>Большинство</b><span>середина: горб колокола</span></div>
+            <div class="bx"><b>Экстраверт</b><span>правый хвост</span></div>
+          </div>
+          <div class="row">
+            <div class="bx rd"><b>Тест на типы</b><span>режет горб пополам: половина людей у самой линии</span></div>
+            <div class="bx am"><b>Шкала</b><span>говорит, где ты, и на сколько; линии нет</span></div>
+          </div>
+          <div class="cap">Одни и те же данные. Первый способ даёт историю, второй - измерение. Наука выбрала второй, рынок первый.</div>
+        </div>
+        <div class="note" style="margin-top:14px"><b>Единственный настоящий ящик</b> в психологии личности пока не найден. Каждый раз, когда кажется, что нашли «тип», при большой выборке он расплывается в хвост колокола. Это не значит, что людей нельзя описывать. Это значит, что описывать надо координатами, а не именами.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s32">
+  <div class="content">
+    <div class="kicker">Мысль · ум</div>
+    <h2>IQ: колокол, у которого нет ступеньки между «умным» и «глупым»</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Шкала IQ построена так,</b> чтобы среднее было 100 и разброс 15. Это не свойство ума, это договор о линейке. Две трети людей между 85 и 115, 95% между 70 и 130. Ни в одной точке нет разрыва: между 99 и 101 разница такая же, как между 129 и 131. «Умный» и «глупый» - засечки, которые ставит говорящий.</li>
+          <li><b>Что измеряет.</b> Общий фактор g: люди, хорошие в одном типе задач, чуть лучше и в других. Это измерено на миллионах и повторяется. Что не измеряет: креативность, мудрость, настойчивость, вкус, умение слушать. IQ предсказывает школьные оценки на 50%, доход на 20%, счастье почти никак.</li>
+          <li><b>Спектр по времени.</b> Эффект Флинна: каждое десятилетие XX века средний IQ рос на 3 балла. Человек со 100 в 1950-м набрал бы 80 по нормам 2000-го. Не поумнели гены, изменились задачи: абстрактное мышление стало бытовым. С 2000-х рост остановился, в некоторых странах пошёл вниз. Линейка плывёт вместе с обществом.</li>
+          <li><b>Одарённость и отставание</b> - клинические границы на 130 и 70, поставленные по статистике: два стандартных отклонения. Ребёнок с 129 и с 131 - один и тот же ребёнок, но один попадает в программу для одарённых, другой нет. Граница нужна школе, а не мозгу. То же, что с диагнозом в прошлой лекции.</li>
+        </ul>
+      </div>
+      <div>
+        <table class="t" style="font-size:13.5px">
+          <tr><th>IQ</th><th>Доля людей</th><th>Как называют</th><th>Есть ли ступенька</th></tr>
+          <tr><td>ниже 70</td><td class="d">2.3%</td><td class="d">интеллектуальная недостаточность</td><td class="d">нет, граница по договору</td></tr>
+          <tr><td>70-85</td><td class="d">13.6%</td><td class="d">ниже среднего</td><td class="d">нет</td></tr>
+          <tr><td>85-115</td><td class="d">68.2%</td><td class="d">норма</td><td class="d">нет</td></tr>
+          <tr><td>115-130</td><td class="d">13.6%</td><td class="d">выше среднего</td><td class="d">нет</td></tr>
+          <tr><td>выше 130</td><td class="d">2.3%</td><td class="d">одарённость</td><td class="d">нет, граница по договору</td></tr>
+        </table>
+        <div class="note gold" style="margin-top:12px"><b>Гений</b> - не точка на этой шкале. Нэш из прошлой лекции, Фейнман с IQ 125, Ньютон, которого никто не мерил. Гениальность - это не «очень высоко на линейке ума», это редкое сочетание нескольких линеек: ум, одержимость, вкус, удача с задачей и с эпохой. Один спектр её не описывает. Никакой один спектр ничего не описывает, и это тема последней главы.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 11: СОЗНАНИЕ И НАСТРОЕНИЕ ============ -->
+<section class="slide chapter" id="s33">
+  <div class="bgimg"><img src="assets/ch_mind.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 11 · спектр мысли</div>
+    <h1>Сознание и убеждения: ручка громкости, а не выключатель</h1>
+    <p class="lead">Спишь или бодрствуешь, в сознании или нет, левый или правый. Всё, что мы считаем переключателем, при ближайшем рассмотрении оказывается ручкой громкости с бесконечным числом положений. Кроме одного случая, но о нём в последней главе.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s34">
+  <div class="content">
+    <div class="kicker">Мысль · сознание</div>
+    <h2>От комы до мании: сознание как непрерывная шкала</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Сон - не выключение.</b> Пять стадий за ночь, каждая с другим спектром мозговых волн: от быстрых бета в бодрствовании через альфа дрёмы к медленным дельта глубокого сна и обратно к быстрым в фазе сновидений. Электроэнцефалограмма - это буквально спектр, и врач читает стадию сна по тому, каких частот больше. Между «сплю» и «не сплю» нет линии, есть плавный сдвиг спектра.</li>
+          <li><b>Кома, вегетативное состояние, минимальное сознание, ясность</b> - клиническая линейка, и на ней тоже нет ступенек. В 2006-м женщине в вегетативном состоянии сказали «представь, что играешь в теннис», и её моторная кора включилась на МРТ, как у здоровых. Снаружи ноль, внутри кто-то есть. С тех пор диагноз «нет сознания» ставят осторожнее: это не выключатель, а очень тихая ручка.</li>
+          <li><b>Анестезия</b> - управляемый спуск по этой шкале, и анестезиолог следит за ним по спектру ЭЭГ: индекс от 100 (бодрствование) до 0 (тишина), операцию делают при 40-60. Не «выключили», а «убавили до 45». Каждый год у одного пациента из тысячи ручка оказывается выше, чем думали, и он что-то помнит.</li>
+          <li><b>Настроение</b> - та же ручка в другой оси: от депрессии через норму к мании, и в прошлой лекции биполярное расстройство было качелями по ней. Нормальное настроение - не ноль на шкале, а середина, и оно у всех колеблется. Диагноз - когда амплитуда мешает жить, снова граница по последствиям.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx dk"><b>Кома</b><span>ЭЭГ почти плоская</span></div>
+            <div class="arr">→</div>
+            <div class="bx"><b>Глубокий сон</b><span>дельта, 0.5-4 Гц</span></div>
+            <div class="arr">→</div>
+            <div class="bx"><b>Дрёма</b><span>альфа, 8-12 Гц</span></div>
+            <div class="arr">→</div>
+            <div class="bx cy"><b>Бодрствование</b><span>бета, 13-30 Гц</span></div>
+            <div class="arr">→</div>
+            <div class="bx am"><b>Поток, мания</b><span>гамма, выше 30</span></div>
+          </div>
+          <div class="cap">Спектр мозговых волн как шкала сознания. Каждое состояние - не отдельный ящик, а другая пропорция тех же частот. Анестезиолог двигает по этой строке ручкой.</div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="am">Честный край</h3>
+          <p>Что такое сознание, наука не знает. Но что оно градуируется, а не включается, измерено: ЭЭГ, МРТ, реакции. Единственная гипотеза, где сознание - «выключатель», не нашла ни одного подтверждения. Все данные за ручку. Куда она ведёт при нуле и при максимуме, вопрос открытый.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s35">
+  <div class="content">
+    <div class="kicker">Мысль · убеждения</div>
+    <h2>Политический спектр: линейка, которая гнётся в подкову</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/horseshoe.png" alt="">
+        <div class="pcap">Подкова: если левых и правых развести на линейке достаточно далеко, их края оказываются ближе друг к другу, чем к середине. Одна ось не помещает то, что мерит. Знак, что спектр на самом деле не одномерный.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>«Левые» и «правые»</b> - от рассадки в Национальном собрании Франции в 1789-м: сторонники короля справа от председателя, революционеры слева. Случайность рассадки стала главной осью политики на двести лет. Ньютон с семью цветами хотя бы опирался на ноты.</li>
+          <li><b>Одной оси мало.</b> Экономическая свобода и личная свобода - разные вопросы, и человек может быть «левым» в одном и «правым» в другом. Политический компас с двумя осями описывает людей заметно лучше, но и он теряет: отношение к традиции, к власти, к чужим. Как с аутизмом: десять осей ближе к правде, но их нельзя произнести.</li>
+          <li><b>Эффект подковы.</b> Крайние точки одной оси сходятся: по стилю, по отношению к компромиссу, по недоверию к институтам. Это не парадокс, это признак, что мы мерим не то. Если линейка загибается, значит, настоящее измерение не одно.</li>
+          <li><b>Убеждения - тоже спектр по времени и по контексту.</b> Опросы одних и тех же людей с интервалом в месяцы показывают, что «твёрдые взгляды» плавают, и формулировка вопроса сдвигает ответ на десятки процентов. Никто не стоит на точке. Все ходят по шкале, и ящик «левый» или «правый» - снимок с ходячего.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 12: КРАЙ ============ -->
+<section class="slide chapter" id="s36">
+  <div class="bgimg"><img src="assets/ch_edge.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 12 · край</div>
+    <h1>Где спектр кончается: природа рисует границы сама</h1>
+    <p class="lead">Одиннадцать глав границы рисовали мы: глаз, язык, книга, рассадка в парламенте. Осталось найти хоть одну, которую нарисовала природа. Есть несколько, и главная из них - в тех самых линиях, по которым читали состав звёзд. Спектр атома дискретен. Лейбниц ошибался.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s37">
+  <div class="content">
+    <div class="kicker">Край · настоящие ступеньки</div>
+    <h2>Что в мире всё-таки «да или нет»</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Заряд.</b> Электрон несёт ровно один заряд, не полтора и не 0.9. Все заряды во Вселенной - целые кратные этого. Измерено с точностью до 10⁻²¹. Первая настоящая ступенька: между «один» и «два» электрона нет ничего.</li>
+          <li><b>Беременность.</b> Единственное бытовое «да или нет», и то потому, что у него один момент запуска. Дальше всё спектр: срок, вес, зрелость. Даже смерть перестала быть ступенькой с появлением реанимации: клиническая, биологическая, мозга, и в промежутках люди возвращаются. Медицине пришлось назначить границу по договору в 1968-м, «смерть мозга», потому что природа её не дала.</li>
+          <li><b>Число хромосом,</b> число атомов в молекуле, число нейронов, число детей. Всё, что считается штуками, - ступеньки. Но заметь: ступеньки - это всегда счёт, а спектр - всегда мера. Природа дискретна там, где что-то считает, и непрерывна там, где что-то меряет.</li>
+          <li><b>Отсюда вопрос:</b> а свет? Мы 11 глав считали его непрерывным. Длина волны - мера. Но в спектре Солнца были тёмные линии, тонкие, на строго определённых местах. Линии - это ступеньки. Откуда в непрерывном спектре ступеньки?</li>
+        </ul>
+      </div>
+      <div>
+        <table class="t" style="font-size:13.5px">
+          <tr><th>Вещь</th><th>Спектр или ступенька</th><th>Кто нарисовал</th></tr>
+          <tr><td>Цвета радуги</td><td class="d">спектр</td><td class="d">Ньютон, семь</td></tr>
+          <tr><td>Радио / микроволны / ИК</td><td class="d">спектр</td><td class="d">открыватели, по датам</td></tr>
+          <tr><td>Ноты, лады</td><td class="d">спектр</td><td class="d">культура; октава - физика</td></tr>
+          <tr><td>Цвет, вкус, тепло</td><td class="d">спектр</td><td class="d">тело, 2-5 датчиков</td></tr>
+          <tr><td>Слова для цвета</td><td class="d">спектр</td><td class="d">язык, по нужде</td></tr>
+          <tr><td>Аутизм, характер, IQ</td><td class="d">спектр</td><td class="d">книга, договор</td></tr>
+          <tr><td>Сон, сознание, взгляды</td><td class="d">спектр</td><td class="d">ручка, не выключатель</td></tr>
+          <tr><td>Заряд, хромосомы, атомы</td><td class="d"><b>ступенька</b></td><td class="d">природа: счёт</td></tr>
+          <tr><td>Смерть</td><td class="d">была ступенька, стала спектр</td><td class="d">реанимация, 1968</td></tr>
+          <tr><td>Линии в спектре</td><td class="d"><b>ступенька в спектре</b></td><td class="d">атом. Следующий слайд</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s38">
+  <div class="content">
+    <div class="kicker">Край · Планк и Бор</div>
+    <h2>1900-1913: свет оказался ступеньками, и звёзды светят скачками</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/planck.png" alt="">
+        <div class="pcap">Берлин, 1900. Планк считает спектр раскалённого тела и не может его вывести из непрерывной физики: формула даёт бесконечность в ультрафиолете. Помогает одно допущение: свет испускается порциями, квантами, и не бывает пол-порции. Он сам считал это математическим трюком. Это оказалось устройством мира.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Тёмные линии Фраунгофера</b> из второй главы ждали объяснения сто лет. Бор, 1913: электрон в атоме может сидеть только на определённых орбитах, промежуточных нет. Перепрыгивая между ними, он излучает или поглощает свет ровно одной длины волны. Атом - это не спектр, это лестница, и линии - её ступени. Водород даёт четыре линии в видимом, и они там, где Бор посчитал.</li>
+          <li><b>Лейбниц, 1704: natura non facit saltus,</b> природа не делает скачков. Аксиома непрерывности. Линней поставил её эпиграфом к системе природы, Дарвин цитировал как основу эволюции, вся физика XIX века на ней стояла. Планк и Бор её отменили: на самом дне вещества природа делает только скачки, и ничего кроме.</li>
+          <li><b>Отсюда всё во второй главе.</b> Состав звёзд читается, потому что у каждого элемента своя лестница и свои ступени, штрих-код. Если бы атом был спектром, линий бы не было, и Конт был бы прав: состав звёзд остался бы неизвестен навсегда. Мы знаем, из чего Вселенная, потому что она дискретна.</li>
+          <li><b>Двойной поворот лекции.</b> Одиннадцать глав: границы рисуем мы, природа непрерывна. Двенадцатая: на самом дне всё наоборот. Непрерывный спектр радуги - это миллиарды скачков атомов, слившихся в полосу, потому что их слишком много. Спектр - это ступеньки, которых не разглядеть. Ньютон рисовал границы там, где их нет. Атом рисует их там, где мы их не ждали.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s39">
+  <div class="content">
+    <div class="kicker">Край · итог трёх этажей</div>
+    <h2>Спектр и ступенька: где что, на всех этажах сразу</h2>
+    <div class="dg">
+      <div class="row">
+        <div class="bx am"><b>Дно: атом</b><span>ступеньки. Заряд, орбиты, кванты. Природа считает</span></div>
+        <div class="arr">→</div>
+        <div class="bx cy"><b>Спектр всего</b><span>непрерывно, потому что ступенек триллионы и они сливаются</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>Спектр ощущений</b><span>тело ставит 2-5 датчиков и достраивает между ними</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>Спектр мысли</b><span>мы ставим засечки: слова, диагнозы, типы, партии</span></div>
+        <div class="arr rd">→</div>
+        <div class="bx rd"><b>Верх: ящики</b><span>семь цветов, 16 типов, левые и правые. Ступеньки, нарисованные нами</span></div>
+      </div>
+      <div class="cap">Внизу ступеньки природы, вверху ступеньки наши, посередине спектр. Ошибка - перепутать этажи: искать в характере квант или в атоме плавность.</div>
+    </div>
+    <div class="cols" style="margin-top:20px">
+      <div>
+        <ul class="pts">
+          <li><b>Две честные ступеньки:</b> счёт на дне (заряд, атомы, хромосомы) и последствия наверху (диагноз ставят там, где мешает жить; граница по договору, но договор про реальный порог). Всё между - мера, и мера непрерывна.</li>
+          <li><b>Почему мы рисуем ящики.</b> Потому что мозг - это два-три датчика на бесконечности, и ему надо быстро. Ящик - это сжатие. Семь цветов легче тысячи оттенков, «интроверт» легче пяти чисел. Ящики не ложь, они кэш. Проблема начинается, когда кэш принимают за устройство мира.</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Почему природа делает ступеньки внизу.</b> Никто не знает. Квант - это факт без объяснения: действие во Вселенной бывает только порциями, и почему порция именно такая, физика не отвечает. Самая честная ступенька в лекции стоит на самом честном незнании.</li>
+          <li><b>Практика.</b> Если спорят, «да или нет», спроси, что считают. Если считают штуки, ступенька есть. Если меряют, её нет, и спор идёт о том, где поставить засечку, а не о том, что там на самом деле. Половина споров на планете - второго рода.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ЗАКЛЮЧЕНИЕ ============ -->
+<section class="slide chapter" id="s40">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Заключение</div>
+    <h1>Вердикт, вопрос и фраза с подвохом</h1>
+    <p class="lead">Что измерено, что выведено, что не знаем. Вопрос, на который лекция не отвечает. И латинская аксиома, которой триста лет и которая в этой лекции разбилась об атом.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s41">
+  <div class="content">
+    <div class="kicker">Заключение · вердикт</div>
+    <h2>Научный вердикт: что измерено, что выведено, что не знаем</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>Измерено</h3>
+        <ul>
+          <li>Электромагнитный спектр от радио до гамма, видимое - одна октава</li>
+          <li>Состав Солнца и звёзд по линиям, гелий до Земли, красное смещение</li>
+          <li>Тембр как спектр обертонов, улитка как механический Фурье</li>
+          <li>Три типа колбочек, метамерия, 16 у креветки-богомола, 4 у птиц</li>
+          <li>Диапазоны слуха видов, потеря верха с возрастом</li>
+          <li>Порядок цветовых слов Берлина и Кея на 98 языках; русские два синих и 10% скорости</li>
+          <li>Колокол без разрыва: AQ, Большая пятёрка, IQ, стадии сна по ЭЭГ</li>
+          <li>Квантованность заряда до 10⁻²¹, линии водорода там, где посчитал Бор</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Выведено надёжно</h3>
+        <ul>
+          <li>Цвет - конструкция мозга: пурпурный без длины волны, платье, послеобразы</li>
+          <li>Восприятие - интерполяция между немногими датчиками</li>
+          <li>Язык ставит засечки на спектре и ускоряет различение вокруг них</li>
+          <li>Типы личности - разрезанный пополам колокол; шкалы предсказывают, типы нет</li>
+          <li>Одномерный политический спектр не помещает данные: подкова как симптом</li>
+          <li>Сознание градуируется, а не включается: все данные за ручку</li>
+          <li>Непрерывный спектр - слившиеся ступеньки атомов</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="rd">Не знаем</h3>
+        <ul>
+          <li>Почему действие квантовано и почему порция именно такая</li>
+          <li>Что такое сознание, и что на концах его ручки</li>
+          <li>Сколько на самом деле осей у аутизма, характера, политики</li>
+          <li>Существуют ли «типы» хоть где-нибудь в психике, или всегда хвосты колокола</li>
+          <li>Видят ли тетрахроматы новый цвет или тот же тоньше</li>
+          <li>Одинаков ли «красный» у двух людей: вопрос без метода проверки</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note" style="margin-top:14px">Левая колонка длинная, потому что спектр - самый измеряемый предмет в науке: это буквально инструмент измерения. Правая честная: два главных незнания лекции, квант и сознание, стоят на её краях, и оба про то, где кончается плавность.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s42">
+  <div class="content">
+    <div class="kicker">Заключение · вопрос и мораль</div>
+    <h2>Вопрос без ответа и аксиома, которая не выжила</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="rd">Вопрос на подумать</h3>
+          <p>Если границы на спектре ставим мы: глазом, языком, книгой, рассадкой, то кто решает, где резать? Ньютон резал по нотам. Язык режет по тому, что нужно назвать. Медицина режет там, где мешает жить. Политика - там, где сидели в 1789-м.</p>
+          <p>Ни одна засечка не «истинная», и убрать их все нельзя: без ящиков мозг не работает, семь цветов - это кэш. <b>Тогда какие засечки честные?</b> Лекция даёт один критерий: честная засечка знает, что она засечка. Нечестная думает, что она устройство мира. Разница не в положении линии, а в том, помнишь ли ты, кто её провёл.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Мораль</h3>
+          <p style="font-size:22px;color:#fff;margin:8px 0 6px"><b>Natura non facit saltus.</b></p>
+          <p>«Природа не делает скачков». Лейбниц, 1704, «Новые опыты о человеческом разумении». Линней вынес эпиграфом в «Философию ботаники», Дарвин повторил в «Происхождении видов». Триста лет аксиома непрерывности: всё плавно, всякая граница - наша.</p>
+          <p>Одиннадцать глав она была права. Двенадцатая её опрокинула: Планк в 1900-м и Бор в 1913-м показали, что на дне природа делает только скачки, и именно ими светят звёзды, и именно по ним мы прочли, из чего Вселенная. Плавность - это скачки, которых слишком много, чтобы разглядеть.</p>
+          <p>Подвох в том, что фраза не ошибочна, а неполна. Природа не делает скачков там, где меряет. И делает только их там, где считает. Вся лекция - о том, чтобы не путать эти два места.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s43">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Вся лекция одной таблицей</h2>
+    <table class="t" style="font-size:12.5px">
+      <tr><th>Глава</th><th>Главная мысль</th><th>Цифра или факт</th><th>Кто нарисовал границу</th></tr>
+      <tr><td>Вступление</td><td class="d">Ньютон нарезал радугу по нотам; в ней нет границ</td><td class="d">1666, семь цветов из пяти</td><td class="d">Ньютон</td></tr>
+      <tr><td>1. Свет</td><td class="d">видимое - одна октава из восьмидесяти</td><td class="d">Гершель 1800: градусник за красным краем</td><td class="d">открыватели, по датам</td></tr>
+      <tr><td>2. Линии</td><td class="d">состав звёзд прочли по тёмным линиям</td><td class="d">Конт 1835 «никогда», Кирхгоф 1859; гелий 1868</td><td class="d">-</td></tr>
+      <tr><td>3. Звук</td><td class="d">нота - это спектр обертонов; тембр - его профиль</td><td class="d">Фурье 1822; октава - единственный общий интервал</td><td class="d">культура: лады</td></tr>
+      <tr><td>4. Везде</td><td class="d">спектр - метод: разложить и посчитать</td><td class="d">эфир продан за 81 млрд</td><td class="d">закон</td></tr>
+      <tr><td>5. Глаз</td><td class="d">цвет - в мозге; три числа из бесконечности</td><td class="d">пурпурного нет в спектре; креветка 16 рецепторов</td><td class="d">сетчатка</td></tr>
+      <tr><td>6. Ухо</td><td class="d">улитка - механический Фурье; лады - договор, октава - физика</td><td class="d">20-20 000 Гц, верх уходит с возрастом</td><td class="d">улитка и культура</td></tr>
+      <tr><td>7. Чувства</td><td class="d">восприятие - интерполяция между 2-5 датчиками</td><td class="d">рецептора «тепло» нет; острое - это боль</td><td class="d">тело</td></tr>
+      <tr><td>8. Язык</td><td class="d">слово ставит засечку, глаз вокруг неё острее</td><td class="d">у Гомера нет синего; русские на 10% быстрее</td><td class="d">язык</td></tr>
+      <tr><td>9. Нейроразнообразие</td><td class="d">спектр не одна ось, а десять; норма - точка</td><td class="d">2013: четыре ящика в один спектр</td><td class="d">книга</td></tr>
+      <tr><td>10. Характер и ум</td><td class="d">колокол без разрыва; типы - разрезанный горб</td><td class="d">половина меняет тип за месяц; IQ 100 ± 15 по договору</td><td class="d">тест, школа</td></tr>
+      <tr><td>11. Сознание</td><td class="d">ручка, не выключатель; одна ось гнётся в подкову</td><td class="d">анестезия при 40-60; 1789, рассадка</td><td class="d">ЭЭГ, парламент</td></tr>
+      <tr><td>12. Край</td><td class="d">внизу природа считает, вверху мы; спектр - слившиеся ступеньки</td><td class="d">заряд до 10⁻²¹; Планк 1900, Бор 1913</td><td class="d">атом</td></tr>
+    </table>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s44">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <h1>Natura non facit saltus</h1>
+    <p class="lead">Радуга без границ, звёзды, прочитанные по чёрточкам, нота, которая на самом деле аккорд. Цвет, которого нет в свете, синий, которого не было у Гомера, тип личности, которого нет ни у кого. Одиннадцать глав границы рисовали мы, и природа была плавной.</p>
+    <p class="lead" style="margin-top:14px">А на дне она считает. Заряд, орбита, квант. Плавность - это скачки, которых слишком много. Лейбниц не ошибся, он не дочитал. Природа не делает скачков там, где меряет, и делает только их там, где считает. Не путать эти два места - вот и вся лекция.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- SLIDES_END -->
+
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>
