@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><link rel="icon" href="../favicon.ico" sizes="any"><link rel="icon" type="image/png" href="../favicon.png"><link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Не жрите мои яблоки, у вас и так 6 Нобелевских)</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #ef6b5a; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Гвендолин-ночные-лекции</div>
+    <h1>Не жрите мои яблоки, у вас и так 6 Нобелевских)</h1>
+    <p class="lead">Анатомия мухи, которая создала современную генетику, но так и не научилась хорошим манерам. Два миллиметра, сорок дней жизни, 140 тысяч нейронов, шесть Нобелевских премий и одна тарелка яблок на третьем этаже. Лекция о том, как из мухи сделали слона, и это оказалось не преувеличением.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s2">
+  <div class="content">
+    <div class="kicker">Вступление</div>
+    <h2>Та же тарелка, другая героиня</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/plate.png" alt="">
+        <div class="pcap">Яблоки с дачи, час на столе, два-три десятка мух. В лекции про споры мы выяснили, что летят они на дрожжи. Теперь про них самих: кто это, как устроены и почему у этого существа Нобелевских премий больше, чем у любой страны Африки.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Имя.</b> Drosophila melanogaster: «любительница росы с чёрным брюхом», описана Мейгеном в 1830 году. По-русски плодовая мушка, дрозофила, и неправильно «фруктовая муха»: настоящие фруктовые мухи - другое семейство, они портят урожай, а эта ест только то, что уже забродило.</li>
+          <li><b>Размер.</b> Самка 2,5 мм, самец 2 мм. Красные глаза, полосатое брюшко, у самца чёрный кончик. Вес около 0,2 миллиграмма: на одну чайную ложку ушло бы 25 тысяч мух.</li>
+          <li><b>Откуда в доме.</b> Из Африки, как и мы: вид вышел из тропиков вслед за человеком и его гнилыми фруктами, и сегодня живёт на всех континентах, кроме Антарктиды, только в жилье и рядом с ним. В дикой природе средней полосы её почти нет: она домашняя, как мышь.</li>
+          <li><b>Правило лекции.</b> Сначала анатомия: снаружи, крыло, внутри, мозг, жизнь. Потом шесть Нобелевских по очереди, и у каждой одна муха-мутант в главной роли. В конце латинская поговорка, у которой за сто лет исчезло преувеличение.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">Вступление · карта</div>
+    <h2>Пять глав анатомии, шесть премий, одна поговорка</h2>
+    <div class="dg">
+      <div class="row">
+        <div class="bx cy"><b>Анатомия</b><span>снаружи, крыло, внутри, мозг, жизнь и манеры</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>Морган и Мёллер</b><span>гены на хромосомах, мутации от рентгена: 1933, 1946</span></div>
+        <div class="arr">→</div>
+        <div class="bx am"><b>Тело, часы, иммунитет, нос</b><span>1995, 2017, 2011, 2004</span></div>
+        <div class="arr rd">→</div>
+        <div class="bx rd"><b>Мозг и медицина</b><span>коннектом 2024, модели болезней, её собственные враги</span></div>
+      </div>
+      <div class="cap">Первая половина - что она такое. Вторая - что она нам дала. В конце вопрос, кто из нас модельный организм.</div>
+    </div>
+    <div class="cols" style="margin-top:22px">
+      <div>
+        <ul class="pts">
+          <li><b>Почему именно она.</b> Цикл от яйца до яйца 10 дней, 400 потомков от одной самки, в бутылке из-под молока живут сотни, еда - банан. Хромосом четыре пары, и одна из них видна в школьный микроскоп. В 1910 году это было единственное животное, на котором генетику можно было делать быстро и дёшево. Оказалось, что и через сто лет тоже.</li>
+          <li><b>Сколько у нас общего.</b> Около 75% генов, связанных с болезнями человека, имеют мушиный аналог. Гены, размечающие тело, часы, иммунитет, обоняние, сон, память, старение - все они сначала найдены у мухи и потом у нас, и почти всегда работают так же.</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Связь с прошлыми лекциями.</b> В «Спорах» муха летела на дрожжи и Toll-рецептор из главы про иммунитет - это муха, обросшая плесенью. В «Трещине» была сеть пассивного режима мозга, здесь будет мозг, в котором известен каждый провод. В «Спектре» был вопрос, где кончается сознание: у мухи он стоит буквально.</li>
+          <li><b>Честность на краях.</b> Где измерено, где выведено, где не знаем. Спорное в этой лекции: чувствует ли муха боль и есть ли у неё что-то вроде сознания. И одна из шести премий дана не совсем за муху, это тоже скажем.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 1: СНАРУЖИ ============ -->
+<section class="slide chapter" id="s4">
+  <div class="bgimg"><img src="assets/ch_outside.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1 · анатомия</div>
+    <h1>Снаружи: три отдела, восемьсот глаз и вкус на ногах</h1>
+    <p class="lead">Голова, грудь, брюшко в броне из хитина. Глаз, который видит 250 кадров в секунду, поэтому её не прихлопнуть. Усики, которые одновременно нос и уши. Лапки, которые пробуют яблоко на вкус раньше рта. Всё это на двух миллиметрах и без единой лишней детали.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="content">
+    <div class="kicker">Снаружи · план тела</div>
+    <h2>Голова, грудь, брюшко: экзоскелет и полоски</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Три отдела.</b> Голова: глаза, усики, хоботок. Грудь: три пары ног, пара крыльев и пара жужжалец, вся мускулатура полёта. Брюшко: кишка, сердце, половая система, у самки 7-8 сегментов с полосками, у самца 5-6 и чёрный кончик, откуда «melanogaster». Отличить пол можно невооружённым глазом, и это сэкономило генетике век.</li>
+          <li><b>Экзоскелет.</b> Скелет снаружи, из хитина и белков, мышцы крепятся изнутри. Он же кожа, он же броня, он же причина, почему муха не может расти после выхода из куколки: панцирь не растягивается. Взрослая муха всю жизнь одного размера, все 2 миллиметра, которые вырастила личинка.</li>
+          <li><b>Щетинки.</b> Каждая щетинка на теле - датчик: ветер, прикосновение, положение ноги. Их расположение настолько постоянное, что по узору щетинок муху узнают, как по отпечатку пальца, и по ним же Морган ловил первые мутации: лишняя щетинка - другой ген.</li>
+          <li><b>Вкус на ногах.</b> Рецепторы вкуса сидят на лапках, хоботке, крыльях и яйцекладе. Муха садится на яблоко и уже знает, сладкое ли оно, до того как опустила хоботок. Если лапка чует сахар, хоботок разворачивается рефлекторно. Ходить по еде для неё - это пробовать.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/ch_outside.png" alt="">
+        <div class="pcap">Самка сбоку. Полосатое брюшко, прозрачные крылья с жилками, щетинки на груди. Все датчики снаружи, все органы внутри, и ни одного сустава, который не был бы нужен.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="content">
+    <div class="kicker">Снаружи · глаз</div>
+    <h2>Восемьсот глаз и 250 кадров в секунду</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/eye_macro.png" alt="">
+        <div class="pcap">Фасеточный глаз. Каждый шестиугольник - омматидий, отдельный глазок с линзой и восемью светочувствительными клетками. Между фасетками щетинки, они чувствуют ветер. Красный цвет - пигмент, который экранирует соседние глазки друг от друга; у белоглазой мухи Моргана его нет.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Устройство.</b> Около 750-800 омматидиев в каждом глазу, каждый смотрит в свою точку. Картинка - мозаика, разрешение низкое: муха не различит лицо, но заметит движение в любой точке почти полного круга обзора.</li>
+          <li><b>Скорость.</b> Критическая частота слияния мельканий у человека около 60 герц, у дрозофилы около 250. Твоё движение рукой она видит как замедленную съёмку, поэтому уходит из-под ладони с запасом. Кино для неё - слайд-шоу.</li>
+          <li><b>Цвет.</b> Видит ультрафиолет, синий, зелёный, красный почти нет. Поэтому ловушки для мух жёлтые: в её глазах это самый яркий цвет. И поэтому она находит забродившее яблоко по запаху, а не по виду.</li>
+          <li><b>Ген глаза.</b> Ген eyeless, без которого у мухи нет глаз. В 1995 году Вальтер Геринг включил его на ноге, и на ноге вырос глаз с фасетками. Потом включил мышиный аналог, Pax6, и на ноге мухи вырос мушиный глаз по мышиной команде. Один ген строит глаз у всех, от мухи до человека, и это одна из первых новостей о том, насколько мы одинаковы.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s7">
+  <div class="content">
+    <div class="kicker">Снаружи · голова</div>
+    <h2>Усики: нос, ухо и термометр в одном</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Нос.</b> На третьем членике усика и на щупиках хоботка сидят около 1200 обонятельных нейронов с 60 типами рецепторов. Каждый тип ловит свой набор молекул, мозг читает узор активности. Спирт, уксусная кислота, запах дрожжей - её главные сигналы. Про то, как она чует яблоко через два этажа, отдельно в главе про нос.</li>
+          <li><b>Ухо.</b> Ариста, перистый вырост на усике, дрожит от звука, и у основания усика орган Джонстона с 500 нейронами считывает дрожь. Так самка слышит песню самца. Не барабанная перепонка, а антенна как струна: ухо, которое одновременно нос.</li>
+          <li><b>Термометр и влагомер.</b> В усике есть нейроны, чувствующие температуру с точностью до долей градуса, и влажность. Муха выбирает 25 градусов и уходит от 30: в тепле она стареет быстрее и это знает. В лаборатории её держат ровно при 25, и цикл в 10 дней считается от этой цифры.</li>
+          <li><b>Хоботок.</b> Втягивающаяся губчатая трубка, которой она не кусает, а промакивает жидкость. Твёрдое она не ест: сначала слюна и ферменты снаружи, потом всасывание. Есть яблоко для неё значит пить его.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/antennae.png" alt="">
+        <div class="pcap">Голова спереди: два усика с перистыми аристами, хоботок выдвинут. На этой площади помещаются нос, два уха, термометр, влагомер, 1600 глазков и мозг, в котором знают каждый провод.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2: КРЫЛО ============ -->
+<section class="slide chapter" id="s8">
+  <div class="bgimg"><img src="assets/ch_wing.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2 · анатомия</div>
+    <h1>Крыло: 200 взмахов в секунду и гироскоп вместо второй пары</h1>
+    <p class="lead">У всех насекомых четыре крыла, у мух два. Вторая пара превратилась в жужжальца, крошечные булавы, которые работают как гироскопы. Без них муха не летит. С ними она разворачивается на 90 градусов за 50 миллисекунд и летает так, как по учебнику аэродинамики летать не должна.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s9">
+  <div class="content">
+    <div class="kicker">Крыло · жужжальца</div>
+    <h2>Два крыла и два гироскопа</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/halteres.png" alt="">
+        <div class="pcap">Жужжальца, две булавы за крыльями. Отсюда название отряда: двукрылые. Они машут в противофазе с крыльями, и когда тело поворачивается, булава отклоняется вбок, как маятник в гироскопе. Сотни датчиков у основания читают отклонение и правят полёт быстрее, чем мозг успевает узнать.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Двукрылые.</b> Diptera, «два крыла», 150 тысяч видов: мухи, комары, слепни. Задняя пара крыльев за сотни миллионов лет уменьшилась до булав, и это не потеря, а прибор. Отрежь жужжальца, и муха тут же теряет управление и падает. Приклей нитку к брюшку вместо них, и полёт частично возвращается: ей нужен противовес.</li>
+          <li><b>200 взмахов в секунду.</b> Крыло идёт вперёд-назад почти горизонтально, переворачиваясь на концах взмаха. Мышцы не успевали бы получать отдельный нервный импульс на каждый взмах: у мух асинхронная мускулатура, которая сокращается от растяжения сама, а нерв только задаёт темп. Один импульс - несколько взмахов.</li>
+          <li><b>Поворот.</b> Саккада, резкий разворот в полёте, занимает около 50 миллисекунд и укладывается в 10 взмахов. Для этого нужно чуть по-разному качнуть два крыла, и это делают крохотные мышцы у основания, каждая тоньше волоса. Муха в воздухе меняет курс раньше, чем ты заметил, что она взлетела.</li>
+          <li><b>Взлёт.</b> Заднего хода нет, но перед взлётом от угрозы муха за 100 миллисекунд переставляет ноги так, чтобы оттолкнуться в сторону от опасности. Это показали в 2008 году скоростной камерой: она планирует прыжок с той стороны, откуда идёт ладонь.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s10">
+  <div class="content">
+    <div class="kicker">Крыло · аэродинамика</div>
+    <h2>Полёт, которого по учебнику быть не должно</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Проблема.</b> Классическая аэродинамика считает крыло как у самолёта: постоянный поток, подъёмная сила от профиля. Если посчитать так крыло насекомого, силы не хватает примерно вдвое. Отсюда старая байка, что «по науке шмель летать не может». Наука была неполной, а не шмель.</li>
+          <li><b>Вихрь на передней кромке.</b> В 1996 году Эллингтон снял дымом поток над крылом бабочки-бражника и увидел: при взмахе на передней кромке крыла закручивается вихрь, который держится на крыле весь взмах и создаёт зону низкого давления сверху. Это и есть недостающая половина силы. У самолёта такой вихрь сорвался бы за мгновение, у насекомого крыло машет быстрее, чем вихрь успевает уйти.</li>
+          <li><b>Робомуха.</b> В 1999 году Майкл Дикинсон построил крыло дрозофилы в масштабе 100:1 в баке с маслом, чтобы замедлить всё в тысячи раз, и измерил силы по фазам взмаха. Нашёл ещё два трюка: переворот крыла на конце взмаха даёт рывок силы, а на обратном ходе крыло ловит вихрь, который само же оставило. Три механизма вместе дают ровно столько, сколько нужно, чтобы держать 0,2 миллиграмма в воздухе.</li>
+          <li><b>Зачем это знать.</b> Все микродроны с машущим крылом, от гарвардской RoboBee до военных, считают по этим трём механизмам. Инженеры сто лет строили самолёты и считали, что муха просто маленькая. Оказалось, что она летает по другой физике.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/vortex.png" alt="">
+        <div class="pcap">Вихрь на передней кромке машущего крыла. Светлая закрутка сверху - зона низкого давления, которая держит муху в воздухе. Самолётное крыло на такой угол атаки сорвалось бы в штопор.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 3: ВНУТРИ ============ -->
+<section class="slide chapter" id="s11">
+  <div class="bgimg"><img src="assets/ch_inside.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3 · анатомия</div>
+    <h1>Внутри: сердце-трубка, дыхание без крови и печень-иммунитет</h1>
+    <p class="lead">Кровь есть, но она не несёт кислород. Сердце есть, но это трубка вдоль спины без сосудов. Почки - пучок трубочек, печень и иммунная система - один жирный орган. И в слюнных железах лежат хромосомы такого размера, что их видно в школьный микроскоп, и это её главный подарок генетике.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s12">
+  <div class="content">
+    <div class="kicker">Внутри · органы</div>
+    <h2>Что у неё вместо наших органов</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/body_cut.png" alt="">
+        <div class="pcap">Трахеи, серебристые трубки, ветвящиеся до каждой клетки. Воздух входит через дырочки в боках, дыхальца, и доходит до мышц сам, без крови. Поэтому насекомые дышат без лёгких и поэтому не бывают большими: трубками далеко воздух не доставишь.</div>
+      </div>
+      <div>
+        <table class="pt">
+          <tr><th>У мухи</th><th>Как устроено</th><th>У нас</th></tr>
+          <tr><td>Сердце</td><td class="d">трубка вдоль спины, качает гемолимфу в полость тела; сосудов нет, кровь просто омывает органы</td><td class="d">сердце, замкнутые сосуды</td></tr>
+          <tr><td>Гемолимфа</td><td class="d">кровь без гемоглобина, несёт питание и иммунные клетки, но не кислород</td><td class="d">кровь с эритроцитами</td></tr>
+          <tr><td>Трахеи</td><td class="d">трубки от дыхалец до каждой клетки; кислород доходит сам</td><td class="d">лёгкие и кровь</td></tr>
+          <tr><td>Мальпигиевы сосуды</td><td class="d">тонкие трубочки, фильтруют гемолимфу и сбрасывают отходы в кишку</td><td class="d">почки</td></tr>
+          <tr><td>Жировое тело</td><td class="d">запас, обмен веществ, синтез белков и иммунных пептидов</td><td class="d">печень + жир + часть иммунитета</td></tr>
+          <tr><td>Кишка</td><td class="d">передняя, средняя, задняя; те же стволовые клетки в стенке, что у нас</td><td class="d">пищевод, желудок, кишечник</td></tr>
+          <tr><td>Нервная система</td><td class="d">мозг в голове и цепочка ганглиев вдоль брюха, «спинной мозг» снизу</td><td class="d">мозг и спинной мозг сверху</td></tr>
+        </table>
+        <div class="note" style="margin-top:8px"><b>Всё перевёрнуто.</b> Нервная цепочка снизу, сердце сверху, у нас наоборот. В 1822 году Жоффруа Сент-Илер предположил, что позвоночное - это перевёрнутое насекомое. Над ним смеялись 170 лет. В 1990-х нашли: гены, размечающие спину и живот, у мухи и у лягушки одни и те же, только включены зеркально. Он был прав.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s13">
+  <div class="content">
+    <div class="kicker">Внутри · хромосомы</div>
+    <h2>Гигантские хромосомы: карта генов, которую видно глазом</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Четыре пары.</b> У дрозофилы 8 хромосом: X и Y, две большие пары и одна крошечная. У человека 46. Меньше хромосом - проще следить, кто с кем сцеплен, и в 1910 году это было решающим: у Моргана было всего четыре группы генов для сортировки.</li>
+          <li><b>Политенные хромосомы.</b> В слюнных железах личинки клетки растут, не делясь, и ДНК копируется в них до тысячи раз, все копии лежат рядом стопкой. Получается хромосома в 100 раз толще обычной с чёткими поперечными полосами. Их описали в 1933 году, и с тех пор ген можно было буквально показать пальцем: вот полоса, вот в ней мутация.</li>
+          <li><b>Что это дало.</b> Первое прямое доказательство, что гены лежат на хромосомах в линию, в том порядке, в каком их посчитал Стёртевант по частоте кроссинговера. Карта, сделанная по статистике, совпала с картинкой в микроскопе. Генетика из бухгалтерии стала анатомией.</li>
+          <li><b>Пуфы.</b> Там, где ген работает, полоса вздувается в пуф: видно, как ДНК разматывается для чтения. В 1950-х по пуфам впервые увидели, что гены включаются и выключаются по часам развития, и что гормон линьки включает их за минуты. Работу гена увидели глазом раньше, чем поняли, что такое РНК.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/chromosomes.png" alt="">
+        <div class="pcap">Политенные хромосомы из слюнной железы личинки. Полосы - это участки плотной упаковки ДНК, около 5 тысяч на весь набор. По ним составлена карта, где каждому гену соответствует своя полоска, и ей пользуются до сих пор.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 4: МОЗГ И ЧУВСТВА ============ -->
+<section class="slide chapter" id="s14">
+  <div class="bgimg"><img src="assets/ch_brain.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4 · анатомия</div>
+    <h1>Мозг: 140 тысяч нейронов, память, сон и нос через два этажа</h1>
+    <p class="lead">Мозг размером с маковое зерно, в котором есть память, сон, навигация, обучение и выбор. Грибовидные тела помнят запахи, центральный комплекс держит курс. Нос из шестидесяти типов рецепторов находит забродившее яблоко через два этажа, и как именно, мы теперь знаем до нейрона.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s15">
+  <div class="content">
+    <div class="kicker">Мозг · устройство</div>
+    <h2>Что помещается в маковое зерно</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/brain_glow.png" alt="">
+        <div class="pcap">Мозг дрозофилы около 0,3 миллиметра. 140 тысяч нейронов против 86 миллиардов у человека, в 600 тысяч раз меньше. При этом муха учится, помнит сутки, спит, выбирает и ориентируется. Всё, что мы считали привилегией большого мозга, работает на маленьком.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Грибовидные тела.</b> Две структуры по 2 тысячи нейронов каждая, похожие на грибы, память на запахи. Муху можно научить за одну попытку: запах плюс удар током, и она сутки избегает запаха. Нашли молекулы памяти: мутанты dunce, «тупица», и rutabaga, «брюква», не учатся. У этих генов есть человеческие копии, и они тоже про память.</li>
+          <li><b>Центральный комплекс.</b> Кольцо нейронов посередине мозга, в котором активность крутится, как стрелка компаса, и показывает, куда повёрнута муха. Открыто в 2015 году: у мухи есть внутренний компас, как клетки места у млекопитающих, только его видно целиком.</li>
+          <li><b>Сон.</b> Муха спит по ночам, 6-10 часов, её трудно разбудить, после бессонницы досыпает, кофеин её будит, а снотворные усыпляют. Сон открыли у дрозофилы в 2000 году, и с тех пор половина генетики сна сделана на ней. Зачем сон, до сих пор неизвестно, но муха без сна умирает так же, как крыса.</li>
+          <li><b>Боль и обезболивание.</b> На вредное тепло и укол личинка отвечает уходом, ген painless, «безболезненный», выключает реакцию. Морфин снижает её, как у нас. Чувствует ли она при этом боль как переживание, наука не знает и сказать не может: об этом в конце.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s16">
+  <div class="content">
+    <div class="kicker">Мозг · нос</div>
+    <h2>Как она нашла яблоко через два этажа</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Рецепторы.</b> 60 типов обонятельных рецепторов, около 1200 нейронов в усиках. Каждый нейрон несёт один тип, и все нейроны одного типа сходятся в один клубочек в антеннальной доле мозга: 50 клубочков, каждый - одна нота запаха. Аккорд из активных клубочков - это и есть «яблоко». Тот же принцип у мыши и у нас, только у нас 400 типов и 1000 клубочков.</li>
+          <li><b>Спирт и уксус.</b> Самые чувствительные каналы у неё настроены на этанол, уксусную кислоту и эфиры брожения. Не на яблоко, а на дрожжи, которые его едят. Целое яблоко пахнет для неё слабо, разрезанное и через час - как маяк: мякоть окисляется и бродит, и концентрация растёт в тысячи раз.</li>
+          <li><b>Стерео.</b> Два усика на расстоянии 0,3 миллиметра дают разницу концентраций, и муха по ней поворачивает. Плюс правило, которое у неё зашито: почуяла - лети против ветра, потеряла - зигзаг поперёк, снова почуяла - опять против. Тёплый воздух с кухни на первом этаже сам несёт запах наверх по лестнице, и её алгоритм ведёт ровно вдоль этого потока.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx cy"><b>Дрожжи</b><span>яблоко бродит, спирт и уксус в воздух</span></div>
+            <div class="arr">→</div>
+            <div class="bx"><b>Усик</b><span>1200 нейронов, 60 типов рецепторов</span></div>
+            <div class="arr">→</div>
+            <div class="bx am"><b>Клубочки</b><span>50 нот, аккорд «еда»</span></div>
+            <div class="arr rd">→</div>
+            <div class="bx rd"><b>Полёт</b><span>против ветра, зигзаг, стерео по усикам</span></div>
+          </div>
+          <div class="cap">Из кухни на третий этаж за час. Запах несёт конвекция, направление даёт ветер, точность - два усика.</div>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Нобелевская премия 2004,</b> Аксель и Бак, за гены обонятельных рецепторов. Честно: главная работа сделана на крысе и мыши. Но лаборатория Акселя параллельно расписала обоняние дрозофилы до каждого нейрона, и именно на мухе показали, как из 60 рецепторов получается карта запахов. В список «шести мушиных Нобелевок» её включают с этой оговоркой, и мы тоже.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 5: ЖИЗНЬ И МАНЕРЫ ============ -->
+<section class="slide chapter" id="s17">
+  <div class="bgimg"><img src="assets/ch_life.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5 · анатомия</div>
+    <h1>Жизнь и манеры: десять дней до внуков</h1>
+    <p class="lead">Яйцо, червячок, куколка, в которой тело переваривает само себя и собирается заново, взрослая муха. Десять дней. Самец поёт крылом, самка выбирает, отвергнутый пьёт. Четыреста детей, полтора месяца жизни и смерть от старости, которая сделала её главным животным геронтологии.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s18">
+  <div class="content">
+    <div class="kicker">Жизнь · цикл</div>
+    <h2>Яйцо, личинка, куколка: пересборка за десять дней</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/larva_pupa.png" alt="">
+        <div class="pcap">Личинка на забродившей мякоти и куколка рядом. Личинка - это рот с кишкой, её задача съесть столько дрожжей, чтобы хватило на всю взрослую жизнь. Взрослая муха ест, но почти не растёт: весь размер набран здесь.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Сутки.</b> Яйцо 0,5 мм с двумя дыхательными рожками, самка кладёт его прямо в мякоть. Эмбрион складывается за 24 часа, и за эти сутки происходит всё, за что дали Нобелевскую премию 1995 года: в яйце размечаются голова, хвост, спина, живот и 14 сегментов.</li>
+          <li><b>Четыре дня личинки.</b> Белый червячок без ног и глаз, три линьки, рост в 200 раз по массе. Ест дрожжи, роется в мякоти, к концу выползает на сухое. В её теле уже лежат имагинальные диски: свёрнутые зачатки будущих глаз, крыльев, ног. Взрослая муха в личинке спрятана в виде 19 плоских мешочков.</li>
+          <li><b>Четыре дня куколки.</b> Личинка твердеет в бочонок, и внутри почти все её ткани растворяются ферментами. Из каши разворачиваются диски: из этого мешочка глаз, из этого крыло. Муха не вырастает из личинки, она собирается из запчастей на её обломках. Гормон, который запускает это, экдизон, открыт тоже на ней.</li>
+          <li><b>Сорок дней взрослой.</b> При 25 градусах живёт 40-50 дней, в холоде до трёх месяцев. Половозрелая через 8-12 часов после выхода из куколки. Первое яйцо - на второй день. От яйца до собственного яйца 10 дней: за лето в доме сменяется десять поколений.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s19">
+  <div class="content">
+    <div class="kicker">Жизнь · рацион</div>
+    <h2>Сахар для полёта, дрожжи для детей и азот из ниоткуда</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Два меню.</b> Взрослой мухе для полёта нужен сахар: 200 взмахов в секунду жгут глюкозу, и голодная муха падает через несколько часов. Но на одном сахаре она не откладывает яиц, а личинка на нём не растёт. Для этого нужен белок, а в яблоке белка почти нет: 0,3%, и тот в основном в косточках.</li>
+          <li><b>Откуда белок.</b> Из дрожжей. Сухая дрожжевая клетка наполовину белок, плюс все витамины группы B и стерины, которых муха сама сделать не может: без эргостерина из дрожжей личинка не линяет. Муха не ест яблоко, она ест то, что ест яблоко, и получает мясо там, где мяса нет.</li>
+          <li><b>Откуда азот.</b> Белок - это азот, а в сахаре азота нет вообще. В яблочном соке его крохи: аминокислоты и аммоний, десятые доли процента. Дрожжи умеют вытаскивать эти крохи из литров сока и складывать в себя: клетка растёт, только пока находит азот, и первое, что кончается в бродящем плоде, это не сахар, а именно он. Дрожжи - это концентратор азота, а муха - тот, кто снимает концентрат.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx"><b>Яблоко</b><span>сахар 10%, азот 0,05%, белка нет</span></div>
+            <div class="arr">→</div>
+            <div class="bx cy"><b>Дрожжи</b><span>жгут сахар, собирают весь азот в белок и витамины</span></div>
+            <div class="arr">→</div>
+            <div class="bx am"><b>Муха</b><span>сахар из сока на полёт, дрожжи на яйца и рост</span></div>
+            <div class="arr rd">→</div>
+            <div class="bx rd"><b>Личинка</b><span>ест только дрожжи, растёт в 200 раз за 4 дня</span></div>
+          </div>
+          <div class="cap">Цепочка из трёх звеньев, где каждое ест не то, что кажется. Яблоко в ней - только среда.</div>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Почему муха выбирает.</b> Самка с яйцами летит на запах дрожжей сильнее, чем голодная на сахар, и откладывает яйца туда, где дрожжей больше: она оценивает белок для детей по запаху брожения. В лаборатории муху кормят кукурузной кашей с сахаром и обязательно дрожжами; убери дрожжи, и колония вымрет за поколение при полной миске сахара. То же правило работает у нас: сладкое - энергия, а расти можно только на азоте, и муха это знает без учебника.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s20">
+  <div class="content">
+    <div class="kicker">Жизнь · манеры</div>
+    <h2>Песня крылом, отказ и спирт от несчастной любви</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Ухаживание.</b> Самец находит самку, поворачивается, стучит лапкой, вытягивает одно крыло и вибрирует им: песня из импульсов с интервалом 35 миллисекунд, у каждого вида свой. Самка слышит усиками. Если нравится, замирает, если нет, отпихивает ногами или улетает. Весь ритуал зашит в один ген, fruitless: сломай его, и самец ухаживает за всем подряд, включая самцов.</li>
+          <li><b>Выбор.</b> Самка спаривается с несколькими и хранит сперму в сумке, а потом её сперма конкурирует внутри неё. Семенная жидкость самца содержит белок, который на несколько дней отбивает у самки желание спариваться снова и заставляет откладывать больше яиц. Химическая ревность, открыта на мухе, найдена потом у многих.</li>
+          <li><b>Отказ и спирт.</b> 2012 год, журнал Science: самцов, которых самки отвергли, сажали к еде с выбором, обычная или со спиртом. Отвергнутые выбирали спирт вчетверо чаще спарившихся. Молекула та же, что у нас за вознаграждение отвечает, нейропептид F, аналог нашего NPY. Заголовки писали «мухи пьют с горя», и это почти точная формулировка.</li>
+          <li><b>Плодовитость.</b> Одна самка за жизнь до 400-500 яиц, в день до 100. Без ограничений пара мух за месяц дала бы миллионы потомков. Ограничения есть: еда, куколки сохнут, личинок едят осы, и до взрослого доживает единицы процентов. Тарелка на третьем этаже - это не нашествие, это уцелевшие.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/courtship.png" alt="">
+        <div class="pcap">Самец справа вытянул одно крыло и поёт. Самка отвернулась, но это ещё не отказ: она слушает. По этой песне в 1960-х впервые показали, что поведение может быть закодировано в одном гене и что виды отличаются ритмом.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s21">
+  <div class="content">
+    <div class="kicker">Жизнь · старость</div>
+    <h2>Умирает от старости, и этим полезна</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>Стареет по-нашему</h3>
+        <p>К концу жизни муха хуже лазает, меньше спит ночью и больше днём, теряет память, у неё копятся повреждённые белки в мозге, слабеет сердце и рвётся кишечный барьер. Всё это измерено, и всё это делает она за 40 дней, а мы за 80 лет. Опыт по старению на мухе идёт два месяца, на мыши три года.</p>
+      </div>
+      <div class="card">
+        <h3 class="am">Что продлевает</h3>
+        <p>Ограничение калорий продлевает мухе жизнь на треть, как крысе. Мутанты по гену рецептора инсулина живут дольше, как черви и мыши. Рапамицин продлевает и ей. Метусела, «Мафусаил», мутант 1998 года, живёт на 35% дольше и лучше переносит стресс. Почти все кандидаты в «таблетки от старости» прошли через муху первыми.</p>
+      </div>
+      <div class="card">
+        <h3 class="rd">Что нельзя перенести</h3>
+        <p>Она холоднокровная и стареет вдвое быстрее при 29 градусах, чем при 25: продлить ей жизнь холодом легко, а нам нет. У неё нет приобретённого иммунитета, нет костей, нет кровяного давления. Результат на мухе - это указатель, где искать у человека, а не ответ. Указателей за сто лет накопилось столько, что без неё медицина искала бы вслепую.</p>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:14px"><b>Первое животное в космосе.</b> 20 февраля 1947 года, за десять лет до Лайки, американцы запустили на трофейной «Фау-2» капсулу с дрозофилами на высоту 109 км, чтобы проверить действие космической радиации. Мухи вернулись на парашюте живыми. Первым живым существом за линией Кармана была муха с тарелки.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 6: МОРГАН ============ -->
+<section class="slide chapter" id="s22">
+  <div class="bgimg"><img src="assets/ch_morgan.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6 · Нобелевская 1933</div>
+    <h1>Комната мух: бутылки из-под молока и белоглазый самец</h1>
+    <p class="lead">Колумбийский университет, комната 5 на 7 метров, восемь столов, тысячи бутылок с бананами и мухами. Здесь в мае 1910 года Томас Морган нашёл одного самца с белыми глазами и за десять лет доказал, что гены лежат на хромосомах в линию. Студент нарисовал первую генетическую карту за одну ночь вместо домашнего задания.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s23">
+  <div class="content">
+    <div class="kicker">Морган · комната</div>
+    <h2>1910: муха, которая не должна была быть белоглазой</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/white_eye.png" alt="">
+        <div class="pcap">Красные глаза - норма, белые - мутация white. Морган скрестил белоглазого самца с обычной самкой: все дети красноглазые. Внуки: белые глаза только у самцов. Признак сцеплен с полом, значит, ген сидит на X-хромосоме. Первый ген, у которого появился адрес.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Морган не верил в гены.</b> Он взял мух в 1908 году, чтобы опровергнуть Менделя и хромосомную теорию: слишком красиво, чтобы быть правдой. Два года ничего не находил. Потом белоглазый самец, и через год Морган стал главным сторонником того, что хотел опровергнуть. Нобелевская 1933, первая в истории за генетику.</li>
+          <li><b>Комната.</b> Бутылки из-под молока, которые студенты таскали с крылец соседей, гнилые бананы, лупы. В комнате шесть человек, и трое из них - Стёртевант, Бриджес и Мёллер - потом сами станут классиками. Из этой комнаты вышли термины «ген», «аллель», «кроссинговер» в их нынешнем смысле и вся школа американской генетики.</li>
+          <li><b>Сцепление.</b> Мутации накапливались: белые глаза, жёлтое тело, миниатюрные крылья. Некоторые наследовались вместе, как будто связаны. Морган понял: гены на одной хромосоме сцеплены, а разрыв связи, кроссинговер, случается тем чаще, чем дальше гены друг от друга. Расстояние между генами можно измерить в процентах разрывов.</li>
+          <li><b>Карта за ночь.</b> 1911 год, Альфред Стёртевант, 19 лет, студент. Взял данные по пяти генам X-хромосомы, забросил домашку и к утру выстроил их в линию с расстояниями. Первая генетическая карта в истории, опубликована в 1913. Единица расстояния до сих пор называется сантиморган.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s24">
+  <div class="content">
+    <div class="kicker">Морган · зачем муха</div>
+    <h2>Почему это удалось именно на ней</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Скорость.</b> Мендель на горохе ждал год на поколение. Морган на мухе - 10 дней. За год 30 поколений, за десять лет комнаты мух больше поколений, чем у человечества от Древнего Рима. Генетика - это статистика скрещиваний, и муха дала статистику быстрее, чем кто-либо до неё.</li>
+          <li><b>Дешевизна.</b> Бутылка, банан, вата. Одна бутылка - сотни мух, один стол - тысячи. Морган держал на восьми столах больше особей, чем все селекционеры мира вместе. Мутацию с частотой одна на десять тысяч можно найти за неделю просто просматривая бутылки.</li>
+          <li><b>Видно глазом.</b> Цвет глаз, форма крыла, щетинки, пол - под лупой без препаратов. Четыре хромосомы, и одна из них, X, наследуется по-разному у самцов и самок, что сразу выдаёт, где сидит ген. Плюс политенные хромосомы из главы 3: карту, посчитанную по статистике, потом увидели в микроскоп.</li>
+          <li><b>Что осталось от комнаты.</b> Каждая муха в любой лаборатории мира сегодня - потомок линий, которые вели в Колумбийском. Мутанты Моргана лежат в хранилищах с 1910-х, названия генов с тех пор: white, yellow, miniature. Университет комнату не сохранил: в 1928 году Морган уехал в Калтех, мух увёз с собой, комнату отдали под другое.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/fly_room.png" alt="">
+        <div class="pcap">Стол в комнате мух. Бутылка, лупа, тетрадь, банан. Никакого оборудования дороже десяти долларов. Морган говорил, что муха ему обходится дешевле бумаги, на которой он про неё пишет.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 7: МЁЛЛЕР ============ -->
+<section class="slide chapter" id="s25">
+  <div class="bgimg"><img src="assets/ch_muller.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 7 · Нобелевская 1946</div>
+    <h1>Мёллер и рентген: мутацию можно вызвать</h1>
+    <p class="lead">До 1927 года мутации ждали, как погоду. Герман Мёллер поставил бутылки с мухами под рентгеновскую трубку, и мутаций стало в сто пятьдесят раз больше. Гены оказались материальными, их можно повредить лучом, и повреждение передаётся детям. Из этой бутылки выросла вся радиационная безопасность.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s26">
+  <div class="content">
+    <div class="kicker">Мёллер · опыт</div>
+    <h2>1927: сто пятьдесят раз</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/xray.png" alt="">
+        <div class="pcap">Мухи после облучения: скрученные крылья, лишние щетинки, изменённые глаза, и невидимые летальные мутации, которые Мёллер считал по исчезнувшим потомкам. Он придумал схему скрещиваний, которая ловит смертельную мутацию, даже если у мухи снаружи всё в порядке.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Опыт.</b> Мёллер, ученик Моргана, облучил самцов рентгеном и посчитал у потомков мутации на X-хромосоме. Без облучения - доли процента. После - до 15%. Рост в 150 раз, зависимость от дозы линейная, без порога: любая доза даёт свою долю поломок. Статья 1927 года на две страницы, Нобелевская премия 1946.</li>
+          <li><b>Что это значило.</b> Гены - не абстракция, а физические структуры, которые ломает излучение. Мутация - не редкий каприз, а повреждение, которое можно вызвать и посчитать. Отсюда вся мутационная генетика XX века: не ждать мутанта, а сделать его лучом или химией и смотреть, что сломалось.</li>
+          <li><b>Радиация и наследственность.</b> Мёллер первым сказал вслух, что рентген в кабинетах врачей и радий в косметике повреждают потомство. Его не слушали до Хиросимы. После 1945 он стал главным голосом против атомных испытаний в воздухе, и предельные дозы для персонала считались по его мушиным кривым.</li>
+          <li><b>Человек.</b> Мёллер уезжал строить генетику в СССР, в 1937 бежал от Лысенко в Испанию, потом в Эдинбург, вернулся в США изгоем, Нобелевскую получил в 56 лет. Его линейная беспороговая модель до сих пор основа норм радиационной безопасности, и до сих пор спорна: для малых доз данных на человеке нет, есть только мухи.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 8: ГЕНЫ ТЕЛА ============ -->
+<section class="slide chapter" id="s27">
+  <div class="bgimg"><img src="assets/ch_body_genes.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 8 · Нобелевская 1995</div>
+    <h1>Гены, которые строят тело: нога вместо усика</h1>
+    <p class="lead">Как из одной клетки получаются голова, хвост, спина и живот? Ответ дали мухи-уроды: с ногами на лбу, с двумя парами крыльев, без половины сегментов. За зиму 1979-1980 два человека перебрали 20 тысяч мутантных линий и нашли все гены, размечающие эмбрион. Потом оказалось, что те же гены в том же порядке строят мышь и нас.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s28">
+  <div class="content">
+    <div class="kicker">Гены тела · уроды</div>
+    <h2>Antennapedia: нога на лбу по одному гену</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/antennapedia.png" alt="">
+        <div class="pcap">Мутант Antennapedia: вместо усиков из головы растут полноценные ноги с коготками. Один ген перепутал адрес, и клетки, которые должны были стать усиком, построили ногу. Ген не строит ногу сам, он говорит клеткам, в каком они сегменте.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Гомеозис.</b> Бэтсон в 1894 году назвал так уродства, где один орган вырастает на месте другого: нога вместо усика, крыло вместо жужжальца. Мутации такого рода у мух копились с 1915 года, и Эдвард Льюис сорок лет разбирал одну группу, bithorax, где у мухи вырастает вторая пара крыльев. Он показал: эти гены лежат на хромосоме в том же порядке, в каком идут сегменты тела. Карта гена - карта мухи.</li>
+          <li><b>Гейдельбергский перебор.</b> 1979 год, Кристиане Нюсляйн-Фольхард и Эрик Вишаус решили найти все гены, размечающие эмбрион. Химией вызвали мутации, вырастили 27 тысяч линий, каждую проверили под микроскопом на уродство зародыша. За год нашли около 120 генов, разбитых на три группы: одни делят яйцо на большие области, другие на пары сегментов, третьи на отдельные сегменты. Иерархия, как разметка страницы: сначала колонки, потом абзацы, потом строки.</li>
+          <li><b>Нобелевская 1995</b> Льюису, Нюсляйн-Фольхард и Вишаусу. Первая премия за развитие организма и первая для женщины-генетика. Мухи из перебора хранятся до сих пор, и у генов названия из той зимы: hedgehog «ёжик», за щетинки на личинке, потом ставший главным геном рака кожи у человека.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s29">
+  <div class="content">
+    <div class="kicker">Гены тела · hox</div>
+    <h2>Один набор чертежей на муху, мышь и человека</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Гомеобокс.</b> 1984 год, Базель и Блумингтон: в гене Antennapedia нашли участок в 180 букв, и он же оказался в других гомеозисных генах. Гомеобокс, кусок ДНК, который кодирует «ручку», хватающую другие гены и включающую их. Стали искать его у других животных и нашли у лягушки, мыши, человека, червя. Одинаковый почти до буквы.</li>
+          <li><b>Hox-кластер.</b> У мухи 8 таких генов в ряд, у человека 39 в четырёх копиях ряда. И порядок сохранён: ген, стоящий первым, размечает голову, последний - хвост, у мухи и у нас. Полмиллиарда лет разошлись, а чертёж один. Пересади человеческий ген в муху с поломанным - работает.</li>
+          <li><b>Что это означает.</b> До 1984 года считалось, что муха и человек построены по разным принципам и общего в развитии у них нет. Оказалось, что генетический инструментарий тела один, а разница в том, где и когда он включён. Отсюда родилась целая наука, эво-дево, и по ней муха с ногой на лбу - самая важная муха XX века.</li>
+          <li><b>Спина и живот.</b> Та же история с Сент-Илером из главы 3: ген, который у мухи размечает живот, у лягушки размечает спину. Один чертёж, перевёрнутый. Насекомые и позвоночные - одно тело, посмотренное с двух сторон.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/hox.png" alt="">
+        <div class="pcap">Муха и мышь с одной последовательностью полос вдоль тела. Каждая полоса - зона одного hox-гена. Порядок генов на хромосоме повторяет порядок зон от головы к хвосту у обоих. Это называется колинеарность, и никто до сих пор не знает, почему она сохранилась.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 9: ЧАСЫ ============ -->
+<section class="slide chapter" id="s30">
+  <div class="bgimg"><img src="assets/ch_clock.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 9 · Нобелевская 2017</div>
+    <h1>Часы: почему у тебя джетлаг, объяснила муха</h1>
+    <p class="lead">В 1971 году нашли муху без чувства времени: она вылуплялась и спала когда попало. Один ген, period. Тридцать лет спустя его разобрали до механизма: белок копится ночью, глушит собственный ген, распадается днём, и петля замыкается ровно за сутки. Те же шестерёнки крутятся в каждой твоей клетке.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s31">
+  <div class="content">
+    <div class="kicker">Часы · механизм</div>
+    <h2>Ген period: петля длиной в сутки</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/period_clock.png" alt="">
+        <div class="pcap">Петля обратной связи. Ночью белок PER копится, к утру его столько, что он заходит в ядро и выключает свой ген. Днём белок распадается, ген включается снова. Один оборот - 24 часа, и это сделано из четырёх генов без единого счётчика.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>1971, Конопка и Бензер.</b> Искали мутантов с нарушенным ритмом: муха вылупляется из куколки на рассвете, и это легко считать. Нашли трёх: у одной сутки 19 часов, у другой 28, третья без ритма вовсе. Все три - поломки одного гена. Назвали period. Первый ген поведения, найденный у животного.</li>
+          <li><b>1984, клонировали.</b> Холл и Росбаш в Брандайсе и Янг в Рокфеллере независимо выделили ген. К 1990-м разобрали петлю: PER и TIM копятся ночью, входят в ядро, глушат свои гены, а утром свет разрушает TIM, и всё начинается заново. Гены doubletime и Clock задают темп и включение. Нобелевская 2017 Холлу, Росбашу и Янгу.</li>
+          <li><b>У нас то же.</b> Человеческие гены PER1, PER2, PER3 работают по той же схеме. Мутация PER2 даёт семейный синдром раннего сна: люди засыпают в восемь вечера и встают в четыре утра из поколения в поколение. Часы есть в каждой клетке, печень и кожа тикают отдельно, и главные часы в мозге их сверяют по свету. Джетлаг - это рассинхрон органов между собой.</li>
+          <li><b>Практика.</b> Сменная работа как канцероген, лекарства, которые работают лучше в определённые часы, свет экрана ночью, который держит TIM разрушенным. Всё это выросло из мухи, которая вылуплялась не вовремя.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 10: ИММУНИТЕТ ============ -->
+<section class="slide chapter" id="s32">
+  <div class="bgimg"><img src="assets/ch_immune.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 10 · Нобелевская 2011</div>
+    <h1>Иммунитет: муха, обросшая плесенью</h1>
+    <p class="lead">1996 год, Страсбург. Муху с поломанным геном Toll заразили плесенью, и через два дня она умерла, заросшая грибом с головы до ног. Ген, который размечал спину и живот у эмбриона, оказался ещё и первой линией обороны. У человека таких рецепторов десять, и с них начинается любой иммунный ответ.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s33">
+  <div class="content">
+    <div class="kicker">Иммунитет · Toll</div>
+    <h2>Toll: от разметки эмбриона до первой линии обороны</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Имя.</b> Toll по-немецки «обалденно». Так Нюсляйн-Фольхард сказала в 1985 году, увидев мутанта без спины и живота: ген, размечающий эмбрион, был найден в том самом гейдельбергском переборе. Десять лет он считался геном развития и только.</li>
+          <li><b>1996, Гофман.</b> Жюль Гофман в Страсбурге изучал, как насекомые без антител и лимфоцитов отбиваются от инфекций. Муха с поломанным Toll не могла включить антигрибковый пептид дрозомицин и погибала от Aspergillus fumigatus, заросшая гифами. Фото этой мухи стало обложкой Cell и главным доказательством: врождённый иммунитет - это не «просто фагоциты», у него есть рецепторы, которые узнают врага.</li>
+          <li><b>У нас.</b> Через год Дженуэй и Меджитов нашли человеческий Toll-подобный рецептор, а Бойтлер в 1998 показал, что мышиный TLR4 узнаёт липополисахарид бактерий. Сегодня их у человека десять, каждый под свой класс врагов: бактериальная стенка, вирусная РНК, грибковый маннан. С них начинается воспаление, лихорадка, вызов лимфоцитов. Без них адаптивный иммунитет не узнает, что его позвали.</li>
+          <li><b>Нобелевская 2011</b> Гофману и Бойтлеру за врождённый иммунитет, Стайнману за дендритные клетки. Стайнман умер за три дня до объявления, премию оставили. Муха из «Спор», обросшая грибом, - это она и есть: гриб внутри нас держит именно тот барьер, который она показала.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/toll_mold.png" alt="">
+        <div class="pcap">Две мухи через 48 часов после укола спорами. Обычная жива и чиста: дрозомицин убил гриб. Мутант по Toll зарос гифами, как труп в лесу. Одна фотография, из которой выросла вся современная иммунология врождённого ответа.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 11: КОННЕКТОМ ============ -->
+<section class="slide chapter" id="s34">
+  <div class="bgimg"><img src="assets/ch_connectome.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 11 · 2024</div>
+    <h1>Коннектом: мозг, в котором известен каждый провод</h1>
+    <p class="lead">Октябрь 2024 года: 139 255 нейронов, 50 миллионов синапсов, каждая связь в открытой базе. Первый полный мозг существа, которое летает, ухаживает, учится и спит. Мозг мухи нарезали на 7 тысяч слоёв, отсканировали электронным микроскопом и собрали заново нейросетями и тысячей добровольцев. Теперь его можно запустить на компьютере.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s35">
+  <div class="content">
+    <div class="kicker">Коннектом · как</div>
+    <h2>Семь тысяч срезов и миллион часов проверки</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/connectome.png" alt="">
+        <div class="pcap">Фрагмент коннектома: каждая нить - нейрон, каждая точка - синапс. Всего 8 тысяч типов клеток, и у половины до 2024 года не было ни имени, ни функции. Полная схема весит 100 терабайт и открыта любому.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Срезы.</b> Один мозг самки, залитый смолой, нарезан на 7062 среза по 40 нанометров, в тысячу раз тоньше волоса, и каждый снят электронным микроскопом с разрешением 4 нанометра. 21 миллион снимков. Съёмка заняла год, проект FlyWire на базе Принстона.</li>
+          <li><b>Сборка.</b> Нейросеть провела каждый нейрон через срезы, но ошибалась на каждом слиянии и разрыве. Ошибки правили люди: около 200 учёных и добровольцев-игроков, 3 миллиона правок, четыре года. Итог опубликован в Nature в октябре 2024 в девяти статьях сразу: 139 255 нейронов, 54,5 миллиона синапсов, 8453 типа клеток.</li>
+          <li><b>Что нашли.</b> Нейроны, которые никто не предсказывал: например, клетки, соединяющие вкус на ногах с решением взлететь. Половина синапсов - тормозные. Мозг не «сеть слоёв», а плотный клубок петель, где сигнал возвращается к началу через три-четыре нейрона.</li>
+          <li><b>Масштаб.</b> До этого полный коннектом был у одного червя, 302 нейрона, сделан руками за 15 лет. Муха в 460 раз больше. Следующая цель - мышь, 70 миллионов нейронов, это ещё в тысячу раз; человек - в 600 тысяч раз. Муха - последний мозг, который человечество смогло прочитать целиком на нынешней технике.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s36">
+  <div class="content">
+    <div class="kicker">Коннектом · зачем</div>
+    <h2>Симуляция, лазер и вопрос про сознание</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Запустили.</b> В 2024 году коннектом превратили в модель: каждый нейрон как уравнение, связи по схеме. Подали на вход «сахар на лапке», и модель выдвинула хоботок, через те же нейроны, что живая муха. Без обучения, только по проводке. Первый случай, когда поведение животного предсказали из схемы мозга.</li>
+          <li><b>Оптогенетика.</b> В нейрон встраивают белок, который открывается от света, и включают нейрон лазером. На мухе так водят конкретные клетки: включил один нейрон - муха разворачивается, другой - начинает ухаживать, третий - «засыпает». С коннектомом это стало прицельным: известно, какой провод куда идёт, можно включать по схеме.</li>
+          <li><b>Чего пока нет.</b> Схема - это провода, а не токи. Она не говорит, какие синапсы сильные, какие меняются при обучении, что делают нейромодуляторы, разлитые по всему мозгу. Один мозг одной самки: у другой мухи провода те же на 90%, а остальное индивидуально. Прочитать схему и понять мозг - разные вещи, и это честно написано в самих статьях.</li>
+          <li><b>Сознание.</b> Есть память, сон, боль-реакция, выбор с колебаниями, внутренний компас. Нет коры, нет языка, нет отчёта. Вопрос из «Спектра», где кончается ручка сознания, здесь стоит буквально: у нас есть полная схема, а ответа на вопрос, есть ли кто-то внутри, из схемы не следует. Мы знаем про муху всё и не знаем главного.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/optogenetics.png" alt="">
+        <div class="pcap">Муха под лазером. Красный свет открывает канал в выбранных нейронах, и они срабатывают, как от настоящего сигнала. Можно заставить сытую муху есть, спящую взлететь, одинокую петь. Поведение как пульт с кнопками, и коннектом - схема к пульту.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 12: МЕДИЦИНА ============ -->
+<section class="slide chapter" id="s37">
+  <div class="bgimg"><img src="assets/ch_medicine.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 12</div>
+    <h1>Муха как пациент: Паркинсон, рак, алкоголь и её собственные враги</h1>
+    <p class="lead">Три четверти генов человеческих болезней есть у мухи. На ней моделируют Паркинсона, Альцгеймера, рак, диабет, эпилепсию и алкоголизм, за копейки и за десять дней. Но у неё и свои болезни: осы, откладывающие яйца в личинку, и бактерия, которая живёт внутри и решает, кто родится. От осы она лечится спиртом.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s38">
+  <div class="content">
+    <div class="kicker">Медицина · модели</div>
+    <h2>Что на ней лечат</h2>
+    <table class="t" style="font-size:13px">
+      <tr><th>Болезнь</th><th>Как делают на мухе</th><th>Что дало</th></tr>
+      <tr><td>Паркинсон</td><td class="d">человеческий ген альфа-синуклеина в мухе: нейроны дофамина гибнут, муха хуже лазает</td><td class="d">гены PINK1 и parkin, найденные у мухи, объяснили наследственные формы; мишень для лекарств - митохондрии</td></tr>
+      <tr><td>Альцгеймер</td><td class="d">человеческий бета-амилоид и тау в мозге мухи; бляшки, потеря памяти, ранняя смерть</td><td class="d">перебор 10 тысяч генов на то, что усиливает или гасит повреждение, за месяцы вместо десятилетий</td></tr>
+      <tr><td>Рак</td><td class="d">опухоли в глазу и кишке; гены Ras, Notch, hedgehog найдены у мухи первыми</td><td class="d">путь Hippo, контроль размера органа, открыт на мухе в 2003; лекарства против hedgehog при раке кожи</td></tr>
+      <tr><td>Диабет и ожирение</td><td class="d">муха на жирной диете толстеет, у неё растёт сахар, слабеет сердце</td><td class="d">инсулиноподобные пептиды и их рецептор - те же, что у нас; гены аппетита</td></tr>
+      <tr><td>Эпилепсия</td><td class="d">мутанты, у которых припадок от встряхивания пробирки</td><td class="d">ионные каналы, аналоги которых ломаются при эпилепсии у людей</td></tr>
+      <tr><td>Алкоголизм</td><td class="d">муха пьянеет, привыкает, ищет спирт после отказа самки</td><td class="d">гены толерантности, общие с человеком; нейропептид F как молекула вознаграждения</td></tr>
+      <tr><td>Редкие болезни</td><td class="d">неизвестный вариант гена пациента переносят в муху и смотрят, ломается ли</td><td class="d">программа UDN в США: десятки диагнозов детям, поставленных через муху</td></tr>
+    </table>
+    <div class="note gold" style="margin-top:10px"><b>Почему муха, а не мышь.</b> Мышь - 3 года на опыт и сотни тысяч рублей на линию, комиссия по этике, десятки особей. Муха - 10 дней, банан, тысячи особей, ноль этических согласований. Из мухи не получить лекарство, но получить указатель, где искать у человека, быстрее и дешевле всего. Три четверти генов человеческих болезней имеют у неё аналог, и на ней его можно сломать и починить за две недели.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s39">
+  <div class="content">
+    <div class="kicker">Медицина · её враги</div>
+    <h2>Оса, бактерия и самолечение спиртом</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/wasp.png" alt="">
+        <div class="pcap">Оса-паразит Leptopilina откладывает яйцо в личинку мухи. Личинка осы съедает хозяина изнутри, из куколки выходит оса. В природе так гибнет большая часть личинок. Ответ у мухи химический и странный.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Спирт как лекарство.</b> 2012 год: личинки, в которых сидит яйцо осы, сами ползут туда, где в еде больше спирта, и едят её, хотя обычно избегают. Спирт для осы ядовитее, чем для мухи, и яйцо гибнет. Самка, увидевшая осу, откладывает яйца в более спиртовую еду для будущих детей заранее. Первое документированное самолечение у беспозвоночного, и лекарство - водка.</li>
+          <li><b>Вольбахия.</b> Бактерия, живущая внутри клеток мухи и передающаяся через яйцо. Ей нужны самки, поэтому она мешает самцам: заражённый самец не может оплодотворить незаражённую самку. Больше половины видов насекомых планеты носят её, и у дрозофилы её нашли первой. Сегодня ту же бактерию подсаживают комарам, чтобы они не разносили денге: в Индонезии и Бразилии заболеваемость упала на 77%.</li>
+          <li><b>Иммунитет против осы.</b> Если Toll из прошлой главы отвечает за грибы и бактерии, то против осы работают клетки крови: они узнают чужое яйцо, облепляют его и заливают меланином, черной капсулой, в которой яйцо задыхается. Это тот же меланин, что в её коже и в чернобыльской плесени.</li>
+          <li><b>Кто её ест.</b> Пауки, жуки, муравьи, птицы, лягушки, тарелка с уксусом. И мы, если считать, что каждый вдох над тарелкой - это несколько её яиц. Насчёт манер: муха, которая сидит на твоём яблоке, только что пробовала его лапками, срыгнула на него слюну и, возможно, отложила яйцо. Просьба из заголовка - не эстетика.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ЗАКЛЮЧЕНИЕ ============ -->
+<section class="slide chapter" id="s40">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Заключение</div>
+    <h1>Вердикт, вопрос и поговорка, из которой исчезло преувеличение</h1>
+    <p class="lead">Что измерено, что выведено, что не знаем. Кто из нас модельный организм. И латинская фраза, которую две тысячи лет говорят про тех, кто раздувает мелочь, а в этой лекции она оказалась буквальной.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s41">
+  <div class="content">
+    <div class="kicker">Заключение · вердикт</div>
+    <h2>Научный вердикт: что измерено, что выведено, что не знаем</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>Измерено</h3>
+        <ul>
+          <li>2-2,5 мм, 0,2 мг, 40-50 дней, цикл 10 дней при 25 °C, 400 яиц</li>
+          <li>800 омматидиев, 250 Гц против наших 60; вкус на лапках</li>
+          <li>200 взмахов в секунду, разворот за 50 мс, жужжальца-гироскопы</li>
+          <li>Вихрь на передней кромке крыла, робомуха Дикинсона 1999</li>
+          <li>Политенные хромосомы, 5 тысяч полос, карта Стёртеванта совпала</li>
+          <li>139 255 нейронов и 54,5 млн синапсов, октябрь 2024</li>
+          <li>Рентген: мутации в 150 раз, линейно, без порога</li>
+          <li>Hox-гены в том же порядке у мухи, мыши и человека</li>
+          <li>Отвергнутые самцы выбирают спирт вчетверо чаще; личинки лечатся спиртом от осы</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Выведено надёжно</h3>
+        <ul>
+          <li>Гены лежат на хромосомах в линию: 1910-1913, Морган и Стёртевант</li>
+          <li>Разметка тела - иерархия генов, и она одна на всех животных</li>
+          <li>Часы - петля из четырёх генов длиной в сутки, те же у нас</li>
+          <li>Врождённый иммунитет узнаёт врага рецепторами Toll</li>
+          <li>Позвоночное - перевёрнутое насекомое: Сент-Илер был прав</li>
+          <li>Муха ест не яблоко, а дрожжи, и не сахар, а азот</li>
+          <li>Три четверти генов человеческих болезней работают у мухи так же</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="rd">Не знаем</h3>
+        <ul>
+          <li>Чувствует ли она боль как переживание</li>
+          <li>Есть ли у 140 тысяч нейронов что-то вроде сознания</li>
+          <li>Зачем спит и почему без сна умирает</li>
+          <li>Почему порядок hox-генов не перемешался за полмиллиарда лет</li>
+          <li>Как из схемы проводов получить поведение целиком</li>
+          <li>Что делают половина типов клеток в её мозге</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note" style="margin-top:14px">Левая колонка длиннее, чем у любого другого животного, включая мышь: муха - самое измеренное существо на планете. Правая - про то, что даже полная схема мозга не отвечает на вопрос, кто там внутри. И это же вопрос про нас.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s42">
+  <div class="content">
+    <div class="kicker">Заключение · вопрос и мораль</div>
+    <h2>Кто здесь модельный организм, и слон из мухи</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="rd">Вопрос на подумать</h3>
+          <p>Мы называем её модельным организмом: упрощённая копия нас, на которой можно проверить, прежде чем трогать человека. Но посмотри на список: гены тела, часы, иммунитет, память, сон, старение, обоняние, вознаграждение. Всё это сначала нашли у неё, а потом узнали в себе. Мы не проверяли на мухе то, что знали про себя. Мы узнавали про себя то, что знали про муху.</p>
+          <p><b>Тогда кто кого моделирует?</b> Организм, у которого 140 тысяч нейронов, и мы поняли их все. Или организм с 86 миллиардами, который понимает себя только через первого? Лекция не отвечает. Она только замечает, что из двух существ на тарелке полностью описано одно, и это не мы.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Мораль</h3>
+          <p style="font-size:22px;color:#fff;margin:8px 0 6px"><b>De musca elephantum.</b></p>
+          <p>«Из мухи слона». Лукиан, II век, в «Похвале мухе» сам оговаривается, что не станет делать из мухи слона, и с тех пор это поговорка про раздувание мелочи. Эразм включил её в «Адагии», и две тысячи лет её говорят с усмешкой.</p>
+          <p>В этой лекции усмешка исчезла. Из мухи сделали хромосомную теорию, мутагенез, генетику развития, часы, иммунитет, первый прочитанный мозг. Из двух миллиметров вывели, как устроен человек. Это не преувеличение, это протокол. Слон получился настоящий, и он стоит на тарелке с яблоками.</p>
+          <p>Подвох в том, что поговорка не ошиблась, а обернулась: раздувать мелочь глупо, пока не проверил, мелочь ли это. Сто лет назад муха была мусором на банане. Проверили.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s43">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Вся лекция одной таблицей</h2>
+    <table class="t" style="font-size:12.5px">
+      <tr><th>Глава</th><th>Главная мысль</th><th>Цифра или факт</th><th>Премия</th></tr>
+      <tr><td>1. Снаружи</td><td class="d">все датчики снаружи, вкус на лапках</td><td class="d">800 омматидиев, 250 Гц</td><td class="d">-</td></tr>
+      <tr><td>2. Крыло</td><td class="d">жужжальца-гироскопы, вихрь на кромке</td><td class="d">200 Гц, разворот 50 мс</td><td class="d">-</td></tr>
+      <tr><td>3. Внутри</td><td class="d">дыхание трубками, сердце-трубка, гигантские хромосомы</td><td class="d">8 хромосом, 5000 полос</td><td class="d">-</td></tr>
+      <tr><td>4. Мозг</td><td class="d">память, сон, компас, нос из 60 рецепторов</td><td class="d">140 000 нейронов</td><td class="d">2004, с оговоркой</td></tr>
+      <tr><td>5. Жизнь</td><td class="d">пересборка в куколке, дрожжи как азот, спирт с горя</td><td class="d">10 дней, 400 яиц, космос 1947</td><td class="d">-</td></tr>
+      <tr><td>6. Морган</td><td class="d">гены на хромосомах в линию</td><td class="d">белые глаза 1910, карта 1913</td><td class="d">1933</td></tr>
+      <tr><td>7. Мёллер</td><td class="d">мутацию можно вызвать</td><td class="d">рентген, в 150 раз</td><td class="d">1946</td></tr>
+      <tr><td>8. Гены тела</td><td class="d">один чертёж на муху и человека</td><td class="d">нога на лбу, 27 000 линий</td><td class="d">1995</td></tr>
+      <tr><td>9. Часы</td><td class="d">петля белка длиной в сутки</td><td class="d">period 1971, 19/28 часов</td><td class="d">2017</td></tr>
+      <tr><td>10. Иммунитет</td><td class="d">Toll узнаёт врага</td><td class="d">муха в плесени, 1996</td><td class="d">2011</td></tr>
+      <tr><td>11. Коннектом</td><td class="d">каждый провод известен, главное - нет</td><td class="d">7062 среза, 54,5 млн синапсов</td><td class="d">-</td></tr>
+      <tr><td>12. Медицина</td><td class="d">указатель, где искать у человека; лечится водкой</td><td class="d">75% генов болезней</td><td class="d">-</td></tr>
+    </table>
+    <div class="note gold" style="margin-top:10px"><b>Шесть премий на 0,2 миллиграмма.</b> Больше, чем у любого другого животного, включая мышь. Ни одна не была дана «за муху»: все за то, что через муху узнали о человеке. Поговорка в последней колонке работает в обе стороны.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s44">
+  <div class="bgimg"><img src="assets/final_end.png" alt=""></div>
+  <div class="content">
+    <h1>De musca elephantum</h1>
+    <p class="lead">Восемьсот глаз, гироскопы вместо крыльев, кровь без кислорода, хромосомы, которые видно глазом, мозг из 140 тысяч известных проводов. Белоглазый самец, рентген, нога на лбу, сутки в одном гене, муха в плесени. Шесть премий и ни одной за неё саму.</p>
+    <p class="lead" style="margin-top:14px">Она сидит на краю тарелки, пробует яблоко лапками и не знает ни про Моргана, ни про Нобеля. Всё, что мы поняли про себя за сто лет, мы поняли, глядя на неё. Так что просьба из заголовка остаётся в силе, но теперь это просьба, а не приказ.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- SLIDES_END -->
+
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>
