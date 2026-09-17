@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><link rel="icon" href="../favicon.ico" sizes="any"><link rel="icon" type="image/png" href="../favicon.png"><link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Споры. Спасители-убийцы-самоубийцы</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #e6a94f; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Гвендолин-ночные-лекции</div>
+    <h1>Споры. Спасители-убийцы-самоубийцы</h1>
+    <p class="lead">Грибы, грибки, плесень, дрожжи и споры. Царство, которое ближе к нам, чем к берёзе, старше деревьев, кормит лес, печёт хлеб, варит пиво, дало пенициллин и пересадку органов, уморило Ирландию, сводило с ума Европу и превращает муравьёв в зомби. Лекция о том, что спаситель и убийца здесь всегда один и тот же организм, а сторона зависит от того, где стоим мы.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s2">
+  <div class="content">
+    <div class="kicker">Вступление</div>
+    <h2>Тарелка на третьем этаже: откуда за час взялись тридцать мух</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/fly_plate.png" alt="">
+        <div class="pcap">Яблоки с дачи, вымытые и нарезанные, на столе третьего этажа. Кухня на первом. Окно закрыто. Через час над тарелкой два-три десятка дрозофил. Это не яблоко их позвало. Это гриб.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Куда летят мухи.</b> Дрозофила не ест фрукты. Она ест дрожжи, которые на фруктах живут, и летит на их запах: этанол и уксусную кислоту, продукты брожения. Резаное яблоко за минуты начинает бродить, и муха чует это с сотен метров. Два этажа для неё не расстояние, тёплый воздух с кухни сам несёт запах наверх.</li>
+          <li><b>Откуда взялись.</b> Не вылупились: от яйца до мухи 8-10 дней. Они приехали в пакете с дачи, разлетелись по дому и стали невидимыми, по одной на комнату. Тарелка просто собрала их в одну точку и показала, сколько их живёт у тебя всегда.</li>
+          <li><b>Что это значит.</b> Гриб уже в доме. На яблоке, в хлебе, в пиве, в сыре, на стенах, в лёгких, на коже, между пальцами ног. Ты не видишь его, пока он не собрался в одну точку: плесень на хлебе, шляпка в лесу, мухи над тарелкой.</li>
+          <li><b>Правило лекции.</b> Три лица у каждого героя: спаситель, убийца, самоубийца. И почти всегда это одно и то же существо. Пенициллум лечит и гноит, дрожжи кормят и травят, мухомор убивает и лечит. Вопрос каждой главы: с какой стороны стола мы сидим.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">Вступление · карта</div>
+    <h2>Десять глав, три лица</h2>
+    <div class="dg">
+      <div class="row">
+        <div class="bx cy"><b>Спаситель</b><span>хлеб, пиво, пенициллин, циклоспорин, сыр, лес на грибной сети</span></div>
+        <div class="arr">→</div>
+        <div class="bx rd"><b>Убийца</b><span>Ирландия, спорынья, кандида, кордицепс, поганка, чума лягушек</span></div>
+        <div class="arr">→</div>
+        <div class="bx am"><b>Самоубийца</b><span>дрожжи в собственном спирте, гриб, съевший свой лес, и мы</span></div>
+        <div class="arr rd">→</div>
+        <div class="bx"><b>Финал</b><span>кто кого ест на самом деле, и латынь с подвохом</span></div>
+      </div>
+      <div class="cap">Первые главы про то, что такое гриб и как он расселяется. Дальше по очереди: кормит, лечит, морит, соединяет, заражает, управляет. В конце одна шляпка со всеми тремя лицами сразу.</div>
+    </div>
+    <div class="cols" style="margin-top:22px">
+      <div>
+        <ul class="pts">
+          <li><b>Масштаб.</b> Описано около 150 тысяч видов грибов. Оценка реального числа: от 2 до 4 миллионов, то есть найдено меньше 10%. Для сравнения, растений описано около 400 тысяч, и это почти все. Грибы - самое неизученное большое царство на планете.</li>
+          <li><b>Почему их не видно.</b> Тело гриба - мицелий, сеть нитей толщиной в тысячные миллиметра, спрятанная в почве, дереве, хлебе, ткани. Шляпка, которую мы называем грибом, это плодовое тело, орган размножения. Видеть гриб по шляпке - как видеть яблоню по яблоку.</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Связь с прошлыми лекциями.</b> В «Давлении» была вода, которую дерево тянет отрицательным давлением. Здесь выяснится, что половину воды и почти весь фосфор дерево получает не само, а через гриб. В «Трещине» был псилоцибин как кандидат в лекарство. Здесь он появится в шляпке, рядом с ядом.</li>
+          <li><b>Честность на краях.</b> Где измерено, где выведено, где не знаем, помечено на слайдах. У этой темы два спорных места: «подземный интернет» леса и «грибы захватят мир при потеплении». Оба разберём с оговорками.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 1: ЧТО ТАКОЕ ГРИБ ============ -->
+<section class="slide chapter" id="s4">
+  <div class="bgimg"><img src="assets/ch_what.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1</div>
+    <h1>Что такое гриб: не растение, не животное, родственник</h1>
+    <p class="lead">Триста лет гриб считали растением, потому что не бегает. Потом посмотрели на гены: он ближе к нам, чем к любому дереву. Хитин как у насекомых, переваривание снаружи, тело размером с лес и возрастом в тысячи лет. Царство, которое вышло на сушу раньше растений и однажды было самым высоким существом на Земле.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="content">
+    <div class="kicker">Что такое гриб · родство</div>
+    <h2>Ближе к нам, чем к берёзе</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Линней 1735:</b> грибы в царстве растений, раздел «хаос», потому что непонятно. Уиттекер 1969: отдельное царство. Молекулярная биология 1990-х: грибы и животные - одна ветвь, опистоконты, разошлись около миллиарда лет назад. Растения отделились раньше. Гриб тебе двоюродный, берёза - троюродная.</li>
+          <li><b>Общее с нами.</b> Нет фотосинтеза, едят готовую органику. Запасают гликоген, как печень, а не крахмал, как картошка. Клеточная стенка из хитина - того же, что панцирь краба и крыло жука. Поэтому лекарство против гриба почти всегда бьёт и по нам: мишени общие.</li>
+          <li><b>Отличие от нас.</b> Мы едим внутри: съел, потом переварил. Гриб переваривает снаружи: выделяет ферменты в среду, растворяет дерево, хлеб, труп или кожу, и всасывает раствор. Гриб не ест еду, он живёт внутри еды и растёт сквозь неё.</li>
+          <li><b>Устройство.</b> Тело - мицелий: нити-гифы толщиной 2-10 микрон, растущие кончиком. Километры нитей в одной горсти лесной почвы. Шляпка - временный орган для спор, живёт дни, мицелий - годы и тысячелетия.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/mycelium.png" alt="">
+        <div class="pcap">Гифы на гниющей древесине. Каждая нить растёт только кончиком, ветвится и срастается с соседними. Сеть без центра, без мозга и без края, которая ищет еду всей поверхностью сразу. То, что мы называем грибом, на этом снимке отсутствует.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="content">
+    <div class="kicker">Что такое гриб · масштаб</div>
+    <h2>Самое большое и одно из самых старых существ планеты</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/oregon.png" alt="">
+        <div class="pcap">Национальный лес Малур, Орегон. Под этой долиной один организм: опёнок тёмный, Armillaria ostoyae. Найден в 1998 году, когда искали причину гибели деревьев. Деревья убивал он же.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Опёнок из Орегона.</b> Площадь около 9,6 квадратных километров, это больше тысячи футбольных полей. Возраст по скорости роста от 2 400 до 8 600 лет. Масса оценивается от 7 до 35 тысяч тонн, синий кит весит 150. Все шляпки в долине генетически один клон, проверено ДНК.</li>
+          <li><b>Спаситель или убийца.</b> Этот же организм тысячи лет разлагает мёртвую древесину и возвращает лесу углерод. И он же убивает живые деревья, добираясь до корней. Одно существо, обе роли, вопрос в том, живое перед ним дерево или уже нет.</li>
+          <li><b>Прототакситы.</b> 420-370 миллионов лет назад, когда растения на суше были по колено, стояли столбы высотой до 8 метров. Век спорили, что это: дерево, водоросль, лишайник. Изотопы углерода в 2007 году показали: гриб. Самое высокое существо на суше своего времени ничего не фотосинтезировало, оно ело.</li>
+          <li><b>Кто вышел первым.</b> Грибы на суше с 1 миллиарда лет назад по спорным данным и с 450 миллионов по надёжным. Растения - около 470. Почти одновременно, и, как выяснится в главе про микоризу, не случайно: растения на сушу вышли, держась за гриб.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s7">
+  <div class="content">
+    <div class="kicker">Что такое гриб · работа</div>
+    <h2>Единственный, кто умеет есть дерево</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Лигнин.</b> Дерево на четверть состоит из лигнина, самого прочного природного полимера. Бактерии его почти не берут. Разлагать его целиком умеет только группа грибов белой гнили: они выделяют ферменты, которые рвут лигнин свободными радикалами, буквально сжигают его по молекуле.</li>
+          <li><b>Гипотеза угля.</b> Каменноугольный период, 360-300 миллионов лет назад: леса растут, падают и не гниют, потому что гриб, умеющий есть лигнин, ещё не появился. Стволы уходят под землю целыми. Так, по одной из версий, накопилась большая часть угля планеты. Когда белая гниль появилась, около 290 миллионов лет назад, накопление резко упало. Гипотеза спорная, но красивая: весь уголь мира - это 60 миллионов лет, когда никто не умел есть дерево.</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Круговорот.</b> Без грибов мёртвое дерево лежало бы веками. Лес за год сбрасывает тонны листвы и веток на гектар, и за год-два это исчезает. Углерод, азот и фосфор из мёртвого возвращаются в живое почти исключительно через гриб. Он не часть леса, он его пищеварение.</li>
+          <li><b>Спаситель-убийца в одном ферменте.</b> Тот же набор ферментов, который делает гриб санитаром леса, делает его врагом дома: домовый гриб Serpula lacrymans съедает балки за годы, «плачет» каплями воды, которую сам делает из древесины, и разрушает больше зданий, чем пожары. Он не злой. Он не отличает мёртвую сосну в лесу от мёртвой сосны в перекрытии.</li>
+          <li><b>Чернобыль.</b> На стенах разрушенного реактора в 1991 году нашли чёрную плесень Cladosporium, растущую в сторону источника излучения. В 2007 показали, что меланин в её стенках преобразует гамма-излучение в рост, как хлорофилл свет. В 2019 её испытали на МКС как живой радиационный щит. Гриб ест то, что убивает всё остальное.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2: СПОРЫ ============ -->
+<section class="slide chapter" id="s8">
+  <div class="bgimg"><img src="assets/ch_spores.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2</div>
+    <h1>Споры: расчёт на миллиард</h1>
+    <p class="lead">Одна шляпка отпускает миллиарды спор в день. Они летают в стратосфере, лежат в гробницах тысячи лет, выживают снаружи космической станции. Всё, что мы открываем на Земле, уже заражено грибом, потому что гриб был там до нас и ждал.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s9">
+  <div class="content">
+    <div class="kicker">Споры · числа</div>
+    <h2>Сколько, куда и как долго</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/spore_print.png" alt="">
+        <div class="pcap">Споровый отпечаток: шляпка, положенная на бумагу на ночь. Пыль под ней - миллионы спор, каждая 5-10 микрон. По цвету отпечатка микологи отличают съедобный гриб от смертельного. Это старейший тест в микологии, и он всё ещё работает.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Сколько.</b> Обычный шампиньон отпускает около миллиарда спор в сутки, за жизнь шляпки десятки миллиардов. Гигантский дождевик - около 7 триллионов за один раз. Если бы прорастала каждая, за два поколения дождевики весили бы больше Земли. Прорастает одна на миллиарды. Стратегия гриба - не точность, а ковровая бомбардировка.</li>
+          <li><b>Куда.</b> Споры - самая массовая живая частица в воздухе: до 50 миллионов тонн в год поднимается в атмосферу. Их ловят на высоте десятков километров, они переносятся через океаны и, по одной из гипотез, служат ядрами конденсации для дождя. Гриб сеет сам себя вместе с погодой.</li>
+          <li><b>Как долго.</b> Споры выдерживают высыхание, заморозку и вакуум. В японском эксперименте «Тампопо» споры аспергилла год провисели снаружи МКС и проросли. На «Мире» плесень ела иллюминаторы и провода, на МКС экипаж регулярно моет стены. Первый организм, который улетит с людьми к Марсу, полетит без приглашения.</li>
+          <li><b>Проклятие фараонов.</b> 1973, Краков, вскрыта гробница короля Казимира IV. В следующие годы умерли 10 из 12 участников. В гробнице нашли Aspergillus flavus, споры которого пролежали 500 лет и дали афлатоксин и лёгочную инфекцию. Версия про гробницу Тутанхамона та же, но недоказанная. Проклятие - это гриб, который ждал.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s10">
+  <div class="content">
+    <div class="kicker">Споры · стрельба</div>
+    <h2>Как стреляет гриб: катапульта, пушка и ветер</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>Капля Буллера</h3>
+        <p>У шляпочных грибов спора сидит на ножке, на ней конденсируется капля воды. Когда капля сливается с плёнкой на споре, центр масс рывком смещается, и спора отстреливается на доли миллиметра с ускорением в десятки тысяч g. Этого хватает, чтобы вылететь из-под шляпки в воздух между пластинками. Дальше ветер.</p>
+      </div>
+      <div class="card">
+        <h3 class="am">Пушка Pilobolus</h3>
+        <p>Гриб на навозе. Ему надо попасть на траву, которую съест корова, чтобы снова оказаться в навозе. Он выращивает водяную пушку под давлением, наводит её на свет и выстреливает пакет спор на 2 метра со скоростью до 25 м/с. По ускорению это один из самых быстрых бросков в живой природе, быстрее любого животного.</p>
+      </div>
+      <div class="card">
+        <h3 class="rd">Ветер, который делает сам</h3>
+        <p>Шляпка испаряет воду и охлаждается на пару градусов ниже воздуха. Холодный воздух у пластинок опускается, тёплый снаружи поднимается, и вокруг гриба возникает свой микроветер, который выносит споры вверх даже в полный штиль. Показано в 2013 году лазером на грибах в стеклянной камере. Гриб не ждёт ветра, он его делает.</p>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:14px"><b>Зачем это знать.</b> Каждый вдох в лесу - тысячи спор. Каждый в городе - сотни. Аллергия на плесень, астма, «синдром больного здания» - это не гриб на стене, это его расчёт на миллиард, который сработал у тебя в бронхах. И тот же расчёт в следующих главах даст хлеб, пиво и пенициллин: споры Флеминга тоже прилетели через открытое окно.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 3: ДРОЖЖИ ============ -->
+<section class="slide chapter" id="s11">
+  <div class="bgimg"><img src="assets/ch_yeast.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3 · самоубийца</div>
+    <h1>Хлеб и пиво: первая биотехнология и первый яд</h1>
+    <p class="lead">Человек приручил дрожжи за десять тысяч лет до того, как узнал, что они существуют. Гриб, который поднимает хлеб и варит пиво, делает это одним способом: производит яд, убивает всех соседей и умирает в нём последним. Крепость вина - это не рецепт, это предел выживания гриба в собственных отходах.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s12">
+  <div class="content">
+    <div class="kicker">Дрожжи · история</div>
+    <h2>Десять тысяч лет до микроскопа</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/yeast_vat.png" alt="">
+        <div class="pcap">Saccharomyces cerevisiae, «сахарный гриб пива». Клетка 5-10 микрон, размножается почкованием, удваивается за полтора часа. Пузырьки - углекислый газ, он поднимает хлеб. Жидкость вокруг - спирт, он делает пиво. Одна реакция, два продукта, две цивилизации.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>13 тысяч лет назад,</b> пещера Ракефет, Израиль: в каменных ступках следы брожения дикой пшеницы. Пиво старше хлеба и, возможно, старше земледелия: по одной из гипотез, зерно начали сеять ради пива, а не каши. Египет к 3000 году до н. э. кормил строителей пирамид пайком из хлеба и пива, рабочему полагалось 4-5 литров в день.</li>
+          <li><b>Кто это делает, не знал никто.</b> Закваску берегли, передавали по наследству, называли «божьей», в Средние века пивовары молились об удачном брожении. Левенгук увидел дрожжевые клетки в 1680 году и решил, что это крахмал. Химики XIX века считали брожение чистой химией без всякой жизни.</li>
+          <li><b>1857, Пастер.</b> Виноделы Лилля теряют партии вина, оно скисает. Пастер под микроскопом видит: там, где вино хорошее, круглые клетки, где скисло - палочки. Брожение делают живые организмы, разные организмы делают разное. Отсюда пастеризация, отсюда вся микробиология, отсюда идея, что болезни тоже от микробов.</li>
+          <li><b>2001, Нобелевская премия</b> Хартвеллу, Нерсу и Ханту за гены клеточного цикла, найденные на дрожжах. Гриб, который печёт хлеб, объяснил, как делится клетка человека, и почему рак - это сломанный цикл. В 1996 дрожжи стали первым существом с ядром, у которого прочли весь геном.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s13">
+  <div class="content">
+    <div class="kicker">Дрожжи · стратегия</div>
+    <h2>Сделай яд, убей всех, умри последним</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Зачем дрожжам спирт.</b> Спирт - отход, на нём дрожжи теряют две трети энергии сахара. Дышать кислородом было бы в 15 раз выгоднее. Но около 100 миллионов лет назад, когда появились сладкие плоды, предки пивных дрожжей выбрали брожение даже при кислороде. Причина: спирт - яд для бактерий-конкурентов. Дрожжи заливают еду ядом, в котором могут жить только они.</li>
+          <li><b>Умри последним.</b> Пивные штаммы глохнут при 8-10% спирта, винные тянут до 15-16%, рекордные лабораторные около 20. Дальше мембрана течёт, ферменты сворачиваются, клетка умирает в том, что сама сделала. Всё крепче вина - это перегонка, потому что гриб больше не может.</li>
+          <li><b>Почему это план, а не ошибка.</b> К тому моменту, когда спирт добивает самих дрожжей, сахар съеден, конкуренты мертвы, а споры уже разлетелись. Дрожжи умирают последними, и это единственное, что имеет значение для отбора. В природе есть и хитрость: если сахар кончился, а кислород есть, они разворачивают реакцию и съедают свой спирт обратно. В закрытой бочке этого шанса нет.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Девиз главы</h3>
+          <p style="font-size:22px;color:#fff;margin:8px 0 6px"><b>Venenum fac, omnes neca, ultimus mori.</b></p>
+          <p>«Сделай яд, убей всех, умри последним». Это не латинская пословица, это стратегия Saccharomyces, записанная тремя императивами. Она же объясняет, почему хлеб пахнет спиртом, почему пиво не киснет, и почему крепость вина упирается в 16 градусов уже три тысячи лет.</p>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Три лица в одной бочке.</b> Спаситель: хлеб, пиво, вино, квас, кефир, кумыс, витамины группы B, инсулин, который с 1980-х делают в дрожжах. Убийца: для бактерий вокруг, и для нас, если считать алкоголь. Самоубийца: буквально, каждый раз, в каждой бочке. Первый герой лекции носит все три маски одновременно, и мы просто разливаем результат по бутылкам.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s14">
+  <div class="content">
+    <div class="kicker">Дрожжи · Пастер</div>
+    <h2>Человек, который увидел, кто варит</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Колба с лебединой шеей, 1861.</b> Бульон в колбе с изогнутым горлом не портится годами: воздух проходит, споры оседают в изгибе. Наклони колбу, чтобы бульон коснулся изгиба, и он зацветёт за сутки. Так Пастер закрыл двухтысячелетний спор о самозарождении жизни: ничто не заводится само, всё прилетает спорами. Колба до сих пор стоит в Париже, бульон в ней чистый.</li>
+          <li><b>«Исследования о пиве», 1876.</b> Пастер взялся за пиво из патриотизма: после войны 1870 года хотел, чтобы французское пиво победило немецкое. Победило не пиво, а метод: чистые культуры дрожжей, стерильные ёмкости, контроль температуры. Через семь лет датчанин Хансен в Карлсберге выделил первый чистый штамм лагерных дрожжей и раздал его пивоварам бесплатно. Всё современное пиво - его потомки.</li>
+          <li><b>Спаситель или убийца.</b> Тот же Пастер через десять лет сделал вакцину от бешенства, а его метод убил в вине и молоке ту же жизнь, которую он открыл. Пастеризация - это массовое убийство грибов и бактерий ради того, чтобы еда пережила дорогу. Мы в этой истории на стороне того, кто убивает.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/pasteur.png" alt="">
+        <div class="pcap">Лаборатория Пастера, Париж. Колбы с лебединой шеей, микроскоп, капля вина под стеклом. Из этой капли выросли микробиология, стерильная хирургия и идея, что болезнь - это чей-то обед.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 4: ФЛЕМИНГ ============ -->
+<section class="slide chapter" id="s15">
+  <div class="bgimg"><img src="assets/ch_fleming.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4 · убийца на службе</div>
+    <h1>Пенициллин: гриб, который убивает, чтобы есть</h1>
+    <p class="lead">Плесень в чашке Флеминга не спасала людей. Она убивала бактерий, чтобы съесть питательную среду без конкурентов. Мы взяли её оружие себе, и с 1943 года оно спасло, по разным оценкам, от 80 до 200 миллионов жизней. Потом второй гриб из норвежской почвы разрешил пересаживать органы, а третий стал самым продаваемым лекарством в истории.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s16">
+  <div class="content">
+    <div class="kicker">Пенициллин · чашка</div>
+    <h2>3 сентября 1928: открытое окно и отпуск</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/petri.png" alt="">
+        <div class="pcap">Колония Penicillium и прозрачное кольцо вокруг: там, где плесень, стафилококк растворился. Флеминг назвал сок плесени пенициллином и 12 лет не мог его ни очистить, ни сохранить. Чашка сохранилась, она в Британском музее.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Случайность.</b> Флеминг уехал в отпуск, оставив чашки со стафилококком на столе. Спора плесени залетела в окно, лето было холодным, плесень успела вырасти раньше бактерий, потом потеплело, бактерии выросли везде, кроме кольца вокруг плесени. Все четыре условия нужны одновременно. Флеминг потом сам не смог этого повторить.</li>
+          <li><b>Двенадцать лет в столе.</b> Пенициллин был нестабилен, его не удавалось выделить, и Флеминг к 1935 году почти забросил тему. В 1939 в Оксфорде Флори и Чейн подняли статью, выделили вещество, в 1940 вылечили мышей, в 1941 первого человека, полицейского Александра. Пенициллин кончился на пятый день, его добывали обратно из мочи пациента. Он умер.</li>
+          <li><b>Дыня из Пеории.</b> В 1941 США ищут штамм для промышленности. Лаборантка Мэри Хант приносит с рынка в Пеории гнилую дыню с золотистой плесенью. Penicillium chrysogenum с неё даёт в 200 раз больше пенициллина, чем плесень Флеминга. Все промышленные штаммы мира - потомки той дыни. К высадке в Нормандии в 1944 пенициллина хватило на всех раненых.</li>
+          <li><b>Нобелевская премия 1945</b> Флемингу, Флори и Чейну. Флеминг в нобелевской речи предупредил: если давать пенициллин в малых дозах, бактерии научатся его не бояться. Устойчивый стафилококк нашли в 1942 году, до того, как пенициллин поступил в аптеки.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s17">
+  <div class="content">
+    <div class="kicker">Пенициллин · механизм</div>
+    <h2>Как гриб убивает бактерию и почему не убивает нас</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Мишень.</b> У бактерии стенка из пептидогликана, сшитого поперечными мостиками. Пенициллин похож по форме на кирпичик этой стенки и садится в фермент, который мостики сшивает. Бактерия растёт, стенка не сшивается, и на первом же делении клетка лопается от собственного давления. Пенициллин не травит, он ломает стройку.</li>
+          <li><b>Почему безопасен.</b> У человека нет пептидогликана, у гриба тоже, у него хитин. Молекула бьёт по тому, чего у нас нет. Это идеальный антибиотик по определению: мишень есть только у врага. Обратная сторона в главе про грибы внутри нас: у гриба и человека мишени общие, поэтому противогрибковых лекарств за сто лет придумано четыре класса, а антибиотиков сотни.</li>
+          <li><b>Зачем это грибу.</b> Плесень живёт на том же, что бактерии: сахар, белок, гниль. Бактерии делятся каждые 20 минут, гриб медленнее в разы. Единственный способ выиграть гонку - убить бегунов. Пенициллин, стрептомицин, цефалоспорины, всё это оружие почвенной войны, которое шло сотни миллионов лет до нас. Мы не изобрели антибиотики, мы их подслушали.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="row">
+            <div class="bx cy"><b>Гриб</b><span>выделяет пенициллин в почву</span></div>
+            <div class="arr">→</div>
+            <div class="bx"><b>Бактерия</b><span>не может сшить стенку</span></div>
+            <div class="arr rd">→</div>
+            <div class="bx rd"><b>Деление</b><span>клетка лопается</span></div>
+            <div class="arr">→</div>
+            <div class="bx am"><b>Гриб</b><span>ест среду один</span></div>
+          </div>
+          <div class="cap">Механизм тот же в чашке 1928 года, в почве 300 миллионов лет назад и в твоей крови после укола.</div>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Цена.</b> До пенициллина царапина, пневмония и роды убивали регулярно: сепсис после родов уносил каждую сотую роженицу, смертность от пневмонии была 30%. После - единицы процентов. Средняя продолжительность жизни за XX век выросла примерно на 30 лет, и антибиотикам приписывают до трети этого прироста. Плесень с окна - самый эффективный врач в истории.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s18">
+  <div class="content">
+    <div class="kicker">Пенициллин · после</div>
+    <h2>Норвежская почва и японский рис: пересадка органов и статины</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Циклоспорин.</b> 1969 год, сотрудник швейцарской фармкомпании в отпуске на плато Хардангервидда в Норвегии берёт горсть земли в пакетик: компания просит всех привозить почву для поиска новых антибиотиков. В пакетике гриб Tolypocladium inflatum. Антибиотик из него слабый, но в 1972 Жан-Франсуа Борель замечает: он глушит иммунитет, причём точечно, только Т-клетки.</li>
+          <li><b>Что это дало.</b> До циклоспорина пересаженная почка приживалась у половины пациентов, печень и сердце были почти безнадёжны: иммунитет отторгал чужой орган. С 1983 года приживаемость почки за год выросла к 90%, пересадка сердца и печени стала рутиной. Каждый живущий с чужим органом живёт на грибе с норвежского плато. Гриб глушил иммунитет насекомых, чтобы их есть. Мы применили это к себе.</li>
+          <li><b>Статины.</b> 1973, Акира Эндо в Токио ищет в плесени вещество, мешающее синтезу холестерина, по той же логике: грибы должны воевать с конкурентами через их обмен веществ. Находит в Penicillium citrinum мевастатин. Следующий, ловастатин из Aspergillus terreus, в 1987 выходит на рынок. Статины сегодня принимают около 200 миллионов человек, это самый продаваемый класс лекарств в истории, и он тоже из плесени.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/cyclosporin.png" alt="">
+        <div class="pcap">Хардангервидда, Норвегия. Отпускник с пакетиком земли. Из этой горсти вырастет вся современная трансплантология. Компания платила сотрудникам за такие пакетики, потому что знала: почва - самая большая аптека планеты, и заведуют ею грибы.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 5: СЫР ============ -->
+<section class="slide chapter" id="s19">
+  <div class="bgimg"><img src="assets/ch_cheese.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5 · спасает, убивая</div>
+    <h1>Сыр, соевый соус и саке: обед плесени, который мы доедаем</h1>
+    <p class="lead">Рокфор делает тот же Penicillium, что и пенициллин, и делает то же самое: выделяет антибиотик, убивает всех вокруг и ест молоко один. Мы просто встали на сторону гриба и едим результат его войны. Половина азиатской кухни - тот же принцип с другой плесенью.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s20">
+  <div class="content">
+    <div class="kicker">Сыр · плесень</div>
+    <h2>Рокфор: спасает сыр, убивая всех вокруг</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/roquefort.png" alt="">
+        <div class="pcap">Penicillium roqueforti в сыре. Синие жилы - это ходы, которые проколоты в головке спицами, чтобы плесени хватило воздуха. Она растёт по ходам, выделяет ферменты, и молочный белок вокруг превращается в то, за что платят. Без проколов гриб задохнётся, и получится обычный сыр.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Легенда и пещеры.</b> Пастух в Рокфор-сюр-Сульзон оставил хлеб и сыр в пещере, погнался за девушкой, вернулся через месяц: хлеб в плесени, сыр в плесени, сыр вкусный. Пещеры Комбалу с постоянными 8-10 градусами и сквозняками - это естественная лаборатория с той плесенью, которая до сих пор носит имя деревни. В 1925 году Рокфор получил первое во Франции защищённое наименование, раньше любого вина.</li>
+          <li><b>Что делает плесень.</b> Penicillium roqueforti выделяет тот же класс веществ, что и его двоюродный брат из чашки Флеминга: антибиотики, которые давят бактерии, плюс ферменты, режущие жир и белок. Жир распадается на кислоты с запахом, белок - на аминокислоты со вкусом. Синий сыр - это молоко, переваренное грибом снаружи, как гриб переваривает всё. Мы едим его полуготовый обед.</li>
+          <li><b>Камамбер и бри.</b> Белая корка - Penicillium camemberti, растёт снаружи и переваривает сыр от корки к центру, поэтому спелый камамбер течёт. В 2023 году французские микологи объявили, что этот штамм за век клонирования потерял способность к половому размножению и вырождается: одна и та же плесень, размноженная миллиарды раз, накопила мутации. Камамбер может кончиться, потому что его гриб не умеет обновляться.</li>
+          <li><b>Спаситель-убийца в одной головке.</b> Та же плесень в сыре - деликатес, на хлебе - порча, в лёгких - болезнь, в кормовом сене - отравление скота. Ни одно её свойство не поменялось. Поменялось только место, где мы её застали.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s21">
+  <div class="content">
+    <div class="kicker">Сыр · Азия</div>
+    <h2>Кодзи: национальный гриб Японии</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Aspergillus oryzae.</b> Плесень, которую в Японии называют кодзи и с 2006 года официально считают «национальным грибом». Её высевают на пропаренный рис или сою, она за двое суток покрывает зерно белым пухом и выделяет ферменты, которые режут крахмал в сахар и белок в аминокислоты. Дальше приходят дрожжи из третьей главы. Без кодзи нет саке, мисо, соевого соуса, мирина и рисового уксуса.</li>
+          <li><b>Одомашненный убийца.</b> Ближайший дикий родственник кодзи - Aspergillus flavus, тот самый гриб из гробницы Казимира, производитель афлатоксина, самого сильного природного канцерогена. Кодзи - это его потомок, у которого за две тысячи лет отбора выключились гены токсина. Люди приручили плесень так же, как волка: оставляли мягкую, выбрасывали злую. Геном прочитан в 2005 году, гены яда на месте, но сломаны.</li>
+          <li><b>Умами.</b> Вкус, который в 1908 году Кикунаэ Икэда выделил из водорослей и назвал пятым вкусом, это глутамат, свободная аминокислота. Соевый соус, мисо, выдержанный сыр, вяленое мясо - везде глутамат сделан одним способом: гриб или бактерия разрезали белок. Вкус «вкусно» - это вкус чужого пищеварения.</li>
+          <li><b>Индустрия.</b> Тот же кодзи и его родня сегодня делают ферменты для стирального порошка, для соков, для хлеба, лимонную кислоту для всей пищевой промышленности: 2 миллиона тонн в год из Aspergillus niger. Каждая банка газировки с лимонной кислотой - продукт чёрной плесени, той самой, что растёт в душе.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/koji.png" alt="">
+        <div class="pcap">Кодзи-муро, тёплая комната для плесени на сакеварне. Рис, засеянный спорами, лежит на кедровых лотках, и мастер каждые несколько часов переворачивает его руками, чтобы гриб не перегрелся. Профессия существует 1300 лет, инструмент - тот же гриб.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 6: ГОЛОД И БЕЗУМИЕ ============ -->
+<section class="slide chapter" id="s22">
+  <div class="bgimg"><img src="assets/ch_famine.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6 · убийца</div>
+    <h1>Голод и безумие: как гриб переписал карту и историю</h1>
+    <p class="lead">Один паразит картофеля убил миллион человек и выгнал ещё два миллиона за океан, и Америка стала другой страной. Другой, на ржи, тысячу лет жёг Европу «антоновым огнём», сводил с ума деревни, возможно, стоял за Салемом и в итоге дал Хофману ЛСД. Ни один из них не хотел нам зла. Они ели.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s23">
+  <div class="content">
+    <div class="kicker">Голод · Ирландия</div>
+    <h2>1845-1852: миллион умерших, два миллиона уехавших</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/blight.png" alt="">
+        <div class="pcap">Phytophthora infestans, «пожиратель растений». Тёмные пятна на листе и белый пух спор снизу. За неделю тёплой сырой погоды поле чернеет, клубни в земле превращаются в чёрную слизь. Запах гниющего картофеля - последнее, что помнили о родине эмигранты.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Почему именно Ирландия.</b> К 1840-м треть населения жила на картошке и почти ни на чём другом: акр картофеля кормил семью, зерно уходило в аренду. Сорт по всей стране один, «Лампер», размноженный клубнями, то есть один клон на восемь миллионов человек. Для паразита это не страна, а одно бесконечное поле.</li>
+          <li><b>1845.</b> Споры приплыли из Америки, вероятно, с грузом картофеля в Бельгию, за лето разлетелись по Европе. В Ирландии первый год погибла треть урожая, в 1846 - почти весь. Правительство в Лондоне не остановило вывоз зерна: рынок должен работать. Население упало с 8,5 миллионов в 1845 до 6,5 в 1851 и не восстановилось до сих пор: сегодня на острове около 7 миллионов.</li>
+          <li><b>Куда уехали.</b> В Америку, на «гробовых кораблях», где умирал каждый пятый. К 1850 году ирландцы - четверть населения Нью-Йорка и Бостона. Полиция, пожарные, профсоюзы, католическая церковь, семья Кеннеди, - это результат работы одного гриба на одном острове. Демографию США переписала не политика, а оомицет.</li>
+          <li><b>Честность: гриб не гриб.</b> Фитофтору 150 лет считали грибом. Молекулярная биология 1990-х показала: это оомицет, ближе к бурым водорослям, чем к плесени. Похож на гриб потому, что живёт как гриб: нити, споры, переваривание снаружи. Одинаковый образ жизни делает одинаковыми даже неродственных. Для картошки и для Ирландии разницы не было.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s24">
+  <div class="content">
+    <div class="kicker">Безумие · спорынья</div>
+    <h2>Антонов огонь: тысяча лет отравления хлебом</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Что это.</b> Claviceps purpurea, спорынья, заражает цветок ржи и вместо зерна выращивает чёрный рожок. Рожок мелют вместе с мукой. В нём алкалоиды, сжимающие сосуды и действующие на мозг. Две формы отравления: гангренозная, когда пальцы и ноги чернеют и отваливаются без боли, и судорожная, с галлюцинациями, корчами и ощущением, что тело горит изнутри.</li>
+          <li><b>Масштаб.</b> Аквитания, 944 год: около 40 тысяч умерших за одну эпидемию. Средние века: десятки вспышек по всей Европе, «святой огонь», «антонов огонь», потому что лечили в монастырях святого Антония, и там помогало: монахи кормили чистым хлебом. Русь: в 1880-х спорынья была на треть ржаных полей, ерготизм лечили в земских больницах до XX века.</li>
+          <li><b>Гипотезы про безумие.</b> Пляска святого Витта, когда деревни танцевали до смерти, - одна из версий про спорынью. Салемские ведьмы 1692: в 1976 году Линда Капорель показала, что сырое лето, ржаная диета и симптомы «одержимых» девочек совпадают с судорожным ерготизмом. Версия спорная, историки её оспаривают. Но что спорынья веками была фоном европейской психики, не оспаривает никто.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/ergot.png" alt="">
+        <div class="pcap">Рожки спорыньи на колосе ржи. Каждый рожок - это склероций, покоящаяся стадия гриба, набитая алкалоидами. Один рожок на сто зёрен уже опасен. До XVII века их считали частью растения и не отделяли при помоле.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s25">
+  <div class="content">
+    <div class="kicker">Безумие · от яда к лекарству</div>
+    <h2>Та же спорынья: роды, мигрень, ЛСД</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>Акушерки</h3>
+        <p>Повитухи с XVI века давали спорынью для сокращения матки: остановить кровотечение после родов и ускорить их. В 1808 американский врач Стирнс описал это официально. Эрготамин и эргометрин из спорыньи до сих пор в списке ВОЗ как средства от послеродового кровотечения. Гриб, который отрывал ноги, спас больше рожениц, чем убил крестьян.</p>
+      </div>
+      <div class="card">
+        <h3 class="am">Мигрень</h3>
+        <p>Те же алкалоиды сжимают сосуды мозга, и с 1920-х эрготамин - лекарство от мигрени. От него же произошли триптаны, современные препараты. Гангрена и лечение - одно свойство, разница в дозе и в том, какой сосуд сжимается.</p>
+      </div>
+      <div class="card">
+        <h3 class="rd">Хофман, 1943</h3>
+        <p>Альберт Хофман в Базеле перебирает производные лизергиновой кислоты из спорыньи в поисках стимулятора кровообращения. Двадцать пятое, ЛСД-25, синтезировано в 1938 и отложено. В апреле 1943 он его повторяет, случайно получает каплю на кожу, а 19 апреля принимает намеренно и едет домой на велосипеде. «День велосипеда». Из яда средневековых крестьян вышел самый сильный психоактив в истории.</p>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:14px"><b>Спаситель-убийца в одной молекуле.</b> Эрготамин останавливает кровотечение и отрывает пальцы. Лизергиновая кислота - основа лекарства от мигрени и ЛСД. Ни одно вещество не поменялось со времён Аквитании. Поменялось только то, кто мелет и сколько сыплет. Формула Парацельса «только доза делает яд» в этой главе буквальна, и мы к ней вернёмся в последней главе, где у одной шляпки окажутся все три лица.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 7: МИКОРИЗА ============ -->
+<section class="slide chapter" id="s26">
+  <div class="bgimg"><img src="assets/ch_myco.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 7 · спаситель</div>
+    <h1>Микориза: лес стоит на грибе</h1>
+    <p class="lead">Девять из десяти растений на Земле не могут жить без гриба на корнях. Растение платит сахаром, гриб приносит воду и фосфор, которые корень сам не достанет. Растения вышли на сушу 470 миллионов лет назад, держась за гриб, и с тех пор не отпускали. А лишайник - это гриб, который вообще завёл себе водоросль вместо огорода.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s27">
+  <div class="content">
+    <div class="kicker">Микориза · сделка</div>
+    <h2>Сахар за фосфор: договор возрастом 400 миллионов лет</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Что это.</b> Микориза, «грибокорень»: гифы гриба оплетают или прорастают корень, и площадь всасывания у растения растёт в десятки и сотни раз, потому что нить в тысячу раз тоньше корневого волоска и лезет туда, куда корень не может. Гриб отдаёт воду, фосфор, азот, микроэлементы. Растение отдаёт от 10 до 30% всего сахара, который сделало на свету. Это самая большая сделка в биосфере: примерно 13 миллиардов тонн углерода в год уходит из растений в грибы под землю.</li>
+          <li><b>Кто первый.</b> Райниевые черты в Шотландии, 407 миллионов лет: у самых первых наземных растений, ещё без настоящих корней, в тканях уже сидят гифы гриба, устроенные как у современной микоризы. Растения не смогли бы выйти из воды на голый камень без того, кто добывает из камня минералы. Гриб был первым садовником, растение - первой грядкой.</li>
+          <li><b>Трюфель и белый.</b> Почти все грибы, за которые платят, микоризные: белый, подосиновик, лисичка, трюфель. Их нельзя вырастить на грядке, потому что у них нет еды без дерева: они не разлагают, они торгуют. Килограмм белого трюфеля стоит как подержанная машина именно потому, что для него нужен дуб, десятилетия и договор, который человек не умеет заключать сам.</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>«Подземный интернет».</b> 1997 год, Сюзанна Симард в Британской Колумбии метит углерод изотопами и показывает: сахар из берёзы через общую грибную сеть попадает в соседнюю пихту, и больше тогда, когда пихта в тени. Журнал Nature выносит на обложку «wood-wide web». Отсюда книги, фильм «Аватар» и идея, что лес - одно существо, где старые деревья кормят молодые.</li>
+          <li><b>Честность: что доказано, а что нет.</b> Что сети есть и что вещества по ним идут, измерено многократно. Что деревья через них «помогают», «предупреждают» и «узнают родню», в 2023 году три ведущих миколога разобрали по всем публикациям и показали: почти все такие выводы сделаны на единичных опытах, часто в горшках, а поток чаще идёт в сторону гриба, а не соседа. Лес стоит на грибе - факт. Лес думает через гриб - пока красивая гипотеза, и в ней гриб скорее посредник, который берёт комиссию с обеих сторон.</li>
+          <li><b>Спаситель с условием.</b> Тот же гриб, если растению не хватает света и оно платит мало, переключается: перестаёт отдавать фосфор и начинает есть корень. Договор держится, пока обе стороны платят. Микориза - не дружба, это рынок, и на нём тоже бывают банкротства.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s28">
+  <div class="content">
+    <div class="kicker">Микориза · лишайник</div>
+    <h2>Лишайник: гриб, который завёл себе огород</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/lichen.png" alt="">
+        <div class="pcap">Накипной лишайник на граните. Снаружи гриб, внутри слой водоросли. Гриб растворяет камень кислотой и держит воду, водоросль делает сахар. Растёт на миллиметр в год, живёт тысячи лет, и по его размеру датируют ледники и каменные стены.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Что это.</b> В 1867 году швейцарец Швенденер объявил, что лишайник - не отдельный организм, а гриб, внутри которого живёт водоросль или цианобактерия. Ботаники обиделись и не верили ещё тридцать лет: слишком похоже на рабство. Сегодня известно около 20 тысяч видов лишайников, и все они - грибы, которые вместо того чтобы искать еду, выращивают её внутри себя.</li>
+          <li><b>Где живут.</b> На 8% суши лишайник - главный или единственный покров: Антарктида, высокогорье, пустыни, голые скалы. Первыми заселяют новую лаву, разрушают камень и делают из него первую почву для всех, кто придёт после. Ягель, которым живёт северный олень, а через оленя - вся тундра, это лишайник.</li>
+          <li><b>Космос.</b> В 2008 году лишайники полтора года провисели снаружи МКС в открытом космосе: вакуум, минус 120 и плюс 120, полный ультрафиолет. Вернулись, отогрелись и продолжили фотосинтез. Ни одно другое сложное существо такого не выдержало. Если жизнь и путешествует между планетами, то, скорее всего, в таком виде: гриб с огородом внутри.</li>
+          <li><b>Договор или захват.</b> Водоросль внутри лишайника отдаёт грибу до 80% сахара и размножается медленнее, чем на свободе. Гриб без неё умирает, она без него живёт. Спаситель для камня, тундры и оленя, и одновременно самая старая оранжерея с рабочей силой без зарплаты. Со стороны водоросли эта глава называлась бы «Убийца».</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 8: ГРИБ ВНУТРИ НАС ============ -->
+<section class="slide chapter" id="s29">
+  <div class="bgimg"><img src="assets/ch_inside.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 8 · убийца</div>
+    <h1>Гриб внутри нас: почему он почти не может, и почему это меняется</h1>
+    <p class="lead">Грибковые инфекции убивают больше людей в год, чем малярия, и об этом почти никто не знает. При этом из миллионов видов заражать нас умеют несколько сотен, и почти все они ждут одного: чтобы иммунитет выключили. Главная защита человека от гриба - температура тела. И она перестаёт работать.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s30">
+  <div class="content">
+    <div class="kicker">Внутри нас · кто</div>
+    <h2>Кандида, аспергилл и цифры, о которых не говорят</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Масштаб.</b> Оценка 2024 года в Lancet: около 6,5 миллионов инвазивных грибковых инфекций в год и 3,8 миллиона смертей, с ними связанных, из них 2,5 миллиона напрямую. Это больше туберкулёза и вдвое больше малярии. В новостях грибов нет, потому что они не дают эпидемий: они убивают по одному, в реанимациях, тех, кто уже болен.</li>
+          <li><b>Кандида.</b> Candida albicans живёт во рту и кишечнике у большинства людей всю жизнь и ничего не делает. Стоит иммунитету упасть - химиотерапия, ВИЧ, пересадка, долгий курс антибиотиков, убивший бактерий-соседей, - и дрожжевая клетка вытягивается в гифу, прорастает сквозь слизистую в кровь и селится на клапанах сердца и в мозге. Смертность при кандидемии около 40%. Тот же организм, который был во рту в тот момент, когда ты это читаешь.</li>
+          <li><b>Аспергилл.</b> Плесень из каждого вдоха. Здоровые лёгкие выбрасывают сотни спор в день без последствий. У человека после пересадки или на ИВЛ она прорастает в лёгочную ткань и по сосудам. Во время ковида аспергиллёз добивал тех, кого не добил вирус, до 15% пациентов в реанимациях в некоторых странах. Криптококк из голубиного помёта - главный убийца людей с ВИЧ в Африке, около 100 тысяч в год.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/ch_inside.png" alt="">
+        <div class="pcap">Кандида в ткани. Круглые клетки - мирная дрожжевая форма, нити - боевая. Переключение между ними занимает часы и зависит от температуры, кислотности и того, жив ли ещё иммунитет хозяина. Гриб не нападает. Он ждёт, пока можно.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s31">
+  <div class="content">
+    <div class="kicker">Внутри нас · защита</div>
+    <h2>Тридцать семь градусов: почему мы теплокровные</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Температурный барьер.</b> Большинство грибов растут при 25-30 градусах и почти не растут при 37. Из миллионов видов человека заражают сотни, а лягушек, насекомых и растения - десятки тысяч. Гипотеза Касадевалла: каждый градус выше 30 отсекает около 6% видов грибов. Тело в 37 градусов - печь, в которой гриб не живёт, и она стоит нам треть всей энергии еды.</li>
+          <li><b>Почему млекопитающие.</b> 66 миллионов лет назад, после астероида, планета покрылась гниющей органикой и грибами. По той же гипотезе, тогда теплокровные и получили решающее преимущество: рептилии заражались, тёплые звери нет. Мы, возможно, теплокровные потому, что грибы съели конкурентов. Гипотеза, не факт, но она объясняет, почему нас не ест то, что ест всех остальных.</li>
+          <li><b>Почему лекарств мало.</b> Гриб - эукариот, как мы: те же рибосомы, тот же способ читать ДНК, похожие мембраны. Бить по грибу, не задевая человека, почти негде. За сто лет придумано четыре класса противогрибковых, и главный, амфотерицин B, врачи зовут «амфо-ужасный» за удар по почкам. Антибиотиков сотни, потому что бактерия чужая. Гриб - родственник, и родственника лечить сложнее.</li>
+          <li><b>Что меняется.</b> Candida auris устойчива к двум, а часть штаммов ко всем трём классам лекарств, живёт на поверхностях неделями и растёт при 42 градусах. Касадевалл в 2019 предположил, что она первая приспособилась к жаре из-за потепления: чем теплее Земля, тем ближе среда к нашим 37, и барьер, защищавший млекопитающих 66 миллионов лет, начинает опускаться. Пока гипотеза. Но она объясняет, почему гриб, которого не было, появился сразу в трёх местах.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/candida_auris.png" alt="">
+        <div class="pcap">Candida auris. Найдена в 2009 году в ухе пациентки в Токио, к 2016 одновременно на трёх континентах, причём штаммы не родственные: она появилась в нескольких местах сразу. ВОЗ в 2022 году поставила её первой в списке грибов критического приоритета.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s32">
+  <div class="content">
+    <div class="kicker">Внутри нас · снаружи и в еде</div>
+    <h2>Грибок стопы, перхоть и самый сильный канцероген</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>Кожа</h3>
+        <p>Дерматофиты едят кератин: кожу, ногти, волосы. Грибок стопы у каждого пятого взрослого, ногтей у каждого десятого, это самая массовая инфекция человека вообще. Он живёт там, где 30 градусов и влажно, то есть в кроссовках. Перхоть - тоже гриб, Malassezia, который живёт на всех, ест кожное сало и у части людей вызывает воспаление. Ты никогда не бываешь без гриба на себе.</p>
+      </div>
+      <div class="card">
+        <h3 class="rd">Афлатоксин</h3>
+        <p>Aspergillus flavus на арахисе, кукурузе и рисе при влажном хранении делает афлатоксин B1, самый сильный природный канцероген из известных. В странах с сырыми складами рак печени в разы чаще, и до четверти случаев связывают с ним. В 1960 году в Англии за месяц умерли 100 тысяч индюшек от арахисовой муки, так его и нашли. Это дикий брат кодзи из главы про сыр.</p>
+      </div>
+      <div class="card">
+        <h3 class="am">Аллергия</h3>
+        <p>Споры плесени - вторая после пыльцы причина сезонной аллергии, и первая круглогодичной. Влажная квартира с чёрными углами - это не эстетика, это несколько тысяч спор на литр воздуха. Астма у детей в сырых домах чаще в полтора-два раза. Гриб на стене не заражает, он просто дышит на тебя своим расчётом на миллиард.</p>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:14px"><b>Итог главы.</b> Гриб внутри нас - не нападающий, а ждущий. Он живёт на всех, ест мёртвое и берёт живое, только когда живое перестаёт сопротивляться. Единственная страховка - иммунитет и температура. Первую мы регулярно выключаем сами, лекарствами, чтобы пересадить орган или добить рак. Вторую медленно выключает климат. Обе истории - про то, как спаситель из предыдущих глав получает шанс стать убийцей, не меняясь ни на один ген.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- ============ ГЛАВА 9: ЗОМБИ ============ -->
+<section class="slide chapter" id="s33">
+  <div class="bgimg"><img src="assets/ch_zombie.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 9 · убийца</div>
+    <h1>Зомби: гриб, который водит чужое тело</h1>
+    <p class="lead">Кордицепс заставляет муравья залезть на нужную высоту, вцепиться в лист и умереть ровно в полдень, а потом прорастает из его головы. Сериал про это снят, и в нём почти всё правда, кроме человека. Тем временем другой гриб уже устроил самое массовое вымирание от одного возбудителя в истории, и никто не заметил, потому что это были лягушки.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s34">
+  <div class="content">
+    <div class="kicker">Зомби · кордицепс</div>
+    <h2>Муравей, лист и полдень</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/ch_zombie.png" alt="">
+        <div class="pcap">Ophiocordyceps unilateralis и муравей-древоточец. Челюсти сжаты на жилке листа, «смертельная хватка». Стебель из головы - плодовое тело, которое через две недели начнёт сыпать споры на тропу, по которой ходят живые муравьи из той же колонии.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Сценарий.</b> Спора попадает на муравья, растворяет хитин и врастает внутрь. Несколько дней муравей живёт как обычно, гриб растёт в нём. Потом муравей уходит из колонии, залезает на растение на высоту около 25 сантиметров с северной стороны, где влажность и температура идеальны для гриба, вцепляется челюстями в жилку листа и умирает. Почти всегда около полудня. Ни один параметр не случайный.</li>
+          <li><b>Как управляет.</b> В 2017 году Дэвид Хьюз просканировал заражённых муравьёв срез за срезом: гриб заполняет всё тело, оплетает каждую мышцу, но не входит в мозг. Он не переписывает разум муравья, он отбирает у него тело: дёргает мышцы напрямую, как кукловод, а мозг остаётся зрителем. Что муравей при этом чувствует, науке неизвестно.</li>
+          <li><b>Возраст трюка.</b> На ископаемом листе из Мессельского карьера в Германии, 48 миллионов лет, найдены следы той же «смертельной хватки»: муравей вцеплялся в жилку точно так же. Гриб водит муравьёв дольше, чем существуют люди, обезьяны и большая часть современных млекопитающих.</li>
+          <li><b>«The Last of Us».</b> Игра 2013 года и сериал 2023 берут кордицепс как есть: споры, управление телом, прорастание из головы, сеть под землёй. Единственная вольность - человек. Реальный кордицепс живёт при 25 градусах, и глава про 37 объясняет, почему он не переживёт даже первый час внутри нас. Пока планета не нагреется, у сериала есть та же проблема, что у Candida auris в обратную сторону.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s35">
+  <div class="content">
+    <div class="kicker">Зомби · лягушки</div>
+    <h2>Хитрид: самое массовое вымирание от одного возбудителя</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Что случилось.</b> С 1970-х по всему миру начали исчезать лягушки: в чистых горных ручьях Австралии, Панамы, Калифорнии за сезон пропадали целые популяции. Причину нашли только в 1998 году: Batrachochytrium dendrobatidis, хитридиевый гриб, который живёт в коже амфибий и ест кератин. Лягушка дышит и пьёт кожей; заражённая кожа перестаёт пропускать соли, сердце останавливается.</li>
+          <li><b>Масштаб.</b> Подсчёт 2019 года в Science: снижение численности у 501 вида амфибий, 90 видов вымерли полностью или с высокой вероятностью, ещё 124 потеряли более 90% особей. Это больше, чем любая болезнь сделала с любой группой позвоночных за всю известную историю. Гриб убил больше видов, чем чума, оспа и все вирусы вместе взятые.</li>
+          <li><b>Откуда.</b> Геномы показали: родина - Корейский полуостров, вылетел оттуда в 1950-1960-х с торговлей амфибиями, в том числе с шпорцевыми лягушками, которых развозили по миру как тест на беременность: лягушке впрыскивали мочу женщины, и она метала икру. Один медицинский тест разнёс убийцу по всем континентам. Люди - единственный переносчик, который работает через океан.</li>
+          <li><b>Почему не заметили.</b> Потому что лягушки. Вымирание 90 видов позвоночных за полвека прошло мимо новостей, потому что никто из них не был большим, тёплым и с глазами. Гриб оказался самым эффективным истребителем видов на планете после нас, и мы узнали об этом на двадцать лет позже, чем он начал.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/frog.png" alt="">
+        <div class="pcap">Золотая жаба Монтеверде, Коста-Рика. Последний раз видели в 1989 году. Один из первых видов, исчезновение которого потом связали с хитридом. От неё остались фотографии и спиртовые банки.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s36">
+  <div class="content">
+    <div class="kicker">Зомби · мыши, деревья, змеи</div>
+    <h2>Кто ещё вымирает от гриба прямо сейчас</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/bat.png" alt="">
+        <div class="pcap">Синдром белого носа. Гриб Pseudogymnoascus destructans растёт на морде и крыльях летучей мыши во время зимней спячки, когда температура тела падает до температуры пещеры. Мышь просыпается от зуда, тратит жир, и к весне не доживает.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Летучие мыши.</b> Первый случай в пещере под Нью-Йорком в 2006 году. К 2012 - 6 миллионов погибших, сегодня счёт идёт на десятки миллионов, отдельные колонии потеряли 90-100%. Гриб европейский, там мыши к нему привыкли, в Америку его, вероятно, завезли на ботинках спелеологи. Механизм тот же, что в главе про 37 градусов: гриб берёт тех, кто остыл. Спячка - единственное время, когда млекопитающее опускает барьер, и гриб входит ровно в эту дверь.</li>
+          <li><b>Деревья.</b> Голландская болезнь вязов: в XX веке погибли десятки миллионов деревьев в Европе и Америке, от вязовых аллей Лондона и Нью-Йорка почти ничего не осталось. Каштановый рак: к 1940 году уничтожил 4 миллиарда американских каштанов, главное дерево восточных лесов США, за 40 лет. Ясеневая усушка сейчас идёт по Европе, прогноз - потеря до 90% ясеней. Всё это грибы, привезённые с саженцами.</li>
+          <li><b>Змеи и кораллы.</b> Змеиный грибковый дерматит с 2006 года по восточным штатам США, кораллы Карибов в 1990-х гибли от аспергилла, смытого с суши. Список растёт каждое десятилетие, и причина одна: мы возим грибы через океаны быстрее, чем виды успевают вырастить к ним иммунитет.</li>
+          <li><b>Общий узор.</b> Ни один из этих грибов не убивает у себя дома. Хитрид не трогает корейских лягушек, белый нос не трогает европейских мышей. Убийцами их сделал переезд, а перевозчик - человек. Гриб не изменился ни на ген. Изменился адрес.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 10: ШЛЯПКА ============ -->
+<section class="slide chapter" id="s37">
+  <div class="bgimg"><img src="assets/ch_hat.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 10 · три лица</div>
+    <h1>Шляпка с тремя лицами</h1>
+    <p class="lead">Мухомор убивает мух, кормит шаманов и, по легенде, вёл берсерков в бой. Бледная поганка даёт три дня хорошего самочувствия, а потом печень. Маленький бурый гриб с поля был лекарством у индейцев, стал запрещённым в 1970-м и возвращается в клинику в 2020-х. Одна глава, где спаситель, убийца и самоубийца стоят на одной поляне.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s38">
+  <div class="content">
+    <div class="kicker">Шляпка · мухомор</div>
+    <h2>Красный с белыми точками: яд, лекарство и напиток по кругу</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/shaman.png" alt="">
+        <div class="pcap">Сибирь, чум, сушёные мухоморы над огнём. Коряки и чукчи ели их веками, и гриб был дороже оленя: за несколько шляпок отдавали целого. Записано шведским пленным офицером Страленбергом в 1730 году, и тогда же описан обычай, из-за которого он стал знаменит.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Имя.</b> Amanita muscaria, «мушиный», от Альберта Великого в XIII веке: шляпку крошили в молоко, мухи пили и падали. Первое применение мухомора в культуре - убийца мух, отсюда и русское название. Тот же гриб для человека редко смертелен: за век в Европе документированных смертей единицы, и почти все от путаницы с поганкой.</li>
+          <li><b>Что внутри.</b> Иботеновая кислота и мусцимол. Первая возбуждает, второй глушит, действует на те же тормозные рецепторы, что и алкоголь. Отсюда картина отравления: сначала сила и возбуждение, потом сон с видениями. При сушке иботеновая кислота превращается в мусцимол, поэтому сибиряки ели именно сушёные.</li>
+          <li><b>По кругу.</b> Мусцимол проходит через почки почти нетронутым. Шаман ел гриб, а те, кому гриба не досталось, пили его мочу и получали то же действие, и так до пяти человек по цепочке. Северные олени ради этого ходят за людьми и раскапывают снег. Одна шляпка кормила стойбище: самая экономная система в истории психоактивов.</li>
+          <li><b>Берсерки.</b> Версия, что викинги перед боем ели мухомор, принадлежит шведскому священнику Эдману, 1784 год, и опирается ни на что: в сагах гриб не упоминается. Но она живёт 240 лет, потому что красивая. Здесь честно: легенда, а не факт. Убийца мух, лекарство шамана, напиток по кругу - факты.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s39">
+  <div class="content">
+    <div class="kicker">Шляпка · поганка</div>
+    <h2>Бледная поганка: три дня, когда кажется, что обошлось</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Кто.</b> Amanita phalloides, родственница мухомора, зеленоватая, невзрачная, похожа на сыроежку и на шампиньон. На неё приходится около 90% смертей от грибов в мире. Половины шляпки хватает взрослому. Вкус, по словам выживших, хороший. Отварка, сушка, заморозка не помогают: яд термостойкий.</li>
+          <li><b>Механизм.</b> Аматоксины блокируют РНК-полимеразу II, фермент, который читает ДНК, чтобы делать белки. Клетка, которая не может делать белки, живёт, пока не износятся старые, и умирает. Первыми сдаются те, кто работает больше всех: печень и почки. Именно поэтому она убивает медленно, и именно поэтому это страшно.</li>
+          <li><b>Три дня.</b> 6-24 часа ничего. Потом сутки рвоты и поноса, как при отравлении, потом на второй-третий день становится легче: человек уходит из больницы, считает, что обошлось. В это время печень уже разрушена. На четвёртый-пятый день желтуха, кровотечения, кома. Смертность без пересадки печени 20-30%, ещё в 1950-х была выше половины. Ложное выздоровление - самая опасная фаза, врачи так и называют её.</li>
+          <li><b>Зачем это грибу.</b> Никто не знает. Аматоксин не защищает от слизней и насекомых, они поганку едят спокойно. Возможно, яд - побочный продукт, возможно, защита от чего-то, чего уже нет. Самый смертоносный гриб планеты убивает, по-видимому, случайно. Убийца без мотива, и в этом его отличие от всех остальных героев лекции.</li>
+        </ul>
+      </div>
+      <div class="pimg">
+        <img src="assets/deathcap.png" alt="">
+        <div class="pcap">Бледная поганка в лесной подстилке. Ни цвета, ни запаха предупреждения. Правило микологов: если у гриба есть кольцо на ножке, мешочек у основания и белые пластинки, его не берут в руки. Все три признака у неё есть, и все три легко не заметить.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s40">
+  <div class="content">
+    <div class="kicker">Шляпка · псилоцибин</div>
+    <h2>Маленький бурый гриб: от индейцев до клиники</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/psilocybe.png" alt="">
+        <div class="pcap">Psilocybe, «лысая голова». Мелкие бурые грибы на лугах и пастбищах, около 200 видов по всему миру. Ацтеки называли их теонанакатль, «плоть богов», и испанцы в XVI веке запретили их первыми, за четыреста лет до ООН.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>1957.</b> Банкир Гордон Уоссон публикует в журнале Life репортаж «В поисках волшебного гриба» о ночи у целительницы Марии Сабины в мексиканских горах. Тираж - миллионы. Через год Хофман, тот же, что с ЛСД, выделяет из присланных грибов псилоцибин. К Марии Сабине едут хиппи, деревня её изгоняет, она умирает в нищете. Первый спасённый и первая жертва одной и той же молекулы.</li>
+          <li><b>Как работает.</b> Псилоцибин в организме превращается в псилоцин, который садится на серотониновые рецепторы 5-HT2A в коре. На несколько часов ослабевает «сеть пассивного режима», та часть мозга, которая держит ощущение «я» и привычные маршруты мыслей. Мозг на это время связан иначе, чем обычно. Об этом была глава в «Трещине»; здесь только сам гриб.</li>
+          <li><b>Запрет и возвращение.</b> Гарвард 1960-62, Лири, скандал, увольнение. 1970 - полный запрет в США, 1971 - конвенция ООН, исследования останавливаются на 35 лет. 2006 - Университет Джонса Хопкинса возобновляет под строгим протоколом. 2018 - статус «прорывной терапии» от FDA по депрессии. 2022 - крупное испытание фазы 2b в NEJM. 2023 - Орегон разрешает лечение в лицензированных центрах. Это единственная глава, где убийца и спаситель поменялись местами не за век, а за одну жизнь.</li>
+          <li><b>Честность.</b> Эффективность против устойчивой депрессии показана, но выборки сотни человек, а не тысячи, и самое большое испытание 2024-2025 годов дало результат скромнее ранних. Лекарством он пока не стал. Что стало фактом: гриб с пастбища за 60 лет прошёл путь от «плоти богов» до «наркотика» и обратно до кандидата в лекарство, не поменяв ни одной молекулы.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s41">
+  <div class="content">
+    <div class="kicker">Шляпка · Парацельс</div>
+    <h2>Одна поляна, три лица и одна формула</h2>
+    <div class="dg">
+      <div class="row">
+        <div class="bx rd"><b>Мухомор</b><span>убивает мух, кормит шамана, редко убивает человека</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>Поганка</b><span>убивает без мотива, три дня притворяясь, что нет</span></div>
+        <div class="arr">→</div>
+        <div class="bx am"><b>Псилоцибе</b><span>«плоть богов», наркотик, кандидат в лекарство</span></div>
+        <div class="arr">→</div>
+        <div class="bx cy"><b>Спорынья</b><span>отрывала ноги, спасала рожениц, дала ЛСД</span></div>
+      </div>
+      <div class="cap">Четыре гриба, ни один не менял химию за последние тысячи лет. Менялись мы: кто ест, сколько, зачем и что об этом думает закон.</div>
+    </div>
+    <div class="cols" style="margin-top:20px">
+      <div>
+        <div class="card">
+          <h3 class="am">Sola dosis facit venenum</h3>
+          <p>«Только доза делает яд». Парацельс, 1538, ответ на обвинения в отравлении пациентов. Он имел в виду ртуть и мышьяк, но формула точнее всего работает на грибах: эрготамин в аптеке и в средневековом хлебе одна молекула, мусцимол в чуме и в стакане молока с мухами один, псилоцибин у Марии Сабины и в клинике Хопкинса один.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="rd">Где формула ломается</h3>
+          <p>Поганка. У аматоксина нет полезной дозы: полшляпки убивают, четверть калечит, любое количество вредит. Парацельс работает для всего, у чего есть мишень в нас, которую можно задеть чуть-чуть. Аматоксин бьёт по чтению ДНК, а это нельзя задеть чуть-чуть. Единственный герой лекции без второго лица - и тот, у кого мы не нашли мотива.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ЗАКЛЮЧЕНИЕ ============ -->
+<section class="slide chapter" id="s42">
+  <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Заключение</div>
+    <h1>Вердикт, вопрос и фраза с подвохом</h1>
+    <p class="lead">Что измерено, что выведено, что не знаем. Вопрос, на который лекция не отвечает. Гриб, который был до нас и съест нас после. И латинская строчка, которую Вергилий написал про пчёл, а подошла она дрожжам, лесу и одной цивилизации в бочке.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s43">
+  <div class="content">
+    <div class="kicker">Заключение · вердикт</div>
+    <h2>Научный вердикт: что измерено, что выведено, что не знаем</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>Измерено</h3>
+        <ul>
+          <li>Грибы ближе к животным, чем к растениям; разошлись около миллиарда лет назад</li>
+          <li>Опёнок в Орегоне: 9,6 км², тысячи лет, один клон по ДНК</li>
+          <li>Споры выживают год снаружи МКС; миллиарды с одной шляпки</li>
+          <li>Дрожжи глохнут при 8-16% спирта; Нобель 2001 за клеточный цикл</li>
+          <li>Пенициллин ломает стенку бактерий; циклоспорин глушит Т-клетки; статины из плесени</li>
+          <li>Ирландия: минус 2 миллиона за 6 лет; фитофтора - не гриб</li>
+          <li>Микориза у 90% растений, 407 миллионов лет; 3,8 млн смертей в год от грибов</li>
+          <li>Хитрид: 90 видов вымерли; кордицепс не входит в мозг муравья</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Выведено надёжно</h3>
+        <ul>
+          <li>Спирт у дрожжей - оружие против конкурентов, а не отход</li>
+          <li>Антибиотики - подслушанная почвенная война, а не изобретение</li>
+          <li>Температура 37 - главный барьер человека от гриба</li>
+          <li>Кодзи - одомашненный потомок ядовитого аспергилла</li>
+          <li>Грибы-убийцы видов не убивают дома; их сделал убийцами переезд</li>
+          <li>Псилоцибин действует через 5-HT2A и сеть пассивного режима</li>
+          <li>Лишайник - гриб с водорослью внутри, договор с перекосом</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="rd">Не знаем</h3>
+        <ul>
+          <li>Сколько всего видов грибов: от 2 до 4 миллионов, найдено меньше 10%</li>
+          <li>Зачем поганке аматоксин</li>
+          <li>«Думает» ли лес через грибную сеть, или гриб просто берёт комиссию</li>
+          <li>Стала ли Candida auris первым грибом, приспособленным к жаре</li>
+          <li>Теплокровные ли мы из-за грибов</li>
+          <li>Что чувствует муравей, пока гриб ведёт его на лист</li>
+          <li>Станет ли псилоцибин лекарством, или останется кандидатом</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note" style="margin-top:14px">Правая колонка длинная, потому что царство изучено меньше чем на десятую часть. Каждая горсть лесной земли содержит виды, которых нет ни в одном каталоге. Самая большая аптека и самое большое кладбище планеты почти не описаны, и заведует ими то, что мы замечаем только по мухам над тарелкой.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s44">
+  <div class="content">
+    <div class="kicker">Заключение · вопрос и мораль</div>
+    <h2>Кто кого ест, и строчка Вергилия про пчёл</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="rd">Вопрос на подумать</h3>
+          <p>Гриб появился на суше до растений, кормит их, разлагает их, ест всё мёртвое и ждёт живое. Он делает наш хлеб, пиво, сыр, лекарства и через них - нашу медицину и наши города. Мы называем его спасителем, когда он ест то, что нам не нужно, и убийцей, когда ест то, что нужно нам. Сам он не различает.</p>
+          <p><b>Тогда кто здесь хозяин?</b> Отдельное царство, которое мы приручили, как волка? Или мы - тёплые, короткоживущие переносчики, которые разнесли его по континентам, выкормили в чанах и бочках, а в конце отдаём ему тело? Есть даже костюм для похорон с мицелием в ткани, и в нём уже похоронены люди. Лекция не отвечает. Она только замечает, что из двух сторон стола одна существует миллиард лет, а вторая - двести тысяч.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Мораль</h3>
+          <p style="font-size:22px;color:#fff;margin:8px 0 6px"><b>Sic vos non vobis.</b></p>
+          <p>«Так вы, но не для себя». Вергилий, по преданию, написал это, когда чужой поэт присвоил его строки: «так вы, пчёлы, делаете мёд, но не для себя; так вы, овцы, носите шерсть, но не для себя». Гриб - главный герой этой строчки. Дрожжи делают спирт не для себя. Плесень делает пенициллин не для нас, а мы его забираем. Микориза достаёт фосфор не для дерева, а за плату. Каждый работает, и каждый - не для себя.</p>
+          <p>Подвох в третьем лице. Дрожжи травят бочку, чтобы победить, и умирают в ней последними: <i>Venenum fac, omnes neca, ultimus mori</i>. Один вид на планете сейчас делает то же самое с атмосферой, и тоже уверен, что умрёт последним. Вергилий писал про пчёл. Подошло грибу. Подходит и нам.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s45">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Вся лекция одной таблицей</h2>
+    <table class="t" style="font-size:12.5px">
+      <tr><th>Глава</th><th>Герой</th><th>Спаситель</th><th>Убийца</th><th>Цифра</th></tr>
+      <tr><td>1. Что такое гриб</td><td class="d">опёнок, белая гниль</td><td class="d">пищеварение леса, уголь</td><td class="d">деревья, балки домов</td><td class="d">9,6 км², 2 400-8 600 лет</td></tr>
+      <tr><td>2. Споры</td><td class="d">дождевик, аспергилл</td><td class="d">дождь, расселение</td><td class="d">аллергия, «проклятие»</td><td class="d">7 триллионов за раз</td></tr>
+      <tr><td>3. Дрожжи</td><td class="d">Saccharomyces</td><td class="d">хлеб, пиво, инсулин</td><td class="d">бактерии, алкоголь, сами</td><td class="d">предел 8-16% спирта</td></tr>
+      <tr><td>4. Пенициллин</td><td class="d">Penicillium, Tolypocladium</td><td class="d">антибиотики, пересадки, статины</td><td class="d">бактерии в почве</td><td class="d">80-200 млн спасённых</td></tr>
+      <tr><td>5. Сыр</td><td class="d">рокфор, кодзи</td><td class="d">сыр, саке, соевый соус, умами</td><td class="d">всё живое в головке сыра</td><td class="d">2 млн т лимонной кислоты</td></tr>
+      <tr><td>6. Голод</td><td class="d">фитофтора, спорынья</td><td class="d">роды, мигрень, ЛСД</td><td class="d">Ирландия, антонов огонь</td><td class="d">−2 млн человек, 40 000 в 944-м</td></tr>
+      <tr><td>7. Микориза</td><td class="d">грибокорень, лишайник</td><td class="d">90% растений, первая почва</td><td class="d">корень должника, водоросль</td><td class="d">407 млн лет, 13 Гт углерода</td></tr>
+      <tr><td>8. Внутри нас</td><td class="d">кандида, аспергилл, C. auris</td><td class="d">-</td><td class="d">ждущий убийца</td><td class="d">3,8 млн смертей в год, 37 °C</td></tr>
+      <tr><td>9. Зомби</td><td class="d">кордицепс, хитрид, белый нос</td><td class="d">-</td><td class="d">муравьи, 90 видов лягушек, мыши</td><td class="d">48 млн лет хватке</td></tr>
+      <tr><td>10. Шляпка</td><td class="d">мухомор, поганка, псилоцибе</td><td class="d">шаман, клиника</td><td class="d">90% смертей от грибов</td><td class="d">Парацельс 1538</td></tr>
+    </table>
+    <div class="note gold" style="margin-top:10px"><b>Третья колонка и четвёртая - про одно существо в каждой строке.</b> Ни один герой не поменял ни гена между ролями. Между спасителем и убийцей меняется место, температура, доза и то, с какой стороны стола сидим мы. Самоубийца в третьей главе один, но в последней строчке лекции у него появляется компания.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s46">
+  <div class="bgimg"><img src="assets/final_end.png" alt=""></div>
+  <div class="content">
+    <h1>Sic vos non vobis</h1>
+    <p class="lead">Мухи над тарелкой, опёнок под долиной, дрожжи в бочке, плесень в чашке, синие жилы в сыре, чёрные поля Ирландии, лес на грибной сети, муравей на листе, шляпка с тремя лицами. Одно царство, старше нас на миллиард лет, которое мы замечаем, только когда оно собралось в одну точку.</p>
+    <p class="lead" style="margin-top:14px">Гриб был до нас и съест нас после. Всё, что мы называем спасением и убийством, это его обед с разных сторон стола. Он делает мёд не для себя, и мы забираем. Но в бочке он же травит всё вокруг, чтобы умереть последним. Это единственная глава, где стоит спросить, на кого из героев мы похожи больше.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- SLIDES_END -->
+
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>
