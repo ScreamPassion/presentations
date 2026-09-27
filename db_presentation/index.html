@@ -992,7 +992,7 @@ CREATE INDEX ON products USING gin<br>&nbsp;&nbsp;((name || ' ' || brand || ' ' 
           <div class="row"><div class="bx am"><b>Сервер (SQL layer)</b><span>соединения (поток на клиента, thread cache), парсер, оптимизатор, кэши, binlog, репликация</span></div></div>
           <div class="row"><div class="arr" style="transform:rotate(90deg)">→</div><div class="lbl">Handler API - плагинный интерфейс движков</div></div>
           <div class="row" style="align-items:stretch">
-            <div class="bx cy"><b>InnoDB</b><span>ACID, MVCC, row locks, clustered PK, redo/undo, buffer pool, doublewrite. Единственный серьёзный с 2010. Куплен Oracle в 2005 (за 3 года до самой MySQL)</span></div>
+            <div class="bx cy"><b>InnoDB</b><span>ACID, MVCC, row locks, clustered PK, redo/undo, buffer pool, doublewrite. Единственный серьёзный с 2010. Куплен Oracle в 2005 (за 5 лет до самой MySQL, которая пришла через Sun в 2010)</span></div>
             <div class="bx dk"><b>MyISAM</b><span>без транзакций, табличные локи, быстрый count(*). Мёртв, но живёт в легаси и в system tables до 8.0</span></div>
             <div class="bx"><b>MyRocks</b><span>RocksDB (LSM) от Facebook: сжатие в 2× лучше InnoDB, для write-heavy</span></div>
             <div class="bx"><b>Memory, CSV, Archive, NDB</b><span>таблицы в RAM; текстовые; сжатые append-only; MySQL Cluster (телеком, in-memory, shared-nothing)</span></div>
@@ -1400,7 +1400,7 @@ CREATE INDEX ON products USING gin<br>&nbsp;&nbsp;((name || ' ' || brand || ' ' 
             <tr><td>Elasticsearch (2014-2015)</td><td class="d">потеря документов при разделении; «not a database» - вывод самого Jepsen. Улучшено в 7.x с новым кластерным алгоритмом</td></tr>
             <tr><td>Redis Sentinel/Cluster</td><td class="d">потеря записей при failover (async), WAIT не гарантирует</td></tr>
             <tr><td>Cassandra (2013)</td><td class="d">lightweight transactions нарушали linearizability; починили</td></tr>
-            <tr><td>PostgreSQL 12 (2020)</td><td class="d">нашли нарушение Serializable (G2-item) - редкий баг, починен в 12.3. Единственный серьёзный за все годы</td></tr>
+            <tr><td>PostgreSQL 12 (2020)</td><td class="d">нашли нарушение Serializable (G2-item) - редкий баг, починен в 12.4. Единственный серьёзный за все годы</td></tr>
             <tr><td>CockroachDB, YugabyteDB, TiDB, etcd</td><td class="d">проходили, находили мелочи, чинили. Стандарт де-факто перед релизом</td></tr>
           </table>
         </div>
@@ -1512,7 +1512,7 @@ CREATE INDEX ON products USING gin<br>&nbsp;&nbsp;((name || ' ' || brand || ' ' 
       <div>
         <div class="card">
           <h3 class="am">ScyllaDB - Cassandra на C++</h3>
-          <p>Переписана с Java на C++ с фреймворком Seastar: shard-per-core (поток на ядро, без локов, свой планировщик I/O), без GC-пауз, без JVM-тюнинга. Совместима по CQL и драйверам. В 5-10 раз выше throughput на ноду, p99 стабильный. Discord: с 177 нод Cassandra на 72 Scylla при трилионе сообщений. Есть DynamoDB-совместимый API (Alternator).</p>
+          <p>Переписана с Java на C++ с фреймворком Seastar: shard-per-core (поток на ядро, без локов, свой планировщик I/O), без GC-пауз, без JVM-тюнинга. Совместима по CQL и драйверам. В 5-10 раз выше throughput на ноду, p99 стабильный. Discord: с 177 нод Cassandra на 72 Scylla при триллионе сообщений. Есть DynamoDB-совместимый API (Alternator).</p>
         </div>
         <div class="note warn" style="margin-top:12px"><b>Грабли:</b> tombstones от DELETE и от записи NULL (!) - чтение сканирует их все; горячие партиции (все события одного дня в одной партиции); repair надо гонять регулярно (anti-entropy), иначе реплики расходятся; compaction strategy выбирать под нагрузку (STCS/LCS/TWCS для time-series); JVM heap Cassandra - искусство; изменение схемы данных = переливка всех таблиц.</div>
         <p class="dim" style="font-size:13.5px;margin-top:10px">Родственники: HBase (поверх HDFS, для Hadoop-мира, есть мастер), Google Bigtable (оригинал, 2006), DynamoDB (Amazon, serverless, платишь за RCU/WCU, single-digit ms, нет опса вообще - но привязка к AWS и дорого на скане).</p>
@@ -1903,10 +1903,36 @@ CREATE INDEX ON products USING gin<br>&nbsp;&nbsp;((name || ' ' || brand || ' ' 
   <div class="pagenum"></div>
 </section>
 
-<section class="slide chapter" id="s72">
+<section class="slide" id="s72">
+  <div class="content">
+    <div class="kicker">Заключение · вопрос и мораль</div>
+    <h2>Один источник правды, и кто хранит правду о нём</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3>Вопрос на подумать</h3>
+          <p>Вся лекция сводила системы к одному правилу: источник правды один, остальное - производные индексы, которые можно перелить заново. Elastic сгорел - переливаем из базы. ClickHouse отстал - догонит по Kafka. Реплика - клон, а не бэкап: DROP TABLE доедет до неё за 10 мс.</p>
+          <p><b>Тогда кто хранит правду о самом источнике?</b> Бэкап, который никто не восстанавливал, - это гипотеза, а не бэкап. У GitLab в 2017-м было пять механизмов, и ни один не сработал. Вопрос не «есть ли у нас бэкап», а «когда мы в последний раз из него поднимались и сколько это заняло». Если ответа нет, источник правды у вас один, и он единственный экземпляр.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Мораль</h3>
+          <p style="font-size:22px;color:#fff;margin:8px 0 6px"><b>Verba volant, scripta manent.</b></p>
+          <p>«Слова улетают, написанное остаётся». Приписывают речи Гая Тита в римском сенате; с античности это похвала письменному договору против устного обещания.</p>
+          <p>Вся лекция - про цену слова «остаётся». COMMIT не возвращается, пока WAL не лёг на диск: fsync, 0.1 мс на NVMe и 10 мс на HDD, единственное из четырёх обещаний ACID, за которое платят каждым запросом. Всё остальное - буферный пул, кэш планов, реплика - это verba: улетит при выключении света, и так задумано.</p>
+          <p>Подвох в MVCC: в Postgres написанное остаётся слишком буквально. UPDATE не стирает старую версию, DELETE не удаляет строку, и до vacuum каждая правка лежит рядом с оригиналом. База помнит всё, что ей говорили, включая то, что просили забыть. А в Elastic наоборот: там и scripta volant, на одну секунду refresh и на одно сетевое разделение. Поэтому источник правды один, и это тот, где написанное действительно остаётся.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s73">
   <div class="bgimg"><img src="assets/ch_final.png" alt=""></div>
   <div class="content">
-    <div class="kicker amber">Финал</div>
+    <div class="kicker amber">Финал · Verba volant, scripta manent</div>
     <h1>Одна страница 8 килобайт</h1>
     <p class="lead">Всё, что было выше, сводится к одному вопросу: сколько страниц по 8 КБ нужно прочитать, чтобы ответить на запрос. B-tree - чтобы их было три. Колонки - чтобы они были плотные. MVCC - чтобы читать их, не ожидая никого. WAL - чтобы после выключения света они остались. Планировщик - чтобы угадать, каких страниц меньше. Триграммы - чтобы страницы нашлись даже по обрывку слова.</p>
     <p class="lead" style="margin-top:14px">Postgres, MySQL, ClickHouse, Cassandra, Elastic - это пять разных ответов на вопрос, какие страницы читать первыми и какими жертвовать. Знаешь физику - выберешь правильно. Не знаешь - выберет за тебя очередь на диске в три часа ночи.</p>

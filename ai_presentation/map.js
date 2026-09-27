@@ -2,7 +2,7 @@ window.PRESENTATIONS = window.PRESENTATIONS || [];
 window.PRESENTATIONS.push({
  "title": "Как работает ИИ — разбор для практиков",
  "accent": "#46d4ff",
- "slides": 25,
+ "slides": 26,
  "cover": {
   "title": "Какработает ИИ",
   "lead": "",
@@ -149,6 +149,11 @@ window.PRESENTATIONS.push({
     {
      "n": 24,
      "title": "Compact: спасает или вредит",
+     "kicker": ""
+    },
+    {
+     "n": 25,
+     "title": "Кто здесь мастер",
      "kicker": ""
     }
    ]

@@ -438,13 +438,13 @@
     <table class="cmp">
       <thead><tr><th>Модель</th><th>Роль</th><th>Контекст</th><th>Цена вход / выход за 1M</th></tr></thead>
       <tbody>
-        <tr><td>Fable 5 <span class="tag tag-fab">топ</span></td><td>Самая мощная, для предельных задач — доступ восстановлен</td><td>1M</td><td>$10 / $50</td></tr>
+        <tr><td>Fable 5.1 <span class="tag tag-fab">топ</span></td><td>Самая мощная, для предельных задач — доступ восстановлен</td><td>1M</td><td>$10 / $50</td></tr>
         <tr><td>Opus 5 <span class="tag tag-opus">рабочая лошадка</span></td><td>Новый флагман Opus — скачок над 4.8 при той же цене</td><td>1M</td><td>$5 / $25</td></tr>
-        <tr><td>Sonnet 5 <span class="tag tag-son">баланс</span></td><td>Почти уровень Opus в коде за треть цены</td><td>1M</td><td>$3 / $15</td></tr>
+        <tr><td>Sonnet 5 <span class="tag tag-son">баланс</span></td><td>Почти уровень Opus в коде за 40% цены</td><td>1M</td><td>$2 / $10</td></tr>
         <tr><td>Haiku 4.5 <span class="tag tag-hai">быстрый</span></td><td>Самый быстрый и дешёвый, для простого</td><td>200K</td><td>$1 / $5</td></tr>
       </tbody>
     </table>
-    <p class="note-callout" style="margin-top:22px"><b>Как выбирать:</b> простая рутина → Haiku, повседневная работа → Sonnet 5, сложный код и агенты → Opus 5, предельные задачи → Fable 5. Брать самую дорогую «на всякий случай» — пустая трата. Прошлое поколение (Opus 4.8, Sonnet 4.6) никуда не делось и осталось доступным.</p>
+    <p class="note-callout" style="margin-top:22px"><b>Как выбирать:</b> простая рутина → Haiku, повседневная работа → Sonnet 5, сложный код и агенты → Opus 5, предельные задачи → Fable 5.1. Брать самую дорогую «на всякий случай» — пустая трата. Прошлое поколение (Opus 4.8, Sonnet 4.6) никуда не делось и осталось доступным.</p>
   </section>
 
   <!-- 8 — HOW IT THINKS (HERO) -->
@@ -530,7 +530,7 @@
         <div class="row"><span class="marker">судья</span><span class="body"><b>Модель-судья (LLM-as-judge)</b><span>Другая модель оценивает ответ: качество, безопасность, соответствие рубрике.</span></span></div>
       </div>
     </div>
-    <p class="note-callout" style="margin-top:20px;"><b>Живой пример:</b> защитный фильтр Fable 5 — отдельный классификатор перед моделью: смотрит на запрос и решает, пускать его или нет.</p>
+    <p class="note-callout" style="margin-top:20px;"><b>Живой пример:</b> защитный фильтр Fable 5.1 — отдельный классификатор перед моделью: смотрит на запрос и решает, пускать его или нет.</p>
   </section>
 
   <!-- 12 — AGENTS -->
@@ -757,9 +757,30 @@
   </section>
 
   <!-- 22 — END -->
-  <section class="slide" id="s-end" data-section="00">
+  <!-- МОРАЛЬ -->
+  <section class="slide" data-section="06" id="s25">
+    <div class="slide-bg soft" style="background-image:url('img/bg_predict.jpg')"></div>
+    <div class="eyebrow">Заключение · вопрос и мораль</div>
+    <h2>Кто здесь мастер</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3><span class="ico">?</span>Вопрос на подумать</h3>
+        <p>Модель стала тем, что она есть, одним способом: миллиарды раз угадывала следующий токен и получала по рукам за ошибку. Никто не объяснял ей грамматику, физику или стиль. Она их сделала, а не выучила.</p>
+        <p style="margin-top:10px">Мы осваиваем её ровно так же: запрос, ответ, «не то», запрос точнее. Инструкции «как писать промпты» работают хуже, чем десять собственных неудачных запросов. Тогда вопрос: если и модель, и пользователь учатся одним методом, что именно даёт нам право называть себя мастером, а её - инструментом. Пока ответ простой: мастер тот, кто ставит задачу. Проверь, что ты всё ещё этот человек, а не тот, кто соглашается с первым вариантом.</p>
+      </div>
+      <div class="card">
+        <h3><span class="ico accent">✦</span>Мораль</h3>
+        <p style="font-size:22px;color:var(--text);margin:4px 0 8px"><b>Fabricando fit faber.</b></p>
+        <p>«Мастером становятся, делая». Средневековая школьная пословица, у Эразма в «Адагиях» есть вариант «fabricando fabri fimus». Ремесленник не тот, кто прочитал про молоток, а тот, кто отбил себе пальцы.</p>
+        <p style="margin-top:10px">Для этой лекции точнее фразы нет. Модель, effort, compact, MCP, режимы IDE - это всё описание молотка. Ни один слайд не заменит одного вечера, когда ты сам пробуешь, ошибаешься и переспрашиваешь у модели, почему вышло не то. Отсюда и главный приём: спросить у ИИ про ИИ - это и есть «делать».</p>
+        <p style="margin-top:10px">Подвох в том, что фраза не про нас одних. Модель тоже fabricando: она мастер угадывания, потому что угадывала триллион раз. Разница между вами - не в методе, а в том, кто решает, что делать дальше.</p>
+      </div>
+    </div>
+  </section>
+
+<section class="slide" id="s-end" data-section="00">
     <div class="slide-bg soft" style="background-image:url('img/hero.jpg')"></div>
-    <div class="eyebrow" style="justify-content:center;">Итог</div>
+    <div class="eyebrow" style="justify-content:center;">Итог · Fabricando fit faber</div>
     <h1>Модель — это <span class="accent">инструмент</span>.<br>А инструменты осваивают руками.</h1>
     <p class="lead">Выбирай модель под задачу, управляй контекстом и effort, не бойся спрашивать у ИИ про ИИ. Остальное приходит с практикой.</p>
     <span class="end-link">Вопросы → давайте обсудим</span>

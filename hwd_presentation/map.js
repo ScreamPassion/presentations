@@ -2,7 +2,7 @@ window.PRESENTATIONS = window.PRESENTATIONS || [];
 window.PRESENTATIONS.push({
  "title": "От кнопки до процесса — анатомия запуска ПК",
  "accent": "#46d4ff",
- "slides": 39,
+ "slides": 40,
  "cover": {
   "title": "От кнопки до процесса",
   "lead": "Полная анатомия запуска компьютера: куда течёт первый ампер, кто исполняет первую инструкцию, как биты становятся рабочим столом — и где именно виртуальная кнопка «Завершить работу» дотягивается до реального транзистора.",
@@ -228,14 +228,19 @@ window.PRESENTATIONS.push({
      "n": 38,
      "title": "Музей действующих костылей",
      "kicker": "Итоги · костыли"
+    },
+    {
+     "n": 39,
+     "title": "Башня добросовестной лжи, и почему она стоит",
+     "kicker": "Заключение · вопрос и мораль"
     }
    ]
   },
   {
-   "n": 39,
-   "kicker": "Финал",
-   "title": "Полный маршрут: 10 порядков величины",
-   "lead": "Розетка → дежурка → кнопка → PS_ON# → soft-start → VRM → клоки → PSP → reset vector → CAR → memory training → DXE → bootmgfw → ntoskrnl → smss → winlogon → explorer → твой двойной клик → CreateProcess → µops → кэш-линии → row buffer → пиксель на экране. От 50 герц розетки до 5 гигагерц ядра — десять порядков частоты, и ни одного слоя, который можно выкинуть.",
+   "n": 40,
+   "kicker": "Финал · Mundus vult decipi",
+   "title": "Полный маршрут: восемь порядков величины",
+   "lead": "Розетка → дежурка → кнопка → PS_ON# → soft-start → VRM → клоки → PSP → reset vector → CAR → memory training → DXE → bootmgfw → ntoskrnl → smss → winlogon → explorer → твой двойной клик → CreateProcess → µops → кэш-линии → row buffer → пиксель на экране. От 50 герц розетки до 5 гигагерц ядра — восемь порядков частоты, и ни одного слоя, который можно выкинуть.",
    "img": "assets/ch_final.png",
    "slides": []
   }
