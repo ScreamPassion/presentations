@@ -31,6 +31,8 @@
 | 21 | [Не жрите мои яблоки, у вас и так 6 Нобелевских](https://screampassion.github.io/presentations/fly_presentation/index.html) | 44 |
 | 22 | [Споры. Спасители-убийцы-самоубийцы](https://screampassion.github.io/presentations/spores_presentation/index.html) | 46 |
 | 23 | [Главная иллюзия. Состояние](https://screampassion.github.io/presentations/state_presentation/index.html) | 39 |
+| 24 | [Идущие на смерть. Почему каждая культура строит арену](https://screampassion.github.io/presentations/arena_presentation/index.html) | 41 |
+| 25 | [Кости брошены. Сражения, после которых мир не вернулся](https://screampassion.github.io/presentations/battles_presentation/index.html) | 54 |
 
 ## Серия «Свет по звону»
 

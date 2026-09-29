@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><link rel="icon" href="../favicon.ico" sizes="any"><link rel="icon" type="image/png" href="../favicon.png"><link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Идущие на смерть. Почему каждая культура строит арену</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #d9a066; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Гвендолин-ночные-лекции</div>
+    <h1>Идущие на смерть. Почему каждая культура строит арену</h1>
+    <p class="lead">Греки, этруски, Рим, майя, викинги, самураи, рыцари, дворяне с пистолетами, деревня на льду и октагон под софитами. Ни одна культура не обошлась без места, где двое бьются, а остальные смотрят. Лекция о том, что у арены везде одни и те же три функции, и о том, что осталось от них к субботнему вечеру с телефоном в руке.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s2">
+  <div class="content">
+    <div class="kicker">Вступление</div>
+    <h2>Субботний вечер: 700 миллионов просмотров и вопрос, который никто не задаёт</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Тарелка.</b> Бой за титул UFC собирает больше миллиона платных трансляций, боксёрский вечер в Лас-Вегасе продаёт билеты по десять тысяч долларов, а самый просматриваемый ролик года снова про двоих, которые бьют друг друга по голове. Ни один вид спорта с мячом не даёт такой концентрации внимания на одну минуту.</li>
+          <li><b>Странность.</b> Мы запретили дуэли, гладиаторов, публичные казни и собачьи бои, и одновременно построили самую дорогую в истории индустрию из двух человек в клетке. Что-то из старой арены умерло, что-то нет, и это «что-то» нужно назвать.</li>
+          <li><b>Метод.</b> Взять арену в каждой культуре, где она была, и спросить не «как дрались», а «зачем смотрели». Ответов оказывается ровно три, и они одинаковые в Риме, у майя и в Лас-Вегасе. Меняется только пропорция.</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Три функции арены.</b> Ритуал: кровь для богов и для мёртвых. Суд: кровь как способ узнать правду. Зрелище: кровь как власть над толпой и как товар. Каждая глава лекции помечена тем, чего в ней больше.</li>
+          <li><b>Правило лекции.</b> Где сохранился источник, там цифра. Где источник один и заинтересованный, там пометка «легенда». Античные историки завышали числа в разы, кино завышает всё остальное. Разбор кино будет отдельно.</li>
+          <li><b>Связь с прошлыми лекциями.</b> Из «Оружия» будет баллистика дуэльного пистолета, из «Трещины» - катарсис и почему толпа хочет смотреть. В конце латинская фраза, которую знают все, и которую, как выяснится, никто на арене не говорил.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">Вступление · карта</div>
+    <h2>Три функции, одна машина: как читать лекцию</h2>
+    <div class="dg">
+      <div class="row">
+        <div class="bx am"><b>Ритуал</b><span>погребальные игры, жертва, munus как долг мёртвому</span></div>
+        <div class="arr">→</div>
+        <div class="bx cy"><b>Суд</b><span>ордалия, судебный поединок, дуэль чести: кровь как истина</span></div>
+        <div class="arr">→</div>
+        <div class="bx rd"><b>Зрелище</b><span>Колизей, турнир, коррида, октагон: кровь как власть и товар</span></div>
+      </div>
+      <div class="cap">Ни одна арена не бывает чистой: у гладиаторов есть все три, у UFC осталась одна. Лекция идёт по хронологии и на каждой остановке спрашивает, какая функция главная и куда делись остальные.</div>
+    </div>
+    <table class="t" style="font-size:13px;margin-top:14px">
+      <tr><th>Эпоха</th><th>Арена</th><th>Главная функция</th><th>Кто платит кровью</th></tr>
+      <tr><td>Бронза</td><td class="d">погребальные игры, мяч майя</td><td class="d">ритуал</td><td class="d">пленные, избранные</td></tr>
+      <tr><td>Греция</td><td class="d">Олимпия, панкратион</td><td class="d">ритуал → зрелище</td><td class="d">свободные граждане</td></tr>
+      <tr><td>Рим</td><td class="d">munera, Колизей, легион</td><td class="d">все три, потом зрелище</td><td class="d">рабы, приговорённые, добровольцы</td></tr>
+      <tr><td>Средние века</td><td class="d">судебный поединок, турнир, хольмганг</td><td class="d">суд</td><td class="d">свободные, рыцари</td></tr>
+      <tr><td>Новое время</td><td class="d">дуэль, кулачный бой, коррида</td><td class="d">суд чести → зрелище</td><td class="d">дворяне, крестьяне, быки</td></tr>
+      <tr><td>Сегодня</td><td class="d">бокс, MMA, реслинг</td><td class="d">зрелище</td><td class="d">профессионалы по контракту</td></tr>
+    </table>
+    <div class="note gold" style="margin-top:10px"><b>Что не изменилось за три тысячи лет.</b> Круг, публика, двое внутри, и судья, который решает, когда хватит. Изменилось только, кто судья: бог, король, толпа или рефери с медицинской лицензией.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 1: ДО АРЕНЫ ============ -->
+<section class="slide chapter" id="s4">
+  <div class="bgimg"><img src="assets/ch_before.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 1 · ритуал</div>
+    <h1>До арены: костёр, мяч и кровь для мёртвых</h1>
+    <p class="lead">Первые бои на публику были не спортом и не наказанием. Это была жертва: у погребального костра Патрокла, на этрусских фресках, на каменных площадках майя. Кровь принадлежала мёртвому или богу, а зрители были не публикой, а участниками обряда. Всё, что случится потом, вырастет из этого.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="content">
+    <div class="kicker">До арены · Гомер и этруски</div>
+    <h2>Погребальные игры: бой у костра как долг перед покойником</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>«Илиада», песнь XXIII.</b> Ахилл хоронит Патрокла и устраивает игры: гонка колесниц, кулачный бой, борьба, бег, и в конце поединок в полном вооружении, Аякс против Диомеда, «до первой крови». Зрители останавливают бой, когда Диомед целит в горло. Уже здесь есть всё: круг, приз, судья и черта, за которую нельзя.</li>
+          <li><b>Двенадцать троянцев.</b> Перед играми Ахилл режет на костре двенадцать пленных юношей. Гомер называет это «злым делом», но не удивляется: кровь на похоронах героя была нормой бронзового века. Игры и жертва в одной песне, и это не совпадение, а один обряд в двух формах.</li>
+          <li><b>Этруски.</b> Фрески Тарквиний, VI век до н. э.: на «Гробнице авгуров» человек с мешком на голове дерётся с собакой, которую натравливает фигура в маске. Рим возьмёт у этрусков и само слово «ланиста», и обычай, и, по Ливию, первые игры. Гладиатор родился не в Колизее, а на похоронах.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Munus: слово, которое всё объясняет</h3>
+          <p>По-латыни munus - «долг, обязанность, дар». Так называли и гладиаторские игры: munus для покойного, который устраивают наследники. Первые в Риме: 264 год до н. э., три пары рабов на похоронах Децима Юния Брута Перы, на Бычьем рынке. Кровь на могиле как замена человеческого жертвоприношения, которое римляне уже стеснялись делать прямо.</p>
+          <p>Тертуллиан, христианин II века, писал об этом прямо: «то, что приносили в жертву мёртвым, называли munus, потом подменили жестокостью, украшенной под зрелище». Он ошибался в оценке и был прав в генеалогии. Три функции арены заложены здесь: долг мёртвому, суд над пленным, зрелище для наследников.</p>
+        </div>
+        <div class="note" style="margin-top:12px">Через 500 лет после первых трёх пар Траян устроит игры на 123 дня с 10 тысячами гладиаторов. Слово останется тем же: munus, долг. Кому именно, к тому времени уже никто не спрашивал.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="content">
+    <div class="kicker">До арены · Мезоамерика</div>
+    <h2>Игра в мяч: полторы тысячи площадок и голова на алтаре</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/ballgame.png" alt="">
+        <div class="pcap">Площадка в форме буквы I, наклонные стены, каменное кольцо на высоте. Мяч из цельного каучука весом до четырёх килограммов бьют бедром. Найдено больше 1500 площадок от Аризоны до Никарагуа, самая старая, Пасо-де-ла-Амада, 1400 год до н. э. Это старейший командный вид спорта планеты и одновременно храм.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Правила по фрескам.</b> Мяч нельзя трогать руками и ногами, только бедром, локтем, ягодицами. Попадание в кольцо, по хроникам ацтеков, заканчивало игру сразу, и было редкостью: кольцо стояло на высоте до 6 метров. Игра шла на очки, счёт вели по касаниям земли.</li>
+          <li><b>Кровь.</b> На рельефах Чичен-Ицы игрок стоит на коленях, а из шеи вместо крови растут семь змей и лианы: обезглавливание как посев. Кого именно приносили в жертву, проигравших или капитана победителей, спорят до сих пор. Источники майя молчат, ацтекские хроники написаны после конкисты и не про майя.</li>
+          <li><b>«Пополь-Вух».</b> Эпос киче: близнецы-герои играют в мяч против владык подземного мира и побеждают смерть. Игра была не про спорт, а про ход солнца, урожай и войну: мяч - солнце, площадка - трещина в подземный мир. Ритуал в чистом виде, вся функция арены на одном поле.</li>
+          <li><b>Честность.</b> Жертвоприношения на площадках подтверждены костями и рельефами, но «каждая игра кончалась смертью» - выдумка XX века. В большинстве городов в мяч играли как в футбол, с азартом и ставками, а кровь лилась по праздникам. Три функции с самого начала перемешаны.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 2: ГРЕЦИЯ ============ -->
+<section class="slide chapter" id="s7">
+  <div class="bgimg"><img src="assets/ch_greece.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 2 · ритуал и зрелище</div>
+    <h1>Греция: Олимпия, панкратион и смерть как норма</h1>
+    <p class="lead">У греков не было гладиаторов, у них было хуже: свободные граждане, которые шли на смерть добровольно, ради венка из оливы. Кулачный бой в ремнях с металлом, панкратион, где можно всё, кроме укусов и глаз, и чемпион, которого короновали мёртвым. Олимпия была святилищем Зевса, и кровь на песке была частью службы.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s8">
+  <div class="content">
+    <div class="kicker">Греция · тяжёлые дисциплины</div>
+    <h2>776 год до н. э.: святилище, где бились до смерти за ветку оливы</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Олимпия - не стадион, а храм.</b> Игры шли раз в четыре года в честь Зевса, на время игр объявлялось перемирие, победитель получал венок из дикой оливы и бессмертие в родном городе: статую, обед за счёт полиса до конца дней, иногда пролом в стене, «чтобы такому городу стены не нужны». Приз - ноль денег, цена - всё.</li>
+          <li><b>Кулачный бой.</b> Без раундов, без весовых категорий, до сдачи или потери сознания. Руки обматывали ремнями из воловьей кожи, к IV веку - с твёрдыми кольцами, потом римляне добавят металл. Боец Диагор из Родоса и его сыновья - олимпийская династия; боец Клеомед из Астипалеи убил соперника и был лишён победы за нечестный приём.</li>
+          <li><b>Панкратион, с 648 года.</b> Борьба плюс кулаки плюс ноги, лежа и стоя, разрешено всё, кроме укусов и выдавливания глаз. Спартанцы отменяли даже это. Судьи с розгами били за нарушения прямо во время боя. Ближайший современный аналог - MMA, только без перчаток, весов и врача.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Аррахион из Фигалии, 564 год до н. э.</h3>
+          <p>Финал панкратиона, третья Олимпиада подряд. Соперник держит Аррахиона в удушающем захвате ногами. Аррахион, теряя сознание, ломает ему палец на ноге (по другой версии, вывихивает стопу). Соперник от боли поднимает руку, сдаётся. Судьи объявляют Аррахиона победителем и видят, что он мёртв. Венок надели на труп, статую поставили в Фигалии, Павсаний видел её через 700 лет.</p>
+          <p>Для греков это не скандал, а образец: умереть, не сдавшись. Тренер, по легенде, кричал ему перед смертью: «Какое прекрасное надгробие - не сдаться в Олимпии». Смерть на играх не была целью, но и не была поражением. Это ритуал, где зритель платит вниманием, а атлет - телом.</p>
+        </div>
+        <div class="note" style="margin-top:12px">Спарта запрещала своим гражданам кулачный бой и панкратион: там можно сдаться, поднять руку, а спартанцу сдаваться нельзя ни при каких условиях. Единственный народ, который счёл арену недостаточно жестокой.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 3: РИМ ============ -->
+<section class="slide chapter" id="s9">
+  <div class="bgimg"><img src="assets/ch_rome.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 3 · все три функции</div>
+    <h1>Рим: от похорон к Колизею</h1>
+    <p class="lead">Три пары рабов на похоронах в 264 году до н. э. Через двести лет Цезарь выставляет 320 пар на поминках отца и покупает этим консульство. Ещё через сто - Колизей на 50 тысяч мест, открытый ста днями игр. Munus остался долгом, только теперь не мёртвому, а толпе, и платил за него тот, кто хотел власти.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s10">
+  <div class="content">
+    <div class="kicker">Рим · munera</div>
+    <h2>Как долг мёртвому стал бюджетной статьёй империи</h2>
+    <div class="dg">
+      <div class="row">
+        <div class="bx am"><b>264 до н. э.</b><span>3 пары, похороны Брута Перы, Бычий рынок</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>65 до н. э.</b><span>Цезарь, 320 пар «в память отца», умершего 20 лет назад; Сенат ограничивает число</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>22 до н. э.</b><span>Август забирает игры себе: преторы, 2 раза в год, не больше 120 пар</span></div>
+        <div class="arr">→</div>
+        <div class="bx rd"><b>80 н. э.</b><span>Колизей, 100 дней открытия, 9000 зверей</span></div>
+        <div class="arr">→</div>
+        <div class="bx rd"><b>107 н. э.</b><span>Траян, 123 дня, 10 000 гладиаторов, 11 000 зверей</span></div>
+      </div>
+      <div class="cap">Кривая одна: от частного обряда к государственной монополии. Когда игры стали работать как политика, республика их ограничила, а империя забрала себе целиком.</div>
+    </div>
+    <div class="cols" style="margin-top:18px">
+      <div>
+        <ul class="pts">
+          <li><b>Panem et circenses.</b> Ювенал, Сатира X, около 100 года: народ, который раньше раздавал власть, «теперь хочет только двух вещей: хлеба и зрелищ». Это не про развращённость, а про бюджет: в Риме 150 тысяч человек получали бесплатное зерно, и император, который не давал игр, терял столицу. Тиберий не любил игры, и его не любили.</li>
+          <li><b>Кто платил.</b> До империи - кандидат в магистраты, из своего кармана и в долг. Цезарь к 61 году был должен 25 миллионов сестерциев, в основном за игры. Империя запретила частные munera в Риме: зрелище стало таким же оружием, как легион, и его нельзя было оставлять в частных руках.</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Колизей, Flavian Amphitheatre.</b> 80 год, построен на месте озера дворца Нерона, на деньги от разграбления Иерусалима и руками иудейских пленных. 50 тысяч мест (оценка, по регионариям 87 тысяч, но там считали по-другому), 80 входов, зрители рассажены по сословиям билетами-жетонами, женщины на самом верху. Тень от парусов, которые тянула команда моряков из Мизена.</li>
+          <li><b>Порядок дня.</b> Утро - звери и охота. Полдень - казни: приговорённых к зверям или к мечу, без доспеха. После обеда - гладиаторы, главное. Один день, три функции подряд: зрелище, суд, ритуал в его последней форме, где кровь льётся уже просто потому, что так положено.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s11">
+  <div class="content">
+    <div class="kicker">Рим · типы</div>
+    <h2>Ретиарий против секутора: почему гладиаторов не смешивали</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/gladiators.png" alt="">
+        <div class="pcap">Ретиарий: сеть, трезубец, кинжал, нет шлема, нет щита, левое плечо прикрыто. Секутор: гладкий шлем без выступов, чтобы сеть соскальзывала, большой щит, короткий меч. Пара придумана как театр: быстрый и голый против медленного и закованного. Публика знала правила и ставила деньги.</div>
+      </div>
+      <div>
+        <table class="t pt">
+          <tr><th>Тип</th><th>Снаряжение</th><th>Против кого</th></tr>
+          <tr><td>Мурмиллон</td><td class="d">шлем с гребнем-рыбой, большой щит, гладиус, поножь</td><td class="d">фракиец, гопломах</td></tr>
+          <tr><td>Фракиец</td><td class="d">кривой меч сика, малый щит, высокие поножи</td><td class="d">мурмиллон</td></tr>
+          <tr><td>Ретиарий</td><td class="d">сеть, трезубец, кинжал, без шлема</td><td class="d">секутор</td></tr>
+          <tr><td>Секутор</td><td class="d">гладкий шлем с двумя дырками, щит, меч</td><td class="d">ретиарий</td></tr>
+          <tr><td>Гопломах</td><td class="d">копьё, круглый щит, кинжал, «грек»</td><td class="d">мурмиллон</td></tr>
+          <tr><td>Провокатор</td><td class="d">нагрудник, щит, меч, ближе всех к легионеру</td><td class="d">провокатор</td></tr>
+          <tr><td>Эквит</td><td class="d">на коне, копьё, потом пеший с мечом</td><td class="d">эквит, открывал день</td></tr>
+        </table>
+        <ul class="pts" style="margin-top:6px">
+          <li><b>Логика пар.</b> Одинаковых не ставили: скучно и быстро. Ставили «доспех против скорости» и следили, чтобы бой шёл долго. Шлемы закрывали лица: зритель видел тип, а не человека, и это снимало вопрос «за кого болеть». Доспех защищал голову и руки, а тело оставлял открытым: раны должны быть видны, смерть - не мгновенной.</li>
+          <li><b>Правила.</b> Судья summa rudis с палкой останавливал бой, наказывал за нарушения, следил за сигналом сдачи: поднятый палец левой руки. Решение о жизни принимал устроитель, editor, глядя на трибуны. Что именно делали большим пальцем, неизвестно: pollice verso у Ювенала значит «повёрнутым пальцем», и куда повёрнутым, никто не написал. Жест из «Гладиатора» придумал художник Жером в 1872 году.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 4: ЭКОНОМИКА СМЕРТИ ============ -->
+<section class="slide chapter" id="s12">
+  <div class="bgimg"><img src="assets/ch_economy.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 4 · зрелище как бизнес</div>
+    <h1>Экономика смерти: сколько стоил гладиатор и как часто он умирал</h1>
+    <p class="lead">Гладиатор был дорогим имуществом, и убивать его каждый бой было бы разорением. Ланисты, контракты, добровольцы, которые продавали себя за долги, рекламные надписи на стенах Помпей и статистика по эпитафиям. Кино показывает бойню. Источники показывают индустрию, где смерть - это списание актива.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s13">
+  <div class="content">
+    <div class="kicker">Экономика · цифры</div>
+    <h2>Один из пяти, один из десяти, один из двух: как часто умирали на самом деле</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Кто такой гладиатор.</b> Раб, купленный ланистой, или военнопленный, или приговорённый «к школе» (не к смерти: ad ludum, а не ad gladium), или свободный доброволец, auctoratus, который за деньги давал клятву «терпеть, чтобы его жгли, вязали, били и убивали железом». Добровольцев к концу республики было до половины: долги, азарт, слава. Сенатор Семпроний Гракх выступал при Калигуле, и это был скандал, но не единичный.</li>
+          <li><b>Сколько стоил.</b> Сенатское постановление 177 года при Марке Аврелии фиксирует цены: от 3000 сестерциев за новичка до 15 000 за лучших. Легионер получал 1200 в год. Аренда пары у ланисты на один munus - до 80 сестерциев в день за боец, если жив, и полная цена, если убит. Устроитель, который приказывал добить, платил за труп в 50 раз больше, чем за бой.</li>
+          <li><b>Статистика.</b> По надгробиям гладиаторов I века (Жорж Виль, 1981): из ста боёв около 19 заканчивались смертью, то есть один бой из пяти. Средний боец проводил 2-3 боя в год и умирал к 27 годам. К III веку, когда денег стало больше, а нравы жёстче, доля смертей выросла до половины. Флавий Сатур из Помпей: 12 боёв, 12 побед, умер в 26.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Что кино соврало</h3>
+          <ul>
+            <li><b>«Бой насмерть каждый раз».</b> Нет. Бой шёл до сдачи, missio, и большинство проигравших уходили живыми, потому что стоили денег. Sine missione, «без пощады», Август запретил в 22 году до н. э.</li>
+            <li><b>«Толпа решала пальцем».</b> Решал устроитель, толпа только шумела. Жест неизвестен.</li>
+            <li><b>«Рабы в цепях».</b> Лучшие гладиаторы были звёздами: граффити Помпей «Целад, гроза девушек», «Кресцент, ночной ловец девиц». Свободные шли в школу сами.</li>
+            <li><b>«Ave, Caesar, morituri te salutant».</b> В источниках один раз, и не на арене. Об этом финал.</li>
+          </ul>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Правило Виля.</b> Первый раз в истории кровавого зрелища смерть стала считаться в деньгах, и от этого её стало меньше, а не больше. Экономика гуманнее ритуала: мёртвому нужна кровь, ланисте нужен живой актив. Этот аргумент вернётся в главе про сегодня.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s14">
+  <div class="content">
+    <div class="kicker">Экономика · школа</div>
+    <h2>Ludus: тюрьма, клиника и спортивный клуб в одном здании</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Четыре школы Рима.</b> Ludus Magnus рядом с Колизеем, соединён с ним тоннелем, на 1000-2000 человек, с собственной мини-ареной. Ludus Dacicus, Gallicus, Matutinus (для зверобоев). Все четыре - императорские: с Домициана гладиаторы столицы принадлежат государству, как легионы.</li>
+          <li><b>Быт.</b> Кельи в три квадратных метра, замок снаружи, тренировки с рассвета, врач в штате (Гален начинал врачом гладиаторов в Пергаме и писал, что за четыре года при нём умерли пятеро, а при предшественнике шестнадцать), диета из ячменя и бобов, за которую гладиаторов звали hordearii, «ячменники». Кости из кладбища в Эфесе подтверждают: жир на теле как броня для сосудов.</li>
+          <li><b>Иерархия.</b> Новичок tiro, ветеран veteranus, лучший в своём типе primus palus, «первый столб», по тренировочному столбу. Освобождение - деревянный меч rudis, за подвиг или по истечении контракта. Освобождённый мог вернуться за деньги, и возвращались.</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Спартак, 73 год до н. э.</b> Школа Лентула Батиата в Капуе, 78 беглецов с кухонными ножами, через год армия в 70 тысяч, две консульские армии разбиты. Красс распял 6000 пленных вдоль Аппиевой дороги от Капуи до Рима. После этого школы держали под охраной, а Цезарь, собравший в Капуе 5000 гладиаторов для своих игр, получил закон, ограничивший их число: Сенат боялся не игр, а армии.</li>
+          <li><b>Реклама.</b> Стены Помпей: «20 пар гладиаторов Децима Лукреция Сатрия Валента, фламина Нерона, и 10 пар его сына будут биться в Помпеях 8-12 апреля. Будет охота и тент». Афиша, программа, имена бойцов с числом побед, как в боксёрских картах. Спонсор указан первым: игры были его политической рекламой.</li>
+          <li><b>Женщины.</b> Гладиатрисы существовали: рельеф из Галикарнаса с «Амазонией» и «Ахиллией», Домициан выставлял женщин против карликов при факелах. Септимий Север запретил в 200 году как «неприличное», то есть на арене они были достаточно часто, чтобы понадобился запрет.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 5: ЛЕГИОН ============ -->
+<section class="slide chapter" id="s15">
+  <div class="bgimg"><img src="assets/ch_legion.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 5 · арена и армия</div>
+    <h1>Легион: как армия и арена учили друг друга</h1>
+    <p class="lead">В 105 году до н. э. консул Рутилий Руф позвал в лагерь тренеров из гладиаторской школы, и с тех пор легионер учился бить, как гладиатор. Поединок перед строем, децимация как публичная казнь, триумф как парад с пленными, которые потом пойдут на арену. Рим не различал войну и зрелище, потому что они делались одними руками.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s16">
+  <div class="content">
+    <div class="kicker">Легион · тренировка</div>
+    <h2>Столб, деревянный меч двойного веса и тренер из школы ланисты</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>105 год до н. э.</b> Валерий Максим: консул Публий Рутилий Руф первым ввёл в армии «приёмы владения оружием» и взял для этого «учителей гладиаторов из школы Гая Аврелия Скавра». До того легионер учился в бою. После - на столбе, palus, в рост человека, деревянным мечом и плетёным щитом двойного веса, чтобы настоящие казались лёгкими. Вегеций через 500 лет описывает ту же методику.</li>
+          <li><b>Одна школа боя.</b> Колющий удар в живот «на два пальца», щит как оружие, ноги в стойке: Вегеций пишет, что «римляне побеждали не числом, а обученностью», и что рубящий удар редко убивает, а колющий на два дюйма - смертелен. Это техника гладиатора-провокатора. Provocator, «вызывающий», и был гладиатором, снаряжённым как легионер: нагрудник, щит, гладиус.</li>
+          <li><b>Обратный поток.</b> Отслужившие центурионы шли тренерами в школы, лучшие гладиаторы попадали в личную охрану: у Цезаря, Антония, Калигулы были отряды гладиаторов. Отон в 69 году бросил в бой две тысячи гладиаторов против легионов Вителлия. Одни и те же люди, одни и те же руки.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Поединок перед строем: суд как в арене</h3>
+          <p><b>Тит Манлий Торкват, 361 год до н. э.</b> Галльский великан вызывает любого римлянина на бой на мосту через Аниен. Манлий выходит, убивает, снимает с него шейную гривну, torques, и получает прозвище. Через 20 лет его сын принимает такой же вызов без приказа и побеждает, и отец казнит его перед строем за нарушение дисциплины. Обе истории у Ливия рядом: поединок - доблесть, но только по разрешению.</p>
+          <p><b>Марк Валерий Корв, 349 год.</b> Тот же сюжет, ворон садится на шлем и клюёт галла. Поединок на глазах двух армий как ордалия: боги показывают, чья сторона права, до общего боя. Это судебный поединок за 1500 лет до средневековья, и это же munus: зрители - два войска.</p>
+        </div>
+        <div class="note" style="margin-top:12px">Легионер и гладиатор различались одним: первому платили за то, чтобы он не умирал, второму - чтобы умирал красиво. Учили их одинаково.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s17">
+  <div class="content">
+    <div class="kicker">Легион · наказание и триумф</div>
+    <h2>Децимация и триумф: армия как арена для своих</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Децимация.</b> Когорта, бежавшая с поля, делится на десятки, в каждой тянут жребий, одного из десяти забивают палками остальные девять. Красс применил в 71 году против Спартака, к 500 солдатам, и Плутарх пишет, что армия после этого боялась его больше, чем врага. Казнь публичная, руками товарищей, на глазах у всех: это арена, где зрители и палачи - одни и те же люди. Функция та же, что у полуденных казней в Колизее: показать, что бывает.</li>
+          <li><b>Fustuarium.</b> Забивание палками за сон на посту или трусость: трибун касается виновного палкой, и весь легион бьёт его, пока не умрёт или не убежит из лагеря навсегда. Полибий: «мало кому удаётся спастись». Наказание как зрелище для строя - римская военная педагогика.</li>
+          <li><b>Триумф.</b> Победитель въезжает в Рим на колеснице, впереди пленные вожди, добыча, картины битв. В конце - казнь вождя в Мамертинской тюрьме (Верцингеторикс, после шести лет ожидания), а рядовые пленные идут в школы: Траян после Дакии выставил на арене тех, кого провёл в триумфе. Война, парад и арена - один конвейер.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="band">Один конвейер</div>
+          <div class="row">
+            <div class="bx"><b>Война</b><span>легион, обученный гладиаторскими тренерами</span></div>
+            <div class="arr am">→</div>
+            <div class="bx"><b>Пленные</b><span>вожди на казнь, остальные в ludus</span></div>
+            <div class="arr am">→</div>
+            <div class="bx am"><b>Триумф</b><span>показ пленных, добычи, зверей</span></div>
+            <div class="arr am">→</div>
+            <div class="bx rd"><b>Арена</b><span>те же пленные, те же звери, те же зрители</span></div>
+          </div>
+          <div class="cap">Цезарь после Галлии: триумф, потом игры с пленными галлами, потом пленные галлы в его личной охране. Ничего не пропадало.</div>
+        </div>
+        <div class="note" style="margin-top:14px"><b>Честный край.</b> Децимация - редкость: за всю историю известно меньше десяти случаев, и Красс был первым за 200 лет. Римская дисциплина держалась не на ней, а на её возможности. Как и арена, которая работала не смертью, а её ожиданием.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 6: НАВМАХИЯ И ВЕНАЦИИ ============ -->
+<section class="slide chapter" id="s18">
+  <div class="bgimg"><img src="assets/naumachia.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 6 · зрелище</div>
+    <h1>Навмахия и венации: море в городе и конец африканских львов</h1>
+    <p class="lead">Когда людей стало мало, в арену пустили море и весь известный мир. Морские бои на озере с 19 тысячами приговорённых, слоны, носороги и белые медведи, привезённые за тысячи миль, чтобы умереть за утро. Империя показывала толпе свой размер, и побочным эффектом стало первое в истории вымирание по вине развлечения.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s19">
+  <div class="content">
+    <div class="kicker">Зрелище · море и звери</div>
+    <h2>Девять тысяч зверей за сто дней и озеро, вырытое для одного боя</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/venatio.png" alt="">
+        <div class="pcap">Venatio, охота: утренняя программа. Зверей поднимали из подвалов лифтами на противовесах, в Колизее их было 28, и выпускали в декорации из деревьев и скал. Бестиарии с копьями, звери против зверей, приговорённые без оружия. Домициан устраивал охоту при факелах ночью.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Числа.</b> Открытие Колизея, 80 год: 9000 зверей за 100 дней по Диону Кассию. Траян, 107 год: 11 000 зверей. Август в «Деяниях» сам хвастает 3500 африканскими зверями за 26 охот. Помпей в 55 году до н. э. выставил 20 слонов, и толпа, по Цицерону, пожалела слонов: единственный записанный случай, когда римская публика сочувствовала жертве.</li>
+          <li><b>Экология.</b> Североафриканский слон исчез к III веку, берберийский лев ушёл из Северной Африки прибрежной, гиппопотам покинул Нижний Египет, европейский лев (он был в Греции ещё при Аристотеле) исчез к I веку. Не единственная причина, но главный спрос: империя выкачивала зверей по государственным контрактам с провинциями, и это была отдельная отрасль с чиновниками и налогами.</li>
+          <li><b>Навмахия Клавдия, 52 год.</b> Перед спуском Фуцинского озера Клавдий устроил на нём бой 19 тысяч приговорённых на 100 кораблях, «родосцы против сицилийцев». Берега окружили преторианцы на плотах с катапультами, чтобы никто не уплыл. Из этой навмахии и происходит фраза про идущих на смерть, и там же случился её конфуз, который оставим на финал.</li>
+          <li><b>Функция.</b> Здесь у арены остаётся только зрелище. Никакого долга мёртвым, никакого суда: карту мира показывают в лицах и зверях, и чем дальше привезли, тем громче кричат. Это уже телевизор: империя как канал.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s20">
+  <div class="content">
+    <div class="kicker">Зрелище · конец</div>
+    <h2>404 год: монах, толпа и почему арена умерла без запрета</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Христиане против.</b> Тертуллиан «О зрелищах», 200 год: идти на арену значит участвовать в жертве демонам. Августин в «Исповеди» о друге Алипии, которого затащили в Колизей: закрыл глаза, услышал рёв, открыл, «и выпил ярость, и стал одним из них». Первое в истории описание того, что толпа делает с человеком, и точнее многих современных.</li>
+          <li><b>Запрет, который не работал.</b> Константин запретил игры в 325 году, и они шли ещё сто лет. Гонорий закрыл школы в 399-м. Легенда о монахе Телемахе, который в 404 году выбежал на арену разнимать бойцов и был растерзан толпой, после чего Гонорий запретил бои окончательно, есть только у Феодорита и, вероятно, склеена из двух событий. Но дата примерно верна: последние гладиаторы Рима - 430-е годы.</li>
+          <li><b>Почему на самом деле.</b> Не христианство: венации, охоты, продолжались до VI века и в Константинополе. Деньги: гладиатор стоил как дом, империя нищала, пленных стало меньше, а своих на арену уже не хватало. Ритуал умер с язычеством, суд ушёл в церковь, а зрелище стало не по карману. Осталось единственное дешёвое: колесницы, где умирали, но не специально.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Ипподром: арена, которая пережила арену</h3>
+          <p>Гонки колесниц старше гладиаторов и пережили их на тысячу лет. Circus Maximus на 150 тысяч мест, четыре партии по цветам, зелёные и синие, ставки, фанатские драки, возничие-миллионеры: Гай Аппулей Диокл заработал 35 миллионов сестерциев за 24 года, самый богатый спортсмен в истории с поправкой на масштаб экономики.</p>
+          <p>В Константинополе партии стали политическими: восстание «Ника» 532 года началось на ипподроме и кончилось резнёй 30 тысяч на нём же. Арена как политика в чистом виде. Функция зрелища переехала на колесницы, и там уже не нужна была смерть: хватало скорости и ставок. Первый шаг от кровавого спорта к просто спорту сделали не моралисты, а бухгалтеры и тотализатор.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 7: СУД ПОЕДИНКОМ ============ -->
+<section class="slide chapter" id="s21">
+  <div class="bgimg"><img src="assets/ch_judicial.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 7 · суд</div>
+    <h1>Суд поединком: кровь как процедура установления истины</h1>
+    <p class="lead">Когда Рим кончился, арена не исчезла, она сменила функцию. Германцы, франки, русские и англичане тысячу лет решали споры боем: кто победил, тот и прав, потому что Бог не даст победить лжецу. Это была не месть и не спорт, а суд с протоколом, свидетелями и апелляцией. Последний такой суд во Франции - 1386 год, в Англии закон отменили в 1819.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s22">
+  <div class="content">
+    <div class="kicker">Суд · ордалия</div>
+    <h2>Раскалённое железо, вода и поле: как Бог давал показания</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Ордалия.</b> От англосаксонского ordal, «приговор». Обвиняемый берёт раскалённое железо, руку бинтуют, через три дня смотрят: заживает чисто - невиновен. Или связанного бросают в воду: утонул - вода приняла, невиновен, вытащат; всплыл - виновен. Логика: Бог вмешивается в физику ради истины. Действовало по всей Европе с VI по XIII век, отменено IV Латеранским собором 1215 года, который запретил священникам благословлять испытания.</li>
+          <li><b>Судебный поединок.</b> Та же ордалия, только двусторонняя: истец и ответчик бьются, Бог даёт победу правому. Впервые в законе бургундов, 502 год, король Гундобад: «пусть решит меч». Отсюда прошло в Салическую правду, в лангобардские законы, в скандинавские, в русское «поле». Женщина, старик, ребёнок могли нанять бойца-заместителя, champion. Профессия существовала веками.</li>
+          <li><b>Русская Правда и «поле».</b> В Псковской судной грамоте XV века «поле» прописано подробно: биться могут стороны или наёмники, женщина с женщиной, если обе не хотят наёмника; священник не может. Судебник 1497 года его сохраняет, Соборное уложение 1649 года уже нет. В Москве XVI века иностранцы описывали поле как обычный суд: с целовальниками, приставами и пошлиной.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Карруж против Ле Гри, 29 декабря 1386</h3>
+          <p>Париж, монастырь Сен-Мартен-де-Шан, король Карл VI на трибуне. Жан де Карруж обвиняет Жака Ле Гри в изнасиловании своей жены Маргариты. Парламент не может установить истину, и назначает поединок, последний санкционированный судебный бой во Франции. Маргарита сидит на помосте в чёрном: если муж проиграет, её сожгут за лжесвидетельство.</p>
+          <p>Карруж падает с коня, встаёт, валит Ле Гри и убивает кинжалом через забрало, когда тот отказывается признаться. Ле Гри объявлен виновным посмертно, тело повесили на Монфоконе. Хронист Фруассар пересказал, Ридли Скотт снял в 2021-м. Историки до сих пор не знают, кто был прав, и это ровно то, что суд поединком обещал решить.</p>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Англия, 1818.</b> Эшфорд против Торнтона: обвиняемый в убийстве Торнтон бросил перчатку и потребовал поединка по норманнскому праву, суд признал право действующим, обвинитель отказался, Торнтон вышел свободным. Парламент отменил судебный поединок на следующий год. Он был законом Англии 750 лет.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 8: ТУРНИР ============ -->
+<section class="slide chapter" id="s23">
+  <div class="bgimg"><img src="assets/ch_tournament.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 8 · зрелище</div>
+    <h1>Рыцарский турнир: спорт, который убивал королей</h1>
+    <p class="lead">Началось как учения: две толпы рыцарей сходятся в поле, пленных берут за выкуп, убитых хоронят без отпевания, потому что Церковь запрещала. Кончилось как шоу: ристалище с барьером, тупые копья, дамы на трибуне и король Франции, умерший от щепки в глазу. Между этими точками четыреста лет, за которые арена снова прошла путь от боя к зрелищу.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s24">
+  <div class="content">
+    <div class="kicker">Турнир · от меле к ристалищу</div>
+    <h2>От свалки в поле до барьера: как рыцари сами себя обезопасили</h2>
+    <div class="dg">
+      <div class="row">
+        <div class="bx rd"><b>XI-XII век · меле</b><span>две партии, поле в несколько километров, боевое оружие, деревни как укрытия; пленный платит выкуп</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>XIII · джостра</b><span>копьё один на один, огороженное ристалище, тупые наконечники «короналы»</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>XV · барьер</b><span>деревянная стенка между всадниками, турнирный доспех в 40 кг, копья с насечкой, чтобы ломались</span></div>
+        <div class="arr">→</div>
+        <div class="bx am"><b>XVI · театр</b><span>аллегории, костюмы, «pas d'armes», король как актёр; Генрих II, 1559</span></div>
+      </div>
+      <div class="cap">Кривая обратная римской: там из обряда сделали бойню, здесь из бойни - шоу. Смертность падала с каждым столетием, а зрелищность росла, и в конце турнир убил не рыцаря, а короля, потому что забыл, что копьё всё ещё копьё.</div>
+    </div>
+    <div class="cols" style="margin-top:16px">
+      <div>
+        <ul class="pts">
+          <li><b>Ранние турниры - бизнес.</b> Уильям Маршал, «лучший рыцарь мира», за 10 месяцев 1177-1178 годов взял в плен 103 рыцаря и жил на выкупы. Турнир 1240 года в Нейсе: 60 рыцарей погибли за день, в основном задохнулись в доспехах и были затоптаны. Церковь с 1130 года запрещала турниры и отказывала погибшим в погребении; Ричард Львиное Сердце легализовал их в Англии за плату в казну.</li>
+          <li><b>Зачем.</b> Учения для конницы, рынок для безземельных младших сыновей, ярмарка невест и политика: съезд баронов под видом праздника. Функция суда почти отсутствует, ритуала нет совсем, чистое зрелище с призом. Дамы на трибунах появляются в XIII веке, и с ними правила: бить только в щит и шлем, не добивать упавшего.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Генрих II Французский, 30 июня 1559</h3>
+          <p>Париж, улица Сент-Антуан, турнир в честь двух свадеб. Король, 40 лет, ломает копья с Габриэлем де Монтгомери, капитаном своей шотландской гвардии, и требует третьего заезда. Копьё Монтгомери ломается, обломок входит через забрало в глаз и в мозг. Десять дней агонии, Амбруаз Паре и Везалий у постели, опыты на головах казнённых преступников, чтобы понять траекторию. 10 июля король умер.</p>
+          <p>Последствия: турниры во Франции прекратились, Екатерина Медичи стала регентом, началась эпоха религиозных войн. Монтгомери через 15 лет казнили как гугенота, формально не за это. Нострадамус потом «предсказал» смерть задним числом, и катрен с «молодым львом» стал его главной рекламой.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 9: ВОСТОК И СЕВЕР ============ -->
+<section class="slide chapter" id="s25">
+  <div class="bgimg"><img src="assets/ch_east.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 9 · без Рима</div>
+    <h1>Север и Восток: те же три функции без единого римлянина</h1>
+    <p class="lead">Если арена - изобретение Рима, её не должно быть там, куда Рим не дошёл. Она есть везде. Хольмганг викингов на островке с ореховыми прутьями, китайский помост лэйтай, японский поединок как акт государственного самоубийства, монгольская борьба на курултае, персидский зурхане. Другие боги, те же круг, судья и публика.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s26">
+  <div class="content">
+    <div class="kicker">Север · хольмганг</div>
+    <h2>Хольмганг: суд на острове, отменённый, потому что берсерки его сломали</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Процедура.</b> Holmganga, «поход на остров»: чтобы никто не вмешался. На земле расстилали плащ в 5 локтей, вбивали по углам ореховые прутья, вокруг три борозды. Каждому по три щита, которые держит подручный; сломал три - бейся без. Заступил за борозду ногой - «отступил», обеими - «бежал». Первая кровь на плащ - бой окончен, проигравший платит три марки серебра. Кормак-сага, Эгиль-сага описывают почти одинаково.</li>
+          <li><b>Суд.</b> Хольмганг был законной альтернативой тингу: спор о земле, о женщине, об оскорблении. Отказ от вызова означал, что ты «нидинг», вне закона. Формально Бога тут нет, но результат считался решением спора, и его нельзя было оспорить. Суд в чистом виде, с элементами зрелища: на тинге собиралась публика.</li>
+          <li><b>Отмена.</b> Профессиональные бойцы, берсерки, стали вызывать землевладельцев на хольмганг, зная, что победят, и забирать землю или жену. Институт стал легальным грабежом. Исландия запретила хольмганг в 1006 году, Норвегия в 1014-м. Суд поединком умер там, где появились профессионалы: та же болезнь, что убьёт дуэль.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Япония: поединок как акт государства</h3>
+          <p>Самурайская дуэль, taryū-jiai, бой между школами, в эпоху Эдо запрещалась и разрешалась поочерёдно. Миямото Мусаси, по его словам, провёл 61 поединок без поражения, самый известный - на острове Ганрю в 1612 году, деревянным мечом из весла против Сасаки Кодзиро. Тоже остров, тоже свидетели, тоже итог, который нельзя оспорить.</p>
+          <p>А вот сэппуку - арена без противника. Приговорённый самурай вскрывает живот перед свидетелями, помощник-кайсяку отрубает голову. Публика обязательна, протокол расписан до угла наклона кинжала. Смерть как зрелище для сословия и как суд над самим собой. Последнее официальное: 47 ронинов, 1703 год. Последнее громкое: Мисима, 1970, в кабинете генерала, при телекамерах снаружи.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s27">
+  <div class="content">
+    <div class="kicker">Восток · помост</div>
+    <h2>Лэйтай, курултай и зурхане: три арены без Колизея</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Китай, лэйтай.</b> Помост без канатов, поднятый над площадью. Вызов вывешивали публично, дрались до сдачи, падения с помоста или смерти, и подписывали «расписку жизни и смерти»: за убийство на лэйтай не судили. Существовал минимум с династии Сун, в 1929 году в Ханчжоу прошёл государственный турнир на лэйтай, где половину участников увезли в больницу за первые дни, и правила ужесточили. Октагон - это лэйтай с сеткой.</li>
+          <li><b>Монголы, бох.</b> Борьба на Наадаме, «трёх мужских играх», вместе со стрельбой и скачками. Без весовых категорий, без времени, проигрывает тот, кто коснулся земли чем угодно, кроме ступней. Чингисхан, по «Сокровенному сказанию», приказал своему борцу Бури-Бокэ дать сломать себе хребет в схватке: борьба как политическая казнь на глазах у ханов. Титулы «слон», «лев», «титан» дают до сих пор.</li>
+          <li><b>Персия, зурхане.</b> «Дом силы»: восьмиугольная яма в полу, вокруг зрители, барабан и чтение «Шахнаме» под упражнения с булавами и щитами. Борьба пахлаванов в конце. Ритуал в чистом виде: суфийская этика, посвящение, ямa как алтарь. Внесён в список ЮНЕСКО в 2010 году, живой с XI века.</li>
+        </ul>
+        <div class="note gold" style="margin-top:8px"><b>Вывод главы.</b> Ни одна из этих культур не видела Рима. У всех есть круг, судья, публика и одна из трёх функций в главной роли. Арена - не римское наследство, а свойство человеческих обществ, как рынок и храм.</div>
+      </div>
+      <div class="pimg">
+        <img src="assets/leitai.png" alt="">
+        <div class="pcap">Лэйтай в торговом городе: помост в человеческий рост, вокруг вся площадь. Падение с края считалось поражением, и часть техники китайского ушу до сих пор построена на том, чтобы столкнуть, а не ударить: наследие площадки без канатов.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 10: ДУЭЛЬ ============ -->
+<section class="slide chapter" id="s28">
+  <div class="bgimg"><img src="assets/ch_duel.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 10 · суд чести</div>
+    <h1>Дуэль: арена ужалась до двоих и убила больше, чем Колизей</h1>
+    <p class="lead">Суд поединком отменили, и он вернулся частным порядком. Дворяне Франции за 20 лет правления Генриха IV убили друг друга в количестве около 4000, больше, чем страна потеряла в войне с Испанией. Пушкин, Лермонтов, Гамильтон, Лассаль. Ни бога, ни короля, ни толпы: только двое, секунданты и кодекс. Арена без зрителей, которая всё равно работала как арена.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s29">
+  <div class="content">
+    <div class="kicker">Дуэль · кодекс</div>
+    <h2>Честь как валюта: почему дуэль нельзя было отменить указом</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Откуда.</b> Италия XVI века, трактаты о чести: оскорбление - долг, который нельзя погасить деньгами или судом, только кровью или извинением. Франция подхватила: при Генрихе IV, по оценке современников, около 4000 дворян погибли на дуэлях за 1589-1610 годы, и король выдал 7000 помилований. Ришельё казнил де Бутвиля в 1627 году за дуэль под окнами дворца, после чего дуэли продолжились с той же частотой.</li>
+          <li><b>Кодекс.</b> Ирландский Code Duello 1777 года, 26 правил: кто вызывает, кто выбирает оружие, когда извинение возможно, когда обязательно стрелять. Русский кодекс Дурасова 1912 года - 500 статей. Секунданты обязаны сначала мирить, врач обязателен, стрелять в воздух допустимо, но второй раз уже нет. Это суд с процедурой, и оскорблённый в нём истец, а не мститель.</li>
+          <li><b>Кто участвовал.</b> Только «люди чести»: дворяне, офицеры, потом журналисты и депутаты. Вызов от неравного не принимали, за это били палкой. Дуэль была не насилием, а знаком принадлежности к сословию: возможность быть убитым за слово подтверждала, что твоё слово чего-то стоит.</li>
+        </ul>
+      </div>
+      <div>
+        <table class="t pt">
+          <tr><th>Дуэль</th><th>Повод</th><th>Итог</th></tr>
+          <tr><td>Гамильтон - Бэрр, 1804</td><td class="d">«презренное мнение» о Бэрре в письме</td><td class="d">Гамильтон стрелял в воздух (спорно), убит; Бэрр, вице-президент США, под судом за убийство</td></tr>
+          <tr><td>Пушкин - Дантес, 1837</td><td class="d">анонимный «диплом рогоносца», письмо Геккерну</td><td class="d">20 шагов, Пушкин ранен в живот, умер на третий день; Дантес выслан</td></tr>
+          <tr><td>Лермонтов - Мартынов, 1841</td><td class="d">шутка про «горца с большим кинжалом»</td><td class="d">Лермонтов стрелял в воздух или вверх, убит наповал; Мартынов - 3 месяца гауптвахты</td></tr>
+          <tr><td>Лассаль - Раковиц, 1864</td><td class="d">невеста, отец против</td><td class="d">основатель немецкой социал-демократии убит 20-летним румыном</td></tr>
+          <tr><td>Клемансо - Дерулед, 1892</td><td class="d">Панамский скандал</td><td class="d">6 выстрелов, все мимо; Клемансо дрался 12 раз, ни разу не ранен</td></tr>
+        </table>
+        <div class="note" style="margin-top:10px"><b>Из «Оружия».</b> Гладкоствольный дуэльный пистолет калибра 12-15 мм на 20 шагах давал попадание примерно в половине случаев, а смертность попаданий - около трети. Кодекс это знал и регулировал дистанцию как дозу: 10 шагов для смертельных обид, 25 для формальных. Смерть была настраиваемым параметром.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s30">
+  <div class="content">
+    <div class="kicker">Дуэль · конец</div>
+    <h2>Почему дуэль умерла: не запрет, а конец сословия</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Запреты не работали.</b> Пётр I: смертная казнь обоим, даже за вызов, и повесить труп за ноги. Дуэли шли. Николай I: «ненавижу дуэли, это варварство», и офицерский суд чести, который в 1894 году сделал дуэль обязательной для офицеров при оскорблении. Государство, которое запрещало и предписывало одно и то же за 50 лет, потому что не оно решало.</li>
+          <li><b>Кто убил дуэль.</b> Три вещи. Пресса: репутацию стало можно защищать в газете и в суде за клевету. Массовая армия: офицер из крестьян не понимал, за что умирать из-за слова. Мировая война: после Вердена стрелять друг в друга из-за реплики в клубе стало смешно. В Германии дуэли тянулись до 1930-х в студенческих корпорациях, мензур с рубцами на лице, но уже без смерти.</li>
+          <li><b>Последние.</b> Франция, 1967: два депутата парламента, Дефер и Рибьер, на шпагах, до первой крови, снято на камеру. Уругвай узаконивал дуэль до 1992 года. Формально в некоторых штатах США дуэльные статьи не отменены.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Что дуэль показывает про арену</h3>
+          <p>Дуэль - единственная арена без зрителей, и она всё равно работала. Значит, зритель был: сословие. Оно узнавало на следующий день, и от его приговора зависело, жив ты в обществе или нет. Функция суда сохранилась целиком, функция зрелища ушла в отчёт секундантов и в газету.</p>
+          <p>Умерла дуэль ровно тогда, когда исчез этот зритель. Крестьянин в шинели, рабочий с газетой и суд по клевете сделали то, чего не смогли Ришельё и Пётр. Арена держится не на бойцах, а на тех, кто смотрит, и это главный вывод лекции перед тем, как посмотреть на тех, кто смотрит сегодня.</p>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Честный край.</b> «4000 убитых при Генрихе IV» - цифра из мемуаров того времени, точной статистики нет; современные историки допускают от 2000 до 4000. Число помилований, 7000, документально.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 11: НАРОД ============ -->
+<section class="slide chapter" id="s31">
+  <div class="bgimg"><img src="assets/ch_folk.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 11 · без государства</div>
+    <h1>Народная арена: стенка на стенку, коррида и петухи</h1>
+    <p class="lead">Пока дворяне стрелялись, деревня выходила на лёд. Кулачный бой стенка на стенку на Масленицу, английский бокс голыми кулаками по 70 раундов, испанская коррида как театр смерти, петушиные бои от Бали до Луизианы. Арена, которую никто не строил и не разрешал, и которая дожила до наших дней лучше, чем государственная.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s32">
+  <div class="content">
+    <div class="kicker">Народ · стенка и кулаки</div>
+    <h2>«Лежачего не бьют»: правила арены, которых не было в законе</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Стенка на стенку.</b> Масленица, Крещение, престольные праздники: деревня на деревню, конец улицы на конец, на льду реки, чтобы не топтать поле. Начинали мальчишки, потом неженатые, потом мужики. Правила устные и жёсткие: лежачего не бьют, в рукавицах ничего тяжёлого, не бить ниже пояса, по затылку и с «закладкой» (свинцом в кулаке). Нарушителя били свои. Цель - вытеснить «стенку» противника за черту, не убить. Убитые бывали, и на них смотрели как на несчастный случай.</li>
+          <li><b>«Сам на сам».</b> Поединок один на один, кулачный бой как суд и как спорт. Лермонтов «Песня про купца Калашникова»: Кирибеевич и Калашников бьются на Москве-реке при Иване Грозном, царь смотрит, победителя казнят за то, что убил, а не за то, что дрался. Три функции в одной поэме: суд чести, зрелище для царя, ритуальная смерть на плахе.</li>
+          <li><b>Запреты.</b> Церковь с XIII века, Елизавета Петровна в 1751-м после массового боя в Петербурге, Николай I в 1832-м: «кулачные бои как забавы вредные вовсе запрещаются». Продолжались до 1920-х, отдельные до 1950-х. Как и дуэль, умерли не от указа: от переезда в город, где улица на улицу стала хулиганством.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Англия: bare-knuckle и первые правила</h3>
+          <p>Джек Бротон, чемпион Англии, в 1743 году после того, как убил на ринге соперника, написал первые правила бокса: раунд до падения, 30 секунд на подъём, не бить лежачего, не хватать ниже пояса. Лондонские правила призового ринга 1838 года: ринг 24 фута, канаты, секунданты. Бой продолжался, пока один не мог встать: Сэйерс против Хинана, 1860, 42 раунда, 2 часа 20 минут, ничья, потому что толпа прорвала канаты.</p>
+          <p>Правила маркиза Куинсберри, 1867: перчатки, раунды по 3 минуты, счёт до 10. Перчатки ввели не ради гуманности, а чтобы бить по голове сильнее без перелома кисти. Смертность в боксе после перчаток выросла: голый кулак калечил лицо, перчатка сотрясает мозг. Первый в истории случай, когда защитная экипировка сделала спорт смертельнее, и не последний.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s33">
+  <div class="content">
+    <div class="kicker">Народ · звери</div>
+    <h2>Коррида и петухи: когда на арене умирает не человек</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/corrida.png" alt="">
+        <div class="pcap">Пласа-де-торос: круг, песок, две зоны, sol и sombra, билеты в тень дороже. Бой построен в три акта, tercios, по 20 минут на быка, шесть быков за вечер. Матадор получает уши, хвост или свист. Бык умирает всегда, кроме редчайшего помилования indulto. Зрелище, в котором исход известен и смотрят на форму.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Коррида.</b> Ритуал в форме спорта. Три терции: пикадоры ослабляют шею быка, бандерильеро вонзают дротики, матадор работает мулетой и убивает шпагой между лопаток. Правила и костюм зафиксированы в XVIII веке Франсиско Ромеро из Ронды. Кровь быка на песке как жертва, и тавромахия честно про это говорит: «смерть на рассвете» Хемингуэя - трактат о ритуале. Каталония запретила в 2010-м, Конституционный суд Испании отменил запрет в 2016-м как нарушение «культурного наследия».</li>
+          <li><b>Матадоры.</b> С 1700 года на арене погибли около 530 человек, из них матадоров-профессионалов 62. Манолете, 1947, бык Ислеро, самый известный. Последний: Иван Фандиньо, 2017, Франция. Риск в разы ниже, чем у гладиатора, но выше, чем в боксе: и это заложено в ритуал, без него коррида была бы балетом.</li>
+          <li><b>Петушиные бои.</b> Древнейший «спорт», Персия и Индия за 3000 лет до н. э., в Греции Фемистокл ввёл ежегодные бои в Афинах как воспитание доблести. Бали: ритуал в храме, Клиффорд Гирц описал его как «глубокую игру», где ставка - статус деревни. Луизиана запретила последней в США в 2008-м, Пуэрто-Рико в 2019-м. Собачьи бои запрещены везде и идут везде. Арена без человека - это самая живучая арена, потому что ей не нужен доброволец.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ГЛАВА 12: СЕГОДНЯ ============ -->
+<section class="slide chapter" id="s34">
+  <div class="bgimg"><img src="assets/ch_today.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Глава 12 · зрелище</div>
+    <h1>Сегодня: арена не ушла, она застрахована</h1>
+    <p class="lead">Бокс убивал в среднем 13 человек в год весь XX век. MMA от «без правил» дошла до 31 запрещённого приёма и врача у клетки за 25 лет. Реслинг честно объявил себя театром и собирает стадионы. Из трёх функций осталась одна, и она стоит дороже, чем когда-либо. Вопрос лекции: если ритуал и суд ушли, почему зрелище не отмерло вместе с ними.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s35">
+  <div class="content">
+    <div class="kicker">Сегодня · цифры</div>
+    <h2>Бокс, MMA, реслинг: три ответа на вопрос, сколько крови можно продать</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>Бокс</h3>
+        <p><b>Смертность.</b> По базе Мануэля Веласкеса, с 1890 по 2011 год на ринге и от последствий боёв умерли около 1600 человек, в среднем 13 в год, пик в 1920-е. После введения 12 раундов вместо 15 в 1982-м (после смерти Ким Дук Гу в бою с Мансини) число упало вдвое.</p>
+          <p><b>Хроника.</b> Хроническая травматическая энцефалопатия, «синдром пьяного боксёра», описана в 1928 году. Мохаммед Али с паркинсонизмом с 42 лет. Смерть на ринге редка, смерть от ринга - норма профессии, только через 20 лет.</p>
+      </div>
+      <div class="card">
+        <h3>MMA</h3>
+        <p><b>1993.</b> Первый UFC: без весовых категорий, без перчаток, без раундов, «два правила: нельзя кусаться и в глаза», буквально панкратион. Сенатор Маккейн назвал это «петушиными боями людей» и добился запрета в 36 штатах.</p>
+        <p><b>2001.</b> Единые правила: 31 запрещённый приём, весовые категории, перчатки, врач, раунды. Смертей в санкционированных боях MMA за 30 лет - около десятка, меньше, чем в боксе за один год 1920-х. Правила спасли не бойцов, а бизнес: без них не было бы лицензий и телевидения.</p>
+      </div>
+      <div class="card">
+        <h3>Реслинг</h3>
+        <p><b>Кейфеб.</b> WWE в 1989 году официально признала перед комиссией штата, что бои постановочные, чтобы не платить спортивный налог. Зрителей стало больше. Арена, которая объявила себя театром, собирает 80 тысяч на WrestleMania и не потеряла ни одного зрителя из-за честности.</p>
+        <p><b>Урок.</b> Публике нужна не смерть, а её рамка: круг, двое, судья, история. Реслинг оставил рамку и убрал содержание, и оказалось, что рамка и была товаром. Гладиаторы в шлемах, закрывающих лицо, знали это две тысячи лет назад.</p>
+      </div>
+    </div>
+    <div class="note gold" style="margin-top:14px"><b>Почему смерть ушла.</b> Не мораль: экономика. Боец с контрактом на 10 миллионов и страховкой стоит дороже гладиатора в 15 000 сестерциев, и логика ланисты довела дело до конца. Правило Виля из четвёртой главы: чем дороже актив, тем меньше его убивают. Арена стала безопаснее ровно настолько, насколько подорожала.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s36">
+  <div class="content">
+    <div class="kicker">Сегодня · зритель</div>
+    <h2>Кто смотрит и зачем: от Алипия до платной трансляции</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Катарсис.</b> Аристотель о трагедии: очищение через страх и сострадание. Гипотеза, что зрелище насилия разряжает агрессию, проверялась с 1960-х и не подтвердилась: после просмотра боёв агрессивность в тестах растёт, а не падает. Зато подтвердилось другое: возбуждение, адреналин и кортизол у зрителя как у участника, и синхронизация сердечного ритма у толпы. Алипий у Августина «выпил ярость» буквально, это измеряется.</li>
+          <li><b>Из «Трещины».</b> Толпа снижает порог: ответственность делится на всех, анонимность растёт, и человек кричит «добей», который дома не раздавит паука. Римляне это знали и рассаживали публику по сословиям: сенаторы отдельно, чтобы толпа не была толпой. Современные стадионы делают то же самое VIP-ложами.</li>
+          <li><b>Футбол как арена.</b> 96 погибших на Хиллсборо в 1989-м, 328 в Лиме в 1964-м, 74 в Порт-Саиде в 2012-м. Ни одного на поле, все на трибунах и вокруг. Зрелище без крови на арене находит кровь в зрителе. Английские «фирмы» в 1980-е назначали драки по договорённости, с правилами, без оружия, и это стенка на стенку без деревни.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Что осталось от трёх функций</h3>
+          <ul>
+            <li><b>Ритуал</b> ушёл в форму: взвешивание, выход под музыку, гимн, пояс. Кровь никому не посвящают, но обряд остался целиком.</li>
+            <li><b>Суд</b> ушёл в разговор: «кто сильнее» решается на арене, потому что больше нигде нельзя решить. Бой Тайсон против Пола, 2024, 108 миллионов зрителей: никто не думал, что это спорт, все хотели знать ответ.</li>
+            <li><b>Зрелище</b> осталось и выросло: доход UFC больше миллиарда в год, бой за титул в боксе - крупнейшее одноразовое событие в мировом спорте по выручке.</li>
+          </ul>
+          <p style="margin-top:10px">Функции не исчезли, они ушли из крови в форму. Арена оказалась нужна не для смерти, а для рамки, внутри которой двое отвечают на вопрос, который нельзя задать иначе.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- ============ ЗАКЛЮЧЕНИЕ ============ -->
+<section class="slide chapter" id="s37">
+  <div class="bgimg"><img src="assets/ch_rome.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Заключение</div>
+    <h1>Вердикт, вопрос и фраза, которую никто не говорил</h1>
+    <p class="lead">Что измерено по эпитафиям и протоколам, что выведено, чего не знаем. Вопрос, на который лекция не отвечает. И самая известная латинская фраза про арену, которую в источниках произнесли один раз, не гладиаторы, и с ответом императора, из-за которого бой чуть не сорвался.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s38">
+  <div class="content">
+    <div class="kicker">Заключение · вердикт</div>
+    <h2>Научный вердикт: что измерено, что выведено, что не знаем</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>Измерено</h3>
+        <ul>
+          <li>Игра в мяч: 1500+ площадок, старейшая 1400 до н. э.; жертвы по костям и рельефам</li>
+          <li>Аррахион 564 до н. э.: победа мёртвого, статуя, Павсаний видел</li>
+          <li>Munera: 264 до н. э. три пары; Траян 10 000 гладиаторов за 123 дня</li>
+          <li>Цены 177 года: 3000-15 000 сестерциев; легионер 1200 в год</li>
+          <li>Эпитафии I века: смерть в ~1 бою из 5, средний возраст смерти 27</li>
+          <li>Рутилий Руф, 105 до н. э.: тренеры ланисты в легионе</li>
+          <li>Карруж 1386, Эшфорд-Торнтон 1818, отмена 1819</li>
+          <li>Генрих II, копьё в глаз, 1559; хольмганг запрещён 1006</li>
+          <li>Бокс: ~1600 смертей 1890-2011; MMA после 2001 - единицы</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="am">Выведено надёжно</h3>
+        <ul>
+          <li>Три функции арены: ритуал, суд, зрелище; везде все три, пропорция разная</li>
+          <li>Арена возникает без Рима: майя, викинги, Китай, Персия</li>
+          <li>Смерть на арене уменьшается, когда боец дорожает: Виль, страховка, контракт</li>
+          <li>Суд поединком умирает, когда появляются профессионалы: берсерки, бретёры</li>
+          <li>Зрелище держится на зрителе, а не на бойце: дуэль без зала работала через сословие</li>
+          <li>Защитная экипировка может повышать смертность: перчатки и ХТЭ</li>
+          <li>Катарсис не подтверждён; синхронизация толпы подтверждена</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="rd">Не знаем</h3>
+        <ul>
+          <li>Куда поворачивали палец и поворачивали ли</li>
+          <li>Кого приносили в жертву на площадке майя</li>
+          <li>Сколько зрителей в Колизее: 50 или 87 тысяч</li>
+          <li>Был ли Телемах и остановил ли он что-нибудь</li>
+          <li>Сколько дворян убила дуэль при Генрихе IV: 2000 или 4000</li>
+          <li>Почему зрелище пережило ритуал и суд, если родилось из них</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note" style="margin-top:14px">Левая колонка вся из протоколов и надгробий, и почти каждая строка меньше, чем в кино. Правая честная: два главных незнания лекции - про жест и про зрителя, и оба про тех, кто смотрел, а не про тех, кто дрался.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s39">
+  <div class="content">
+    <div class="kicker">Заключение · вопрос и мораль</div>
+    <h2>Если из трёх функций осталась одна, почему она не умерла</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="rd">Вопрос на подумать</h3>
+          <p>Ритуал отменили вместе с богами, суд отменили вместе с сословиями, и по логике лекции зрелище должно было уйти следом: оно родилось как побочный продукт первых двух. Вместо этого оно стоит миллиард в год и собирает больше, чем когда на песке умирали по-настоящему. Мы убрали смерть, оставили рамку, и рамка оказалась дороже содержимого.</p>
+          <p><b>Тогда что мы покупаем?</b> Не кровь: реслинг доказал, что без неё можно. Не правду: никто не верит, что бой отвечает на вопрос, кто прав. Лекция не отвечает. Она только замечает, что у арены всегда был четвёртый участник, зритель, и что из всех действующих лиц он единственный, кто за три тысячи лет не изменился ни на грамм. Может быть, спрашивать надо не «зачем арена», а «зачем он».</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Мораль</h3>
+          <p style="font-size:22px;color:#fff;margin:8px 0 6px"><b>Ave, Caesar, morituri te salutant.</b></p>
+          <p>«Здравствуй, Цезарь, идущие на смерть приветствуют тебя». Все знают, что так гладиаторы приветствовали императора. В источниках фраза встречается один раз: Светоний, «Клавдий», 21. Навмахия на Фуцинском озере, 52 год, и говорят её не гладиаторы, а приговорённые к смерти, которых вывели на корабли.</p>
+          <p>Подвох в ответе. Клавдий ответил «Aut non», «или нет». Приговорённые решили, что это помилование, и отказались драться. Император, по Светонию, «долго колебался, не истребить ли их всех огнём и мечом, потом соскочил с места и, ковыляя вдоль берега, то угрозами, то уговорами заставил их сражаться». Единственный раз, когда идущие на смерть поприветствовали Цезаря, бой чуть не сорвался, потому что Цезарь пошутил.</p>
+          <p>Так что фраза правдива ровно наоборот: не девиз бесстрашия, а протокол о торге между теми, кто умирает, и тем, кто смотрит. Арена всегда была этим торгом. Мы просто поменяли валюту.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s40">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Вся лекция одной таблицей</h2>
+    <table class="t" style="font-size:12.5px">
+      <tr><th>Глава</th><th>Арена</th><th>Функция</th><th>Кто судья</th><th>Цифра</th></tr>
+      <tr><td>1. До арены</td><td class="d">костёр Патрокла, мяч майя</td><td class="d">ритуал</td><td class="d">мёртвый, бог</td><td class="d">1500 площадок, 1400 до н. э.</td></tr>
+      <tr><td>2. Греция</td><td class="d">Олимпия, панкратион</td><td class="d">ритуал → зрелище</td><td class="d">элланодики с розгами</td><td class="d">Аррахион, 564 до н. э.</td></tr>
+      <tr><td>3. Рим</td><td class="d">munera, Колизей</td><td class="d">все три</td><td class="d">editor, глядя на толпу</td><td class="d">50 000 мест, 100 дней</td></tr>
+      <tr><td>4. Экономика</td><td class="d">ludus, контракт, эпитафия</td><td class="d">зрелище как бизнес</td><td class="d">ланиста, цена</td><td class="d">1 смерть из 5 боёв</td></tr>
+      <tr><td>5. Легион</td><td class="d">столб, поединок перед строем, децимация</td><td class="d">суд и наказание</td><td class="d">консул, центурион</td><td class="d">105 до н. э., Рутилий Руф</td></tr>
+      <tr><td>6. Море и звери</td><td class="d">навмахия, венации</td><td class="d">зрелище</td><td class="d">император</td><td class="d">9000 зверей, 19 000 приговорённых</td></tr>
+      <tr><td>7. Суд поединком</td><td class="d">ордалия, «поле», Карруж</td><td class="d">суд</td><td class="d">Бог</td><td class="d">1386, отмена 1819</td></tr>
+      <tr><td>8. Турнир</td><td class="d">меле, джостра, барьер</td><td class="d">зрелище</td><td class="d">герольды, дамы</td><td class="d">Генрих II, 1559</td></tr>
+      <tr><td>9. Север и Восток</td><td class="d">хольмганг, лэйтай, сэппуку, зурхане</td><td class="d">суд / ритуал</td><td class="d">свидетели, тинг</td><td class="d">запрет 1006; Мусаси 1612</td></tr>
+      <tr><td>10. Дуэль</td><td class="d">пистолеты на 20 шагах</td><td class="d">суд чести</td><td class="d">секунданты, сословие</td><td class="d">~4000 при Генрихе IV</td></tr>
+      <tr><td>11. Народ</td><td class="d">стенка, bare-knuckle, коррида, петухи</td><td class="d">зрелище / ритуал</td><td class="d">деревня, толпа</td><td class="d">Бротон 1743; 62 матадора</td></tr>
+      <tr><td>12. Сегодня</td><td class="d">бокс, MMA, реслинг</td><td class="d">зрелище</td><td class="d">рефери и врач</td><td class="d">13 смертей в год, 1 млрд в год</td></tr>
+    </table>
+    <div class="note gold" style="margin-top:10px"><b>Четвёртый столбец меняется каждую строку.</b> Бог, консул, король, сословие, толпа, рефери. Третий столбец сходится к одной функции. Второй остаётся кругом с двумя внутри. Судьи менялись, арена нет, и это единственная строка, которую лекция готова назвать законом.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s41">
+  <div class="bgimg"><img src="assets/final_end.png" alt=""></div>
+  <div class="content">
+    <h1>Ave, Caesar, morituri te salutant</h1>
+    <p class="lead">Костёр Патрокла, кольцо на стене в Чичен-Ице, мёртвый чемпион в оливковом венке, три пары рабов на Бычьем рынке, тренер ланисты в лагере консула, Маргарита де Карруж в чёрном на помосте, щепка в глазу короля, плащ с ореховыми прутьями, двадцать шагов на Чёрной речке, лёд на Масленицу, октагон под софитами.</p>
+    <p class="lead" style="margin-top:14px">Три тысячи лет, три функции, один круг. Идущие на смерть приветствовали Цезаря один раз, и он ответил «или нет». С тех пор это «или нет» стоит всё дороже, а смотрят на него всё больше. Арена не про тех, кто внутри. Она про нас, на трибунах, и мы там с самого начала.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+<!-- SLIDES_END -->
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
