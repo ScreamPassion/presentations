@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><link rel="icon" href="../favicon.ico" sizes="any"><link rel="icon" type="image/png" href="../favicon.png"><link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Как работает ИИ: разбор для практиков</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #b39ddb; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+  .term { font-family: 'Cascadia Code', Consolas, monospace; font-size: 13.5px; line-height: 1.6; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; margin-top: 16px; color: var(--text); white-space: pre-wrap; }
+  .term .c { color: var(--faint); } .term .cmd { color: var(--cyan); } .term .p { color: var(--amber); } .term .ok { color: var(--green); }
+  .meter { height: 10px; background: var(--panel2); border: 1px solid var(--line); border-radius: 5px; overflow: hidden; }
+  .meter i { display: block; height: 100%; background: linear-gradient(90deg, var(--cyan), var(--amber)); }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="img/hero.jpg" alt=""></div>
+  <div class="content">
+    <div class="kicker">Практический разбор · Claude и большие языковые модели</div>
+    <h1>Как работает ИИ</h1>
+    <p class="lead">От устройства модели до повседневной работы с агентом - без магии и без занудства. 6 разделов, около 25 минут: что такое ИИ, рефлексивное обучение, решение проблем, MCP и контекст, effort, compact. Стрелка вниз, чтобы начать.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s2">
+  <div class="content">
+    <div class="kicker">Маршрут</div>
+    <h2>О чём поговорим</h2>
+    <table class="t" style="font-size:15px">
+      <tr><th>№</th><th>Раздел</th><th>О чём</th></tr>
+      <tr><td>01</td><td>Что такое ИИ</td><td class="d">Из чего состоит модель, как она думает, что такое агенты</td></tr>
+      <tr><td>02</td><td>Рефлексивное обучение</td><td class="d">Самый недооценённый приём: спросить у ИИ про ИИ</td></tr>
+      <tr><td>03</td><td>Решение проблем</td><td class="d">«Новой модели не видно» и где смотреть лимиты</td></tr>
+      <tr><td>04</td><td>MCP и контекст</td><td class="d">Память, скилы, субагенты, интерфейс IDE</td></tr>
+      <tr><td>05</td><td>Effort</td><td class="d">Уровни «усилия» модели и когда какой брать</td></tr>
+      <tr><td>06</td><td>Compact</td><td class="d">Сжатие истории: когда спасает, когда вредит</td></tr>
+    </table>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s3">
+  <div class="bgimg"><img src="img/div01.jpg" alt=""></div>
+  <div class="content">
+    <div class="kicker">01</div>
+    <h1>Что такое ИИ</h1>
+    <p class="lead">Когда мы говорим «ИИ» здесь - мы про большие языковые модели. Не база данных, не поисковик. Статистическая модель, которая выучила закономерности языка и знаний и предсказывает продолжение.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s4">
+  <div class="content">
+    <div class="kicker">01 · Суть</div>
+    <h2>Машина предсказания</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Главная задача</b> - предсказать следующий «кусочек» текста по тому, что уже есть.</li>
+          <li>Обучена на <b>огромных объёмах текста</b>: книги, код, статьи, диалоги.</li>
+          <li>Не хранит факты как ячейки в таблице - она хранит <b>закономерности</b>.</li>
+          <li>Один и тот же запрос может дать <b>разные ответы</b> - это вероятностная машина, а не калькулятор.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Простая аналогия</h3>
+          <p>Представь человека, который прочитал почти весь интернет и научился очень хорошо угадывать, какое слово идёт дальше. Спросишь - он не «вспоминает строчку из учебника», а на лету собирает наиболее вероятный осмысленный ответ. Отсюда и сила, и ошибки («галлюцинации»).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="content">
+    <div class="kicker">01.1 · Анатомия</div>
+    <h2>Из чего состоит модель</h2>
+    <div class="cols3">
+      <div class="card"><h3>Веса</h3><p>Миллиарды чисел-параметров. Это и есть «знания» модели, настроенные при обучении. Больше весов ≈ умнее и дороже.</p></div>
+      <div class="card"><h3>Архитектура</h3><p>Трансформер с механизмом внимания - он решает, на какие части текста смотреть, чтобы понять смысл.</p></div>
+      <div class="card"><h3>Токенизатор</h3><p>Режет текст на токены (части слов). Модель считает не буквы и не слова, а токены - в них же измеряется цена и контекст.</p></div>
+      <div class="card"><h3>Контекстное окно</h3><p>Сколько текста модель «видит» за раз. У свежих Claude - до <b>1 млн токенов</b>. Что не влезло - модель не видит.</p></div>
+      <div class="card"><h3>Обучение</h3><p>Сначала предобучение на сырых данных, потом дообучение и выравнивание (RLHF) - чтобы была полезной и безопасной.</p></div>
+      <div class="card"><h3>Способности</h3><p>Зрение, рассуждение, работа с инструментами - надстройки поверх базовой модели предсказания текста.</p></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="content">
+    <div class="kicker">01.2 · Глубже в механику</div>
+    <h2>Токены и квантование</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Токен</b> - кусочек текста: слово, часть слова или символ. Один токен ≈ <b>3-4 символа</b>: «привет» ≈ 1-2 токена, редкое длинное слово - 3-4.</li>
+          <li>Токенизатор режет текст по <b>словарю частых кусков</b> (BPE): частое слово - один токен, редкое собирается из частей.</li>
+          <li>Незнакомого слова в словаре нет - оно режется <b>чуть ли не по буквам, 1 к 1</b>: тот же смысл, а токенов (и денег) уходит больше.</li>
+          <li>Модель видит <b>номера токенов, а не буквы</b> - поэтому «посчитай буквы в слове» для неё неожиданно трудная задача.</li>
+          <li>В токенах меряется всё: <b>контекст, лимиты и цена</b>.</li>
+        </ul>
+        <pre class="term"><span class="c"># как режется фраза</span>
+«Эльф-повар берёт лук» →
+<span class="cmd">Эльф</span><span class="c"> | </span><span class="p">-</span><span class="c"> | </span><span class="cmd">повар</span><span class="c"> | </span><span class="ok">_берёт</span><span class="c"> | </span><span class="cmd">_лук</span>
+<span class="c"># незнакомое слово - почти по буквам</span>
+«привеееееет» →
+<span class="cmd">прив</span><span class="c"> | </span><span class="p">е</span><span class="c"> | </span><span class="p">е</span><span class="c"> | </span><span class="p">е</span><span class="c"> | </span><span class="p">е</span><span class="c"> | </span><span class="p">е</span><span class="c"> | </span><span class="p">е</span><span class="c"> | </span><span class="cmd">т</span>   <span class="c">← каждая «е» = токен, дороже</span></pre>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Квантование</h3>
+          <p>Веса модели - миллиарды чисел, обычно по 16 бит каждое. <b>Квантование</b> - округление этих чисел до 8 или 4 бит.</p>
+          <p style="margin-top:12px"><b>Зачем:</b> модель занимает в 2-4 раза меньше памяти, влезает в дешёвое железо и отвечает быстрее.</p>
+          <p style="margin-top:12px"><b>Цена:</b> теряется точность. Лёгкое квантование почти незаметно, сильное - ощутимо «туплит» модель. Поэтому «та же самая» модель у стороннего провайдера или локально может отвечать хуже оригинала.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s7">
+  <div class="content">
+    <div class="kicker">01.3 · Различия</div>
+    <h2>Чем модели отличаются друг от друга</h2>
+    <table class="t" style="font-size:15px">
+      <tr><th>Признак</th><th>Что это</th><th>Как влияет</th></tr>
+      <tr><td>размер</td><td>Число параметров</td><td class="d">Больше - умнее на сложных задачах, но медленнее и дороже.</td></tr>
+      <tr><td>скорость</td><td>Скорость против качества</td><td class="d">Лёгкая модель отвечает мгновенно; тяжёлая думает дольше, но глубже.</td></tr>
+      <tr><td>окно</td><td>Контекстное окно</td><td class="d">Сколько влезает за раз - от 200K до 1M токенов.</td></tr>
+      <tr><td>цена</td><td>Стоимость токенов</td><td class="d">Считается отдельно за вход и за выход, за миллион токенов.</td></tr>
+      <tr><td>профиль</td><td>Специализация</td><td class="d">Кто-то заточен под скорость, кто-то под рассуждения и агентную работу.</td></tr>
+      <tr><td>версия</td><td>Поколение</td><td class="d">Новые версии умнее при той же цене - поэтому стоит обновляться.</td></tr>
+    </table>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s8">
+  <div class="content">
+    <div class="kicker">01.4 · Линейка Claude</div>
+    <h2>Opus · Sonnet · Haiku · Fable</h2>
+    <table class="t" style="font-size:15px">
+      <tr><th>Модель</th><th>Роль</th><th>Контекст</th><th>Цена вход / выход за 1M</th></tr>
+      <tr><td>Fable 5.1 <span class="am">· топ</span></td><td class="d">Самая мощная, для предельных задач - доступ восстановлен</td><td>1M</td><td>$10 / $50</td></tr>
+      <tr><td>Opus 5 <span class="cy">· рабочая лошадка</span></td><td class="d">Новый флагман Opus - скачок над 4.8 при той же цене</td><td>1M</td><td>$5 / $25</td></tr>
+      <tr><td>Sonnet 5 <span class="gr">· баланс</span></td><td class="d">Почти уровень Opus в коде за 40% цены</td><td>1M</td><td>$2 / $10</td></tr>
+      <tr><td>Haiku 4.5 <span class="dim">· быстрый</span></td><td class="d">Самый быстрый и дешёвый, для простого</td><td>200K</td><td>$1 / $5</td></tr>
+    </table>
+    <div class="note gold" style="margin-top:18px"><b>Как выбирать:</b> простая рутина → Haiku, повседневная работа → Sonnet 5, сложный код и агенты → Opus 5, предельные задачи → Fable 5.1. Брать самую дорогую «на всякий случай» - пустая трата. Прошлое поколение (Opus 4.8, Sonnet 4.6) никуда не делось и осталось доступным.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s9">
+  <div class="content">
+    <div class="kicker">01.5 · Как принимается решение</div>
+    <h2>«Эльф-повар всегда берёт с собой лук, чтобы…»</h2>
+    <div class="cols">
+      <div>
+        <div class="note"><b>«Лук» - это и овощ, и оружие.</b> Модель не знает «правильного» ответа. Она <b>взвешивает вероятности</b> всех продолжений по контексту. Слово «повар» перетягивает весы к луку-овощу. Был бы «эльф-лучник» - весы качнулись бы к оружию и охоте.</div>
+        <div class="dg" style="margin-top:16px">
+          <div class="row"><div class="bx cy" style="flex:0 0 72px"><b>88%</b></div><div class="bx cy"><b>лук = овощ 🧅</b><span>…накормить собратьев вкусным луковым супом</span></div></div>
+          <div class="row"><div class="bx dk" style="flex:0 0 72px"><b>12%</b></div><div class="bx dk"><b>лук = оружие 🏹</b><span>…хорошо поохотиться</span></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Эмерджентный юмор - реальный ответ Opus 4.8 на эту же фразу</h3>
+          <p style="color:var(--text)">«…чтобы враг прослезился ещё до боя. 🧅🏹 <span class="dim">Ну или, если по-эльфийски жёстко: берёт лук - а какой именно (репчатый или со стрелами), решает уже по обстановке. 😏»</span></p>
+          <p style="margin-top:10px">Топовая модель не выбирает один смысл - она склеивает оба: физику овоща (от лука плачут) и военный контекст, и запечатывает ребусом из двух эмодзи 🧅🏹.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s10">
+  <div class="content">
+    <div class="kicker">01.6 · Человек против ИИ</div>
+    <h2>Человек - тоже вычислитель</h2>
+    <p class="lead" style="margin-bottom:14px">«Человек <i>ду-у-умает</i>, а ИИ всего лишь считает» - это самоуспокоение. Убери пафос - и концептуальной разницы не остаётся.</p>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>«Думать» = вычислять.</b> Интуиция и озарение - это параллельное вычисление на миллиардах синапсов, а не магия.</li>
+          <li><b>Решение = минимизация функции потерь.</b> Мозг гасит стресс и дискомфорт ровно так же, как модель - ошибку предсказания.</li>
+          <li><b>Мы тоже рабы контекста.</b> Тело, психика, культура, воспитание - это захардкоженные веса и входные данные, а не «свободная воля».</li>
+          <li><b>Боль и страх - не сакральное.</b> Это классификатор-прерывание на границе среды и вычислений - аналог guardrails у модели.</li>
+        </ul>
+      </div>
+      <div>
+        <table class="t" style="font-size:14px">
+          <tr><th></th><th>Человек</th><th>ИИ</th></tr>
+          <tr><td>Веса</td><td class="d">нейронные связи, опыт</td><td class="d">параметры обучения</td></tr>
+          <tr><td>Контекст</td><td class="d">восприятие в моменте</td><td class="d">контекстное окно</td></tr>
+          <tr><td>Цель</td><td class="d">гомеостаз, дофамин</td><td class="d">функция потерь / задача</td></tr>
+          <tr><td>Носитель</td><td class="d">биохимия, ~120 м/с</td><td class="d">кремний, скорость света</td></tr>
+        </table>
+        <div class="note" style="margin-top:14px"><b>Мысль из живого диалога - про реакцию на блок.</b> «ИИ работает один в один: классификатор заблокировал shell - не вопрос, пойду через python-скрипт. И человек: больно - не вопрос, решу задачу иначе.» Упёрся в стену - не падаешь, а пересчитываешь контекст и идёшь в обход. Это и есть адаптивный интеллект - и у модели, и у нас. Разница - лишь субстрат и скорость, а не «живой / неживой».</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s11">
+  <div class="content">
+    <div class="kicker">01.7 · Оценка и защита</div>
+    <h2>Слои-классификаторы</h2>
+    <p class="lead" style="margin-bottom:14px">В проде модель никогда не работает «голой». Вокруг неё - слои, которые оценивают вход и выход. Каждый решает свою задачу минимизации функции потерь.</p>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Функция потерь</b> - число «насколько ошиблись». Обучение - это подкрутка весов так, чтобы это число падало.</li>
+          <li>У базовой модели loss - <b>ошибка предсказания следующего токена</b>. У классификатора своя: «опасно / безопасно», «хорошо / плохо», «соответствует рубрике / нет».</li>
+          <li><b>Reward-модель в RLHF</b> - тоже классификатор: она ставила оценки ответам, пока модель дообучали быть полезной.</li>
+          <li>Под капотом у всех - <b>трансформер</b> из статьи «Attention Is All You Need» (2017). Одна архитектура, разные функции потерь: и генератор, и судья, и reward-модель.</li>
+        </ul>
+      </div>
+      <div>
+        <table class="t" style="font-size:14px">
+          <tr><th>Слой</th><th>Что делает</th></tr>
+          <tr><td>вход</td><td class="d"><b>Входной фильтр.</b> Блокирует опасный запрос до того, как его увидит модель.</td></tr>
+          <tr><td>выход</td><td class="d"><b>Выходной фильтр.</b> Проверяет и режет ответ модели перед выдачей.</td></tr>
+          <tr><td>правила</td><td class="d"><b>Guardrails по правилам.</b> Регэкспы, стоп-списки, лимиты - тупо, дёшево, надёжно.</td></tr>
+          <tr><td>судья</td><td class="d"><b>Модель-судья (LLM-as-judge).</b> Другая модель оценивает ответ: качество, безопасность, соответствие рубрике.</td></tr>
+        </table>
+        <div class="note gold" style="margin-top:14px"><b>Живой пример:</b> защитный фильтр Fable 5.1 - отдельный классификатор перед моделью: смотрит на запрос и решает, пускать его или нет.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s12">
+  <div class="content">
+    <div class="kicker">01.8 · От чат-бота к исполнителю</div>
+    <h2>Как ИИ работает с агентами</h2>
+    <div class="cols">
+      <div>
+        <p class="lead" style="margin-bottom:14px">Агент = модель + инструменты + цикл. Она не просто пишет ответ - она действует: читает файлы, ищет, запускает команды, смотрит результат и решает следующий шаг.</p>
+        <ul class="pts">
+          <li><b>Инструменты (tools)</b> - руки модели: файлы, поиск, терминал, API.</li>
+          <li><b>Субагенты</b> - делегирование подзадач с <b>урезанным контекстом</b>: быстрее за счёт параллельности, но почти всегда дороже.</li>
+          <li><b>Результат</b> - вместо «вот текст» получаешь «задача сделана».</li>
+        </ul>
+      </div>
+      <div>
+        <pre class="term"><span class="c"># цикл агента</span>
+<span class="p">думает</span> → что нужно сделать?
+<span class="cmd">вызывает инструмент</span> → читает файл
+<span class="ok">← получает результат</span>
+<span class="p">думает</span> → теперь правлю код
+<span class="cmd">вызывает инструмент</span> → запускает тест
+<span class="ok">← тест зелёный</span>
+<span class="p">думает</span> → готово ✦</pre>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s13">
+  <div class="bgimg"><img src="img/div02.jpg" alt=""></div>
+  <div class="content">
+    <div class="kicker">02</div>
+    <h1>Рефлексивное обучение</h1>
+    <p class="lead">«Уважаемый ИИ, расскажи, что такое ИИ.» Да, так тоже можно - и это один из самых сильных приёмов в работе.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s14">
+  <div class="content">
+    <div class="kicker">02 · Учись через сам инструмент</div>
+    <h2>Спроси у ИИ про ИИ</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Не понял ответ?</b> «Объясни проще / почему ты так решил?»</li>
+          <li><b>Не знаешь, что умеет?</b> «Что ты можешь? Какие у тебя инструменты?»</li>
+          <li><b>Плохо сформулировал?</b> «Как мне переформулировать запрос, чтобы получить лучший результат?»</li>
+          <li><b>Застрял?</b> «Предложи варианты, как это решить.»</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Почему это работает</h3>
+          <p>Модель отлично знает саму себя и хорошие практики работы с ней. Вместо того чтобы гуглить «как написать промпт» - спроси у неё прямо. Это метаобучение: ты осваиваешь инструмент через сам инструмент, и с каждым разом запросы становятся точнее.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s15">
+  <div class="bgimg"><img src="img/div03.jpg" alt=""></div>
+  <div class="content">
+    <div class="kicker">03</div>
+    <h1>Решение проблем</h1>
+    <p class="lead">Две самые частые бытовые ситуации: «вышла новая модель, а я её не вижу» и «куда упёрлись мои лимиты».</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s16">
+  <div class="content">
+    <div class="kicker">03 · Бытовые ситуации</div>
+    <h2>Когда что-то не так</h2>
+    <div class="cols">
+      <div class="card">
+        <h3>Новой модели не видно</h3>
+        <ul>
+          <li>Обнови приложение / клиент до последней версии</li>
+          <li>Перезапусти - иногда список моделей кэшируется</li>
+          <li>Проверь подписку и доступ к модели</li>
+          <li>Релиз бывает <b>постепенным</b> - доходит не до всех сразу</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Где смотреть лимиты</h3>
+        <p style="margin-bottom:12px">Использование и остаток по плану:</p>
+        <p><code>claude.ai/settings/usage</code></p>
+        <p style="margin-top:12px">Видно расход, лимиты плана и сколько осталось. Упёрся - дождись сброса окна или подними план.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s17">
+  <div class="bgimg"><img src="img/div04.jpg" alt=""></div>
+  <div class="content">
+    <div class="kicker">04</div>
+    <h1>MCP и контекст</h1>
+    <p class="lead">Как правильно хранить контекст, чем он отличается от архива сообщений, и что такое скилы и субагенты.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s18">
+  <div class="content">
+    <div class="kicker">04 · Память и расширения</div>
+    <h2>MCP, контекст, скилы, субагенты</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3>MCP</h3>
+          <p><b>Model Context Protocol</b> - стандарт, которым к модели подключают внешние данные и инструменты: базы, файлы, API, твою историю. Один раз настроил сервер - и у модели появился доступ.</p>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3>Скилы</h3>
+          <p>Переиспользуемые наборы инструкций и экспертизы. Модель подгружает их <b>только когда они нужны</b> - не надо запихивать всё в каждый запрос.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Контекст ≠ архив</h3>
+          <p><b>Контекст</b> - то, что модель видит прямо сейчас (как оперативка, ограничен). <b>Архив сообщений</b> - сохранённая история, которую можно достать обратно в контекст по запросу (как диск, безграничен).</p>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3>Субагенты</h3>
+          <p>Отдельные агенты с <b>почти пустым</b> общим контекстом под подзадачу. Дают скорость за счёт параллельности, но это <b>тонкий инструмент</b>: чаще дороже и в ущерб качеству - оправданы лишь для независимых задач.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s19">
+  <div class="content">
+    <div class="kicker">04.1 · Интерфейс IDE</div>
+    <h2>Режимы правок в PhpStorm / VSCode</h2>
+    <div class="cols">
+      <div>
+        <table class="t" style="font-size:14.5px">
+          <tr><th>Режим</th><th>Что делает</th></tr>
+          <tr><td>normal</td><td class="d"><b>Обычный режим.</b> Каждое изменение спрашивает подтверждение - ты контролируешь шаги.</td></tr>
+          <tr><td>auto</td><td class="d"><b>Авто-применение.</b> Агент сам применяет правки без вопросов - быстро, но довериться надо.</td></tr>
+          <tr><td>plan</td><td class="d"><b>Plan mode.</b> Сначала составляет план, файлы не трогает. Одобряешь план - тогда исполняет.</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Как переключать</h3>
+          <p>В Claude Code режимы переключаются клавишей <code>Shift + Tab</code> - она циклически прогоняет: обычный → авто → план. В IDE-плагине то же самое доступно из панели агента.</p>
+          <p style="margin-top:12px">Правило: незнакомый или важный код - начинай с <b>plan mode</b>; рутину - можно в авто.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s20">
+  <div class="content">
+    <div class="kicker">04.2 · Управление</div>
+    <h2>Модели, команды и подключение MCP</h2>
+    <div class="cols">
+      <div>
+        <table class="t" style="font-size:14.5px">
+          <tr><th>Действие</th><th>Как</th></tr>
+          <tr><td>модель</td><td class="d"><b>Сменить модель.</b> Команда <code>/model</code> или настройки - выбираешь Opus / Sonnet / Haiku под задачу.</td></tr>
+          <tr><td>команды</td><td class="d"><b>Слэш-команды.</b> <code>/help</code> <code>/clear</code> <code>/compact</code> - и сам агент умеет запускать команды в терминале.</td></tr>
+          <tr><td>mcp</td><td class="d"><b>Подключить MCP.</b> Добавляешь сервер в конфиг - указываешь команду запуска или URL. После этого его инструменты доступны модели.</td></tr>
+        </table>
+      </div>
+      <div>
+        <pre class="term"><span class="c"># сменить модель</span>
+<span class="cmd">/model</span> opus
+<span class="c"># полезные команды</span>
+<span class="cmd">/clear</span>   <span class="c">очистить контекст</span>
+<span class="cmd">/compact</span> <span class="c">сжать историю</span>
+<span class="c"># MCP-сервер в конфиге</span>
+<span class="p">"mcpServers"</span>: {
+  <span class="p">"my-server"</span>: { <span class="p">"command"</span>: <span class="ok">"..."</span> }
+}</pre>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s21">
+  <div class="bgimg"><img src="img/div05.jpg" alt=""></div>
+  <div class="content">
+    <div class="kicker">05</div>
+    <h1>Что такое effort</h1>
+    <p class="lead">Effort - уровень «усилия» модели. Сколько она думает и сколько токенов готова на это потратить.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s22">
+  <div class="content">
+    <div class="kicker">05.1 · Уровни усилия</div>
+    <h2>От быстрого к предельному</h2>
+    <table class="t" style="font-size:15px">
+      <tr><th>Уровень</th><th style="width:28%">Глубина</th><th>Когда</th></tr>
+      <tr><td><code>low</code></td><td><div class="meter"><i style="width:15%"></i></div></td><td class="d">Быстро и дёшево. Простые задачи, минимум размышлений.</td></tr>
+      <tr><td><code>medium</code></td><td><div class="meter"><i style="width:32%"></i></div></td><td class="d">Баланс качества и расхода. Средние задачи.</td></tr>
+      <tr><td><code>high</code></td><td><div class="meter"><i style="width:50%"></i></div></td><td class="d">Для всего, где важен интеллект. Часто по умолчанию.</td></tr>
+      <tr><td><code>xhigh</code></td><td><div class="meter"><i style="width:68%"></i></div></td><td class="d">Лучший для кода и агентов. По умолчанию в Claude Code.</td></tr>
+      <tr><td><code>max</code></td><td><div class="meter"><i style="width:85%"></i></div></td><td class="d">Когда правильность важнее стоимости. Предельная глубина.</td></tr>
+      <tr><td><code>Ultracode</code></td><td><div class="meter"><i style="width:100%"></i></div></td><td class="d">xhigh + workflows: оркестрация множества агентов. Самый масштабный режим.</td></tr>
+    </table>
+    <div class="note gold" style="margin-top:18px">Выше effort → глубже размышления, но дороже и дольше. <b>high</b> - золотая середина; <b>max</b> и <b>Ultracode</b> - для по-настоящему тяжёлых задач.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s23">
+  <div class="bgimg"><img src="img/div06.jpg" alt=""></div>
+  <div class="content">
+    <div class="kicker">06</div>
+    <h1>Что такое compact</h1>
+    <p class="lead">Compact - сжатие истории разговора, когда контекст переполняется. Модель суммирует прошлое, чтобы освободить место и продолжить.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s24">
+  <div class="content">
+    <div class="kicker">06 · Когда сжимать</div>
+    <h2>Compact: спасает или вредит</h2>
+    <div class="cols">
+      <div class="card">
+        <h3 class="gr">✓ Нужен, когда</h3>
+        <ul>
+          <li>Длинный разговор подходит к лимиту контекста</li>
+          <li>Хочешь продолжить ту же задачу, не теряя нить</li>
+          <li>Срабатывает авто - или зови вручную <code>/compact</code></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="rd">✕ Не нужен, когда</h3>
+        <ul>
+          <li>Разговор короткий - сжимать нечего</li>
+          <li>Важны точные детали ранней части (сжатие их теряет)</li>
+          <li>Сменилась тема - лучше начать новый чат через <code>/clear</code></li>
+        </ul>
+      </div>
+    </div>
+    <div class="note warn" style="margin-top:18px"><b>Главное помнить:</b> после compact мелкие детали теряются - не полагайся на сжатую часть как на точный источник.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s25">
+  <div class="content">
+    <div class="kicker">Заключение · вопрос и мораль</div>
+    <h2>Кто здесь мастер</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="rd">Вопрос на подумать</h3>
+          <p>Модель стала тем, что она есть, одним способом: миллиарды раз угадывала следующий токен и получала по рукам за ошибку. Никто не объяснял ей грамматику, физику или стиль. Она их сделала, а не выучила.</p>
+          <p style="margin-top:10px">Мы осваиваем её ровно так же: запрос, ответ, «не то», запрос точнее. Инструкции «как писать промпты» работают хуже, чем десять собственных неудачных запросов. Тогда вопрос: если и модель, и пользователь учатся одним методом, что именно даёт нам право называть себя мастером, а её - инструментом. Пока ответ простой: мастер тот, кто ставит задачу. Проверь, что ты всё ещё этот человек, а не тот, кто соглашается с первым вариантом.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Мораль</h3>
+          <p style="font-size:22px;color:#fff;margin:4px 0 8px"><b>Fabricando fit faber.</b></p>
+          <p>«Мастером становятся, делая». Средневековая школьная пословица, у Эразма в «Адагиях» есть вариант «fabricando fabri fimus». Ремесленник не тот, кто прочитал про молоток, а тот, кто отбил себе пальцы.</p>
+          <p style="margin-top:10px">Для этой лекции точнее фразы нет. Модель, effort, compact, MCP, режимы IDE - это всё описание молотка. Ни один слайд не заменит одного вечера, когда ты сам пробуешь, ошибаешься и переспрашиваешь у модели, почему вышло не то. Отсюда и главный приём: спросить у ИИ про ИИ - это и есть «делать».</p>
+          <p style="margin-top:10px">Подвох в том, что фраза не про нас одних. Модель тоже fabricando: она мастер угадывания, потому что угадывала триллион раз. Разница между вами - не в методе, а в том, кто решает, что делать дальше.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s26">
+  <div class="bgimg"><img src="img/hero.jpg" alt=""></div>
+  <div class="content">
+    <div class="kicker">Итог · Fabricando fit faber</div>
+    <h1>Модель - это инструмент. А инструменты осваивают руками.</h1>
+    <p class="lead">Выбирай модель под задачу, управляй контекстом и effort, не бойся спрашивать у ИИ про ИИ. Остальное приходит с практикой.</p>
+    <p class="lead" style="margin-top:14px">Вопросы → давайте обсудим.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- SLIDES_END -->
+
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>

@@ -10,7 +10,7 @@
 |---|-------------|---------|
 | 1 | [От кнопки до процесса: анатомия запуска ПК](https://screampassion.github.io/presentations/hwd_presentation/index.html) | 40 |
 | 2 | [Базы данных: от страницы на диске до триграмм](https://screampassion.github.io/presentations/db_presentation/index.html) | 73 |
-| 3 | [Как работает ИИ: разбор для практиков](https://screampassion.github.io/presentations/ai_presentation/presentation.html) | 26 |
+| 3 | [Как работает ИИ: разбор для практиков](https://screampassion.github.io/presentations/ai_presentation/index.html) | 26 |
 | 4 | [Крипта честно: как это работает и где ложь](https://screampassion.github.io/presentations/crypto_presentation/index.html) | 24 |
 | 5 | [Автомобиль: от искры до колеса](https://screampassion.github.io/presentations/auto_presentation/index.html) | 45 |
 | 6 | [Самолёт: 80 тонн в воздухе и почему это надёжно](https://screampassion.github.io/presentations/aircraft_presentation/index.html) | 27 |
@@ -47,6 +47,16 @@
 | 4 | [Для кого не было. Навсегда](https://screampassion.github.io/presentations/forever_presentation/index.html) | 50 |
 | 5 | [Ничего из ничего. Везде](https://screampassion.github.io/presentations/nothing_presentation/index.html) | 49 |
 | 6 | [Звон есть, есть ли свет?](https://screampassion.github.io/presentations/light_presentation/index.html) | 40 |
+
+## Три эпохи
+
+Коллекция собиралась два года и делится на три периода, и это стоит знать перед чтением.
+
+- **Справочники** (лекции 1-17, от «Анатомии запуска ПК» до «Бестиария»): формат «deep dive», разбор предмета по узлам с таблицей «всё на одном слайде». Сильны как справочники, тезиса в них не ищите: там его нет по замыслу.
+- **Лекции с тезисом** (с «Давления» и дальше): одна мысль на всю лекцию, латынь в финале вырастает из материала, у каждой есть честный край, где автор отделяет доказанное от того, во что верит. Вершина серии на сегодня - «Случайно».
+- **«Свет по звону»**: не лекции, а эссе с вопросами. Вброс, следствие, «а что если нет», и граница, где кончается наука.
+
+Третья в первом списке, «Как работает ИИ», стоит особняком: это практический разбор для коллег по работе с Claude, не ночная лекция. Оставлена в общем ряду, потому что собрана в том же формате.
 
 ## Как это сделано
 

@@ -1338,3 +1338,11 @@
     if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
   });
   // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>
