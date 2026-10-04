@@ -33,6 +33,7 @@
 | 23 | [Главная иллюзия. Состояние](https://screampassion.github.io/presentations/state_presentation/index.html) | 39 |
 | 24 | [Идущие на смерть. Почему каждая культура строит арену](https://screampassion.github.io/presentations/arena_presentation/index.html) | 41 |
 | 25 | [Кости брошены. Сражения, после которых мир не вернулся](https://screampassion.github.io/presentations/battles_presentation/index.html) | 54 |
+| 26 | [Случайно. Слово для невидимой причины](https://screampassion.github.io/presentations/chance_presentation/index.html) | 57 |
 
 ## Серия «Свет по звону»
 

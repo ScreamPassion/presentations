@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><link rel="icon" href="../favicon.ico" sizes="any"><link rel="icon" type="image/png" href="../favicon.png"><link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Случайно. Слово для невидимой причины</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #a7c38a; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  table.t.compact td, table.t.compact th { padding: 4px 10px; line-height: 1.3; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+  h1.strike { font-size: 40px; color: var(--dim); margin-bottom: 8px; }
+  h1.strike s { color: var(--faint); text-decoration-color: var(--red); text-decoration-thickness: 3px; }
+  h1.fin { color: #fff; }
+  sup { font-size: .6em; }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Гвендолин-ночные-лекции</div>
+    <h1>Случайно. Слово для невидимой причины</h1>
+    <p class="lead"><i>Caecitas fortuita, vita fortuita.</i> Случайна слепота, случайна жизнь. Пятьдесят с лишним слайдов про одно слово, которое мы произносим по десять раз в день и ни разу не проверяем. Дождь, больной ребёнок, выигрыш, камень под снегом, распад атома. По каждому один вопрос: где стояли датчики, когда это случилось. И одна фраза на латыни, которую к финалу придётся зачеркнуть дважды.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s2">
+  <div class="content">
+    <div class="kicker">Вступление</div>
+    <h2>Два эпиграфа, один тест и правило лекции</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Спиноза, 1677.</b> «Случайной вещь называется только из-за недостатка нашего знания» («Этика», часть I, теорема 33, схолия). Через полтора века Лаплас в «Опыте философии теории вероятностей» повторит: вероятность относится частью к нашему знанию, частью к нашему незнанию. Лекция - развёрнутая проверка этих двух фраз на живых примерах.</li>
+          <li><b>Тест.</b> Каждый раз, когда звучит «случайно», спрашиваем не «почему», а «где стояли датчики». У болида Формулы-1 их тысяча. У склона - ноль. Разница между «закономерно» и «случайно» почти всегда оказывается разницей между этими двумя числами.</li>
+          <li><b>Чего лекция не утверждает.</b> Что всё предопределено. Хаос и квант закрыли демона Лапласа, и к ним мы честно дойдём в конце. Тезис уже: у события есть причина, даже когда её нельзя было увидеть, посчитать или признать. Это разные вещи, и дека держит их раздельно.</li>
+        </ul>
+      </div>
+      <div>
+        <table class="t" style="font-size:13px">
+          <tr><th>Слово «случайно» означает</th><th>Что на самом деле</th><th>Глава</th></tr>
+          <tr><td>не заметил</td><td class="d">арифметика больших чисел</td><td class="d">2</td></tr>
+          <tr><td>не знал</td><td class="d">причина открыта позже даты</td><td class="d">3</td></tr>
+          <tr><td>не хватало данных</td><td class="d">датчики стояли не там</td><td class="d">4</td></tr>
+          <tr><td>не мог посчитать</td><td class="d">закон известен, цифр не хватило</td><td class="d">5</td></tr>
+          <tr><td>не считал знаменатель</td><td class="d">отбор выживших</td><td class="d">6</td></tr>
+          <tr><td>не проверил</td><td class="d">память и отбор</td><td class="d">7</td></tr>
+          <tr><td>я так решил</td><td class="d">состояние с причиной в прошлом</td><td class="d">8</td></tr>
+          <tr><td>энтропия растёт</td><td class="d">данные уходят из поля зрения</td><td class="d">9</td></tr>
+          <tr><td>причины нет</td><td class="d">спор интерпретаций, не факт</td><td class="d">10</td></tr>
+        </table>
+        <div class="note gold" style="margin-top:12px"><b>Связи.</b> «Изобретаем хаос» - один слайд-ссылка, «Фотон и вероятность» - только Белл и распад, «Главная иллюзия» - мост в главе про выбор. Повторов нет, где можно было повторить, стоит отсылка.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">Вступление · карта</div>
+    <h2>Лестница из пяти «не» и две бездны под ней</h2>
+    <div class="dg">
+      <div class="row">
+        <div class="bx"><b>Не заметил</b><span>дни рождения, Линкольн и Кеннеди, лица в облаках</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>Не знал</b><span>холера, чума, мутации, рак «от невезения»</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>Не хватало данных</b><span>дождь, Сараево, «Титан», камень под снегом</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>Не мог посчитать</b><span>монета, рулетка, лотерея, seed</span></div>
+        <div class="arr">→</div>
+        <div class="bx cy"><b>Я так решил</b><span>Либет, 350 миллисекунд</span></div>
+      </div>
+      <div class="row">
+        <div class="bx dk"><b>между ступенями: знаменатель и память</b><span>хор из Беатрис, три сестры-корабля, Ямагути, Салливан, сны про Аберфан, книга на скамейке</span></div>
+      </div>
+      <div class="row">
+        <div class="bx am"><b>Бездна первая: энтропия</b><span>Больцман, Гиббс, демон, Ландауэр, Лиувилль. Величина, которая измеряет само слово «случайно»</span></div>
+        <div class="bx rd"><b>Бездна вторая: квант</b><span>распад атома, Белл, Бом. Единственное место, где спор о причине ещё не закрыт</span></div>
+      </div>
+      <div class="cap">Слева направо слово «случайно» теряет невинность. На каждой ступени его можно было заменить на «я не посмотрел туда-то», и лекция каждый раз называет, куда именно.</div>
+    </div>
+    <div class="cols" style="margin-top:18px">
+      <div>
+        <ul class="pts">
+          <li><b>Числа.</b> Все вероятности в деке посчитаны заново, а не взяты из газет. Где газета говорила «один к семнадцати триллионам», рядом стоит честная цифра и то, какой знаменатель она потеряла.</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Честность на краях.</b> Один кейс в деке остаётся неразобранным, и это сказано прямо. Две главы (энтропия и квант) заканчиваются оговоркой, где автор отделяет то, что доказано, от того, во что он верит.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s4">
+  <div class="bgimg"><img src="assets/ch_word.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">1 · Слово</div>
+    <h1>Случай - это то, что упало</h1>
+    <p class="lead">Прежде чем спорить о случайности, стоит посмотреть, что о ней уже знает язык. Он знает многое: в каждом европейском слове для случая сидит глагол «падать», а богиня, которая за него отвечает, стоит с повязкой на глазах. Язык не сказал «причины нет». Он сказал «я не видел, откуда прилетело».</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="content">
+    <div class="kicker">1 · Слово · этимология</div>
+    <h2>Шесть языков, один глагол: падать</h2>
+    <div class="cols">
+      <div>
+        <table class="t" style="font-size:13.5px">
+          <tr><th>Слово</th><th>Откуда</th><th>Буквально</th></tr>
+          <tr><td>лат. casus</td><td class="d">cadere, падать</td><td class="d">падение; как легли кости</td></tr>
+          <tr><td>англ. chance</td><td class="d">ст.-фр. cheance ← лат. cadentia</td><td class="d">выпадение</td></tr>
+          <tr><td>англ. accident</td><td class="d">ad + cadere</td><td class="d">то, что упало на</td></tr>
+          <tr><td>нем. Zufall</td><td class="d">zu + fallen</td><td class="d">при-падение</td></tr>
+          <tr><td>англ. hazard</td><td class="d">араб. az-zahr</td><td class="d">игральная кость</td></tr>
+          <tr><td>рус. случай</td><td class="d">с- + лучити</td><td class="d">попасть, получить; «улучить момент»</td></tr>
+          <tr><td>лат. Fortuna</td><td class="d">fors ← ferre, нести</td><td class="d">то, что принесло</td></tr>
+        </table>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Падает всегда сверху.</b> Пять языков из семи описывают случай как предмет, который прилетел извне и вниз. Не «вырос», не «сложился», а «упал». Это описание точки зрения наблюдателя: он стоял внизу и смотрел не туда.</li>
+          <li><b>Русский иначе.</b> «Случай» от «лучити» - целить, попадать, получать (Фасмер). Отсюда же «улучить», «получить» и «случиться» в смысле «сойтись». Русское слово не про падение, а про попадание: событие пришло в цель, которой ты не знал.</li>
+          <li><b>Фортуна с повязкой.</b> Римская богиня держит рог изобилия и руль, стоит на шаре или колесе и слепа. У греков она Тюхе, у неё та же повязка. Две тысячи лет назад слепоту уже приписали случаю, осталось выяснить, чья она.</li>
+        </ul>
+        <div class="note"><b>Что это даёт лекции.</b> Слово «случайно» с самого рождения описывало не мир, а взгляд: нечто упало, принесло, попало. Вопрос «откуда» в слове есть, ответа нет. Дальше мы будем его искать по одному и тому же маршруту.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="content">
+    <div class="kicker">1 · Слово · три значения</div>
+    <h2>«Случайно встретил» - три разных утверждения в двух словах</h2>
+    <div class="cols3">
+      <div class="card">
+        <h3>1. Не планировал</h3>
+        <p>Утверждение о намерении. У встречи есть причины с обеих сторон (оба шли по одной улице в одно время, и у каждого был мотив), просто ни одна из них не называлась «встретить». Самое честное и самое частое значение: девять бытовых «случайно» из десяти именно такие.</p>
+      </div>
+      <div class="card">
+        <h3>2. Не ожидал</h3>
+        <p>Утверждение о прогнозе. Причины были, и их в принципе можно было знать, но у говорящего не было данных. Прогноз погоды, «вдруг заболел», «ни с того ни с сего уволили». Здесь слово прикрывает нехватку информации, и прикрывает хорошо: звучит как свойство мира.</p>
+      </div>
+      <div class="card">
+        <h3 class="am">3. Причины не было</h3>
+        <p>Утверждение о мире. Самое сильное и самое редкое. В быту его не говорит никто, в физике за него спорят сто лет, и до конца лекции мы проверим, есть ли хоть одно место, где оно доказано, а не предположено.</p>
+      </div>
+    </div>
+    <div class="cols" style="margin-top:20px">
+      <div>
+        <ul class="pts">
+          <li><b>Математика отказалась от «почему» первой.</b> Колмогоров, 1933, «Основные понятия теории вероятностей»: вероятность - это мера на множестве событий. Ни слова о причинах. Теория вероятностей работает одинаково для честной монеты и для монеты, которую бросает машина с заданным исходом: ей важно, что ты знаешь, а не что происходит.</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Случайная последовательность = несжимаемая.</b> Колмогоров 1965, Мартин-Лёф 1966: цепочка случайна, если нет описания короче её самой. Цифры числа π проходят все тесты на случайность и при этом на 100% предопределены формулой длиной в строку. Случайность для математики - свойство описания, не события. Запомним, пригодится в главе про энтропию.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s7">
+  <div class="content">
+    <div class="kicker">1 · Слово · тезис</div>
+    <h2>Тезис, который дека будет доказывать следующие пятьдесят слайдов</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="am">Формулировка</h3>
+          <p style="font-size:20px;color:#fff;line-height:1.4;margin:6px 0 10px"><b>«Случайно» - это слово, которым мы обозначаем отсутствие видимой причины. Не отсутствие причины.</b></p>
+          <p>Дождь не идёт случайно, это конденсация на пылинке при известной температуре. Ребёнок не рождается больным случайно, это ошибка копирования, на которую что-то повлияло, и это что-то измеримо. Монета не падает случайно, её бросила рука с определённым импульсом. Везде, где мы говорим «случайно», стоит спросить одно: куда мы не смотрели.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Как будем проверять</h3>
+          <ul>
+            <li>Берём событие, которое любой назовёт чистой случайностью: хор опоздал, человека семь раз ударила молния, пилот Формулы-1 упал на лыжах.</li>
+            <li>Разбираем по винтикам, пока не найдём причину или честно не упрёмся в отсутствие данных.</li>
+            <li>Называем, каких именно данных не было и где они лежали. Чаще всего - под ногами.</li>
+            <li>В конце смотрим на два места, где эта схема, кажется, ломается: энтропия и квант. И проверяем, ломается ли.</li>
+          </ul>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Что будет считаться победой слова «случайно».</b> Хотя бы одно событие, для которого показано, что причины нет, а не что она не найдена. Спойлер: к финалу кандидат останется один, и про него будет отдельный разговор.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s8">
+  <div class="bgimg"><img src="assets/ch_notice.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">2 · Не заметил · Post hoc ergo propter hoc</div>
+    <h1>Чудо один на миллион случается восемь тысяч раз в день</h1>
+    <p class="lead">Первая и самая мягкая ступень. Причина тут не спрятана и не сложна, она арифметическая, и мозг её просто не умеет чувствовать. Мы хорошо считаем до семи и плохо до миллиарда, поэтому любое совпадение кажется посланием. Эта глава про то, как выглядит мир, если считать знаменатель.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s9">
+  <div class="content">
+    <div class="kicker">2 · Не заметил · знаменатель</div>
+    <h2>Парадокс дней рождения и закон по-настоящему больших чисел</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>23 человека - 50,7%.</b> Вероятность, что у двоих в комнате совпадёт день рождения, переваливает за половину уже при 23 людях, при 57 она 99%. Интуиция требует 183, потому что считает пары «я и кто-то», а в комнате из 23 человек пар 253. Мозг считает от себя, математика считает все пары.</li>
+          <li><b>Литтлвуд, 1953.</b> Человек бодрствует около 8 часов и замечает примерно одно событие в секунду, это 30 тысяч событий в день, миллион за 35 дней. Значит, событие с шансом один на миллион каждый из нас видит раз в месяц. На 8 миллиардов человек такие «чудеса» происходят примерно 8 тысяч раз в день, и о каждом кто-то пишет в сеть.</li>
+          <li><b>Диаконис и Мостеллер, 1989.</b> Статья «Методы изучения совпадений»: при достаточно большой выборке любая возмутительная вещь обязана произойти. Они разобрали сотни писем читателей о совпадениях, и почти все уложились в четыре механизма: скрытая причина, множественные концы (много способов «совпасть»), отбор и большие числа.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="band">как растёт шанс совпадения дней рождения</div>
+          <div class="row"><div class="bx dk"><b>10 чел.</b><span>12%</span></div><div class="bx dk"><b>15</b><span>25%</span></div><div class="bx"><b>23</b><span>50,7%</span></div><div class="bx cy"><b>30</b><span>70,6%</span></div><div class="bx cy"><b>41</b><span>90%</span></div><div class="bx am"><b>57</b><span>99%</span></div></div>
+          <div class="cap">Футбольный матч: 22 игрока и судья, ровно 23 человека. В половине матчей на поле двое именинников одного дня. Никто не проверяет, поэтому никто не удивляется.</div>
+        </div>
+        <div class="note" style="margin-top:14px"><b>Где был датчик.</b> На себе. Мы считаем совпадения, в которых участвуем, и не считаем те сотни тысяч, в которых не участвуем. Знаменатель был под ногами, мы просто смотрели в числитель.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s10">
+  <div class="content">
+    <div class="kicker">2 · Не заметил · отбор признаков</div>
+    <h2>Линкольн и Кеннеди: сначала впечатлиться, потом посчитать</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_lincoln.png" alt=""><div class="pcap">Список ходит с 1964 года. В нём около 15 пунктов, и каждый по отдельности правдив или почти правдив.</div></div>
+      <div>
+        <ul class="pts">
+          <li><b>Список.</b> Избраны в Конгресс в 1846 и 1946, президентами в 1860 и 1960. В фамилиях по семь букв. Оба застрелены в пятницу, в голову, в присутствии жён. Преемники - Джонсоны, Эндрю родился в 1808, Линдон в 1908. Линкольна убили в театре Форда, Кеннеди - в «Линкольне» фирмы «Форд». Звучит как шифр.</li>
+          <li><b>Разбор.</b> У двух президентов тысячи сравнимых признаков: даты, имена, города, дети, болезни, рост, долги. Из тысяч всегда найдётся дюжина совпавших, и список составлен только из них. Различий (возраст, партия, религия, число детей, срок, страна рождения жён) в списке нет, потому что их никто не искал. Мартин Гарднер ещё в 1960-х показал, что такой же список собирается почти для любых двух президентов.</li>
+          <li><b>Числа врут и внутри списка.</b> «Бут родился в 1839, Освальд в 1939»: Бут родился в 1838. «Секретарь Линкольна по фамилии Кеннеди отговаривал ехать в театр»: такого секретаря не было. Когда совпадений не хватает, их дорисовывают, и это тоже механизм: память подгоняет факт под узор.</li>
+        </ul>
+        <div class="note gold"><b>Где был датчик.</b> На совпадениях. Чтобы увидеть закономерность, нужно считать и попадания, и промахи. Список считает только попадания, и это не свойство Линкольна с Кеннеди, это свойство списка.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s11">
+  <div class="content">
+    <div class="kicker">2 · Не заметил · мозг</div>
+    <h2>Апофения: детектор узоров, настроенный на ложные тревоги</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Термин.</b> Клаус Конрад, 1958: апофения - переживание связи там, где её нет, описано как ранняя стадия шизофрении. Потом выяснилось, что в слабой форме это норма: лица в облаках и розетках (парейдолия), «лицо на Марсе» 1976 года, голоса в шуме, узор в рулетке. Мозг - машина для поиска закономерностей, и у неё нет кнопки «выкл».</li>
+          <li><b>Почему так настроено.</b> Фостер и Кокко, 2009: если шорох в траве - хищник хотя бы в нескольких процентах случаев, выгоднее пугаться всегда. Ложная тревога стоит калорий, пропуск стоит жизни. Отбор миллионы лет поощрял тех, кто видел причину там, где её не было, и наказывал тех, кто не видел её там, где она была.</li>
+          <li><b>Голуби Скиннера, 1948.</b> Кормушка срабатывала по таймеру, независимо от поведения. Голуби выработали ритуалы: один крутился против часовой, другой кивал в угол. Каждый «нашёл причину» корма в том, что делал перед его появлением. Статья называлась «Суеверие у голубя», и это самый короткий учебник по человеческим приметам.</li>
+        </ul>
+        <div class="note"><b>Где был датчик.</b> Внутри головы, и он откалиброван не на истину, а на выживание. Первая ступень лестницы заканчивается так: «случайно» и «не случайно» мы одинаково склонны видеть не там, и у обеих ошибок одна причина.</div>
+      </div>
+      <div class="pimg"><img src="assets/p_apophenia.png" alt=""><div class="pcap">Парейдолия - частный случай: зрительная кора отдаёт лицам приоритет и достраивает их из трёх пятен.</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s12">
+  <div class="bgimg"><img src="assets/ch_notknow.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">3 · Не знал · Felix qui potuit rerum cognoscere causas</div>
+    <h1>У каждого «случайно» есть дата, после которой оно перестало быть случайным</h1>
+    <p class="lead">Вторая ступень. Причина была всегда, но её ещё не открыли, и на месте причины стояло слово. Холера «от дурного воздуха», чума «за грехи», молния «куда бог пошлёт», больной ребёнок «так вышло». У каждого из этих слов есть год и фамилия, когда его заменили на механизм. Эта глава про то, что слово «случайно» имеет срок годности.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s13">
+  <div class="content">
+    <div class="kicker">3 · Не знал · 1854</div>
+    <h2>Холера ходила по кварталу случайно, пока Сноу не снял ручку с колонки</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_snow.png" alt=""><div class="pcap">Карта Сноу: чёрные бруски - смерти по домам. Они сгущаются вокруг одной колонки на Брод-стрит и редеют у пивоварни.</div></div>
+      <div>
+        <ul class="pts">
+          <li><b>Вспышка.</b> Сохо, Лондон, конец августа 1854. За десять дней 500 смертей в радиусе 250 метров, всего 616. Официальная наука (Чедвик, Найтингейл, Главное управление здравоохранения) объясняла холеру миазмами - дурным воздухом от гниения. Почему умер этот дом, а не соседний, оставалось случайностью.</li>
+          <li><b>Данные.</b> Врач Джон Сноу обошёл квартал с картой и нанёс каждую смерть на адрес. Картина сложилась вокруг колонки на Брод-стрит. 70 рабочих пивоварни рядом не заболели: пили пиво. Вдова из Хэмпстеда, которой возили воду именно с этой колонки, потому что ей нравился вкус, умерла в пяти километрах от очага. 8 сентября приходской совет снял ручку. Вспышка кончилась.</li>
+          <li><b>Причина опоздала на 30 лет.</b> Вибрион в том же 1854 году увидел под микроскопом Филиппо Пачини во Флоренции, его не заметили. Кох переоткрыл холерную палочку в 1883. Сноу умер в 1858, не дожив до доказательства. Комиссия по миазмам отвергла его выводы в 1855 году как «не подтверждённые».</li>
+        </ul>
+        <div class="note gold"><b>Где был датчик.</b> Сноу поставил его на адрес, а не на воздух. Смерти были случайны ровно до того момента, когда их нанесли на карту. Ни одно новое наблюдение не понадобилось, только другой способ записывать уже известное.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" name="dates" id="s14">
+  <div class="content">
+    <div class="kicker">3 · Не знал · даты</div>
+    <h2>Календарь: когда «случайно» заменили на механизм</h2>
+    <table class="t" style="font-size:13px">
+      <tr><th>Событие</th><th>Что говорили</th><th>Дата и кто</th><th>Что оказалось</th></tr>
+      <tr><td>Молния в колокольню</td><td class="d">божья воля; звонили в колокола, чтобы отогнать грозу</td><td class="d">1752, Франклин, громоотвод</td><td class="d">за 33 года в Германии молния ударила в 386 колоколен и убила 103 звонаря; высокая мокрая верёвка в руках</td></tr>
+      <tr><td>Чума</td><td class="d">наказание, дурные звёзды, евреи отравили колодцы</td><td class="d">1894 Йерсен (палочка), 1898 Симон (блоха)</td><td class="d">Yersinia pestis, крысиная блоха; «случайный» дом - тот, где крысы</td></tr>
+      <tr><td>Родильная горячка</td><td class="d">миазмы, «эпидемическая конституция», страх роженицы</td><td class="d">1847, Земмельвейс, хлорная известь</td><td class="d">смертность в клинике с 18% до 1-2%; врачи шли из прозекторской; его осмеяли и сгноили в лечебнице</td></tr>
+      <tr><td>Землетрясение</td><td class="d">кара (Лиссабон 1755, в День всех святых)</td><td class="d">1912 Вегенер, 1960-е тектоника плит</td><td class="d">граница плит, карта рисков, Лиссабон на Азоро-Гибралтарском разломе</td></tr>
+      <tr><td>Язва желудка</td><td class="d">стресс, характер, острое</td><td class="d">1982 Маршалл и Уоррен; 2005 Нобель</td><td class="d">Helicobacter pylori; Маршалл выпил культуру, чтобы доказать</td></tr>
+      <tr><td>Дефект нервной трубки</td><td class="d">«так вышло», наследственность</td><td class="d">1991 MRC, фолиевая кислота</td><td class="d">0,4 мг в день до зачатия: минус 70% случаев; обогащение муки с 1998</td></tr>
+      <tr><td>Синдром внезапной детской смерти</td><td class="d">необъяснимо по определению</td><td class="d">1991-1994 кампания «спать на спине»</td><td class="d">смертность упала примерно вдвое за десять лет от одной позы</td></tr>
+    </table>
+    <div class="note" style="margin-top:12px"><b>Общее у строк.</b> В каждой до даты стояло слово, после даты - механизм, и ни одно событие не изменилось. Изменилось, куда смотрели. Любой сегодняшний список «необъяснимых» болезней - это просто таблица, у которой ещё не заполнен третий столбец.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s15">
+  <div class="content">
+    <div class="kicker">3 · Не знал · ребёнок</div>
+    <h2>«Больным родился случайно»: ошибка копирования, у которой есть счётчик</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Машина ошибается редко.</b> ДНК-полимераза вставляет не ту букву примерно раз на 10 миллионов. Корректура и репарация доводят точность до одной ошибки на миллиард, а то и десять миллиардов. Но в геноме 3 миллиарда букв, и клетки делятся триллионы раз, так что каждый ребёнок приносит около 60-70 новых мутаций, которых нет ни у отца, ни у матери.</li>
+          <li><b>У «случайных» мутаций есть измеренная причина.</b> Исландия, deCODE, Конг и соавторы, Nature 2012: число новых мутаций у ребёнка растёт на две в год с возрастом отца. Отец в 20 лет передаёт около 25, в 40 - около 65. Три четверти мутаций приходят от отца, потому что сперматогонии делятся всю жизнь, а яйцеклетки заложены при рождении. Риск шизофрении и аутизма у детей пожилых отцов выше именно поэтому.</li>
+          <li><b>Трисомия 21.</b> Нерасхождение хромосом в мейозе: в 25 лет риск около 1 на 1250, в 40 - 1 на 100, в 45 - 1 на 30. Кривая гладкая, предсказуемая и известна с 1930-х. Слово «случайно» здесь означает «мы не стали смотреть на возраст».</li>
+        </ul>
+        <div class="note gold"><b>Где был датчик.</b> На ребёнке, а надо было на родителях, на дате и на химии репликации. Мутация случайна в том смысле, в каком случаен конкретный бросок монеты: исход конкретного копирования не предсказан, но частота копирований, их ошибок и факторов, которые их умножают, посчитана до второго знака.</div>
+      </div>
+      <div class="pimg"><img src="assets/p_dna.png" alt=""><div class="pcap">Одна неверная буква на миллиард: репарация исправляет почти всё, остаток и называют «случайной мутацией».</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s16">
+  <div class="content">
+    <div class="kicker">3 · Не знал · рак</div>
+    <h2>Рак «от невезения»: как слово bad luck попало в Science и что под ним было</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Статья.</b> Томасетти и Фогельштейн, Science, январь 2015. Корреляция 0,81 между числом делений стволовых клеток ткани за жизнь и риском рака в этой ткани по 31 типу. Вывод авторов: две трети различий в риске между тканями объясняются «случайными» ошибками репликации. Заголовки на следующий день: «Большинство раков - просто невезение».</li>
+          <li><b>Что имели в виду авторы.</b> Не «без причины», а «не от образа жизни и не от наследственности». В 2017 они уточнили: 66% мутаций в опухолях - от копирования, 29% - от среды, 5% - наследственные. Это распределение причин, а не их отсутствие.</li>
+          <li><b>Что такое «ошибка копирования».</b> Химия. Таутомерный сдвиг основания в момент репликации. Депуринизация: каждая клетка теряет около 10 тысяч пуринов в день просто от воды и температуры тела. Окисление гуанина в 8-оксогуанин активными формами кислорода. У каждого механизма есть скорость, зависящая от температуры, кислорода, воспаления и возраста. Ни один из них не случаен, их просто не отслеживают поклеточно.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="rd">Контраргумент, который тоже правда</h3>
+          <p>У и соавторы, Nature 2016: та же корреляция совместима с тем, что 70-90% риска по многим ракам - внешние факторы. Рак лёгкого на 85-90% обязан табаку, меланома - ультрафиолету, рак печени в Азии - гепатиту B. Иммигранты за поколение приобретают раковый профиль новой страны. Спор между группами не о том, есть ли причина, а о том, какая доля её видна снаружи.</p>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3>Что остаётся от слова</h3>
+          <p>«Невезение» в этой истории означает: мутация произошла в той клетке, в том гене и в тот день, когда репарация не успела. Каждое из трёх условий имеет свою физику. Невезение - это сумма причин, которые мы договорились не считать, потому что их слишком много на одну клетку. Это честная позиция для статистика и нечестная для слова «случайно».</p>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Где был датчик.</b> На органе и на анкете, а причина лежит на уровне химии одной клетки в один день. Данные есть в принципе, но их на десять порядков больше, чем мы умеем записать. Это уже следующая ступень.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s17">
+  <div class="bgimg"><img src="assets/ch_nodata.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">4 · Не хватало данных · Latet anguis in herba</div>
+    <h1>Причина известна. Данные лежали в другом месте</h1>
+    <p class="lead">Третья ступень. Механизм открыт, закон написан, в учебнике всё есть. Не хватило конкретных цифр: где была пылинка, что напечатала газета, насколько тонкий снег. Здесь «случайно» уже не прикрывает незнание науки, оно прикрывает отсутствие датчика в нужной точке. И в этой главе будет самый личный слайд лекции.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s18">
+  <div class="content">
+    <div class="kicker">4 · Не хватало данных · дождь</div>
+    <h2>Дождь не идёт случайно: пылинка, минус 38 и йодид серебра</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_rain.png" alt=""><div class="pcap">Засев облака: если бы дождь был случайностью, йодид серебра не работал бы. Он работает на 5-15%, и это измерено.</div></div>
+      <div>
+        <ul class="pts">
+          <li><b>Капле нужна опора.</b> Чистый водяной пар не конденсируется до перенасыщения в сотни процентов, а в атмосфере его больше 1-2% не бывает. Капля растёт на ядре конденсации: пылинке, соли, саже, споре. Эйткен посчитал их в 1880: в чистом воздухе сотни на кубический сантиметр, над городом сотни тысяч. Нет ядра - нет капли, при любой влажности.</li>
+          <li><b>Замёрзнуть ещё труднее.</b> Чистая капля без ядра кристаллизации переохлаждается до минус 38 °C и не замерзает. Большая часть дождя в умеренных широтах начинается как лёд (процесс Бержерона-Финдайзена, 1930-е): кристалл растёт за счёт капель, тяжелеет, падает, тает. Ему нужна пылинка с нужной решёткой.</li>
+          <li><b>Доказательство причинности - управление.</b> 1946, лаборатория General Electric: Шефер бросил сухой лёд в холодильную камеру и получил снег, Бернард Воннегут (брат писателя) нашёл йодид серебра: его решётка почти как у льда. Проект SNOWIE, Айдахо, 2017, радары проследили засеянный снег от самолёта до земли. Прирост осадков 5-15%, скромно, но детерминированно. Случайность не поддаётся управлению по определению, дождь поддаётся.</li>
+        </ul>
+        <div class="note gold"><b>Где был датчик.</b> В барометре на стене. А нужен был в облаке, на масштабе микрона. Данные есть: прогноз на 5 дней сегодня точен так же, как на 1 день в 1980-м. Не потому, что дождь стал закономернее, а потому что спутников стало больше.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s19">
+  <div class="content">
+    <div class="kicker">4 · Не хватало данных · авария</div>
+    <h2>Слово «несчастный случай» отменили. Официально</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Тенерифе, 27 марта 1977.</b> 583 погибших, два «Боинга-747» на одной полосе в тумане. Разбор: бомба в аэропорту Лас-Пальмас (самолёты перенаправили), переполненная рулёжка, туман, две радиопередачи наложились друг на друга, капитан KLM начал разбег без разрешения, у него истекала норма рабочего времени. Семь звеньев. Убери любое - катастрофы нет. Ни одно не случайно.</li>
+          <li><b>Швейцарский сыр.</b> Джеймс Ризон, 1990: у каждой защиты есть дырки, катастрофа - когда дырки в нескольких слоях совпали. Модель стала стандартом в авиации, медицине и атомной отрасли. Её главный тезис: «человеческая ошибка» - не причина, а начало расследования.</li>
+          <li><b>Чёрный ящик.</b> Дэвид Уоррен, Австралия, 1954, после необъяснимых катастроф «Кометы». Регистратор параметров и речевой самописец записывают всё именно потому, что отрасль решила: причин, которых нет, не бывает, бывают незаписанные. Авиация стала самым безопасным транспортом не от удачи, а от записи.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Дорога: 1,19 миллиона в год</h3>
+          <p>Столько погибает на дорогах мира (ВОЗ, 2023). Швеция, 1997, программа Vision Zero: ни одна смерть на дороге не приемлема и ни одна не случайна, виновата система, а не водитель. Результат: смертность на душу населения упала втрое. Минтранс США с 1997 года просит говорить crash, а не accident. Полиция Великобритании с 2016 пишет в отчётах collision. Слово убрали сознательно: оно закрывало расследование до его начала.</p>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3 class="am">Семь решений</h3>
+          <p>Любая «случайная» авария раскладывается на цепочку: выехал позже на 10 минут (почему), поехал быстрее (почему), посмотрел в телефон (почему), шины изношены (почему), дорогу не посыпали (почему), знак закрыт веткой (почему), другой водитель тоже спешил (почему). У каждого «почему» есть ответ. Слово «случайно» ставят на то место, где перестали спрашивать.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s20">
+  <div class="content">
+    <div class="kicker">4 · Не хватало данных · Сараево, 28 июня 1914 · Fata viam invenient</div>
+    <h2>Шофёр свернул не туда: данные были, они не дошли до водителя</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Легенда.</b> Кортеж эрцгерцога по ошибке свернул на улицу Франца Иосифа, машина остановилась перед лавкой Шиллера, где случайно стоял Гаврило Принцип. Два выстрела, Первая мировая. Самая цитируемая случайность XX века.</li>
+          <li><b>Разбор.</b> Маршрут кортежа опубликован заранее. Вдоль набережной Аппель расставлены шесть заговорщиков. В 10:10 Чабринович бросает бомбу, она отскакивает от сложенного тента и ранит людей в следующей машине. После ратуши решают ехать в госпиталь к раненым другим путём, прямо по набережной. Губернатор Потиорек не сообщает об этом шофёру Лойке. Лойка поворачивает направо по напечатанной программе, Потиорек кричит, машина останавливается. Принцип стоит у старого маршрута не случайно: он к нему вернулся после провала бомбы.</li>
+          <li><b>Контрфактуал честный.</b> Не было бы поворота - не было бы 28 июня. Но Германия с 1905 года держала план Шлиффена, Австрия с 1913 искала повод для войны с Сербией, Россия мобилизовалась бы за Сербию, Франция была связана союзом. Июльский кризис мог начаться от любого другого повода, и историки спорят только о годе. Случай выбрал дату и фамилию, закон выбрал событие.</li>
+        </ul>
+        <div class="note gold"><b>Где был датчик.</b> В газете. Маршрут, цели и состав группы знали десятки людей, не знал только шофёр. Поворот был не отсутствием причины, а отсутствием передачи данных на расстояние в один метр, от заднего сиденья к переднему.</div>
+      </div>
+      <div class="pimg"><img src="assets/p_ferdinand.png" alt=""><div class="pcap">Поворот с набережной Аппель на улицу Франца Иосифа. Машина успела проехать несколько метров.</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s21">
+  <div class="content">
+    <div class="kicker">4 · Не хватало данных · 1898</div>
+    <h2>«Тщетность»: роман предсказал «Титаник» за 14 лет, и это не пророчество</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_titan.png" alt=""><div class="pcap">Морган Робертсон, «Тщетность, или Крушение Титана», 1898. Переиздана в 1912 с уточнённым водоизмещением.</div></div>
+      <div>
+        <ul class="pts">
+          <li><b>Совпадения.</b> Лайнер «Титан», самый большой в мире, «непотопляемый», три винта, длина 800 футов («Титаник» 882), скорость 24-25 узлов (22,5), апрель, Северная Атлантика, айсберг, правый борт, 3000 человек на борту, шлюпок «меньше, чем нужно, но столько, сколько требует закон» (24 против 20). Большинство гибнет.</li>
+          <li><b>Разбор.</b> Робертсон - сын капитана, десять лет ходил в море, писал морские романы профессионально и говорил: «Я знаю, о чём пишу». Тренд размеров был очевиден: «Оушеник» 1899 года - 704 фута, «Лузитания» 1907 - 787. Трансатлантическая трасса проходит через ледовое поле, апрель - пик айсбергов. Правила Торговой палаты 1894 года считали шлюпки по тоннажу до 10 тысяч тонн, а лайнеры уже строили на 46 тысяч: любой моряк знал, что шлюпок не хватит. Робертсон не угадал, он экстраполировал.</li>
+          <li><b>Что он всё-таки не угадал.</b> «Титан» идёт на восток, не на запад, и переворачивается от удара, не тонет три часа. В 1912 году Робертсон правил книгу под реальный «Титаник», и часть «пророчества» появилась во втором издании.</li>
+        </ul>
+        <div class="note gold"><b>Где был датчик.</b> У Робертсона, в голове моряка. Данные о трендах, трассе и устаревшем регламенте были публичными, он их просто сложил. То, что выглядит предвидением, оказывается экспертизой, и это самое частое превращение в главе.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s22">
+  <div class="content">
+    <div class="kicker">4 · Не хватало данных · Шумахер, часть 1</div>
+    <h2>Капсула смерти была самым безопасным местом его жизни</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_schumi_car.png" alt=""><div class="pcap">300 км/ч, карбоновый монокок, медицинская машина за первым кругом, вертолёт на трассе, тысяча каналов телеметрии.</div></div>
+      <div>
+        <ul class="pts">
+          <li><b>Двадцать лет без смертей.</b> Айртон Сенна погиб в Имоле 1 мая 1994 года, днём раньше - Роланд Ратценбергер. Следующая смерть пилота на Гран-при - Жюль Бьянки, авария в Сузуке 5 октября 2014, умер в июле 2015. Между ними - вся карьера Шумахера: 306 стартов, 91 победа, 7 титулов. До 1994 года на этапах чемпионата погибло больше тридцати гонщиков.</li>
+          <li><b>Почему.</b> Карбоновый монокок (McLaren MP4/1, 1981), краш-тесты ячейки выживания, система HANS обязательна с 2003, профессор Сид Уоткинс как медицинский делегат FIA с 1978 по 2004: медкар идёт за пелотоном первый круг, врач у машины через 30 секунд, вертолёт стоит, иначе гонка не стартует. Кубица в Монреале 2007 выжил при 75 g, Грожан в Бахрейне 2020 вышел из огня при 67 g.</li>
+          <li><b>Сильверстоун, 11 июля 1999.</b> У Шумахера отказали тормоза на подходе к Стоу, машина ударилась в шину на скорости за сто. Перелом голени, шесть гонок пропуска, через три месяца снова на подиуме. Это был его самый тяжёлый инцидент за 21 сезон в самой быстрой машине на планете.</li>
+        </ul>
+        <div class="note"><b>Что это значит для лекции.</b> Формула-1 не рискованная среда, а самая измеренная среда в истории спорта. Каждый поворот Спа обсчитан, каждая авария записана, каждый камень на обочине убран. Риск там не исчез, он стал видимым и поэтому управляемым.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s23">
+  <div class="content">
+    <div class="kicker">4 · Не хватало данных · Шумахер, часть 2 · 29 декабря 2013</div>
+    <h2>Данные были под ногами. Собирать их надо было не о гонщике, а о камне</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Мерибель, 11:07.</b> Внетрассовый участок между двумя маркированными спусками, в нескольких метрах от разметки. По данным следствия в Альбервиле, скорость обычная для хорошего лыжника, разметка корректна, шлем на голове. Декабрь 2013 выдался малоснежным, камни лежали под тонким слоем. Удар о камень, падение, удар головой о второй камень, шлем раскололся. На шлеме было крепление камеры, версия об ослаблении шлема обсуждалась и не доказана. Дело закрыто в феврале 2014: ничьей вины нет.</li>
+          <li><b>Разница сред.</b> На болиде тысяча датчиков и команда, которая смотрит на них в реальном времени. На склоне ни одного. Внетрассовое катание даёт на порядок больше тяжёлых травм головы на час, чем Формула-1 образца 2013 года, но ни один из этих часов никто не считал. Рефлексы гонщика он привёз с собой, оценку риска оставил в паддоке.</li>
+          <li><b>Это тип, не единичный случай.</b> Стив Ирвин, десятилетия с крокодилами, погиб от ската на съёмке «лёгкого» эпизода в 2006. Колин Макрей, чемпион мира по ралли, разбился в 2007 на собственном вертолёте. Профессионал опасного дела держит риск под контролем ровно там, где его тренировал, и расслабляется там, где «ну это же просто лыжи».</li>
+        </ul>
+        <div class="note gold"><b>Где был датчик.</b> Данных не хватало много, и все они были под ногами. Просто никто не думал, что для того, чтобы величайший гонщик в истории продолжил жить свою жизнь, собирать данные надо было не о гонщике, а о камне.</div>
+      </div>
+      <div class="pimg"><img src="assets/p_schumi_slope.png" alt=""><div class="pcap">Склон между трассами, тонкий снег конца декабря. Единственная среда в его жизни без телеметрии.</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s24">
+  <div class="bgimg"><img src="assets/ch_count.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">5 · Не мог посчитать · Ab uno disce omnes</div>
+    <h1>Монета, кости и рулетка: случайность, которую мы заказываем сами</h1>
+    <p class="lead">Четвёртая ступень. Закон известен полностью, это школьная механика. Данных тоже в принципе достаточно. Не хватает только мощности и точности, чтобы досчитать до конца. Удивительно другое: на этой ступени стоят все устройства, которые человечество построило специально, чтобы получать случайность. И ни одно из них её не производит.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s25">
+  <div class="content">
+    <div class="kicker">5 · Не мог посчитать · монета</div>
+    <h2>Машина Диакониса бросает орлом сто раз из ста</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Монета - это механика.</b> Высота, угловая скорость, начальная сторона, упругость стола. Перси Диаконис (в прошлом профессиональный фокусник, потом статистик в Стэнфорде) с Холмс и Монтгомери, 2007: собрали пружинную машину, которая задаёт одинаковый импульс. Монета ложится одной и той же стороной каждый раз. Случайность монеты - это дрожь человеческого пальца, и больше ничего.</li>
+          <li><b>Даже рука неслучайна.</b> Та же статья: монета чаще ложится той стороной, с которой стартовала, предсказание 51%. Проверка Бартоша и соавторов, 2023: 48 человек, 350 757 бросков, 50,8% на стартовую сторону. Отклонение крошечное, но оно есть, измерено и объяснено прецессией. Ставка на стартовую сторону при больших объёмах выигрывает.</li>
+          <li><b>Кости.</b> Капитаняк и соавторы, 2012: при известных начальных условиях и скоростной камере исход кубика предсказуем, пока стол не слишком упругий. Кость «случайна» потому, что мы договорились не измерять бросок. Это договор, а не свойство кубика.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="band">что считается случайным броском</div>
+          <div class="row"><div class="bx"><b>Рука</b><span>импульс неизвестен</span></div><div class="arr">→</div><div class="bx"><b>Полёт</b><span>механика Ньютона</span></div><div class="arr">→</div><div class="bx"><b>Стол</b><span>упругость, трение</span></div><div class="arr">→</div><div class="bx cy"><b>Исход</b><span>«случайный»</span></div></div>
+          <div class="row"><div class="bx am"><b>Машина</b><span>импульс задан</span></div><div class="arr am">→</div><div class="bx dk"><b>то же</b></div><div class="arr am">→</div><div class="bx dk"><b>то же</b></div><div class="arr am">→</div><div class="bx am"><b>Исход</b><span>100% орёл</span></div></div>
+          <div class="cap">Две цепочки отличаются одним звеном. Случайность живёт в первом боксе, и это бокс про нас.</div>
+        </div>
+        <div class="note gold" style="margin-top:14px"><b>Где был датчик.</b> Нигде, и нарочно. Монету бросают именно затем, чтобы никто не мог предсказать, то есть чтобы убрать датчики. Честная монета - это не физика, это соглашение сторон не смотреть.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s26">
+  <div class="content">
+    <div class="kicker">5 · Не мог посчитать · рулетка</div>
+    <h2>Казино живёт не на случае, а на законе: 2,7% каждый спин</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_roulette.png" alt=""><div class="pcap">Монте-Карло, 18 августа 1913. Чёрное выпало 26 раз подряд, зал проигрывал миллионы на красное, потому что «уже пора».</div></div>
+      <div>
+        <ul class="pts">
+          <li><b>Преимущество.</b> Европейская рулетка: 37 ячеек, выплата как за 36. Казино забирает 1/37 всех ставок, 2,7%, при любой стратегии и любом везении, на дистанции. Американская с двумя зеро: 5,26%. Это не удача заведения, это арифметика, и она работает только потому, что колесо подчиняется механике, а не наоборот.</li>
+          <li><b>26 чёрных.</b> Вероятность такой серии в заданный момент около 1 на 137 миллионов (популярная цифра 1 к 67 миллионам считает без зеро). Но колёс в мире тысячи, спинов за век миллиарды. Серия обязана была случиться где-то, и она случилась в Монте-Карло. Игроки проиграли на «ошибке игрока»: колесо не помнит прошлое, у него нет датчика на историю.</li>
+          <li><b>А данные о колесе никто не собирал.</b> В 1873 году Джозеф Джаггер нанял шестерых клерков записывать результаты всех колёс Монте-Карло. На одном нашёл девять номеров, выпадающих чаще других: кривая ось. Выиграл около двух миллионов франков, пока казино не переставило колёса. В 1990-х Гонсало Гарсия-Пелайо повторил это в Мадриде с компьютером. В 1977 группа «Эвдемоны» Дойна Фармера предсказывала рулетку компьютером в ботинке по механике шарика. Случайность колеса существует ровно до первого человека с тетрадью.</li>
+        </ul>
+        <div class="note gold"><b>Где был датчик.</b> На ставке, а не на оси. Казино знает закон (2,7%) и не знает колеса. Игрок не знает ни того, ни другого. Выигрывал всегда тот, кто поставил датчик туда, куда остальные не смотрели.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s27">
+  <div class="content">
+    <div class="kicker">5 · Не мог посчитать · лотерея</div>
+    <h2>Один к семнадцати триллионам против одного к тридцати</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Эвелин Адамс, Нью-Джерси.</b> Выиграла джекпот в октябре 1985 и ещё раз в феврале 1986, всего 5,4 миллиона долларов. Газеты: «шанс один к 17 триллионам». Это честная цифра для вопроса «какова вероятность, что именно эта женщина выиграет именно эти два тиража по одному билету». Никто такого вопроса не задавал.</li>
+          <li><b>Правильный вопрос.</b> Стивен Сэмюэлс и Джордж Маккейб из Пердью, разбор у Диакониса и Мостеллера: какова вероятность, что хоть кто-нибудь в США выиграет два крупных джекпота за семь лет? Около 1 к 30. Миллионы игроков, десятки лотерей, сотни тиражей в год. А Адамс покупала десятки билетов в неделю, и после первого выигрыша ещё больше. Знаменатель, который потеряла газета, лежал в её сумке.</li>
+          <li><b>Другие «чудеса».</b> Болгария, сентябрь 2009: одни и те же шесть номеров (4, 15, 23, 24, 35, 42) в двух тиражах подряд, назначили расследование. Вероятность для конкретной пары тиражей 1 к 4 миллионам, вероятность, что это когда-нибудь случится в какой-нибудь лотерее мира, близка к единице. Джоан Гинтер, Техас, четыре выигрыша: доктор статистики из Стэнфорда, покупала скретч-билеты тысячами в точках, где по её расчётам не вышли крупные призы.</li>
+        </ul>
+        <div class="note gold"><b>Где был датчик.</b> На победителе. Нужен был на всех, кто играл и не выиграл. Лотерейный барабан детерминирован так же, как монета, но его никто не обсчитывает: дешевле считать выигравших чудом.</div>
+      </div>
+      <div class="pimg"><img src="assets/p_lottery.png" alt=""><div class="pcap">Десятки билетов в неделю. Первый выигрыш не изменил шансы, он изменил количество билетов.</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s28">
+  <div class="content">
+    <div class="kicker">5 · Не мог посчитать · хаос (одним слайдом)</div>
+    <h2>Непредсказуемо не значит беспричинно</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Ссылка.</b> Про хаос у нас есть целая лекция «Изобретаем хаос», здесь только то, что нужно для слова «случайно». Лоренц, 1961: округлил начальные данные с шести знаков до трёх, модель погоды разошлась с исходной за несколько «недель». Пуанкаре за 70 лет до него нашёл то же в задаче трёх тел.</li>
+          <li><b>Что это значит.</b> Уравнения полностью детерминированы, ни одного случайного члена. Но ошибка в начальных данных удваивается каждые пару дней, и к двум неделям прогноз погоды равен климатической норме. Это не отсутствие причины, это причина, которую надо знать с бесконечной точностью. Демон Лапласа умирает не от отсутствия закона, а от нехватки знаков после запятой.</li>
+          <li><b>Двойной маятник.</b> Две палки на шарнире. Уравнения известны с XVIII века, траектория непредсказуема через несколько секунд. При этом два одинаковых маятника с одинаковым стартом движутся одинаково: это детерминизм. Они расходятся от микронного отличия: это хаос. Случайности тут нет вообще, есть чувствительность.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Чем хаос отличается от случайности</h3>
+          <ul>
+            <li>Повтори опыт с теми же данными - хаос даст тот же результат, случайность нет.</li>
+            <li>Улучши точность данных - хаос отодвинет горизонт прогноза, случайность не сдвинется.</li>
+            <li>Прогноз погоды на 5 дней сейчас точен, как на 1 день в 1980-м. Горизонт отодвинулся вчетверо, потому что отодвинули датчики, не потому что погода стала закономернее.</li>
+          </ul>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Где был датчик.</b> Везде, но с конечной точностью. Хаос - единственная ступень лестницы, где честно можно сказать: данных не хватит никогда. Но это «никогда» про нас и наши приборы, не про бабочку. Бабочка - причина, просто мелкая.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s29">
+  <div class="content">
+    <div class="kicker">5 · Не мог посчитать · компьютер</div>
+    <h2>В машине случайных чисел нет. Есть seed и лавовые лампы</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_lava.png" alt=""><div class="pcap">Стена лавовых ламп в лобби Cloudflare в Сан-Франциско: камера снимает их, шум кадра идёт в ключи шифрования.</div></div>
+      <div>
+        <ul class="pts">
+          <li><b>Фон Нейман, 1951.</b> «Всякий, кто рассматривает арифметические методы получения случайных чисел, пребывает, конечно, в состоянии греха». Генератор псевдослучайных чисел - это формула и стартовое число, seed. Одинаковый seed даёт одинаковую «случайную» последовательность, всегда. Вихрь Мерсенна, 1997: период 2 в степени 19937 минус 1, но детерминирован до последнего бита.</li>
+          <li><b>Lockstep.</b> Так работает сетевой режим стратегий: «Age of Empires», 1500 лучников по модему 28,8 кбит, Беттнер и Террано, 2001. Обе машины получают один seed и считают бой независимо, и все «случайные» промахи у них совпадают до бита. Если не совпали, игра говорит «рассинхрон». Случайность, с которой согласны две машины, уже не случайность, это закон с общим стартом.</li>
+          <li><b>Когда нужна настоящая.</b> Криптография. Ключ, который можно воспроизвести, не ключ. Поэтому ядро Linux собирает энтропию из микросекунд между нажатиями клавиш, процессоры Intel - из теплового шума резистора, Cloudflare - из лавовых ламп, ID Quantique - из фотона на полупрозрачном зеркале. Везде одно и то же: компьютер не производит случайность, он собирает её из того, за чем не следит.</li>
+        </ul>
+        <div class="note gold"><b>Где был датчик.</b> Ступень кончается на вопросе, который задаёт себе каждый, кто пишет генератор: откуда взять то, чего никто не знает. И ответ индустрии: из физики, где датчиков нет. Это первый намёк на главу про энтропию.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s30">
+  <div class="bgimg"><img src="assets/ch_survivors.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">6 · Не считал знаменатель</div>
+    <h1>Истории, которые рассказывают выжившие, и статистика тех, кто молчит</h1>
+    <p class="lead">Между ступенями лестницы лежит самый толстый слой «чистых случайностей»: невероятные совпадения, трижды выжившие, семь молний в одного человека. Здесь причина не спрятана ни в науке, ни в данных. Она спрятана в вопросе: мы спрашиваем «какова вероятность, что это случилось с ним», а должны спрашивать «сколько было тех, с кем это могло случиться».</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s31">
+  <div class="content">
+    <div class="kicker">6 · Не считал знаменатель · Беатрис, Небраска, 1 марта 1950</div>
+    <h2>Хор опоздал весь. Пятнадцать опозданий, пять причин</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Событие.</b> Репетиция в баптистской церкви Уэст-Сайд назначена на 19:20. В 19:25 утечка газа у печи взрывается, здание разрушено. Все пятнадцать певчих опоздали, ни один не пострадал. Журнал Life через месяц посчитал: шанс, что каждый опоздает в этот день, один к миллиону. Статья называлась «Почему хор опоздал».</li>
+          <li><b>Разбор причин, по той же статье.</b> Пастор с женой и дочкой задержались: жена гладила платье. Две сестры: не заводилась машина. Девочка доделывала задачу по геометрии. Двое заслушались радиопередачу. Одна заснула после ужина и мать не стала будить. Один дописывал письмо. Пятнадцать человек, но событий примерно пять: семьи опаздывали вместе.</li>
+          <li><b>Зависимость.</b> «Один к миллиону» получается, если перемножить пятнадцать независимых вероятностей по одной четверти. Но холодный вечер - одна причина сразу для незаводящейся машины и для желания посидеть дома. А холодный вечер - это и причина, почему топилась печь, у которой текла труба. Взрыв и опоздания имели общий корень: температуру за окном.</li>
+        </ul>
+        <div class="note gold"><b>Где был датчик.</b> На людях по отдельности, а надо было на вечере в целом. Совпадения перемножают, а они складываются, когда у них одна причина. Это главная ошибка всех «один к миллиону» в этой главе.</div>
+      </div>
+      <div class="pimg"><img src="assets/p_choir.png" alt=""><div class="pcap">Взрыв разрушил церковь целиком. Соседний город слышал его за километры, хор - из своих домов.</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s32">
+  <div class="content">
+    <div class="kicker">6 · Не считал знаменатель · Вайолет Джессоп</div>
+    <h2>Три сестры одного проекта и стюардесса, которая работала на всех</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Биография.</b> 20 сентября 1911: «Олимпик» сталкивается с крейсером «Хок», Джессоп на борту. 15 апреля 1912: «Титаник», шлюпка номер 16. 21 ноября 1916: госпитальное судно «Британник» подрывается на мине в Эгейском море, она прыгает за борт и ударяется головой под винтом. Три корабля из трёх, одна женщина. Прозвище «Мисс Непотопляемая».</li>
+          <li><b>Разбор.</b> Все три - лайнеры класса «Олимпик» компании White Star, построены по одному проекту на одной верфи, с одной конструктивной бедой (переборки не доходили до палубы). Компания ставила лучший персонал на флагманы, Джессоп была стюардессой первого класса. Женщин-членов экипажа на «Титанике» было 23, спаслись 20: 87%. Среди мужчин экипажа спаслось около 22%. Она не выиграла три лотереи, она проработала одну смену на одном маршруте в одной компании.</li>
+          <li><b>Знаменатель.</b> Сколько стюардесс White Star ходило на всех трёх сёстрах? Не одна. Просто одна написала мемуары. Остальные выжили так же и ничего не написали, или не выжили, и тоже не написали.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="band">одна причина, три события</div>
+          <div class="row"><div class="bx am"><b>Проект «Олимпик»</b><span>3 судна, 1 верфь, 1 компания, 1 ошибка переборок</span></div></div>
+          <div class="row"><div class="bx"><b>1911</b><span>столкновение</span></div><div class="bx"><b>1912</b><span>айсберг</span></div><div class="bx"><b>1916</b><span>мина</span></div></div>
+          <div class="row"><div class="bx cy"><b>Персонал первого класса</b><span>переводится с флагмана на флагман; женщин сажают в шлюпки первыми</span></div></div>
+          <div class="cap">Три «независимых» катастрофы оказываются тремя главами одной рабочей биографии.</div>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Где был датчик.</b> На корабле, а причина в компании-судовладельце. Смена датчика на один уровень вверх превращает чудо в кадровую политику.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s33">
+  <div class="content">
+    <div class="kicker">6 · Не считал знаменатель · Цутому Ямагути</div>
+    <h2>Хиросима и Нагасаки за три дня: оба города были на карте одной компании</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_yamaguchi.png" alt=""><div class="pcap">Инженер-судостроитель Mitsubishi. 6 августа - в командировке, 9 августа - дома, в конторе, рассказывает начальнику о бомбе.</div></div>
+      <div>
+        <ul class="pts">
+          <li><b>Событие.</b> 6 августа 1945 Ямагути, инженер Mitsubishi Heavy Industries, заканчивает трёхмесячную командировку в Хиросиме, в трёх километрах от эпицентра. Ожоги, лопнувшие перепонки. 8 августа возвращается домой в Нагасаки, 9 августа в конторе объясняет начальнику, что один взрыв уничтожил город, и в этот момент видит вторую вспышку. Снова три километра. Дожил до 93 лет, в 2009 году официально признан пережившим обе бомбы.</li>
+          <li><b>Разбор.</b> Комитет по целям выбирал города по одному критерию: военная промышленность, не тронутая бомбёжками. Хиросима - штаб армии, порт и верфь Mitsubishi. Нагасаки - верфи, сталь и оружейные заводы Mitsubishi, город фактически принадлежал компании. Инженер-судостроитель Mitsubishi из Нагасаки в командировке в Хиросиме - не совпадение, а штатное расписание.</li>
+          <li><b>Знаменатель.</b> Документально подтверждено около 165 человек, переживших обе бомбардировки. Почти все - сотрудники тех же заводов или родственники, поехавшие искать своих. Там, где одна причина выбрала две цели, людей, оказавшихся в обеих, оказалось много. Чудо массовое, значит, не чудо.</li>
+        </ul>
+        <div class="note gold"><b>Где был датчик.</b> На человеке. Нужен был на критерии выбора целей: он один и тот же для обоих городов, и он же объясняет, кто там работал.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s34">
+  <div class="content">
+    <div class="kicker">6 · Не считал знаменатель · Рой Салливан</div>
+    <h2>Семь молний в одного человека: карта разрядов и 36 лет на вышке</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Событие.</b> Рейнджер национального парка Шенандоа, Вирджиния. Семь задокументированных ударов молнии с 1942 по 1977: на пожарной вышке, на дороге, во дворе, на посту, в парке, в кемпинге, на рыбалке. Книга рекордов Гиннесса, прозвище «человек-громоотвод». Коллеги избегали его в грозу.</li>
+          <li><b>Разбор.</b> Шанс быть убитым молнией за жизнь в США около 1 к 15 тысячам, но это среднее по всем, включая офисных работников. Салливан 36 лет провёл на открытых хребтах Аппалачей, где 35-45 грозовых дней в году, большую часть - на вышке, то есть на самой высокой точке. Молния бьёт в одни и те же точки рельефа: в Эмпайр-стейт-билдинг она попадает 20-25 раз в год. Рейнджер на вышке - это тот же Эмпайр-стейт, только в шляпе.</li>
+          <li><b>Данные, которых не было.</b> Карта разрядов по его маршрутам. Сегодня сеть NLDN фиксирует каждую молнию на территории США с точностью до сотен метров. Если наложить её на расписание Салливана, семь ударов превратятся в семь пересечений двух известных функций: где бьёт и где он стоял.</li>
+        </ul>
+        <div class="note gold"><b>Где был датчик.</b> На Салливане. Нужен был на рельефе и на расписании. Умножать «1 к 15 000» в седьмую степень - значит считать, что все семь раз он мог быть где угодно. Он не был где угодно, он был на работе.</div>
+      </div>
+      <div class="pimg"><img src="assets/p_lightning.png" alt=""><div class="pcap">Вышка на хребте в грозу: самое высокое проводящее тело в радиусе километров, по восемь часов в смену.</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s35">
+  <div class="content">
+    <div class="kicker">6 · Не считал знаменатель · россыпь</div>
+    <h2>Младенец на дворника, Ричард Паркер и двое Джимов</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_twins.png" alt=""><div class="pcap">Джим Льюис и Джим Спрингер, Огайо, 1979: встретились в 39 лет, и список совпадений попал во все газеты.</div></div>
+      <div>
+        <ul class="pts">
+          <li><b>Джозеф Фиглок, Детройт, 1930-е.</b> Дворник, на которого с четвёртого этажа упал младенец. Через год на него упал тот же ребёнок, из того же окна. Оба раза выжили оба. Одна мать, одно окно без решётки, один участок улицы, один график уборки в одно время дня. Это не два события, это одна ситуация, повторённая, потому что ни одну из её причин не устранили.</li>
+          <li><b>Ричард Паркер.</b> В «Повести о приключениях Артура Гордона Пима» Эдгара По, 1838, в шлюпке съедают юнгу по имени Ричард Паркер. В 1884 году после крушения яхты «Миньонетт» в шлюпке съедают юнгу Ричарда Паркера, 17 лет. Дело «Корона против Дадли и Стивенса» вошло во все учебники права. Разбор: Паркер - одна из самых частых английских фамилий, Ричард - одно из самых частых имён, а каннибализм в шлюпках был «обычаем моря», о котором писали газеты, и По писал по ним. Два частых события встретились.</li>
+          <li><b>Джимы.</b> Разлучены в месяц, встретились в 39. Оба Джимы, обе первые жёны Линды, вторые Бетти, сыновья Джеймс Аллан, собаки Той, «Шевроле», Miller Lite, Salem, отпуск на одном пляже во Флориде. Разбор: гены дают половину (вкусы, темперамент, привычки), имена - база данных Огайо 1940-х (Линда и Бетти в топ-10), остальное выбрано из сотен сравнённых признаков. В Миннесотском исследовании близнецов для контроля сравнивали случайные пары чужих людей: у них тоже находились «поразительные» списки, короче, но находились.</li>
+        </ul>
+        <div class="note gold"><b>Где был датчик.</b> На совпадениях, в третий раз за лекцию. У любых двух людей тысячи признаков, и у любых двух из них совпадёт несколько десятков. Удивление начинается там, где перестали считать несовпавшие.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s36">
+  <div class="bgimg"><img src="assets/ch_memory.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">7 · Не проверил · память и отбор</div>
+    <h1>Вещие сны, девять смертей и книга на скамейке</h1>
+    <p class="lead">Короткая глава про случаи, где данные не просто лежали не там, их никто не собирал вовсе. Три истории: одна про то, как память дорисовывает предсказание после события, одна про то, как легенда живёт без единого документа, и одна, в которой лекция честно разводит руками. Она тут для того, чтобы тезис не выглядел слишком гладким.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s37">
+  <div class="content">
+    <div class="kicker">7 · Не проверил · Аберфан, 21 октября 1966</div>
+    <h2>Семьдесят шесть вещих снов, записанных до катастрофы: ноль</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Событие.</b> Уэльс, отвал угольной шахты сползает на деревню и накрывает школу. 144 погибших, из них 116 детей. Психиатр Джон Баркер через газету Evening Standard просит откликнуться тех, кто предчувствовал катастрофу. Приходит 76 писем, 60 он признаёт заслуживающими внимания, в 24 случаях автор, по его словам, рассказывал кому-то заранее.</li>
+          <li><b>Самый известный случай.</b> Десятилетняя Эрил Мэй Джонс за день до оползня рассказала матери сон: «Я пошла в школу, а школы не было, что-то чёрное всё накрыло». Девочка погибла. Историю мать рассказала священнику после похорон, священник - Баркеру. Записи до события нет ни одной.</li>
+          <li><b>Что сделал Баркер дальше.</b> В 1967 основал Британское бюро предчувствий: присылайте предсказания заранее, мы датируем и проверим. За полтора года пришло больше 700 предсказаний. Подтвердившихся - единицы, и те расплывчатые («авиакатастрофа», «пожар»). Бюро закрылось. Предсказания, записанные до события, перестали сбываться.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="rd">Знаменатель, которого нет</h3>
+          <p>Сколько человек в Британии каждую ночь видят сны про катастрофы, которые не случаются? Миллионы. Сколько детей в шахтёрских деревнях боятся отвала, который нависает над школой годами и о котором писали жалобы в совет? Многие. Сколько из этих снов кто-нибудь записал бы, не случись оползень? Ноль. Выборка составлена после события и из-за события.</p>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3>Как работает память</h3>
+          <p>Лофтус, 1970-е и далее: воспоминание переписывается при каждом вызове. После катастрофы смутный сон про «что-то чёрное» вспоминается как сон про школу. Это не ложь, это механизм. Единственная защита - дата на бумаге до события, и как только её ввели, эффект исчез.</p>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Где был датчик.</b> Включён после события, направлен на тех, кто откликнулся. Так устроены все сборники пророчеств: их пишут после даты, которую пророчили.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s38">
+  <div class="content">
+    <div class="kicker">7 · Не проверил · Фране Селак</div>
+    <h2>Самый везучий человек в мире, у которого нет ни одной бумаги</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Легенда.</b> Учитель музыки из Хорватии, 1929 года рождения. 1962: поезд сходит в реку, 17 погибших, он выплыл. 1963: вылетел из самолёта через сорвавшуюся дверь, приземлился в стог, 19 погибших. 1966: автобус в реку. 1970 и 1973: горящие автомобили. 1995: сбит автобусом. 1996: ушёл от грузовика в пропасть, зацепился за дерево. 2003: выиграл в лотерею около 800 тысяч евро. Газеты всего мира: «семь раз обманул смерть».</li>
+          <li><b>Разбор.</b> Все эпизоды известны с его слов. Ни один не подтверждён документом: нет сводок о крушении поезда с 17 погибшими в 1962 году на названном маршруте, нет записи о падении из самолёта. Snopes держит историю в статусе «не доказано». Лотерейный выигрыш реален, он случился после того, как Селак стал известен, и часть денег он потом раздал.</li>
+          <li><b>Что здесь неслучайно.</b> Югославия 1960-70-х: транспорт с высокой аварийностью, человек, много ездивший по работе. Шесть транспортных происшествий за 35 лет при таком образе жизни - много, но не фантастика. Фантастикой история становится от пересказа, в котором каждый эпизод округляется вверх.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Почему он в лекции</h3>
+          <p>Потому что это самый частый тип «невероятного случая»: тот, который никто не проверял. Не потому, что данные были в другом месте, а потому, что никто не пошёл за ними вообще. Данных нет, значит, нет и случайности: нечего разбирать. История живёт, пока её не проверяют, и это тоже закономерность, только из другой области.</p>
+        </div>
+        <div class="note" style="margin-top:12px"><b>Где был датчик.</b> Нигде. Сам Селак говорил журналистам: не знает, самый он везучий или самый невезучий. Это единственное утверждение в его истории, с которым можно согласиться без проверки.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s39">
+  <div class="content">
+    <div class="kicker">7 · Не проверил · честный пробел</div>
+    <h2>Энтони Хопкинс и книга на скамейке: единственный кейс, который лекция не разобрала</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_hopkins.png" alt=""><div class="pcap">Станция метро Лестер-сквер, 1971. Книга на скамейке, на полях пометки автора.</div></div>
+      <div>
+        <ul class="pts">
+          <li><b>Событие.</b> Хопкинса утвердили на роль в фильме «Девушка с Петровки» по роману Джорджа Файфера. Он обошёл книжные Лондона, романа нигде не было. На обратном пути увидел на скамейке в метро забытую книгу: это была она. Через два года на съёмках познакомился с Файфером, тот пожаловался, что одолжил другу свой экземпляр с пометками, а друг его потерял. Хопкинс показал свою находку. Это был тот самый экземпляр.</li>
+          <li><b>Что можно сказать.</b> Роман вышел в 1971 году в Лондоне, тираж лежал в городе, Хопкинс был настроен на обложку (эффект Баадера-Майнхоф: то, что ищешь, начинаешь видеть). Книга, которую носят с собой и теряют, чаще теряется в транспорте. Друг Файфера жил в Лондоне и ездил на метро. Каждое звено по отдельности обыкновенно.</li>
+          <li><b>Чего сказать нельзя.</b> Траектория одного экземпляра по Лондону неизвестна. Сколько дней книга пролежала, сколько людей прошло мимо, почему именно та скамейка. Знаменатель («сколько актёров ищут книги, которые кто-то потерял в метро») посчитать не из чего. Это честный пробел: причина наверняка есть, цепочка из причин наверняка обычная, но данных, чтобы её показать, нет и не будет.</li>
+        </ul>
+        <div class="note gold"><b>Где был датчик.</b> Нигде, и это признание, а не отговорка. Лекция утверждает, что причина есть всегда, и не утверждает, что её всегда можно предъявить. Один слайд из пятидесяти с лишним - честная цена за это различие.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s40">
+  <div class="bgimg"><img src="assets/ch_decide.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">8 · Я так решил · Ducunt volentem fata, nolentem trahunt</div>
+    <h1>Последнее убежище слова «случайно» - фраза «я так захотел»</h1>
+    <p class="lead">Пятая ступень лестницы. Когда все внешние причины разобраны, остаётся одна, которую мы считаем своей: решение. «Просто решил свернуть», «захотелось», «интуиция». Здесь слово «случайно» прячется за словом «Я», и это мост к прошлой лекции про состояние. Если решение имеет причину, лестница закончена. Если нет, у случайности есть дом.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s41">
+  <div class="content">
+    <div class="kicker">8 · Я так решил · Либет, 1983</div>
+    <h2>Мозг решает за 350 миллисекунд до того, как ты «решил»</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Опыт.</b> Бенджамин Либет сажает человека перед часами с быстрой точкой, просит в любой момент по желанию согнуть палец и запомнить положение точки в момент, когда он почувствовал намерение. На голове электроды. Потенциал готовности (открыт Корнхубером и Дееке в 1965) начинает расти примерно за 550 мс до движения. Осознанное намерение человек датирует примерно за 200 мс до движения. Разрыв: около 350 мс, в течение которых мозг уже готовит действие, а Я ещё не знает.</li>
+          <li><b>Дальше хуже.</b> Сун и соавторы, 2008, фМРТ: выбор между левой и правой кнопкой читается по активности префронтальной и теменной коры за 7-10 секунд до осознания, с точностью 60%. Немного выше случайной, но за семь секунд до «я решил».</li>
+          <li><b>Честная критика.</b> Шургер, 2012: потенциал готовности может быть не «решением», а накоплением нейронного шума до порога, и Либет ловил момент перехода порога. Это важно: оно меняет, что именно предшествует решению, но не меняет главного. Чему-то измеримому решение предшествует, и оно начинается не с Я.</li>
+        </ul>
+        <div class="note gold"><b>Где был датчик.</b> На ощущении «решил». А процесс начался раньше и в другом месте, на электроде это видно. Решение не случайно и не свободно в бытовом смысле, оно - состояние системы, у которого есть предыдущее состояние.</div>
+      </div>
+      <div class="pimg"><img src="assets/p_libet.png" alt=""><div class="pcap">Потенциал готовности на ЭЭГ: кривая ползёт вверх задолго до того, как испытуемый сообщает о намерении.</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s42">
+  <div class="content">
+    <div class="kicker">8 · Я так решил · разворот</div>
+    <h2>«Захотелось» - это состояние, а у состояния есть предыдущее состояние</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Спиноза второй раз.</b> «Люди считают себя свободными, потому что сознают свои желания, но не знают причин, которыми определяются к желанию» («Этика», часть I, прибавление). Та же фраза, что про случай, только про волю. Для Спинозы это одно и то же слово: пробел в данных, названный свойством мира.</li>
+          <li><b>Шопенгауэр, 1839.</b> «Человек может делать, что хочет, но не может хотеть, что хочет». Желание свернуть направо приходит готовым. Его причины: усталость, запах кофе, воспоминание, уровень глюкозы, что сказали утром. Ни одна из них не выбиралась, все измеримы, большинство - уже сегодня.</li>
+          <li><b>Мост к «Главной иллюзии».</b> В прошлой лекции лишним оказалось сказуемое «Я» в фразе «я так вижу». Здесь оно лишнее в фразе «я так решил». Решение есть, оно состояние мозга, у которого есть причина в прошлом состоянии мозга. Добавление Я не добавляет причин, оно закрывает вопрос о них.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Что остаётся от свободы</h3>
+          <p>Больше, чем кажется. Либет сам оставил лазейку: за 200 мс до движения Я может наложить вето, и это тоже измеримо. Решение, которое учитывает собственные причины, отличается от решения, которое их не знает, так же, как прогноз от гадания. Свобода в этой картине не отсутствие причин, а знание о них. Это не утешение, это определение.</p>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3 class="am">Итог лестницы</h3>
+          <p>Пять ступеней: не заметил, не знал, не хватало данных, не мог посчитать, я так решил. На каждой слово «случайно» заменялось на «не посмотрел туда-то», и каждый раз это «туда-то» удавалось назвать. Лестница закончена. Под ней две бездны, и в них правила могут быть другими.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s43">
+  <div class="bgimg"><img src="assets/ch_entropy.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">9 · Энтропии не существует · De non apparentibus et non existentibus eadem est ratio</div>
+    <h1>Энтропия - это счёт за незнание, и у него есть курс в джоулях</h1>
+    <p class="lead">Первая бездна. Единственная величина в физике, которая по определению измеряет, сколько мы не знаем, и при этом записана в законах природы рядом с энергией. Заголовок главы провокационный, и к концу главы он будет уточнён: энтропия существует так же, как существует долг. Её нельзя потрогать, но за неё приходится платить, и курс известен точно.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s44">
+  <div class="content">
+    <div class="kicker">9 · Энтропия · формула на могиле</div>
+    <h2>S = k log W: W - это не сколько есть, а сколько ты не различаешь</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Надпись.</b> Центральное кладбище Вены, бюст Людвига Больцмана, над ним формула S = k log W. Он покончил с собой в 1906 году в Дуино, не дождавшись, пока атомы признают существующими. Формулу в таком виде записал Планк, константа k носит имя Больцмана: 1,38 на 10 в минус 23 джоуля на кельвин.</li>
+          <li><b>Что такое W.</b> Число микросостояний (положений и скоростей всех молекул), совместимых с макросостоянием, которое ты измерил: температурой, давлением, объёмом. Грамм воды - 3 на 10 в 22 степени молекул. Макросостояние «25 градусов, одна атмосфера» описывает число микросостояний, у которого показатель степени сам имеет 23 знака. Все они для термометра одинаковы.</li>
+          <li><b>Читаем буквально.</b> Энтропия - логарифм числа конфигураций, которые ты не различаешь своими приборами. Узнай больше (измерь скорость каждой молекулы), и W для тебя станет единицей, а энтропия нулём. Формула содержит наблюдателя с первой строчки, это просто не принято читать вслух.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="band">одна и та же колба</div>
+          <div class="row"><div class="bx"><b>Термометр и манометр</b><span>знает T, p, V</span></div><div class="arr">→</div><div class="bx am"><b>W огромно</b><span>энтропия большая</span></div></div>
+          <div class="row"><div class="bx"><b>Прибор, видящий каждую молекулу</b><span>знает всё</span></div><div class="arr">→</div><div class="bx cy"><b>W = 1</b><span>энтропия ноль</span></div></div>
+          <div class="cap">Газ в обоих случаях один. Разное - число датчиков. Энтропия поменялась, не трогая ни одной молекулы.</div>
+        </div>
+        <div class="note gold" style="margin-top:14px"><b>Связь со словом.</b> В главе 1 математика определила случайную последовательность как несжимаемую, то есть такую, про которую ты не знаешь ничего короче её самой. Энтропия - та же мера, только для молекул. Это посчитанное слово «случайно».</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s45">
+  <div class="content">
+    <div class="kicker">9 · Энтропия · парадокс Гиббса</div>
+    <h2>Смешали два газа: энтропия выросла или нет, зависит от того, что вы умеете различать</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Парадокс, 1875.</b> Два сосуда по N молекул, убираем перегородку. Если газы разные (азот и аргон), энтропия растёт на 2Nk ln 2, и это необратимо: обратно сами не разделятся. Если газы одинаковые (аргон и аргон), ничего не растёт: убрали перегородку, поставили обратно, всё как было. Формула даёт скачок при переходе от «чуть разных» к «одинаковым», а природа скачков не любит.</li>
+          <li><b>Разрешение Джейнса, 1992.</b> Представьте два изотопа аргона, которые ваша лаборатория не умеет разделять. Для вас смешение не производит энтропии: вы не можете извлечь из «разделённого» состояния никакой работы, которой не могли бы извлечь из смешанного. Появился прибор, различающий изотопы, и у той же колбы появилась энтропия смешения. Молекулы не узнали об этом приборе.</li>
+          <li><b>Вывод Джейнса.</b> Энтропия не свойство системы, а свойство пары «система плюс набор переменных, которые наблюдатель решил отслеживать». Два наблюдателя с разными приборами припишут одной колбе разные энтропии, и оба будут правы для своих задач: каждый правильно посчитает, сколько работы может извлечь.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Цитата, которую не любят цитировать</h3>
+          <p>Джейнс, 1965, со ссылкой на разговор с Вигнером: «Энтропия - понятие антропоморфное». Не в смысле «выдуманное», а в смысле «определённое относительно того, что человек решил измерять». За шестьдесят лет эту фразу много ругали и ни разу не опровергли.</p>
+        </div>
+        <div class="note" style="margin-top:12px"><b>К тезису лекции.</b> Это строго то же, что с хором из Беатрис: пятнадцать событий или пять зависит от того, следите ли вы за температурой вечера. Энтропия смешения - то же самое, записанное через логарифм.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s46">
+  <div class="content">
+    <div class="kicker">9 · Энтропия · демон · Scientia potentia est</div>
+    <h2>Демон Максвелла: больше данных - меньше энтропии, и это буквально</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_demon.png" alt=""><div class="pcap">Существо у дверцы между двумя половинами сосуда: быстрые молекулы пропускает направо, медленные налево. Без затрат.</div></div>
+      <div>
+        <ul class="pts">
+          <li><b>1867.</b> Максвелл в письме Тэту придумывает «очень наблюдательное и ловкое существо», которое видит каждую молекулу. Сортируя их по скорости, оно создаёт разницу температур из ничего, и второе начало термодинамики падает. Кельвин в 1874 называет существо демоном. Сто лет физики ищут, где демон мухлюет.</li>
+          <li><b>Сцилард, 1929.</b> Упрощает до одной молекулы в ящике с перегородкой. Чтобы извлечь работу kT ln 2, демон должен узнать, в какой половине молекула, то есть получить один бит. Информация и энтропия впервые записаны в одной формуле: один бит данных стоит ровно столько, сколько даёт.</li>
+          <li><b>Беннетт, 1982.</b> Платит демон не за измерение, а за стирание: его память конечна, и чтобы работать дальше, он должен забывать. Забывание - физический процесс с выделением тепла. Демон не нарушает второе начало, он его оплачивает собственной памятью.</li>
+          <li><b>Проверено.</b> Тоябе и соавторы, Nature Physics 2010: микрошарик во вращающемся электрическом поле, наблюдение в реальном времени и обратная связь. Из информации извлечена работа, КПД преобразования 28%. Демон собран в лаборатории и работает.</li>
+        </ul>
+        <div class="note gold"><b>К тезису лекции.</b> Бэкон писал «знание - сила» как метафору. У Сциларда это равенство с размерностью: бит = kT ln 2 джоулей. Знание о том, куда не смотрели, конвертируется в работу по курсу.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s47">
+  <div class="content">
+    <div class="kicker">9 · Энтропия · Ландауэр</div>
+    <h2>Стирание одного бита стоит kT ln 2. Это измерили в 2012 году</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Принцип, 1961.</b> Рольф Ландауэр, IBM: любая логически необратимая операция (стирание бита, слияние двух состояний памяти в одно) обязана выделить в среду не меньше kT ln 2 тепла. При комнатной температуре это 2,9 на 10 в минус 21 джоуля, около трёх зептоджоулей. Не из-за несовершенства схемы, а из-за того, что два состояния стали одним: W уменьшилось на бит, кто-то должен это оплатить.</li>
+          <li><b>Измерение, 2012.</b> Берю, Чилиберто и соавторы, Лион, Nature: коллоидный шарик в двойной оптической ловушке, две ямы - два состояния бита. Медленно схлопываем ямы в одну, стирая бит, и меряем выделившееся тепло. При медленном стирании оно сходится к kT ln 2. Самое маленькое термодинамическое измерение в истории, и предел Ландауэра подтверждён.</li>
+          <li><b>Масштаб.</b> Современный транзистор тратит на переключение в десятки тысяч раз больше предела Ландауэра, но пропасть сокращается, и к ней уже примеряют инженерные графики. Обратимые вычисления (Беннетт, Фредкин) теоретически могут не платить вовсе, если ничего не стирать. Информация - физическая величина с ценником в джоулях, и ценник выставляется не за вычисление, а за забывание.</li>
+        </ul>
+        <div class="note gold"><b>К тезису лекции.</b> У незнания есть курс. Пока мы говорили «случайно» про монеты и молнии, это звучало как философия. Здесь это 2,9 на 10 в минус 21 джоуля на бит, и на этом работает чип в твоём кармане.</div>
+      </div>
+      <div class="pimg"><img src="assets/p_landauer.png" alt=""><div class="pcap">Шарик в двух оптических ямах. Схлопывание ям - стирание бита - греет воду ровно на предел Ландауэра.</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s48">
+  <div class="content">
+    <div class="kicker">9 · Энтропия · Лиувилль</div>
+    <h2>Тепло - это движение, за которым перестали следить</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_heat.png" alt=""><div class="pcap">Сотни шаров в движении. Пока следишь за каждым, это механика. Как только махнул рукой и назвал «температурой», это тепло.</div></div>
+      <div>
+        <ul class="pts">
+          <li><b>Теорема Лиувилля, 1838.</b> Для системы, подчиняющейся механике, объём в фазовом пространстве сохраняется. Следствие, которое Гиббс вывел в 1902: тонкая энтропия, посчитанная по полному микросостоянию, постоянна во времени. Не растёт никогда. Для наблюдателя, знающего всё, второе начало не существует: ему нечего не знать.</li>
+          <li><b>Откуда тогда рост.</b> Из огрубления. Гиббс и Эренфесты показали: когда мы заменяем миллиард координат одним числом (температурой), объём в фазовом пространстве «размазывается» по ячейкам нашего разрешения и растёт. Энтропия растёт в момент, когда мы отворачиваемся. Второе начало - закон о том, как теряются данные при переходе от микро к макро, а не о том, как портится мир.</li>
+          <li><b>Тепло и трение.</b> Румфорд в 1798 сверлил пушечные стволы и грел ими воду до кипения: работа превращалась во что-то. Джоуль в 1845 измерил курс: 4,18 джоуля на калорию. Это «что-то» - кинетическая энергия молекул, та же механика, только без датчиков на каждой. Трение - упорядоченное движение, ушедшее в степени свободы, которые мы не отслеживаем. Энергия на месте. Из виду ушла информация о том, где она.</li>
+        </ul>
+        <div class="note gold"><b>Кикер главы.</b> Вы не знаете энтропию, потому что она рождается там, куда мы не смотрим. Камень под снегом и энтропия - одна и та же слепая зона: первую видно глазами, вторую считают формулой, и формула честно так и написана: логарифм того, чего не видно.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s49">
+  <div class="content">
+    <div class="kicker">9 · Энтропия · оговорка · Nescire quaedam magna pars sapientiae est</div>
+    <h2>Холодильник работает без наблюдателя, а начало Вселенной никто не объяснил</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="rd">Возражение первое: пар крутит турбину, что бы вы ни знали</h3>
+          <p>Верно. КПД Карно (1824) не спрашивает об образовании инженера. Ответ: предел Карно - предел для того, кто управляет только макропараметрами: температурой, давлением, объёмом. Демон с полными данными выжимает больше, и опыт Тоябе это показал, но он платит за память по Ландауэру. Знание не отменяет закон. Оно двигает границу, где закон начинает действовать, и за сдвиг берёт плату по известному курсу. «Энтропии не существует» в строгом смысле неверно; верно «энтропия - это мера того, чем вы не управляете, и она объективна ровно настолько, насколько объективен ваш набор приборов».</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="rd">Возражение второе: откуда стрела времени</h3>
+          <p>Если энтропия - про незнание, почему она растёт у всех в одну сторону? Потому что Вселенная началась в состоянии чудовищно низкой энтропии, и всё с тех пор только огрубляется. Это «гипотеза прошлого» (Альберт, 2000). Пенроуз оценил вероятность такого старта как 1 на 10 в степени 10 в степени 123. Это объективный факт о мире, он не про наши датчики, и его не объяснил никто. Здесь лекция честно говорит «не знаем», потому что это сильнее, чем делать вид.</p>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3>На разрядку</h3>
+          <p>Шеннон в 1948 не знал, как назвать свою меру неопределённости. Фон Нейман посоветовал: «Называй энтропией. Во-первых, формула та же. Во-вторых, никто не знает, что такое энтропия, так что в спорах ты всегда будешь выигрывать». Через 75 лет совет работает.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s50">
+  <div class="bgimg"><img src="assets/ch_quantum.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">10 · Квант · Ignoramus et ignorabimus</div>
+    <h1>Единственное место, где спор о причине ещё не закрыт</h1>
+    <p class="lead">Вторая бездна. Распад одного атома, один фотон на полупрозрачном зеркале, один электрон в щели. Стандартный учебник говорит: причины нет вообще, это не незнание, это свойство мира. Если учебник прав, тезис лекции рушится ровно на одном этаже. Эта глава про то, что именно доказано, что только принято считать и во что верит автор.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s51">
+  <div class="content">
+    <div class="kicker">10 · Квант · распад</div>
+    <h2>Один атом беззаконен, триллион - железо: период полураспада урана известен до четвёртого знака</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Закон.</b> Резерфорд и Содди, 1902: число распадов пропорционально числу атомов, отсюда экспонента и период полураспада. Уран-238: 4,468 миллиарда лет, углерод-14: 5730 ± 40 лет. На этом стоит радиоуглеродная датировка, ядерный реактор, томограф и возраст Земли. Точность закона - одна из лучших в физике.</li>
+          <li><b>Единица.</b> Про конкретный атом закон не говорит ничего. Он может распасться через секунду или через десять миллиардов лет, и у него нет «возраста»: атом, проживший миллиард лет, имеет те же шансы на следующую секунду, что и новый. Никакая измеримая переменная внутри атома не говорит «скоро». Это и называют отсутствием причины.</li>
+          <li><b>Эйнштейн и Бор.</b> 1926, письмо Борну: «Теория даёт много, но едва ли приближает нас к тайне Старика. Во всяком случае, я убеждён, что Он не играет в кости». Ответ Бора, в пересказе: «Перестань указывать Богу, что ему делать». Спор не закончен до сих пор, и дальше два слайда о том, где он сейчас.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="band">Ab uno disce omnes, наоборот</div>
+          <div class="row"><div class="bx rd"><b>Один атом</b><span>момент распада непредсказуем принципиально</span></div><div class="arr">→</div><div class="bx dk"><b>закона нет</b></div></div>
+          <div class="row"><div class="bx cy"><b>10<sup>20</sup> атомов</b><span>половина распадётся ровно через T½</span></div><div class="arr">→</div><div class="bx am"><b>закон точнее любого другого</b></div></div>
+          <div class="cap">Правило Борна - самый проверенный закон физики, и он весь про вероятности. Закон есть, он просто живёт не в событии, а в распределении.</div>
+        </div>
+        <div class="note" style="margin-top:14px"><b>Что это значит для тезиса.</b> Даже если причина единичного распада отсутствует, у ансамбля она есть и записана. Для всего, что мы делаем руками (реактор, датировка, томограф), этого достаточно. Вопрос «есть ли причина у одного атома» остаётся, и на него есть три ответа.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s52">
+  <div class="content">
+    <div class="kicker">10 · Квант · Белл</div>
+    <h2>Что именно закрыл Белл: локальные скрытые параметры. Не причину</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_bell.png" alt=""><div class="pcap">Запутанная пара фотонов разлетается к двум детекторам. Корреляции между ними сильнее, чем допускает любая локальная причина.</div></div>
+      <div>
+        <ul class="pts">
+          <li><b>Гипотеза Эйнштейна, 1935.</b> Квантовая механика неполна: у частицы есть скрытые параметры, которые заранее определяют исход, мы их просто не видим. Это дословно тезис нашей лекции, применённый к атому. Тридцать лет это считалось вопросом вкуса, не физики.</li>
+          <li><b>Белл, 1964.</b> Показал, что если скрытые параметры существуют и локальны (частица не узнаёт мгновенно, что сделали с её партнёром на другом конце лаборатории), то корреляции между запутанными частицами не могут превышать определённую границу. Квантовая механика предсказывает превышение. Вопрос вкуса стал вопросом измерения.</li>
+          <li><b>Измерения.</b> Клаузер 1972, Аспе 1982, и наконец 2015: Делфт, Вена, NIST закрывают все лазейки одновременно. Граница Белла нарушена. Нобелевская премия 2022 Аспе, Клаузеру и Цайлингеру. Вывод строгий: никакой теории с локальными скрытыми параметрами быть не может.</li>
+          <li><b>Что осталось.</b> Белл исключил связку «скрытые параметры плюс локальность». Отказаться можно от любого из двух. Учебник отказывается от параметров: причины нет. Но можно отказаться от локальности: причина есть, и она не здесь.</li>
+        </ul>
+        <div class="note gold"><b>Точная формулировка.</b> Эксперименты опровергли локальный реализм. Они не опровергли детерминизм. Эти две фразы часто путают, и на путанице держится утверждение, что «случайность доказана».</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s53">
+  <div class="content">
+    <div class="kicker">10 · Квант · Бом</div>
+    <h2>Теория, в которой у каждой частицы есть траектория, и она согласна со всеми опытами</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Волна-пилот.</b> Де Бройль 1927, Дэвид Бом 1952. У частицы всегда есть точное положение, она движется по траектории, которую направляет волновая функция. Никаких коллапсов и никаких костей. «Случайность» исхода - незнание начального положения частицы, точно как у монеты. Теория воспроизводит все предсказания стандартной квантовой механики для нерелятивистских систем, то есть все опыты в этой главе.</li>
+          <li><b>Цена.</b> Нелокальность. Траектория частицы здесь зависит от того, что происходит с её партнёром там, мгновенно. Белл это разрешает: он запретил локальные параметры, а не любые. Сам Белл был сторонником Бома и спрашивал в статье 1982 года, почему картину волны-пилота игнорируют учебники.</li>
+          <li><b>Не единственный вариант.</b> Эверетт, 1957: случайности нет вообще, реализуются все исходы, мы видим один, потому что сами в одной из ветвей. Супердетерминизм ('т Хоофт): выбор настройки детектора и состояние частицы имеют общую причину в прошлом, и Белл неприменим. Из основных интерпретаций три детерминистские, две (копенгагенская и теории объективного коллапса) с настоящей случайностью.</li>
+        </ul>
+        <div class="note gold"><b>К тезису.</b> Эйнштейн с костями не опровергнут. Он опровергнут только в одном: нельзя иметь одновременно причину и локальность. Причина есть, если согласиться, что она невидима буквально, по закону физики: она размазана по всему, с чем частица когда-либо была запутана. Слово «видимой» в тезисе лекции здесь доведено до предела.</div>
+      </div>
+      <div class="pimg"><img src="assets/p_bohm.png" alt=""><div class="pcap">Траектории Бома через две щели: каждая частица летит по одной линии, узор интерференции складывается из их незнаемых стартов.</div></div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s54">
+  <div class="content">
+    <div class="kicker">10 · Квант · честная оговорка</div>
+    <h2>Эксперимент их не различает. Выбор между ними - вера, и автор говорит, в какую</h2>
+    <div class="cols">
+      <div>
+        <table class="t" style="font-size:13px">
+          <tr><th>Интерпретация</th><th>Причина у одного распада</th><th>Чем платит</th><th>Отличима опытом</th></tr>
+          <tr><td>Копенгагенская</td><td class="d">нет</td><td class="d">коллапс без механизма, граница «наблюдателя»</td><td class="d">нет</td></tr>
+          <tr><td>Объективный коллапс (GRW)</td><td class="d">нет</td><td class="d">новые константы</td><td class="d">да, в принципе; пока не нашли</td></tr>
+          <tr><td>Бом (волна-пилот)</td><td class="d">есть, нелокальная</td><td class="d">выделенная система отсчёта, скрытые траектории</td><td class="d">нет</td></tr>
+          <tr><td>Эверетт (многомировая)</td><td class="d">все исходы, случайности нет</td><td class="d">бесконечность миров, проблема вероятности</td><td class="d">нет</td></tr>
+          <tr><td>Супердетерминизм</td><td class="d">есть, общая с детектором</td><td class="d">свобода выбора эксперимента</td><td class="d">нет</td></tr>
+        </table>
+        <div class="note" style="margin-top:12px"><b>Четыре строки из пяти не различимы никаким известным опытом.</b> Это не временная ситуация, а свойство: они предсказывают одинаковые числа. Выбор между ними делается по вкусу, по бритве Оккама или по тому, с какой ценой человек готов жить.</div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Позиция автора</h3>
+          <p>Nihil sine causa. Из таблицы автор выбирает строки, где причина есть, и признаёт, что это выбор, а не вывод. Аргумент простой и не физический: на всех пяти ступенях лестницы и в бездне энтропии слово «случайно» оказалось пробелом в данных. Предположить, что на последнем этаже оно вдруг стало свойством мира, можно. Но бремя доказательства лежит на том, кто утверждает исключение, и эксперимент его пока не предоставил.</p>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3 class="rd">Чего автор не утверждает</h3>
+          <p>Что Бом прав. Что копенгагенцы ошибаются. Что всё предопределено: даже у Бома начальные положения частиц никому не доступны, и хаос их усиливает, так что предсказать распад нельзя ни в одной из пяти строк. Утверждается одно: фраза «наука доказала, что причины нет» неверна. Наука доказала, что причина, если есть, не локальна. Это разные утверждения, и между ними вся лекция.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s55">
+  <div class="content">
+    <div class="kicker">Заключение · лестница и Цицерон</div>
+    <h2>Пять видов слепоты, одно слово и трактат против гадалок</h2>
+    <div class="part">
+      <div class="pimg"><img src="assets/p_cicero.png" alt=""><div class="pcap">Цицерон, «О дивинации», 44 год до н. э. Трактат, в котором римский авгур по должности разбирает гадание как ремесло.</div></div>
+      <div>
+        <ul class="pts">
+          <li><b>Лестница целиком.</b> Не заметил (арифметика), не знал (дата открытия), не хватало данных (датчик не там), не мог посчитать (знаков не хватило), не признал (память и Я). Пять видов слепоты, и на каждой ступени слово «случайно» означало «я не посмотрел», причём место, куда не посмотрели, удалось назвать. Под лестницей энтропия, которая эту слепоту измеряет, и квант, где слепота, возможно, не наша. Возможно.</li>
+          <li><b>Nihil sine causa.</b> Ничто без причины. Цицерон пишет это в «О дивинации», и пишет не как метафизик, а как прокурор: раз у всего есть причина, то гадание по печени и полёту птиц либо находит её (и тогда это наука), либо нет (и тогда это обман). Сам он был авгуром и признавался, что два авгура не могут смотреть друг на друга без улыбки.</li>
+          <li><b>Подвох.</b> Тезис лекции был написан две тысячи лет назад человеком, профессионально гадавшим по птицам, в книге против гадания. С тех пор его открывали заново Спиноза, Лаплас, Больцман и каждый следователь на месте аварии. И каждый раз называли совпадением.</li>
+        </ul>
+        <div class="note gold"><b>Ubi caecitas, ibi casus.</b> Где слепота, там случай. Не наоборот.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s56">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Вся лекция одной таблицей: где стоял датчик и где лежала причина</h2>
+    <table class="t" style="font-size:12.5px">
+      <tr><th>Кейс</th><th>Слово</th><th>Датчик стоял</th><th>Причина лежала</th><th>Ступень</th></tr>
+      <tr><td>Дни рождения, Линкольн и Кеннеди</td><td class="d">«невероятное совпадение»</td><td class="d">на попаданиях</td><td class="d">в знаменателе и промахах</td><td class="d">не заметил</td></tr>
+      <tr><td>Холера, чума, родильная горячка</td><td class="d">«миазмы», «кара»</td><td class="d">на воздухе и грехах</td><td class="d">в воде, блохе, руках врача</td><td class="d">не знал</td></tr>
+      <tr><td>Мутации, рак «от невезения»</td><td class="d">«так вышло»</td><td class="d">на ребёнке и анкете</td><td class="d">в возрасте отца и химии копирования</td><td class="d">не знал</td></tr>
+      <tr><td>Дождь, авария, Сараево, «Титан»</td><td class="d">«случайно»</td><td class="d">на барометре, водителе, шофёре</td><td class="d">в пылинке, цепочке, газете, трендах</td><td class="d">не хватало данных</td></tr>
+      <tr><td>Шумахер</td><td class="d">«нелепая случайность»</td><td class="d">на болиде, тысяча каналов</td><td class="d">под снегом, ноль каналов</td><td class="d">не хватало данных</td></tr>
+      <tr><td>Монета, рулетка, лотерея, seed</td><td class="d">«чистый случай»</td><td class="d">нигде, по договору</td><td class="d">в импульсе, оси, числе билетов</td><td class="d">не мог посчитать</td></tr>
+      <tr><td>Хор, Джессоп, Ямагути, Салливан</td><td class="d">«чудо»</td><td class="d">на выжившем</td><td class="d">в погоде, компании, цели, рельефе</td><td class="d">знаменатель</td></tr>
+      <tr><td>Аберфан, Селак, Хопкинс</td><td class="d">«предчувствие», «везение»</td><td class="d">включён после события</td><td class="d">в памяти; не проверяли; неизвестно</td><td class="d">не проверил</td></tr>
+      <tr><td>«Я так решил»</td><td class="d">«захотелось»</td><td class="d">на ощущении</td><td class="d">за 350 мс до него</td><td class="d">я решил</td></tr>
+      <tr><td>Энтропия</td><td class="d">«беспорядок растёт»</td><td class="d">на T, p, V</td><td class="d">в молекулах, за которыми не следим; курс kT ln 2</td><td class="d">бездна 1</td></tr>
+      <tr><td>Распад атома</td><td class="d">«причины нет»</td><td class="d">на атоме</td><td class="d">не локально, если есть; спор открыт</td><td class="d">бездна 2</td></tr>
+    </table>
+    <div class="note gold" style="margin-top:10px"><b>Третий и четвёртый столбцы никогда не совпадают.</b> В этом вся лекция: датчик стоял на герое, причина лежала в среде. Единственная строка с честным «неизвестно» - книга на скамейке, и одна строка с честным «спор открыт». Остальные девять - слепота, у которой есть адрес.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s57">
+  <div class="bgimg"><img src="assets/final_end.png" alt=""></div>
+  <div class="content">
+    <h1 class="strike">Caecitas <s>fortuita</s>, vita <s>fortuita</s></h1>
+    <h1 class="fin">Caecitas nostra, vita causata</h1>
+    <p class="lead">Двадцать три человека в комнате, ручка колонки на Брод-стрит, две мутации за год отцовской жизни, пылинка в облаке, поворот на улицу Франца Иосифа, машина, бросающая орлом сто из ста, холодный вечер в Небраске, три сестры одного проекта, вышка на хребте, книга на скамейке, 350 миллисекунд, формула на могиле, шарик в двух ямах, атом без возраста и камень под тонким снегом.</p>
+    <p class="lead" style="margin-top:14px">Слепота не случайна: у неё всегда есть адрес, и это место, куда не смотрели. Жизнь не случайна: у неё всегда есть причина, и это место, где она лежала. Мир не бросает кости. Он просто не показывает, как упало.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<!-- SLIDES_END -->
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
