@@ -44,9 +44,10 @@
 | 1 | [Эзотерика под микроскопом: где чудо становится механизмом](https://screampassion.github.io/presentations/esoterica_presentation/index.html) | 63 |
 | 2 | [Огонь украден. Каждый раз](https://screampassion.github.io/presentations/myths_presentation/index.html) | 48 |
 | 3 | [Изобретаем хаос](https://screampassion.github.io/presentations/chaos_presentation/index.html) | 47 |
-| 4 | [Для кого не было. Навсегда](https://screampassion.github.io/presentations/forever_presentation/index.html) | 50 |
-| 5 | [Ничего из ничего. Везде](https://screampassion.github.io/presentations/nothing_presentation/index.html) | 49 |
-| 6 | [Звон есть, есть ли свет?](https://screampassion.github.io/presentations/light_presentation/index.html) | 40 |
+| 4 | [Мёртвые нейроны](https://screampassion.github.io/presentations/neurons_presentation/index.html) | 44 |
+| 5 | [Для кого не было. Навсегда](https://screampassion.github.io/presentations/forever_presentation/index.html) | 50 |
+| 6 | [Ничего из ничего. Везде](https://screampassion.github.io/presentations/nothing_presentation/index.html) | 49 |
+| 7 | [Звон есть, есть ли свет?](https://screampassion.github.io/presentations/light_presentation/index.html) | 40 |
 
 ## Три эпохи
 
