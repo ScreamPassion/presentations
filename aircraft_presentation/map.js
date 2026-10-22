@@ -175,5 +175,7 @@ window.PRESENTATIONS.push({
  "series": "lectures",
  "issue": 0,
  "folder": "aircraft_presentation",
- "entry": "index.html"
+ "entry": "index.html",
+ "group": "Машины и оружие",
+ "order": 101
 });

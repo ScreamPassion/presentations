@@ -284,5 +284,7 @@ window.PRESENTATIONS.push({
  "series": "svet",
  "issue": 3,
  "folder": "chaos_presentation",
- "entry": "index.html"
+ "entry": "index.html",
+ "group": "Прочее",
+ "order": 500
 });

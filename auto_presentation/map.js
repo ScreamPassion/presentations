@@ -269,5 +269,7 @@ window.PRESENTATIONS.push({
  "series": "lectures",
  "issue": 0,
  "folder": "auto_presentation",
- "entry": "index.html"
+ "entry": "index.html",
+ "group": "Машины и оружие",
+ "order": 100
 });

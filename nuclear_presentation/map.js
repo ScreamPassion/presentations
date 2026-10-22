@@ -199,5 +199,7 @@ window.PRESENTATIONS.push({
  "series": "lectures",
  "issue": 0,
  "folder": "nuclear_presentation",
- "entry": "index.html"
+ "entry": "index.html",
+ "group": "Физика и Земля",
+ "order": 200
 });

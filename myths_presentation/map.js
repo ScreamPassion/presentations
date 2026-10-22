@@ -305,5 +305,7 @@ window.PRESENTATIONS.push({
  "series": "svet",
  "issue": 2,
  "folder": "myths_presentation",
- "entry": "index.html"
+ "entry": "index.html",
+ "group": "Прочее",
+ "order": 500
 });

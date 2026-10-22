@@ -359,5 +359,7 @@ window.PRESENTATIONS.push({
  "series": "lectures",
  "issue": 0,
  "folder": "psy_presentation",
- "entry": "index.html"
+ "entry": "index.html",
+ "group": "Мысль и общество",
+ "order": 400
 });

@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><link rel="icon" href="../favicon.ico" sizes="any"><link rel="icon" type="image/png" href="../favicon.png"><link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Как работает ИИ. Часть 2: что у игрушек внутри</title>
+<style>
+  :root {
+    --bg: #0a0e14; --panel: #10161f; --panel2: #151d29;
+    --text: #d7e0ea; --dim: #8a97a8; --faint: #55606e;
+    --cyan: #d9b27a; --amber: #ffb347; --green: #6ee7a0; --red: #ff6b7a;
+    --line: #223041;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  .slide {
+    min-height: 100vh; scroll-snap-align: start; position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 56px 72px; width: 100%; overflow: hidden;
+  }
+  .slide.chapter { justify-content: flex-end; padding-bottom: 90px; }
+  .bgimg { position: absolute; inset: 0; z-index: 0; }
+  .bgimg img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
+  .bgimg::after { content:''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,20,.55) 0%, rgba(10,14,20,.25) 45%, rgba(10,14,20,.92) 100%); }
+  .content { position: relative; z-index: 1; width: 100%; max-width: 1256px; margin: 0 auto; }
+  .kicker { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--cyan); margin-bottom: 14px; font-weight: 600; }
+  .kicker.amber { color: var(--amber); }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.1; margin-bottom: 18px; }
+  h2 { font-size: 36px; font-weight: 700; margin-bottom: 22px; line-height: 1.15; }
+  h2 .n { color: var(--faint); font-weight: 400; margin-right: 12px; font-size: 24px; }
+  .lead { font-size: 19px; color: var(--dim); max-width: 860px; line-height: 1.55; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
+  ul.pts { list-style: none; margin-top: 6px; }
+  ul.pts li { padding: 9px 0 9px 26px; position: relative; font-size: 16.5px; line-height: 1.5; color: var(--text); border-bottom: 1px solid rgba(34,48,65,.5); }
+  ul.pts li:last-child { border-bottom: none; }
+  ul.pts li::before { content: '▸'; position: absolute; left: 2px; color: var(--cyan); }
+  ul.pts li b { color: #fff; }
+  ul.pts.amber li::before { color: var(--amber); }
+  .dim { color: var(--dim); } .cy { color: var(--cyan); } .am { color: var(--amber); } .gr { color: var(--green); } .rd { color: var(--red); }
+  code, .mono { font-family: 'Cascadia Code', Consolas, monospace; font-size: .92em; color: var(--amber); background: rgba(255,179,71,.08); padding: 1px 6px; border-radius: 4px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .card h3 { font-size: 17px; margin-bottom: 10px; color: var(--cyan); }
+  .card h3.am { color: var(--amber); }
+  .card p, .card li { font-size: 15px; color: var(--dim); line-height: 1.55; }
+  .card ul { list-style: none; }
+  .card ul li { padding: 5px 0 5px 18px; position: relative; }
+  .card ul li::before { content: '·'; position: absolute; left: 4px; color: var(--faint); font-weight: bold; }
+  .flow { display: flex; align-items: stretch; gap: 0; margin: 26px 0; flex-wrap: wrap; }
+  .flow .step { background: var(--panel); border: 1px solid var(--line); padding: 13px 16px; font-size: 14px; line-height: 1.4; position: relative; flex: 1; min-width: 130px; }
+  .flow .step:first-child { border-radius: 10px 0 0 10px; }
+  .flow .step:last-child { border-radius: 0 10px 10px 0; }
+  .flow .step + .step { border-left: none; }
+  .flow .step::after { content: '→'; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); color: var(--cyan); z-index: 2; font-weight: bold; }
+  .flow .step:last-child::after { content: none; }
+  .flow .step b { display: block; color: var(--cyan); margin-bottom: 3px; font-size: 13.5px; }
+  .flow .step span { color: var(--dim); font-size: 12.5px; }
+  .flow.amber .step b { color: var(--amber); }
+  .flow.amber .step::after { color: var(--amber); }
+  table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+  table.t th { text-align: left; color: var(--cyan); font-weight: 600; padding: 8px 12px; border-bottom: 2px solid var(--line); font-size: 13.5px; text-transform: uppercase; letter-spacing: .5px; }
+  table.t td { padding: 8px 12px; border-bottom: 1px solid rgba(34,48,65,.5); color: var(--text); }
+  table.t td.d { color: var(--dim); }
+  table.t tr:last-child td { border-bottom: none; }
+  .svgbox { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 20px; overflow-x: auto; }
+  .svgbox svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .note { margin-top: 18px; padding: 14px 18px; background: rgba(70,212,255,.06); border-left: 3px solid var(--cyan); border-radius: 0 10px 10px 0; font-size: 15px; color: var(--dim); line-height: 1.5; }
+  .note.warn { background: rgba(255,107,122,.06); border-color: var(--red); }
+  .note.gold { background: rgba(255,179,71,.07); border-color: var(--amber); }
+  .note b { color: var(--text); }
+  .pagenum { position: absolute; right: 30px; bottom: 22px; color: var(--faint); font-size: 13px; font-family: Consolas, monospace; z-index: 2; }
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--amber)); width: 0; z-index: 10; transition: width .2s; }
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); color: var(--faint); font-size: 12px; z-index: 10; opacity: .7; }
+  /* HTML-диаграммы вместо SVG (кириллица в Consolas не влезала в боксы) */
+  .dg { display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; }
+  .dg .row { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+  .dg .bx { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; text-align: center; flex: 1 1 0; min-width: 0; line-height: 1.35; }
+  .dg .bx b { display: block; color: var(--text); font-size: 13.5px; font-weight: 600; }
+  .dg .bx span { display: block; color: var(--dim); font-size: 12px; }
+  .dg .bx.cy { border-color: var(--cyan); } .dg .bx.cy b { color: var(--cyan); }
+  .dg .bx.am { border-color: var(--amber); } .dg .bx.am b { color: var(--amber); }
+  .dg .bx.gr { border-color: var(--green); } .dg .bx.gr b { color: var(--green); }
+  .dg .bx.rd { border-color: var(--red); } .dg .bx.rd b { color: var(--red); }
+  .dg .bx.dk { background: var(--bg); border-style: dashed; }
+  .dg .bx.dk b { color: var(--faint); font-weight: 400; }
+  .dg .arr { color: var(--cyan); font-weight: bold; flex: 0 0 auto; font-size: 16px; }
+  .dg .arr.am { color: var(--amber); } .dg .arr.gr { color: var(--green); } .dg .arr.rd { color: var(--red); }
+  .dg .cap { color: var(--faint); font-size: 12.5px; text-align: center; line-height: 1.5; }
+  .dg .lbl { color: var(--dim); font-size: 12.5px; }
+  .dg .lbl.mono { font-family: Consolas, monospace; background: none; padding: 0; }
+  .dg .col { display: flex; flex-direction: column; gap: 6px; }
+  .dg .stack { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .dg .stack .bx { padding: 5px 10px; }
+  .dg ol { margin: 0; padding-left: 20px; color: var(--dim); font-size: 13px; line-height: 1.65; }
+  .dg ol li.am { color: var(--amber); }
+  .dg .side { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .dg .band { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--cyan); }
+  .dg .band.am { color: var(--amber); }
+  .dg .mark { color: var(--faint); font-family: Consolas, monospace; font-size: 12px; }
+  .dg .mark.rd { color: var(--red); }
+  .tl { position: relative; height: 210px; border-bottom: 2px solid var(--line); margin: 8px 0 4px; }
+  .tl .bar { position: absolute; height: 18px; border-radius: 3px; opacity: .85; }
+  .tl .bar span { position: absolute; left: 4px; bottom: 21px; white-space: nowrap; font-size: 12px; font-family: Consolas, monospace; }
+  .tl .bar.cy { background: var(--cyan); } .tl .bar.cy span { color: var(--cyan); }
+  .tl .bar.am { background: var(--amber); } .tl .bar.am span { color: var(--amber); }
+  .tl .bar.gr { background: var(--green); } .tl .bar.gr span { color: var(--green); }
+  .tl .bar.rd { background: var(--red); } .tl .bar.rd span { color: var(--red); }
+  .tlx { display: flex; justify-content: space-between; color: var(--faint); font-size: 12px; font-family: Consolas, monospace; }
+  .eye svg { max-width: 220px; display: block; }
+  .slide.dense .bgimg img { opacity: .22; }
+  .slide.dense .bgimg::after { background: linear-gradient(180deg, rgba(10,14,20,.7), rgba(10,14,20,.85)); }
+  .cols5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: stretch; }
+  .cols5 .card { padding: 16px 16px; }
+  .cols5 .card h3 { font-size: 15px; }
+  .cols5 .card p { font-size: 13px; line-height: 1.45; }
+  .cols5 .card p + p { margin-top: 8px; }
+  .part { display: grid; grid-template-columns: 1.15fr 2fr; gap: 18px; align-items: start; }
+  .part.rev { grid-template-columns: 2fr 1.15fr; }
+  .part .pimg img { cursor: zoom-in; transition: transform .15s; }
+  .part .pimg img:hover { transform: scale(1.02); }
+  .lightbox { position: fixed; inset: 0; background: rgba(6,9,14,.94); z-index: 100; display: none; align-items: center; justify-content: center; cursor: zoom-out; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 10px; box-shadow: 0 20px 80px rgba(0,0,0,.7); }
+  .lightbox .lbcap { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: var(--dim); font-size: 14px; max-width: 80vw; text-align: center; }
+  .lightbox .lbx { position: absolute; top: 14px; right: 22px; color: var(--faint); font-size: 28px; font-family: Consolas, monospace; }
+  .part .pimg img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .part .pcap { color: var(--dim); font-size: 12.5px; line-height: 1.5; margin-top: 8px; padding: 0 4px; }
+  table.pt { font-size: 12.5px; margin-top: 0; }
+  table.pt th { font-size: 11.5px; padding: 5px 8px; }
+  table.pt td { padding: 4px 8px; line-height: 1.3; vertical-align: top; }
+  table.pt td:first-child { width: 19%; }
+  table.pt td:nth-child(2) { width: 46%; }
+  @media (max-width: 1100px) { .cols, .cols3 { grid-template-columns: 1fr; } h1 { font-size: 40px; } .slide { padding: 40px 30px; } }
+  .term { font-family: 'Cascadia Code', Consolas, monospace; font-size: 13.5px; line-height: 1.6; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; margin-top: 16px; color: var(--text); white-space: pre-wrap; }
+  .term .c { color: var(--faint); } .term .cmd { color: var(--cyan); } .term .p { color: var(--amber); } .term .ok { color: var(--green); }
+  .meter { height: 10px; background: var(--panel2); border: 1px solid var(--line); border-radius: 5px; overflow: hidden; }
+  .meter i { display: block; height: 100%; background: linear-gradient(90deg, var(--cyan), var(--amber)); }
+  .cols .card img { border: 1px solid var(--line); }
+</style>
+</head>
+<body>
+<div class="progress" id="prog"></div>
+<div class="hint">↑↓ / PgUp PgDn / колесо — навигация</div>
+
+<!-- ============ ТИТУЛ ============ -->
+<section class="slide chapter" id="s1">
+  <div class="bgimg"><img src="assets/cover.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Практический разбор · часть 2 · юбилейный выпуск</div>
+    <h1>Как работает ИИ. Что у игрушек внутри</h1>
+    <p class="lead">Первая часть была про молоток: модель предсказывает следующий токен, остальное - практика. За год вокруг молотка вырос ящик игрушек: картинки из текста, «убери очки», чтение зеркальных вывесок, расшифровка речи, голос по образцу, модель из фотографии. Эта часть про то, что у каждой внутри. Спойлер: внутри у всех тот же молоток, только токеном оказывается не слово, а кусочек шума, спектра или картинки.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s2">
+  <div class="content">
+    <div class="kicker">Правила выпуска · почему юбилейный</div>
+    <h2>Первое продолжение в коллекции, и одна нитка на все игрушки</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/ch_rules.png" alt="">
+        <div class="pcap">Пять машин со снятыми крышками и один общий вал. Картинки в этом выпуске нарочно в другом стиле: гравюра в разрезе, потому что выпуск про «внутри».</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Почему юбилейный.</b> Тридцать с лишним лекций, и впервые не новая тема, а продолжение старой. Первая часть («Как работает ИИ: разбор для практиков») дала словарь: токен, веса, контекст, внимание, функция потерь. Здесь этот словарь не повторяется, а используется. Если его нет, часть 1 - двадцать минут.</li>
+          <li><b>Нитка.</b> В каждой главе один и тот же вопрос в трёх шагах: во что игрушка превращает вход, что она предсказывает, и где она поэтому врёт. Ответы будут подозрительно одинаковые, и это главный результат выпуска.</li>
+          <li><b>Глубина.</b> Без формул. Одна схема на механизм. Там, где по-настоящему не знают (почему именно эта сеть справляется с отражением), так и написано.</li>
+          <li><b>Два живых опыта.</b> Оба поставлены при подготовке, результаты настоящие, включая ошибки: чтение зеркального текста и «убери очки» тремя разными кнопками. Там, где модель ошиблась, ошибка показана, потому что она объясняет механизм лучше, чем успех.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s3">
+  <div class="content">
+    <div class="kicker">Маршрут</div>
+    <h2>Семь игрушек, один приём</h2>
+    <div class="dg">
+      <div class="row">
+        <div class="bx am"><b>01 Диффузия</b><span>картинка из шума</span></div>
+        <div class="arr">→</div>
+        <div class="bx am"><b>02 Убери очки</b><span>три кнопки под одним словом</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>03 Зрение</b><span>как сеть видит</span></div>
+        <div class="arr">→</div>
+        <div class="bx"><b>04 Чтение</b><span>OCR и его смерть</span></div>
+      </div>
+      <div class="row">
+        <div class="bx cy"><b>05 Звук туда</b><span>Whisper: речь в текст</span></div>
+        <div class="arr">→</div>
+        <div class="bx cy"><b>06 Звук обратно</b><span>голос и музыка</span></div>
+        <div class="arr">→</div>
+        <div class="bx gr"><b>07 Объём</b><span>3D из картинки</span></div>
+        <div class="arr">→</div>
+        <div class="bx rd"><b>Итог</b><span>что общее и где граница</span></div>
+      </div>
+      <div class="cap">Две первые главы про картинки, две про зрение, две про звук, одна про объём. Каждая кончается строкой в общей таблице: вход → во что превращён → что предсказывает → где врёт.</div>
+    </div>
+    <div class="cols" style="margin-top:18px">
+      <div>
+        <ul class="pts">
+          <li><b>Что из части 1 понадобится.</b> Токен как единица, которую модель предсказывает. Внимание как способ смотреть на весь контекст сразу. Функция потерь как число «насколько ошиблись», которое обучение гонит вниз. Этого хватит на все семь глав.</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Чего не будет.</b> Кнопок, цен и списков сервисов: это было бы «часть 1 снова». Здесь только механика. Если после выпуска кнопки стали понятнее, это побочный эффект, а не цель.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s4">
+  <div class="bgimg"><img src="assets/ch_diffusion.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">01 · Диффузия</div>
+    <h1>Картинка из шума</h1>
+    <p class="lead">Генератор картинок не рисует. Он учился на одном странном задании: ему показывали фотографию, испорченную шумом, и просили угадать, какой именно шум добавили. Миллиард раз. Потом ему дали чистый телевизионный снег и сказали: убери шум. Он убрал, и на месте снега оказалась картинка, которой никогда не было.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s5">
+  <div class="content">
+    <div class="kicker">01 · Диффузия · обучение наоборот</div>
+    <h2>Учим не рисовать, а угадывать, какой шум добавили</h2>
+    <div class="part rev">
+      <div>
+        <ul class="pts">
+          <li><b>Прямой процесс.</b> Берём фотографию. Добавляем немного случайного шума: каждому пикселю чуть-чуть случайной прибавки. Повторяем тысячу раз. К концу от фотографии ничего не остаётся, это чистый снег, и так с любой фотографией: все дороги ведут в один и тот же шум. Эта часть не обучается, это просто математика.</li>
+          <li><b>Задание сети.</b> На каждом шаге показываем ей испорченную картинку и номер шага, и просим предсказать, какой шум был добавлен. Ответ известен (мы сами добавляли), значит, есть функция потерь: разница между угаданным шумом и настоящим. Обычное обучение, как в части 1, только предсказывается не токен, а шум.</li>
+          <li><b>Почему это работает.</b> Чтобы угадать шум, надо понять, что под ним. На ранних шагах (шума мало) сеть учится мелочам: текстуре кожи, бликам. На поздних (шума много) - крупному: где голова, где фон. Одна сеть, тысяча уровней задачи. Так она выучивает, как устроены картинки вообще, не умея нарисовать ни одной.</li>
+        </ul>
+        <div class="note gold"><b>Нитка:</b> вход - картинка плюс шум, превращён в тензор чисел, предсказывается шум. Запомним: предсказывается не картинка.</div>
+      </div>
+      <div class="pimg">
+        <img src="assets/p_noise.png" alt="">
+        <div class="pcap">Прямой процесс: слева портрет, справа снег. Сеть учится ходить по этой полосе справа налево.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="content">
+    <div class="kicker">01 · Диффузия · генерация</div>
+    <h2>Берём снег, тысячу раз вычитаем угаданный шум, и проявляется то, чего не было</h2>
+    <div class="cols">
+      <div>
+        <div class="dg">
+          <div class="band am">обратный процесс</div>
+          <div class="row"><div class="bx dk"><b>чистый снег</b><span>случайные числа</span></div><div class="arr am">→</div><div class="bx"><b>сеть: «вот шум»</b><span>вычитаем часть</span></div><div class="arr am">→</div><div class="bx"><b>чуть меньше снега</b><span>проступают пятна</span></div><div class="arr am">→</div><div class="bx dk"><b>…</b><span>ещё 20-50 раз</span></div><div class="arr am">→</div><div class="bx am"><b>картинка</b><span>которой не было</span></div></div>
+          <div class="cap">Каждый шаг - один прогон сети. Раньше тысяча, сейчас 20-50: придумали, как делать шаги крупнее (DDIM, DPM-Solver). Отсюда «steps» в настройках: меньше - быстрее и грубее.</div>
+        </div>
+        <ul class="pts" style="margin-top:14px">
+          <li><b>Откуда разнообразие.</b> Стартовый снег случайный. Другой снег - другая картинка по тому же промпту. Зафиксируй seed (число, из которого делают снег), получишь ту же. Seed - это не «стиль», это просто какой снег лежал в начале.</li>
+          <li><b>Проявление, а не рисование.</b> Сеть ни на одном шаге не «решает нарисовать нос». Она на каждом шаге говорит «вот это похоже на шум, уберу», и нос остаётся, потому что он на шум не похож. Картинка - то, что не было признано шумом. Прунинг из «Мёртвых нейронов», только за секунды.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Почему пальцы</h3>
+          <p>Генерация идёт не по пикселям, а по сжатой карте: картинка 1024×1024 сначала упаковывается кодировщиком в «латент» 128×128 с несколькими каналами, диффузия ходит там, потом декодер разворачивает обратно. Это в десятки раз быстрее, и это же причина мелких ошибок: пальцы, буквы, зубы - то, что в сжатой карте занимает пару клеток. Шесть пальцев - не «ошибка художника», а слишком мало клеток на руку.</p>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3 class="am">Почему текст на картинках - каша</h3>
+          <p>Та же причина плюс ещё одна: буква - объект, где важна точная форма, а диффузия учится на статистике «как обычно выглядит». «Как обычно выглядит текст» - это ровные строки чего-то буквоподобного. Новые модели (Banana Pro, Gemini Image) умеют текст потому, что их обучили на миллионах вывесок и дали внутрь языковую модель, которая знает, какие буквы должны стоять. Старые его не умеют по построению.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s7">
+  <div class="content">
+    <div class="kicker">01 · Диффузия · откуда текст</div>
+    <h2>Промпт не команда, а магнит: шум убирают «в сторону» вектора</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>CLIP.</b> Отдельная сеть, обученная на 400 миллионах пар «картинка - подпись» так, чтобы вектор картинки и вектор её подписи оказывались рядом, а чужих - далеко. После обучения любой текст превращается в вектор, который «знает», как выглядит описанное. Это и есть мост между словами и пикселями.</li>
+          <li><b>Как он входит в диффузию.</b> Сеть, угадывающая шум, на каждом шаге смотрит на вектор промпта через внимание, то же, что в части 1 между токенами. Теперь она угадывает не «какой шум», а «какой шум, если под ним должна быть кошка на окне». Вычитание шума сдвигается в сторону кошки. Промпт не рисует, он наклоняет.</li>
+          <li><b>Guidance (CFG).</b> Сеть прогоняют дважды: с промптом и без, и разницу усиливают. Число 7 в настройках - во сколько раз. Мало - модель игнорирует текст, много - пережжённые цвета и уродства, потому что сдвиг стал больше, чем шум.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Почему «no text» в промпте не работает</h3>
+          <p>Потому что магнит умеет только притягивать. Вектор «no text» - это вектор, в котором есть слово «text», и он тянет к тексту. Для отталкивания есть отдельный вход, negative prompt: второй вектор, от которого сдвиг направлен прочь. То, что мы пишем «no text» в основной промпт и это иногда помогает, объясняется только тем, что новые модели с языковой моделью внутри понимают отрицание как смысл, а не как магнит. Старые - нет.</p>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3>Референс-картинка</h3>
+          <p>Тот же механизм, что с текстом: картинку-референс превращают в вектор (CLIP умеет и это) и подмешивают во внимание. Модель тянется к «похожему на эту картинку» так же, как к «похожему на это описание». Поэтому референс задаёт настроение и композицию, а не копирует: это магнит, а не трафарет. Трафарет - следующая глава.</p>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Строка в таблицу:</b> вход - текст и снег; превращён в вектор и латент; предсказывает шум; врёт там, где мало клеток (пальцы, буквы) и где магнит тянет не туда (отрицания).</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s8">
+  <div class="bgimg"><img src="assets/ch_edit.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">02 · Убери очки</div>
+    <h1>Три разных механизма под одной кнопкой</h1>
+    <p class="lead">Даёшь фото человека в очках и просишь «то же самое, но без очков». Что делает модель: рисует всё заново или трогает только кусок? Ответ: смотря какая кнопка. Их три, они устроены по-разному, и по результату можно определить, какая была нажата. Опыт в этой главе настоящий, одно лицо, три кнопки.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s9">
+  <div class="content">
+    <div class="kicker">02 · Убери очки · три кнопки</div>
+    <h2>Маска, частичный шум или картинка как токены</h2>
+    <table class="t" style="font-size:13.5px">
+      <tr><th>Кнопка</th><th>Что делает с оригиналом</th><th>Что перерисовывает</th><th>Что сохранится точно</th><th>Что может «поехать»</th></tr>
+      <tr><td>Inpaint (маска)</td><td class="d">снаружи маски пиксели оригинала замораживаются; внутри маски - чистый шум</td><td class="d">только дырку, на каждом шаге подглядывая в края</td><td class="d">всё вне маски, до пикселя</td><td class="d">шов по краю маски; внутри может нарисовать не то (вторые очки, другие глаза)</td></tr>
+      <tr><td>Image-to-image (denoise)</td><td class="d">вся картинка зашумляется частично: denoise 0,3 - слегка, 0,8 - почти до снега</td><td class="d">всю картинку целиком, стартуя не со снега, а с «подпорченного» оригинала</td><td class="d">композиция и крупные формы (чем меньше denoise, тем больше)</td><td class="d">лицо, детали, фон: «тот же, но другой человек»</td></tr>
+      <tr><td>Инструктивная (Kontext, Banana Pro)</td><td class="d">картинка режется на токены и подаётся вместе с текстом «убери очки», как в чате</td><td class="d">всё заново, но внимание держит каждый токен оригинала</td><td class="d">почти всё, потому что модель «видит» оригинал на каждом шаге</td><td class="d">мелочи, на которые не хватило внимания: родинка переехала, серьга пропала</td></tr>
+    </table>
+    <div class="cols" style="margin-top:14px">
+      <div>
+        <ul class="pts">
+          <li><b>Ответ на вопрос из заголовка.</b> Inpaint - трогает только кусок, и это единственная кнопка, где слово «только» верно буквально. Две другие рисуют всё заново: img2img - стартуя с размытой копии, инструктивная - глядя на оригинал через внимание. Разница в том, что держит остальную картинку: заморозка пикселей, остаточный шум или внимание.</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Как определить по результату.</b> Увеличь фон. Пиксель в пиксель с оригиналом - inpaint. Тот же, но чуть иначе ложатся волосы и складки - img2img. Всё на месте, но одна мелочь исчезла или поменяла сторону - инструктивная. Следующий слайд - это проверка на живом примере.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s10">
+  <div class="content">
+    <div class="kicker">02 · Убери очки · живой опыт</div>
+    <h2>Одно лицо, одна просьба, четыре кнопки</h2>
+    <div class="cols" style="grid-template-columns:repeat(5,1fr);gap:12px">
+      <div class="card" style="padding:10px"><img src="assets/gl_base.png" alt="" style="width:100%;border-radius:8px"><h3 style="margin-top:8px;font-size:15px">Оригинал</h3><p style="font-size:13px">Сгенерирован для опыта. Следим за четырьмя приметами: очки, родинка на щеке, улыбка, борода.</p></div>
+      <div class="card" style="padding:10px"><img src="assets/gl_inpaint.png" alt="" style="width:100%;border-radius:8px"><h3 style="margin-top:8px;font-size:15px">Inpaint, SDXL</h3><p style="font-size:13px">Маска на зону глаз, снаружи заморожено. Очков нет, улыбка и борода пиксель в пиксель. Родинка попала в маску и исчезла: внутри маски рисуется всё заново, без оглядки на то, что там было.</p></div>
+      <div class="card" style="padding:10px"><img src="assets/gl_img2img.png" alt="" style="width:100%;border-radius:8px"><h3 style="margin-top:8px;font-size:15px">Image-to-image, SDXL, denoise 0,55</h3><p style="font-size:13px">Вся картинка зашумлена наполовину. Очков нет, свитер и фон те же, но человек другой: улыбка пропала, борода и кожа иные, родинки нет. «Тот же, но не тот».</p></div>
+      <div class="card" style="padding:10px"><img src="assets/gl_banana.png" alt="" style="width:100%;border-radius:8px"><h3 style="margin-top:8px;font-size:15px">Инструктивная, Banana Pro</h3><p style="font-size:13px">Картинка как токены плюс просьба. Очков нет, родинка на месте, улыбка на месте. Борода чуть короче, лицо чуть моложе: всё нарисовано заново, но под присмотром внимания.</p></div>
+      <div class="card" style="padding:10px"><img src="assets/gl_kontext_local.png" alt="" style="width:100%;border-radius:8px"><h3 style="margin-top:8px;font-size:15px">Инструктивная, Flux Kontext</h3><p style="font-size:13px">То же, локально, 115 секунд на домашней карте. Очков нет, родинка, улыбка и борода на месте, кожа чуть глаже. Из четырёх кнопок эта ближе всего к «только убери очки», и при этом перерисована каждая точка.</p></div>
+    </div>
+    <div class="note gold" style="margin-top:12px"><b>Что видно:</b> единственная кнопка, которая буквально «трогает только кусок», inpaint, заодно стёрла родинку, потому что та попала в маску. Единственная, у которой человек остался тем же, инструктивная, нарисовала всё с нуля. «Только кусок» и «только то, что просили» - разные вещи, и держит их разное: заморозка пикселей или внимание. Условия: SDXL (Juggernaut XL) и Flux Kontext считались локально на домашней видеокарте, Banana Pro - в облаке; промпт везде один: «тот же человек без очков».</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s11">
+  <div class="content">
+    <div class="kicker">02 · Убери очки · фон долой</div>
+    <h2>Удаление фона - не генерация, а раскраска: каждый пиксель «объект» или «фон»</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Сегментация.</b> Отдельная сеть, которая на вход берёт картинку, а на выход даёт такую же по размеру карту, где у каждого пикселя число от 0 до 1: насколько он «передний план». Училась на сотнях тысяч картинок с вырезанными вручную объектами. Никакой диффузии, никакого шума, никакого промпта: чистая классификация пикселей.</li>
+          <li><b>Почему она съедает тёмное на тёмном.</b> Сеть выучила, что объект - это то, что отличается от окружения: по яркости, цвету, резкости края. Тёмная панель на тёмном фоне от фона почти не отличается, и для сети это фон. Кнопка, иконка, медальон на контрастном фоне - режутся идеально. Это не баг конкретного сервиса, это определение задачи.</li>
+          <li><b>SAM и «вырезать по клику».</b> Segment Anything (Meta, 2023): та же идея, но с подсказкой: точка или рамка от пользователя, и сеть выделяет объект вокруг неё. Подсказка заменяет контраст: ты говоришь, где объект, и сети не нужно угадывать по яркости.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="band">три операции, три разных сети</div>
+          <div class="row"><div class="bx am"><b>Диффузия</b><span>предсказывает шум, рисует</span></div><div class="bx"><b>Сегментация</b><span>предсказывает класс пикселя, режет</span></div><div class="bx cy"><b>Апскейл</b><span>предсказывает недостающие пиксели между соседними</span></div></div>
+          <div class="cap">Под «редактором изображений» живут минимум три неродственные сети. Апскейл - ещё одна: ему показывают уменьшенную картинку и просят большую, и он тоже «не увеличивает», а дорисовывает детали, которых не было. Поэтому апскейл лица может слегка сменить человека.</div>
+        </div>
+        <div class="note gold" style="margin-top:14px"><b>Строка в таблицу:</b> вход - картинка; превращена в карту признаков; предсказывает класс каждого пикселя; врёт там, где объект не отличается от фона.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s12">
+  <div class="bgimg"><img src="assets/ch_vision.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">03 · Зрение</div>
+    <h1>Как сеть видит</h1>
+    <p class="lead">Сеть не видит кошку. Она видит числа: яркость каждого пикселя. Чтобы из чисел получилась «кошка», нужно пройти десяток слоёв, и на каждом картинка становится чуть менее картинкой и чуть более смыслом. Эта глава про то, что происходит на каждом слое и почему кошке можно быть любого размера, повёрнутой и в зеркале.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s13">
+  <div class="content">
+    <div class="kicker">03 · Зрение · свёртка</div>
+    <h2>Маленькое окошко ищет один признак, слой за слоем: штрих, угол, глаз, лицо</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/p_conv.png" alt="">
+        <div class="pcap">Четыре слоя, четыре уровня: штрихи, углы, части, целое. Это не схема, так реально выглядят признаки, если их вытащить из обученной сети.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Свёртка.</b> Берём окошко 3×3 пикселя с девятью весами. Прикладываем к каждому месту картинки, перемножаем, складываем, получаем одно число: насколько здесь есть «то, что ищет окошко». Одно окошко с весами «слева темно, справа светло» находит вертикальные края везде, где они есть. Сотня окошек - сотня признаков. Веса окошек не задаются, они обучаются, как всё остальное.</li>
+          <li><b>Иерархия.</b> Выход первого слоя - сотня карт «где края». Второй слой смотрит окошком уже на них и находит сочетания краёв: углы, дуги. Третий - сочетания углов: глаз, колесо. Десятый - «морда кошки». Никто не говорил сети искать глаза; глаза оказались самой полезной комбинацией дуг для того, чтобы угадывать подпись.</li>
+          <li><b>Зайлер и Фергус, 2013.</b> Вытащили, на что реагирует каждый слой настоящей сети. Первый - цветные штрихи и градиенты. Третий - текстуры и буквы. Пятый - лица собак, клавиатуры, глаза. Сеть сама придумала «части», потому что они экономят: один признак «глаз» полезнее тысячи признаков «пиксель».</li>
+        </ul>
+        <div class="note gold"><b>Нитка:</b> вход - пиксели, превращены в стопку карт признаков, предсказывается подпись (класс). Токена пока нет, но он появится через слайд.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s14">
+  <div class="content">
+    <div class="kicker">03 · Зрение · инвариантность</div>
+    <h2>Почему размер и поворот не мешают: сеть видела каждую кошку тысячей способов</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Размер и сдвиг: встроено.</b> Окошко одно и то же в любом месте картинки, значит, край найдётся, где бы ни был. Между слоями карту сжимают вдвое (пулинг: из четырёх соседних клеток оставляют максимум). После пяти сжатий «глаз» размером 30 пикселей и «глаз» размером 60 дают один и тот же отклик, потому что оба стали одной клеткой. Инвариантность к масштабу - побочный эффект сжатия.</li>
+          <li><b>Поворот и зеркало: выучено.</b> В архитектуре этого нет, окошко «левый верхний угол» не найдёт правый нижний. Но при обучении каждую картинку показывают повёрнутой, отражённой, сжатой, в другом цвете (аугментация), и подпись та же. Сеть вынуждена найти признаки, которые от этого не зависят. Зеркальную «R» она читает не потому, что умеет отражать, а потому, что видела миллион отражённых букв с правильной подписью.</li>
+          <li><b>Проверка.</b> Сеть, обученную без отражений, зеркальный текст ломает. С отражениями - нет. Это измеряется прямо: аугментация включена, точность на зеркале 90%, выключена - 30%. Способность не в сети, она в данных.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="band">откуда берётся «всё равно какого размера»</div>
+          <div class="row"><div class="bx"><b>сдвиг</b><span>одно окошко везде</span></div><div class="bx"><b>масштаб</b><span>пулинг сжимает ×2 на слой</span></div><div class="bx am"><b>поворот, зеркало</b><span>не встроено: аугментации</span></div><div class="bx am"><b>освещение, цвет</b><span>не встроено: аугментации</span></div></div>
+          <div class="cap">Два свойства даны архитектурой, два куплены данными. Всё, что куплено данными, можно потерять, если данных такого типа не было.</div>
+        </div>
+        <div class="card" style="margin-top:14px">
+          <h3 class="rd">Что сеть не видит: панда = гиббон</h3>
+          <p>Гудфеллоу и соавторы, 2014: к фото панды добавили шум, невидимый глазу, подобранный так, чтобы сдвинуть признаки, и сеть с уверенностью 99% ответила «гиббон». Наклейка на дорожный знак «стоп» делает его для автопилота знаком «45». Сеть смотрит не на то, на что мы: она смотрит на статистику признаков, а статистику можно подделать, не трогая смысла. Это цена за то, что «кошка» для неё - вектор, а не кошка.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s15">
+  <div class="content">
+    <div class="kicker">03 · Зрение · трансформер</div>
+    <h2>Картинку порезали на квадратики и назвали их словами. Дальше часть 1</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>ViT, 2020.</b> Досовицкий и соавторы (Google): режем картинку на квадраты 16×16 пикселей, каждый квадрат разворачиваем в вектор, это «токен». Картинка 224×224 - это 196 токенов, «предложение» из 196 слов. Дальше трансформер из части 1 без изменений: внимание, в котором каждый квадрат смотрит на все остальные.</li>
+          <li><b>Что это дало.</b> Свёртка видит только соседей, и чтобы связать левый верхний угол с правым нижним, нужен десяток слоёв. Внимание связывает их на первом. Плюс одна архитектура на текст и картинки, и их можно подавать вперемешку: токены слов и токены квадратов в одной последовательности. Так появились модели, которые «читают» скриншот: для них это просто длинное предложение, часть которого из квадратов.</li>
+          <li><b>Цена.</b> Трансформеру нужно больше данных, чем свёртке, потому что в нём нет встроенного «соседи важнее»: он это должен выучить. На малых данных свёртка лучше, на сотнях миллионов картинок трансформер уходит вперёд. Современные большие модели - трансформеры, иногда со свёрточным «предподготовителем» в начале.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dg">
+          <div class="band am">одна последовательность</div>
+          <div class="row"><div class="bx"><b>[квадрат]</b></div><div class="bx"><b>[квадрат]</b></div><div class="bx dk"><b>…196</b></div><div class="bx am"><b>«что»</b></div><div class="bx am"><b>«на»</b></div><div class="bx am"><b>«картинке»</b></div></div>
+          <div class="cap">Квадраты и слова в одном ряду. Внимание не знает, что одни из них - пиксели: для него всё токены. Отсюда «мультимодальность»: не два мозга, а один ряд.</div>
+        </div>
+        <div class="note gold" style="margin-top:14px"><b>Строка в таблицу:</b> вход - картинка; превращена в 196 токенов-квадратов; предсказывается следующий токен (слово подписи или ответа); врёт там, где нужны пиксельные детали внутри одного квадрата и где признаки подделаны.</div>
+        <div class="note" style="margin-top:12px"><b>Следующая глава</b> проверяет это на самом неудобном случае: чтение текста с картинки, зеркального и вверх ногами. Там впервые окажется, что читает не глаз.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s16">
+  <div class="bgimg"><img src="assets/ch_ocr.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">04 · Чтение</div>
+    <h1>OCR и его смерть</h1>
+    <p class="lead">Тридцать лет чтение текста с картинок было отдельной наукой: найти строки, нарезать на буквы, сравнить с шаблонами. Потом нарезку убрали. Потом убрали и сам модуль: современная модель читает скриншот тем же вниманием, которым читает промпт. Поэтому она читает зеркальные вывески, и поэтому же врёт, когда не уверена: читает не глаз, а словарь.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s17">
+  <div class="content">
+    <div class="kicker">04 · Чтение · три поколения</div>
+    <h2>Шаблоны, потом полоса целиком, потом никакого OCR</h2>
+    <table class="t" style="font-size:13.5px">
+      <tr><th>Поколение</th><th>Как находит текст</th><th>Как читает</th><th>Что ломает</th></tr>
+      <tr><td>Классический OCR, 1990-2010</td><td class="d">бинаризация (чёрное/белое), поиск строк по горизонтальным проекциям</td><td class="d">режет строку на символы по пробелам между чёрными пятнами, каждый символ сравнивает с шаблонами шрифтов</td><td class="d">наклон, слипшиеся буквы, рукопись, шум, любой нестандартный шрифт</td></tr>
+      <tr><td>Нейронный OCR, 2015-2022</td><td class="d">детектор, как для объектов: находит рамки текста любого размера и наклона (EAST, CRAFT)</td><td class="d">полосу читает целиком свёрточная сеть плюс рекуррентная, без нарезки на буквы; CTC: «выдавай букву, когда уверен, остальное пропускай»</td><td class="d">редкие языки, вертикальный текст, то, чего не было в обучении</td></tr>
+      <tr><td>Мультимодальная модель, 2023+</td><td class="d">не находит: вся картинка - токены, текст на ней такие же квадраты, как всё остальное</td><td class="d">внимание между квадратами и словами; «чтение» - это предсказание следующего токена ответа при виде квадратов</td><td class="d">уверенные ошибки: читает то, что должно быть написано, а не что написано</td></tr>
+    </table>
+    <div class="cols" style="margin-top:14px">
+      <div>
+        <ul class="pts">
+          <li><b>CTC одной фразой.</b> Сеть идёт вдоль полосы и на каждом шаге говорит либо букву, либо «ничего». «ПППРРРИИ_ВВЕЕТ» схлопывается в «ПРИВЕТ». Так сняли главную проблему старого OCR: не надо знать, где кончается одна буква и начинается другая.</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Третье поколение.</b> Модуля OCR больше нет. Это значит, что «распознавание» и «понимание» - одна операция, и их нельзя разделить: модель не может прочитать и не понять. Со всеми последствиями, см. следующие два слайда.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s18">
+  <div class="content">
+    <div class="kicker">04 · Чтение · живой опыт</div>
+    <h2>Зеркальный текст: читает не глаз, а словарь. Проверено на шести картинках</h2>
+    <div class="cols">
+      <div>
+        <table class="t" style="font-size:13px">
+          <tr><th>Картинка</th><th>Было написано</th><th>Модель прочитала</th><th>Итог</th></tr>
+          <tr><td>обычный текст</td><td class="d">уснул окном окном сны часы</td><td class="d">уснул окном окном сны часы</td><td class="gr">верно</td></tr>
+          <tr><td>зеркало, слова</td><td class="d">кто стояли спал тёплой принёс</td><td class="d">сырое чтение «стоили», словарь исправил на «стояли»</td><td class="gr">верно, после поправки</td></tr>
+          <tr><td>зеркало, абракадабра</td><td class="d">щдсгж аугмдум ббэддпв</td><td class="d">шдсгж вумдум ддеддпв</td><td class="rd">3 слова из 3 с ошибками</td></tr>
+          <tr><td>вверх ногами, слова</td><td class="d">тёплой мельник и до до</td><td class="d">тёплой мельник и до до</td><td class="gr">верно</td></tr>
+          <tr><td>вверх ногами, цифры</td><td class="d">5 942 033 30 82</td><td class="d">5 942 033 30 82</td><td class="gr">верно</td></tr>
+          <tr><td>зеркало, цифры</td><td class="d">512 6961 670</td><td class="d">512 6961 670</td><td class="gr">верно</td></tr>
+        </table>
+        <p class="dim" style="margin-top:8px;font-size:13px">Условия: фразы и абракадабра собраны генератором случайных слов, правильный ответ модели не показывали до чтения. Модель - та, что писала этот выпуск.</p>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Что произошло на второй строке.</b> Зрение выдало «стоили». Это ошибка: в зеркале «я» и «и» похожи. Но языковая модель внутри знала, что рядом с «кто» и «спал» вероятнее «стояли», и ответ ушёл правильный. Читал не глаз. Глаз ошибся, словарь поправил.</li>
+          <li><b>Что произошло на третьей.</b> Абракадабре словарь помочь не может, и осталось чистое зрение. Оно спутало щ/ш, б/д, э/е, потеряло букву. Те же самые отражённые буквы, что строкой выше, но без подсказки они читаются втрое хуже. Способность читать зеркальный текст наполовину состоит из знания языка.</li>
+          <li><b>Почему цифры прошли.</b> Алфавит из десяти знаков, и перевёрнутые цифры встречаются в данных часто (ценники, спидометры, отражения в витринах). У зрения хватает насмотренности на десять форм, но не на тридцать три в случайном порядке.</li>
+        </ul>
+        <div class="note gold"><b>Строка в таблицу:</b> вход - картинка с текстом; превращена в квадраты; предсказывается следующий токен ответа; врёт там, где словарь уверен, а глаз нет. Это не слабость, это та же сила: без словаря не было бы и второй строки.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s19">
+  <div class="content">
+    <div class="kicker">04 · Чтение · раскладка</div>
+    <h2>«djn cvjnhb»: модель не решает применить шифр. У неё нет шага «решить»</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="am">Случай</h3>
+          <p>Собеседник пишет «djn cvjnhb? ns lf;t nfrjq ntrcn gjybvftim», модель отвечает по-русски на «вот смотри, ты даже такой текст понимаешь». Никакой картинки, чистый текст. Как она поняла, что надо переключить раскладку?</p>
+          <p style="margin-top:10px">Никак. В русском интернете миллионы сообщений, набранных не в той раскладке, рядом с ответами и расшифровками. Для модели «djn cvjnhb» - не странные латинские буквы, а токены, которые в обучении встречались ровно в одном окружении: русский чат, не переключили. Соответствие клавиш выучено как обычная закономерность, как то, что после «привет» идёт «как дела».</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Почему «решения» нет</h3>
+          <p>Отдельного детектора «это тарабарщина, достать таблицу» внутри нет. Есть внимание и предсказание следующего токена. У строки «djn cvjnhb» в английском нет ни одного правдоподобного продолжения, в русском через раскладку есть, и представление токенов уже на первых слоях выглядит как «русские слова через клавиши». Контекст выбрал значение, как слово «лук» выбирается поваром из части 1. Ничего не применяется, оказывается единственным, при чём у фразы есть продолжение.</p>
+          <p style="margin-top:10px"><b>Проверка:</b> та же строка внутри английского письма с заметной вероятностью прочитается как опечатка или пароль. Строка «gjhn» осмысленна в обеих раскладках («порт» и кусок английского), и выбор зависит только от языка разговора вокруг. Никакой таблицы, только вероятность продолжения.</p>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Вывод главы:</b> зеркальная вывеска, кривой скан, чужая раскладка - три разных входа, один механизм. ИИ не решает, что делать с входом. Он вычисляет, при каком прочтении у фразы есть продолжение. Это же объясняет, почему он иногда «понимает» не то: у того прочтения продолжение тоже было.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s20">
+  <div class="bgimg"><img src="assets/ch_asr.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">05 · Звук туда</div>
+    <h1>Речь в текст: Whisper слушает глазами</h1>
+    <p class="lead">Распознавание речи - это не про звук. Первым шагом звук превращают в картинку, спектрограмму, и дальше работает глава про зрение плюс часть 1: кодировщик смотрит на картинку, декодер пишет слова, предсказывая следующий токен. Отсюда всё хорошее и всё странное в Whisper: он знает языки, переводит и уверенно галлюцинирует в тишине.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s21">
+  <div class="content">
+    <div class="kicker">05 · Звук туда · спектрограмма</div>
+    <h2>Звук в картинку: время вправо, высота вверх, громкость яркостью</h2>
+    <div class="part">
+      <div class="pimg">
+        <img src="assets/p_spectrogram.png" alt="">
+        <div class="pcap">Спектрограмма: горизонталь - время, вертикаль - частота, яркость - сколько энергии. Гласные - полосы, согласные - шум, тишина - темнота.</div>
+      </div>
+      <div>
+        <ul class="pts">
+          <li><b>Зачем.</b> Волна звука - это 16 тысяч чисел в секунду, и в ней частота спрятана во взаимном расположении отсчётов. Преобразование Фурье по окошкам в 25 миллисекунд раскладывает каждый кусочек на частоты, и получается картинка 80 строк (частоты, по шкале слуха) на 3000 столбцов (30 секунд). Теперь это задача зрения.</li>
+          <li><b>Whisper, OpenAI 2022.</b> Кодировщик - трансформер, который смотрит на спектрограмму как ViT на картинку. Декодер - языковая модель, которая пишет текст, на каждом шаге глядя через внимание на нужный кусок спектрограммы. Архитектура буквально «картинка в подпись», та же, что подписывает фото.</li>
+          <li><b>Обучение.</b> 680 тысяч часов аудио с субтитрами из интернета, 97 языков. Без ручной разметки: субтитры и есть подпись. Треть задач в данных - перевод (английские субтитры к неанглийскому аудио), поэтому Whisper переводит, хотя его этому специально не учили. Он учил «что обычно пишут под этим звуком».</li>
+        </ul>
+        <div class="note gold"><b>Нитка:</b> вход - звук; превращён в картинку, а картинка в токены; предсказывается следующий токен текста. Это та же строка, что у чтения с картинок, и ошибки будут те же.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s22">
+  <div class="content">
+    <div class="kicker">05 · Звук туда · где врёт</div>
+    <h2>Тишина, повторы и «спасибо за просмотр»: декодер дописывает то, чего не слышал</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Галлюцинации в тишине.</b> Подаёшь 30 секунд шума вентилятора, получаешь «Субтитры сделал DimaTorzok» или «Спасибо за просмотр». Декодер - предсказатель следующего токена, в тишине он не получает подсказки от спектрограммы и пишет самое вероятное из обучения: то, что стояло под тихими концами роликов. Это не баг распознавания, это языковая модель без входа.</li>
+          <li><b>Зацикливание.</b> Длинная запись, и с какого-то места текст повторяет одну фразу до конца. Декодер пишет по 30-секундным окнам, передавая предыдущий текст как контекст. Одна ошибка попадает в контекст, следующий кусок на неё опирается, и петля замыкается. Лечится тем, что предыдущий текст в контекст не передают, ценой качества на границах.</li>
+          <li><b>Имена и термины.</b> «Гвендолин» превращается в «Гвендолен» или «квенделин», потому что в 680 тысячах часов этого слова не было, а похожих было. Словарь, который спасал зеркальный текст, здесь тянет к знакомому. Решение то же, что для людей: дать список имён заранее (промпт-подсказка в Whisper именно для этого).</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Три проверки для расшифровки</h3>
+          <ul>
+            <li>Тихие места: если там связный текст - он выдуман.</li>
+            <li>Повторы одной фразы подряд: с этого места расшифровка мертва, перезапустить с другого окна.</li>
+            <li>Имена и цифры сверять по звуку: это ровно те места, где словарь сильнее слуха.</li>
+          </ul>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <h3 class="am">Почему это работает вообще</h3>
+          <p>Потому что речь избыточна. Половину звуков в обычной фразе можно убрать, и человек поймёт по контексту. Whisper пользуется этим так же: слышит две трети, остальное дописывает языком. Пока дописывает правильно, это называется распознаванием. Когда входа нет совсем, та же операция называется галлюцинацией. Операция одна.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s23">
+  <div class="bgimg"><img src="assets/ch_tts.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">06 · Звук обратно</div>
+    <h1>Голос по образцу и музыка из описания</h1>
+    <p class="lead">Синтез речи - это распознавание, запущенное задом наперёд: текст в спектрограмму, спектрограмму в волну. Клонирование голоса - референс-картинка из первой главы, только референс звуковой. Музыка - диффузия из первой главы, только снег на спектрограмме целой песни. Новых механизмов в этой главе нет, и это её главный результат.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s24">
+  <div class="content">
+    <div class="kicker">06 · Звук обратно · речь</div>
+    <h2>Текст → фонемы → спектрограмма → волна, и вектор «кто говорит» между ними</h2>
+    <div class="cols">
+      <div>
+        <div class="dg">
+          <div class="band am">синтез речи</div>
+          <div class="row"><div class="bx"><b>текст</b><span>«привет»</span></div><div class="arr am">→</div><div class="bx"><b>фонемы</b><span>п-р'-и-в'-э-т, ударение</span></div><div class="arr am">→</div><div class="bx am"><b>спектрограмма</b><span>трансформер рисует картинку звука</span></div><div class="arr am">→</div><div class="bx"><b>вокодер</b><span>картинка в волну</span></div><div class="arr am">→</div><div class="bx cy"><b>звук</b></div></div>
+          <div class="row"><div class="bx dk"><b>вектор голоса</b><span>из 5-10 секунд референса: тембр, манера, акцент</span></div><div class="arr">↑ подмешивается в середину</div></div>
+          <div class="cap">Средний блок - обратный Whisper: не «картинка в текст», а «текст в картинку». Вокодер - отдельная сеть (HiFi-GAN и наследники), которая умеет из спектрограммы восстановить волну с фазой, которой на картинке нет.</div>
+        </div>
+        <ul class="pts" style="margin-top:12px">
+          <li><b>Клонирование.</b> Отдельный кодировщик превращает несколько секунд чужой речи в вектор: это тот же приём, что референс-картинка в диффузии и вектор промпта в CLIP. Трансформер рисует спектрограмму «в сторону» этого вектора. Поэтому клон держит тембр и акцент, но не держит то, чего в пяти секундах не было: смех, крик, другой язык, и дорисовывает их «как обычно».</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Почему современные голоса не звучат как робот</h3>
+          <p>Старый синтез склеивал записанные куски, и швы было слышно. Нейронный рисует спектрограмму целиком, с интонацией, которая выучена из тысяч часов живой речи: где поднять, где пауза, где придыхание. Это та же «статистика как обычно» из диффузии: голос звучит естественно, потому что он среднее по всем, кто так говорил. И по той же причине на незнакомом слове он споткнётся: имени «Гвендолин» в статистике нет, ударение будет угадано.</p>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Строка в таблицу:</b> вход - текст и образец голоса; превращены в фонемы и вектор; предсказывается спектрограмма (кадр за кадром, как токены); врёт на редких словах и эмоциях, которых не было в образце.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s25">
+  <div class="content">
+    <div class="kicker">06 · Звук обратно · музыка</div>
+    <h2>Песня из описания: диффузия по спектрограмме, и вокал - самое узкое место</h2>
+    <div class="cols">
+      <div>
+        <ul class="pts">
+          <li><b>Механизм.</b> Берём спектрограмму целой песни (три минуты - картинка 80 на 18 тысяч), зашумляем, учим угадывать шум по описанию «грустный вальс, женский вокал, виолончель». Генерация - из снега, как в главе 1. Либо второй вариант: звук режут на токены кодеком (как слова), и дальше языковая модель предсказывает следующий звуковой токен. Suno и Udio не раскрывают, что именно внутри, но оба механизма - из этого выпуска.</li>
+          <li><b>Почему слова в песне - каша.</b> Текст и музыка рисуются одновременно, одной сетью, в одной картинке. Вокал занимает узкую полосу спектра, и слово «любовь» в нём - несколько клеток, как палец в латенте. Плюс та же проблема, что с буквами на картинках: слово требует точной формы, а диффузия знает «как обычно звучит пение». Получается «как обычно»: похожее на слова пение.</li>
+          <li><b>Почему при этом гармония в порядке.</b> Аккорды и ритм - крупные, повторяющиеся структуры, их в данных миллионы, и они занимают большие области спектрограммы. Крупное диффузия делает хорошо, мелкое плохо, и в музыке мелкое - это именно слова. Та же асимметрия, что лицо против пальцев.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Нитка затянута</h3>
+          <p>Шесть глав, три с половиной механизма: диффузия (угадай шум), трансформер (угадай следующий токен), свёртка (найди признак окошком) и половинка - вектор-магнит (CLIP, референс, вектор голоса), который все три связывает с текстом. Картинки, редактирование, зрение, чтение, речь в обе стороны, музыка - всё собрано из этих деталей в разном порядке. Ни одной новой детали после первой главы не понадобилось.</p>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Строка в таблицу:</b> вход - описание; превращено в вектор; предсказывается шум на спектрограмме или следующий звуковой токен; врёт в мелком (слова), держит крупное (гармония).</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s26">
+  <div class="bgimg"><img src="assets/ch_3d.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">07 · Объём</div>
+    <h1>Модель из картинки</h1>
+    <p class="lead">Последняя игрушка и единственная, где данных по-настоящему мало: фотографий в интернете миллиарды, трёхмерных моделей - миллионы, и то в основном кресла. Поэтому 3D-генерация делает крюк через картинки: сначала диффузия рисует объект с нескольких сторон, потом другая сеть сшивает виды в объём. И поэтому снаряды выходят, а лица нет.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s27">
+  <div class="content">
+    <div class="kicker">07 · Объём · как и почему так</div>
+    <h2>Нарисовать с шести сторон, потом сшить: крюк через картинки из-за нехватки данных</h2>
+    <div class="cols">
+      <div>
+        <div class="dg">
+          <div class="band am">текст или фото → модель</div>
+          <div class="row"><div class="bx"><b>вход</b><span>описание или одно фото</span></div><div class="arr am">→</div><div class="bx am"><b>мультивид</b><span>диффузия, обученная рисовать один объект с 4-6 ракурсов согласованно</span></div><div class="arr am">→</div><div class="bx"><b>объём</b><span>сеть превращает виды в поле «внутри/снаружи» или облако точек</span></div><div class="arr am">→</div><div class="bx"><b>сетка</b><span>из поля вырезают треугольники, UV, текстура с тех же видов</span></div></div>
+          <div class="cap">Два звена из трёх - уже знакомые: диффузия и сеть, предсказывающая число для каждой точки (как сегментация, только в 3D: «эта точка внутри объекта или снаружи»).</div>
+        </div>
+        <ul class="pts" style="margin-top:12px">
+          <li><b>Второй путь.</b> Диффузия сразу в трёхмерном представлении: шум не на картинке, а на сетке вокселей или на облаке точек. Честнее, но данных для обучения в тысячу раз меньше, чем картинок, и качество соответствующее. Поэтому коммерческие сервисы (Meshy и родня) делают крюк через виды: там можно опереться на всё, что модель знает о картинках.</li>
+          <li><b>Авториг.</b> Скелет по форме предсказывает сеть ключевых точек, та же, что ставит точки на суставах человека на фото, только в 3D. Работает на том, что похоже на гуманоида, и промахивается на всём, где суставов «не положено».</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="rd">Почему лица не выходят, а снаряды выходят</h3>
+          <p>Три причины сразу. Данных: кресел, оружия и ваз в 3D-коллекциях много, человеческих лиц с хорошей топологией мало. Согласованности: мультивид рисует шесть картинок, и на лице любое расхождение между видами (глаз чуть выше слева) превращается при сшивке в уродство, на снаряде расхождение в миллиметр никому не видно. Зрителя: лицо мы читаем специальной зоной мозга и замечаем ошибку в полпроцента, на мече не замечаем и в десять.</p>
+        </div>
+        <div class="note gold" style="margin-top:12px"><b>Строка в таблицу:</b> вход - текст или фото; превращено в несколько видов; предсказывается шум на видах, потом «внутри/снаружи» для точек; врёт там, где виды не сошлись, и там, где данных не было: лица, руки, тонкие детали.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s27b" id="s28">
+  <div class="bgimg"><img src="assets/ch_common.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Итог</div>
+    <h1>Что общее и где граница</h1>
+    <p class="lead">Семь игрушек разобраны до вала. Осталось положить детали в один ряд и посмотреть, сколько их на самом деле. Меньше, чем кажется: три механизма и один магнит. И одна общая слабость, которая на каждом этаже называлась по-своему, а оказалась одним и тем же.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s29">
+  <div class="content">
+    <div class="kicker">Итоги · карта</div>
+    <h2>Вся лекция одной таблицей: вход, во что превращён, что предсказывает, где врёт</h2>
+    <table class="t" style="font-size:12.5px">
+      <tr><th>Игрушка</th><th>Вход</th><th>Во что превращён</th><th>Что предсказывает</th><th>Где врёт</th></tr>
+      <tr><td>Диффузия</td><td class="d">текст + снег</td><td class="d">вектор CLIP + латент 128×128</td><td class="d">шум на каждом шаге</td><td class="d">мелкое: пальцы, буквы; отрицания</td></tr>
+      <tr><td>Убери очки</td><td class="d">картинка + просьба</td><td class="d">заморозка / остаточный шум / токены</td><td class="d">шум, с оглядкой на оригинал</td><td class="d">шов маски / «другой человек» / потерянная мелочь</td></tr>
+      <tr><td>Фон долой</td><td class="d">картинка</td><td class="d">карта признаков</td><td class="d">класс каждого пикселя</td><td class="d">объект не отличим от фона</td></tr>
+      <tr><td>Зрение</td><td class="d">картинка</td><td class="d">196 квадратов-токенов</td><td class="d">следующий токен подписи</td><td class="d">детали внутри квадрата; подделанные признаки</td></tr>
+      <tr><td>Чтение</td><td class="d">картинка с текстом</td><td class="d">те же квадраты</td><td class="d">следующий токен ответа</td><td class="d">словарь уверен, глаз нет: абракадабра</td></tr>
+      <tr><td>Речь в текст</td><td class="d">звук</td><td class="d">спектрограмма → токены</td><td class="d">следующий токен текста</td><td class="d">тишина, повторы, имена</td></tr>
+      <tr><td>Текст в речь</td><td class="d">текст + образец</td><td class="d">фонемы + вектор голоса</td><td class="d">спектрограмма кадр за кадром</td><td class="d">редкие слова, эмоции не из образца</td></tr>
+      <tr><td>Музыка</td><td class="d">описание</td><td class="d">вектор</td><td class="d">шум на спектрограмме / звуковой токен</td><td class="d">слова; держит гармонию</td></tr>
+      <tr><td>3D</td><td class="d">текст или фото</td><td class="d">несколько видов</td><td class="d">шум на видах, внутри/снаружи</td><td class="d">лица, руки, несогласованные виды</td></tr>
+    </table>
+    <div class="note gold" style="margin-top:10px"><b>Четвёртый столбец.</b> Девять игрушек, и в нём всего три разных слова: шум, следующий токен, класс точки. Пятый столбец ещё короче: везде врёт там, где мало клеток на деталь, и там, где словарь (статистика «как обычно») сильнее входа. Это не девять технологий. Это одна операция, предсказание по статистике, девять раз поставленная на разный вход.</div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide" id="s30">
+  <div class="content">
+    <div class="kicker">Заключение · вопрос и мораль</div>
+    <h2>Если внутри везде одно и то же, что тогда «понимает» модель</h2>
+    <div class="cols">
+      <div>
+        <div class="card">
+          <h3 class="rd">Вопрос на подумать</h3>
+          <p>Выпуск показал, что чтение зеркальной вывески - это наполовину словарь, распознавание речи - наполовину дописывание, картинка - то, что не признали шумом. Нигде нет шага «понять». Есть «предсказать по статистике при таком входе». И при этом результат неотличим от понимания, пока вход достаточен, и становится галлюцинацией, когда входа нет, той же операцией.</p>
+          <p style="margin-top:10px">Тогда вопрос: отличается ли это от того, что делаем мы, когда читаем «по дорвое шёл чеолвек», не замечая перестановок? Выпуск на него не отвечает. Он только замечает, что граница между «понял» и «дописал» проходит не внутри модели, а в том, достаточно ли было входа. И это проверяемо: дай меньше входа, и увидишь, где кончается чтение.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3 class="am">Мораль</h3>
+          <p style="font-size:22px;color:#fff;margin:4px 0 8px"><b>Ex umbra in solem.</b></p>
+          <p>«Из тени на свет». Девиз, который ставили на солнечных часах: без тени нет времени, но читать время можно только там, где свет. Диффузия делает это буквально: из снега, в котором нет ничего, за пятьдесят шагов проявляет картинку, и на каждом шаге решает только одно: что здесь тень, а что нет.</p>
+          <p style="margin-top:10px">Первая часть кончалась «Fabricando fit faber»: мастером становятся, делая. Вторая добавляет, что именно делает мастер: убирает тень. Не добавляет знание, а вычитает шум, пока не останется то, что на шум не похоже. Модель так рисует, так читает и так слушает. Мы так, кажется, понимаем.</p>
+          <p style="margin-top:10px">Подвох: на солнечных часах, чтобы прочитать время, нужна тень. Убери её совсем, и часы покажут полдень вечно. Модель без шума на входе - это Whisper в тишине: уверенный текст ни о чём.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+<section class="slide chapter" id="s31">
+  <div class="bgimg"><img src="assets/final_end.png" alt=""></div>
+  <div class="content">
+    <div class="kicker">Итог · Ex umbra in solem</div>
+    <h1>Внутри у всех игрушек один молоток. Он просто бьёт по разному шуму</h1>
+    <p class="lead">Снег, в котором проявляется картинка. Маска, остаточный шум или внимание, которые держат остальное. Окошко, ищущее штрих, и квадраты, ставшие словами. Словарь, который читает зеркало за глаз. Спектрограмма, которую слушают глазами. Голос как вектор. Шесть видов, сшитых в объём. Вопросы → давайте обсудим.</p>
+  </div>
+  <div class="pagenum"></div>
+</section>
+
+
+<div class="lightbox" id="lb"><img id="lbimg" src="" alt=""><div class="lbcap" id="lbcap"></div><div class="lbx">esc ✕</div></div>
+<script>
+  // лайтбокс для картинок деталей (и любых img с data-zoom)
+  (function(){
+    const lb = document.getElementById('lb'), im = document.getElementById('lbimg'), cap = document.getElementById('lbcap');
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.tagName === 'IMG' && (t.closest('.pimg') || t.dataset.zoom !== undefined)) {
+        im.src = t.src; const c = t.closest('.pimg'); const pc = c ? c.querySelector('.pcap') : null;
+        cap.textContent = pc ? pc.textContent : ''; lb.classList.add('open'); e.stopPropagation();
+      } else if (lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) { lb.classList.remove('open'); im.src = ''; e.stopPropagation(); } }, true);
+  })();
+</script>
+<script>
+  const slides = () => document.querySelectorAll('.slide');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    document.getElementById('prog').style.width = (scrollY / h * 100) + '%';
+  });
+  document.addEventListener('keydown', e => {
+    const arr = [...slides()];
+    const cur = arr.findIndex(s => s.getBoundingClientRect().top > -innerHeight/2);
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); arr[Math.min(cur+1, arr.length-1)]?.scrollIntoView(); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); arr[Math.max(cur-1, 0)]?.scrollIntoView(); }
+    if (e.key === 'Home') { e.preventDefault(); arr[0].scrollIntoView(); }
+    if (e.key === 'End') { e.preventDefault(); arr[arr.length-1].scrollIntoView(); }
+  });
+  // нумерация страниц автоматом
+  addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.slide').forEach((s, i) => {
+      const p = s.querySelector('.pagenum'); if (p) p.textContent = String(i+1).padStart(2, '0');
+    });
+  });
+</script>
+</body>
+</html>

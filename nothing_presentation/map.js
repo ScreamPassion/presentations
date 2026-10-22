@@ -310,5 +310,7 @@ window.PRESENTATIONS.push({
  "series": "svet",
  "issue": 6,
  "folder": "nothing_presentation",
- "entry": "index.html"
+ "entry": "index.html",
+ "group": "Прочее",
+ "order": 500
 });

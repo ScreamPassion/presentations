@@ -261,5 +261,7 @@ window.PRESENTATIONS.push({
  "series": "lectures",
  "issue": 0,
  "folder": "anatomy_presentation",
- "entry": "index.html"
+ "entry": "index.html",
+ "group": "Жизнь",
+ "order": 302
 });

@@ -421,5 +421,7 @@ window.PRESENTATIONS.push({
  "series": "lectures",
  "issue": 0,
  "folder": "db_presentation",
- "entry": "index.html"
+ "entry": "index.html",
+ "group": "Железо и код",
+ "order": 1
 });

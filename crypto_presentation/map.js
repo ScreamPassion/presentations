@@ -156,5 +156,7 @@ window.PRESENTATIONS.push({
  "series": "lectures",
  "issue": 0,
  "folder": "crypto_presentation",
- "entry": "index.html"
+ "entry": "index.html",
+ "group": "Железо и код",
+ "order": 4
 });

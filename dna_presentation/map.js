@@ -151,5 +151,7 @@ window.PRESENTATIONS.push({
  "series": "lectures",
  "issue": 0,
  "folder": "dna_presentation",
- "entry": "index.html"
+ "entry": "index.html",
+ "group": "Жизнь",
+ "order": 300
 });

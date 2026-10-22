@@ -387,5 +387,7 @@ window.PRESENTATIONS.push({
  "series": "lectures",
  "issue": 0,
  "folder": "battles_presentation",
- "entry": "index.html"
+ "entry": "index.html",
+ "group": "Мысль и общество",
+ "order": 404
 });

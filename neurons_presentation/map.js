@@ -285,5 +285,7 @@ window.PRESENTATIONS.push({
  "series": "svet",
  "issue": 4,
  "folder": "neurons_presentation",
- "entry": "index.html"
+ "entry": "index.html",
+ "group": "Прочее",
+ "order": 500
 });

@@ -278,5 +278,7 @@ window.PRESENTATIONS.push({
  "series": "lectures",
  "issue": 0,
  "folder": "arena_presentation",
- "entry": "index.html"
+ "entry": "index.html",
+ "group": "Мысль и общество",
+ "order": 403
 });

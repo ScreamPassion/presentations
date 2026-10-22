@@ -204,5 +204,7 @@ window.PRESENTATIONS.push({
  "series": "lectures",
  "issue": 0,
  "folder": "space_presentation",
- "entry": "index.html"
+ "entry": "index.html",
+ "group": "Физика и Земля",
+ "order": 202
 });
